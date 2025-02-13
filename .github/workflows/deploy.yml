@@ -1,0 +1,41 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Haskell Stack
+      uses: haskell-actions/setup@v2
+      with:
+        ghc-version: '9.4.8'
+
+    - name: Install LaTeX and pdf2svg
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y texlive-latex-extra texlive-pictures texlive-science pdf2svg
+
+    - name: Build Hakyll site
+      run: |
+        stack build
+        stack exec blog build
+
+    - name: Create CNAME file
+      run: |
+        echo "blog.noprofits.org" > _site/CNAME
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./_site
+        cname: blog.noprofits.org

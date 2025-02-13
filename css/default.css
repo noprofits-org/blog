@@ -1,0 +1,326 @@
+/* Base styles */
+:root {
+    color-scheme: dark;
+}
+
+body {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0 1rem;
+}
+
+/* Layout */
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+header {
+    border-bottom: 1px solid #0c0c0c;
+    margin: 0 auto 2rem auto;
+    padding: 1rem 0;
+    max-width: 960px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo a {
+    color: #ffffff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+nav a:hover {
+    color: #3291ff;
+}
+
+/* Main content */
+main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 0 2rem 0;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+h1 { font-size: 2.5rem; margin-bottom: 1.5rem; }
+h2 { font-size: 2rem; margin: 2rem 0 1rem; }
+h3 { font-size: 1.75rem; margin: 1.75rem 0 0.875rem; }
+
+a {
+    color: #3291ff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Code blocks */
+pre, code {
+    background: #002e0988;
+    border-radius: 4px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.9em;
+    padding: 0.2em 0.4em;
+}
+
+pre {
+    padding: 1em;
+    overflow-x: auto;
+}
+
+pre code {
+    padding: 0;
+    background: none;
+}
+
+/* Images and diagrams */
+.tikzpicture {
+    display: block;
+    margin: 2rem auto;
+    max-width: 100%;
+    height: auto;
+    background: #ffffff;
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+/* Footer */
+footer {
+    border-top: 1px solid #333;
+    color: #888;
+    font-size: 0.9rem;
+    margin: 2rem auto 0;
+    max-width: 960px;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+/* Tables */
+table {
+    border-collapse: collapse;
+    margin: 1rem 0;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #333;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+th {
+    background: #2d2d2d;
+}
+
+/* Post metadata */
+.post-info {
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+/* Tags */
+.tags {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.tags li {
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+.tag {
+    background: #1e1e1e;
+    border-radius: 4px;
+    color: #fff;
+    padding: 0.2em 0.6em;
+    font-size: 0.9em;
+    text-decoration: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    body {
+        font-size: 15px;
+    }
+    
+    header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    nav {
+        justify-content: center;
+    }
+}
+
+/* References */
+.csl-bib-body {
+    margin: 0;
+    padding-left: 0;
+}
+
+.csl-entry {
+    margin-bottom: 1em;
+    display: flex;
+}
+
+.csl-left-margin {
+    min-width: 2em;
+    text-align: right;
+    margin-right: 1em;
+}
+
+.csl-right-inline {
+    margin: 0;
+    padding: 0;
+}
+
+/* RST table styles */
+table.docutils {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+}
+
+table.docutils td, table.docutils th {
+    padding: 0.5em;
+    border: 1px solid #ddd;
+}
+
+/* RST admonition styles */
+div.note, div.warning {
+    padding: 1em;
+    margin: 1em 0;
+    border-radius: 4px;
+}
+
+div.note {
+    color:#000000;
+    background-color: #e8f4f8;
+    border-left: 4px solid #4a9eca;
+}
+
+div.warning {
+    color:#000000;
+    background-color: #fdf7f7;
+    border-left: 4px solid #d9534f;
+}
+
+/* Code highlighting */
+pre.sourceCode {
+    background: #1e1e1e;
+    padding: 1em;
+    border-radius: 4px;
+    overflow-x: auto;
+}
+
+code.sourceCode {
+    color: #d4d4d4;
+}
+
+/* Python specific syntax highlighting */
+.kw { color: #569cd6; }  /* keywords like class, def */
+.dt { color: #4ec9b0; }  /* types like str, int */
+.co { color: #6a9955; }  /* comments */
+.st { color: #ce9178; }  /* strings */
+.cf { color: #c586c0; }  /* control flow like if, while */
+.op { color: #d4d4d4; }  /* operators */
+.va { color: #9cdcfe; }  /* variables */
+.bu { color: #4ec9b0; }  /* built-ins */
+
+/* Hero section */
+.hero {
+    margin: 2rem 0 4rem 0;
+    text-align: center;
+}
+
+.hero .tagline {
+    font-size: 1.2rem;
+    color: #888;
+    margin-top: 1rem;
+}
+
+/* Topic grid */
+.topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0 4rem 0;
+}
+
+.topic {
+    padding: 1.5rem;
+    background: #111;
+    border-radius: 8px;
+    transition: transform 0.2s;
+}
+
+.topic:hover {
+    transform: translateY(-5px);
+    background: #1a1a1a;
+}
+
+.topic h3 {
+    margin-top: 0;
+    color: #fff;
+}
+
+.topic p {
+    color: #888;
+    margin-bottom: 0;
+}
+
+/* Recent posts section */
+.recent-posts {
+    margin: 4rem 0;
+}
+
+.recent-posts ul {
+    list-style: none;
+    padding: 0;
+}
+
+.recent-posts li {
+    padding: 1rem 0;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Archive link */
+.archive-link {
+    text-align: center;
+    margin-top: 2rem;
+    font-style: italic;
+    color: #888;
+}
