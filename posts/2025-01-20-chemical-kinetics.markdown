@@ -1,5 +1,5 @@
 ---
-title: Chemical Kinetics of $\ce{H2O2}$
+title: Chemical Kinetics of H₂O₂
 date: 2025-01-20
 tags: chemistry, mathematics
 ---
