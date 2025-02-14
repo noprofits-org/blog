@@ -35,7 +35,7 @@ jobs:
     - name: Install LaTeX and pdf2svg
       run: |
         sudo apt-get update
-        sudo apt-get install -y texlive-latex-extra texlive-pictures texlive-science pdf2svg pgf texlive-plain-generic
+        sudo apt-get install -y texlive-latex-extra texlive-pictures texlive-science pdf2svg texlive-plain-generic texlive-fonts-recommended
 
     - name: Build Hakyll site
       run: |
