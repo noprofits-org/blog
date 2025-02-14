@@ -1,5 +1,4 @@
 name: Build and Deploy to GitHub Pages
-
 on:
   push:
     branches:
@@ -9,7 +8,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -19,10 +17,25 @@ jobs:
       with:
         ghc-version: '9.4.8'
 
+    - name: Cache Stack dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.stack
+          .stack-work
+        key: ${{ runner.os }}-stack-${{ hashFiles('stack.yaml.lock', 'package.yaml', '*.cabal') }}
+        restore-keys: |
+          ${{ runner.os }}-stack-
+
+    - name: Install Stack dependencies
+      run: |
+        stack setup
+        stack update
+
     - name: Install LaTeX and pdf2svg
       run: |
         sudo apt-get update
-        sudo apt-get install -y texlive-latex-extra texlive-pictures texlive-science pdf2svg
+        sudo apt-get install -y texlive-latex-extra texlive-pictures texlive-science pdf2svg pgf texlive-plain-generic
 
     - name: Build Hakyll site
       run: |
