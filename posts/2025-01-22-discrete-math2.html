@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">No Profits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1>No Small Perfect Cubes as Sums of Two Cubes</h1>
+        <div class="info">
+    Posted on January 22, 2025
+    
+</div>
+
+<p>Today, we’re diving into a fascinating corner of number theory to explore a specific problem: proving that there are no positive perfect cubes less than 1000 that can be expressed as the sum of the cubes of two positive integers. This statement, while seemingly simple, touches upon concepts related to Fermat’s Last Theorem and provides a good exercise in proof by exhaustion and careful consideration of cases.</p>
+<p>Essentially, we want to show that for perfect cubes <em>z</em>³ &lt; 1000, there are no positive integers <em>x</em> and <em>y</em> such that <em>x</em>³ + <em>y</em>³ = <em>z</em>³.</p>
+<h3 id="understanding-the-problem">Understanding the Problem</h3>
+<p>First, let’s list the positive perfect cubes less than 1000. These are:</p>
+<p>1³ = 1
+2³ = 8
+3³ = 27
+4³ = 64
+5³ = 125
+6³ = 216
+7³ = 343
+8³ = 512
+9³ = 729
+10³ = 1000 (which is not included as it is not less than 1000)</p>
+<p>We aim to demonstrate that none of these cubes can be represented as a sum of two other positive integer cubes.</p>
+<h3 id="strategy-proof-by-exhaustion">Strategy: Proof by Exhaustion</h3>
+<p>Our approach will be to test each of the listed perfect cubes, checking if they can be expressed as the sum of two smaller perfect cubes. Since <em>x</em> and <em>y</em> are positive integers, we only need to check values up to the cube root of <em>z</em>³. We can systematically check possible combinations.</p>
+<h3 id="case-analysis">Case Analysis</h3>
+<p><strong>Important note</strong>: We don’t need to consider cases where <em>x</em> = <em>y</em> because we are searching for <em>distinct</em> positive integer solutions. So for the case where x=1, we will not consider y=1 for example.</p>
+<p><strong>Case 1: z³ = 1</strong></p>
+<p>We’re looking for <em>x</em>³ + <em>y</em>³ = 1. Since both <em>x</em> and <em>y</em> must be positive integers, there are no possible combinations that will add to 1.</p>
+<p><strong>Case 2: z³ = 8</strong></p>
+<p>We’re looking for <em>x</em>³ + <em>y</em>³ = 8. The only possibilities are with <em>x</em> and <em>y</em> both less than 2. Therefore, the only value of x or y that is possible is 1. However, 1³ + 1³ = 2 which does not equal 8.</p>
+<p><strong>Case 3: z³ = 27</strong></p>
+<p>We’re looking for <em>x</em>³ + <em>y</em>³ = 27. We can try combinations using only 1 and 2 for <em>x</em> and <em>y</em> (since 3^3 = 27):
+* 1³ + 1³ = 2 (not 27)
+* 1³ + 2³ = 9 (not 27)
+* 2³ + 1³ = 9 (not 27, same as above)
+* 2³ + 2³ = 16 (not 27)</p>
+<p><strong>Case 4: z³ = 64</strong></p>
+<p>We’re looking for <em>x</em>³ + <em>y</em>³ = 64. We can try combinations using only 1, 2, and 3 for <em>x</em> and <em>y</em>.
+* Combinations of 1³ + <em>y</em>³ are too small
+* 2³ + 1³ = 9 (not 64)
+* 2³ + 2³ = 16 (not 64)
+* 2³ + 3³ = 35 (not 64)
+* 3³ + 1³ = 28 (not 64)
+* 3³ + 2³ = 35 (not 64)
+* 3³ + 3³ = 54 (not 64)</p>
+<p><strong>Case 5: z³ = 125</strong></p>
+<p>We’re looking for <em>x</em>³ + <em>y</em>³ = 125. We can try combinations using 1, 2, 3 and 4.
+* Combinations with 1 are too small
+* 2³ + 1³, 2³ + 2³, 2³ + 3³, 2³ + 4³ are all not 125
+* 3³ + 1³, 3³ + 2³, 3³ + 3³, 3³ + 4³ are all not 125
+* 4³ + 1³, 4³ + 2³, 4³ + 3³, 4³ + 4³ are all not 125</p>
+<p><strong>Case 6: z³ = 216</strong></p>
+<p>We’re looking for <em>x</em>³ + <em>y</em>³ = 216. We can try combinations up to 5.
+* Combinations using 1 are too small
+* We already know from previous cases that combinations of x,y &lt;= 4 do not equal the cube being tested.
+* 5³ + 1³ = 126 (not 216)
+* 5³ + 2³ = 133 (not 216)
+* 5³ + 3³ = 152 (not 216)
+* 5³ + 4³ = 189 (not 216)
+* 5³ + 5³ = 250 (not 216)</p>
+<p><strong>Case 7: z³ = 343</strong></p>
+<p>We’re looking for <em>x</em>³ + <em>y</em>³ = 343. We can try combinations up to 6.
+* Combinations using 1 are too small
+* We already know from previous cases that combinations of x,y &lt;= 5 do not equal the cube being tested.
+* 6³ + 1³ = 217 (not 343)
+* 6³ + 2³ = 224 (not 343)
+* 6³ + 3³ = 243 (not 343)
+* 6³ + 4³ = 301 (not 343)
+* 6³ + 5³ = 331 (not 343)
+* 6³ + 6³ = 432 (not 343)</p>
+<p><strong>Case 8: z³ = 512</strong></p>
+<p>We’re looking for <em>x</em>³ + <em>y</em>³ = 512. We can try combinations up to 7.
+* Combinations using 1 are too small
+* We already know from previous cases that combinations of x,y &lt;= 6 do not equal the cube being tested.
+* 7³ + 1³ = 344 (not 512)
+* 7³ + 2³ = 351 (not 512)
+* 7³ + 3³ = 370 (not 512)
+* 7³ + 4³ = 407 (not 512)
+* 7³ + 5³ = 468 (not 512)
+* 7³ + 6³ = 419 (not 512)
+* 7³ + 7³ = 686 (not 512)</p>
+<p><strong>Case 9: z³ = 729</strong></p>
+<p>We’re looking for <em>x</em>³ + <em>y</em>³ = 729. We can try combinations up to 8.
+* Combinations using 1 are too small
+* We already know from previous cases that combinations of x,y &lt;= 7 do not equal the cube being tested.
+* 8³ + 1³ = 513 (not 729)
+* 8³ + 2³ = 520 (not 729)
+* 8³ + 3³ = 547 (not 729)
+* 8³ + 4³ = 576 (not 729)
+* 8³ + 5³ = 631 (not 729)
+* 8³ + 6³ = 704 (not 729)
+* 8³ + 7³ = 643 (not 729)
+* 8³ + 8³ = 1024 (not 729)</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>By systematically checking every perfect cube less than 1000, we have demonstrated that none of them can be expressed as the sum of two positive integer cubes. We tested each case, exhausting all possibilities and confirming that no such representation exists. This exercise showcases a straightforward yet effective approach to proving statements within a limited domain.</p>
+<p>This result is consistent with a special case of Fermat’s Last Theorem for the exponent 3. Specifically, it confirms that there are no positive integer solutions for a³ + b³ = c³ where c &lt; 10. While we didn’t invoke the full theorem here, this specific instance highlights a related and interesting property of perfect cubes.</p>
+<p>This exploration offers a satisfying illustration of how we can approach and solve number theory problems with careful, systematic thinking.</p>
+
+    </main>
+
+    <footer>
+        Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a> 
+        and authored by <a href="https://noprofits.org">No Profits</a> 
+        • <a href="../colophon.html">Colophon</a>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">No Profits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1>Deriving the Inverse of a 2x2 Matrix</h1>
+        <div class="info">
+    Posted on January 22, 2025
+    
+</div>
+
+<p>Today, we’re diving into the world of linear algebra to explore how to find the inverse of a 2x2 matrix. Specifically, we’ll demonstrate the formula for the inverse and prove that it’s correct. The key here is to use matrix notation and perform some basic matrix multiplication.</p>
+<h3 id="understanding-the-problem">Understanding the Problem</h3>
+<p>A matrix, <em>A</em>, has an inverse, <em>A⁻¹</em>, if when multiplied by <em>A</em> in either order (i.e., <em>AA⁻¹</em> or <em>A⁻¹A</em>), the result is the identity matrix, denoted as <em>I</em>. For a 2x2 matrix, the identity matrix is:</p>
+<p><span class="math inline">\(I = \begin{bmatrix} 1 &amp; 0 \\ 0 &amp; 1 \end{bmatrix}\)</span></p>
+<p>We are given a 2x2 matrix <em>A</em>:</p>
+<p><span class="math inline">\(A = \begin{bmatrix} a &amp; b \\ c &amp; d \end{bmatrix}\)</span></p>
+<p>And we are told that if <em>ad - bc ≠ 0</em>, then the inverse of A, denoted as <em>A⁻¹</em>, is:</p>
+<p><span class="math inline">\(A^{-1} = \begin{bmatrix} \frac{d}{ad-bc} &amp; \frac{-b}{ad-bc} \\ \frac{-c}{ad-bc} &amp; \frac{a}{ad-bc} \end{bmatrix}\)</span></p>
+<p>Our goal is to prove that <em>A⁻¹</em> as defined above is indeed the inverse of <em>A</em> by showing that <em>AA⁻¹</em> = <em>I</em>. We will be using the standard matrix multiplication rules.</p>
+<h3 id="proof-of-the-inverse-formula">Proof of the Inverse Formula</h3>
+<p>To prove this, we need to perform the matrix multiplication of <em>A</em> and <em>A⁻¹</em> and show that the resulting matrix is the identity matrix <em>I</em>:</p>
+<p><span class="math inline">\(AA^{-1} = \begin{bmatrix} a &amp; b \\ c &amp; d \end{bmatrix} \begin{bmatrix} \frac{d}{ad-bc} &amp; \frac{-b}{ad-bc} \\ \frac{-c}{ad-bc} &amp; \frac{a}{ad-bc} \end{bmatrix}\)</span></p>
+<p>Performing matrix multiplication, we get:</p>
+<p><span class="math inline">\(AA^{-1} = \begin{bmatrix} a \cdot \frac{d}{ad-bc} + b \cdot \frac{-c}{ad-bc} &amp; a \cdot \frac{-b}{ad-bc} + b \cdot \frac{a}{ad-bc} \\ c \cdot \frac{d}{ad-bc} + d \cdot \frac{-c}{ad-bc} &amp; c \cdot \frac{-b}{ad-bc} + d \cdot \frac{a}{ad-bc} \end{bmatrix}\)</span></p>
+<p>Simplifying each term:</p>
+<p><span class="math inline">\(AA^{-1} = \begin{bmatrix} \frac{ad-bc}{ad-bc} &amp; \frac{-ab+ba}{ad-bc} \\ \frac{cd-dc}{ad-bc} &amp; \frac{-cb+da}{ad-bc} \end{bmatrix}\)</span></p>
+<p>Further simplification yields:</p>
+<p><span class="math inline">\(AA^{-1} = \begin{bmatrix} 1 &amp; 0 \\ 0 &amp; 1 \end{bmatrix}\)</span></p>
+<p>Which is the identity matrix, <em>I</em>.</p>
+<h3 id="the-determinant">The Determinant</h3>
+<p>The quantity <em>ad - bc</em> is known as the <em>determinant</em> of the matrix <em>A</em>. It is often denoted as det(A). The condition that <em>ad - bc ≠ 0</em> is crucial because if the determinant is zero, the matrix has no inverse (division by zero). A matrix with a determinant of zero is called a singular matrix.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>We have successfully demonstrated, by direct matrix multiplication, that:</p>
+<p><span class="math inline">\(AA^{-1} = I\)</span></p>
+<p>when:</p>
+<p><span class="math inline">\(A = \begin{bmatrix} a &amp; b \\ c &amp; d \end{bmatrix}\)</span></p>
+<p>and</p>
+<p><span class="math inline">\(A^{-1} = \begin{bmatrix} \frac{d}{ad-bc} &amp; \frac{-b}{ad-bc} \\ \frac{-c}{ad-bc} &amp; \frac{a}{ad-bc} \end{bmatrix}\)</span></p>
+<p>provided that <em>ad - bc ≠ 0</em>.</p>
+<p>This proof confirms the formula for the inverse of a 2x2 matrix and highlights the importance of the determinant in determining whether a matrix has an inverse. This result is a fundamental concept in linear algebra and finds wide applications in various fields, from computer graphics to solving systems of linear equations.</p>
+
+    </main>
+
+    <footer>
+        Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a> 
+        and authored by <a href="https://noprofits.org">No Profits</a> 
+        • <a href="../colophon.html">Colophon</a>
+    </footer>
+</body>
+
+</html>

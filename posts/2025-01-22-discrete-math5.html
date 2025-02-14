@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">No Profits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1>No Integer Solutions for 2x² + 5y² = 14</h1>
+        <div class="info">
+    Posted on January 22, 2025
+    
+</div>
+
+<p>Today, we’re delving into the realm of Diophantine equations – equations where we’re looking for integer solutions. Specifically, we’ll prove that there are no integer solutions for the equation 2<em>x</em>² + 5<em>y</em>² = 14. This seemingly simple equation reveals interesting constraints on possible solutions when we restrict ourselves to integers.</p>
+<h3 id="understanding-the-problem">Understanding the Problem</h3>
+<p>We’re looking for integer values for <em>x</em> and <em>y</em> that, when substituted into the equation 2<em>x</em>² + 5<em>y</em>² = 14, make the equation true. If we can show that no such integers exist, then we’ve proven our statement.</p>
+<h3 id="proof-by-analyzing-cases-and-remainders">Proof by Analyzing Cases and Remainders</h3>
+<p>We’ll prove this by carefully considering the possible remainders when <em>x</em>² and <em>y</em>² are divided by 5 and 2, respectively, and by examining the sizes of the possible terms in the equation. This may not be the most elegant proof, but it is relatively straightforward to follow.</p>
+<p>Let’s analyze the possible values of 2<em>x</em>² mod 5 and 5<em>y</em>² mod 2.</p>
+<h4 id="analyzing-2x²-mod-5">Analyzing 2<em>x</em>² mod 5</h4>
+<ol type="1">
+<li>The possible remainders when an integer is squared and divided by 5 are 0, 1, and 4. These correspond to 0², 1², 2², 3², and 4² mod 5 being congruent to 0, 1, 4, 4, and 1 respectively. So <em>x</em>² mod 5 can only be 0, 1, or 4.</li>
+<li>Therefore, 2<em>x</em>² mod 5 can only be 0, 2, or 8 mod 5. This is equivalent to 0, 2, or 3 mod 5.</li>
+</ol>
+<h4 id="analyzing-5y²-mod-2">Analyzing 5<em>y</em>² mod 2</h4>
+<ol type="1">
+<li>Any integer y squared is either 0 or 1 when divided by 2. This means that y² mod 2 is either 0 or 1</li>
+<li>Therefore 5<em>y</em>² mod 2 is equal to 5 times 0 mod 2 or 5 times 1 mod 2, meaning it can only equal 0 mod 2 or 5 mod 2. This means it can only be 0 or 1 mod 2.</li>
+</ol>
+<h4 id="analyzing-the-equation-mod-5">Analyzing the Equation Mod 5</h4>
+<p>Let’s rewrite our equation using modular arithmetic (mod 5):</p>
+<p>2<em>x</em>² + 5<em>y</em>² ≡ 14 (mod 5)</p>
+<p>Since 5<em>y</em>² is divisible by 5, it is congruent to 0 mod 5. Also, 14 is congruent to 4 mod 5. Therefore, the equation simplifies to:</p>
+<p>2<em>x</em>² ≡ 4 (mod 5)</p>
+<p>From our previous analysis, we know that 2<em>x</em>² can only be congruent to 0, 2 or 3 mod 5. However, it must be equal to 4 mod 5, and therefore this equation has no solutions for x and y.</p>
+<h4 id="an-alternate-proof">An Alternate Proof</h4>
+<p>We could have instead used the mod 2 test in this way:</p>
+<p>2<em>x</em>² + 5<em>y</em>² ≡ 14 (mod 2)
+2<em>x</em>² + 5<em>y</em>² ≡ 0 (mod 2)
+0 + 1<em>y</em>² ≡ 0 (mod 2)
+y² ≡ 0 (mod 2)</p>
+<p>This implies that y must be an even integer. Let’s represent y = 2<em>k</em>, where k is an integer. Let’s plug this back into the original equation:</p>
+<p>2x² + 5(2k)² = 14
+2x² + 20k² = 14
+x² + 10k² = 7</p>
+<p>We know that k is an integer. Let’s test some integers for k. k=0 is not valid because x² = 7, and this has no integer solutions. k=1, x² = -3, no solutions. k=-1, x² = -3, no solutions. Any other integer value of k will result in x² being a negative integer, which has no solution.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>By exploring the possible remainders (mod 5) we were able to directly show there was no solution for x and y, and by exploring the solution (mod 2) we were able to reach a similar conclusion. The equation 2<em>x</em>² + 5<em>y</em>² = 14 has no integer solutions. This proof illustrates that even with simple-looking equations, number theory can impose strict limitations on the possible values that the variables can take.</p>
+
+    </main>
+
+    <footer>
+        Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a> 
+        and authored by <a href="https://noprofits.org">No Profits</a> 
+        • <a href="../colophon.html">Colophon</a>
+    </footer>
+</body>
+
+</html>

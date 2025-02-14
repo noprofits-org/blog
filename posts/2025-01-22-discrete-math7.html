@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">No Profits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1>Big-O Analysis of an Algorithm Segment</h1>
+        <div class="info">
+    Posted on January 22, 2025
+    
+</div>
+
+<p>Today, we’re stepping into the world of algorithm analysis to determine the time complexity of a specific code segment. We’ll be using Big-O notation to provide an upper bound on the number of operations performed as the input size, <em>n</em>, grows.</p>
+<h3 id="understanding-the-problem">Understanding the Problem</h3>
+<p>We are given a code segment, which is structured as a <code>while</code> loop. Inside the loop, we perform some arithmetic operations. Our task is to estimate the number of additions and multiplications (collectively referred to as “operations”) using Big-O notation. We’re ignoring the comparison step in the while loop, as is conventional. The code segment is:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>i <span class="op">:=</span> <span class="dv">1</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>t <span class="op">:=</span> <span class="dv">0</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>while i <span class="op">&lt;=</span> n</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  t <span class="op">:=</span> t <span class="op">+</span> i</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  i <span class="op">:=</span> <span class="dv">2</span> <span class="op">*</span> i</span></code></pre></div>
+<p>The variable <code>i</code> starts at 1 and is doubled in each iteration, meaning it takes on the values 1, 2, 4, 8, and so on. The variable <code>t</code> accumulates a sum. Our goal is to determine how the number of operations grows as <em>n</em> increases.</p>
+<h3 id="analyzing-the-loop-iterations">Analyzing the Loop Iterations</h3>
+<p>Let’s trace the execution of the loop for a bit to get a handle on the pattern:</p>
+<ul>
+<li><strong>Iteration 1:</strong> <code>i = 1</code>, <code>t = 0 + 1</code>, <code>i</code> becomes 2 (1 addition, 1 multiplication, where multiplication is <code>i:=2*i</code>).</li>
+<li><strong>Iteration 2:</strong> <code>i = 2</code>, <code>t = 1 + 2</code>, <code>i</code> becomes 4 (1 addition, 1 multiplication).</li>
+<li><strong>Iteration 3:</strong> <code>i = 4</code>, <code>t = 3 + 4</code>, <code>i</code> becomes 8 (1 addition, 1 multiplication).</li>
+<li>…</li>
+</ul>
+<p>In general, in the <em>k</em>-th iteration, we have <code>i = 2^(k-1)</code>. The loop continues as long as <em>i</em> ≤ <em>n</em>. So, the loop will continue as long as <em>2^(k-1)</em> ≤ <em>n</em>.</p>
+<h3 id="determining-the-number-of-iterations">Determining the Number of Iterations</h3>
+<p>To find the number of iterations, we want to find the largest value of <em>k</em> such that <em>2^(k-1)</em> ≤ <em>n</em>.
+Taking the base-2 logarithm of both sides, we have:</p>
+<p><em>k</em> - 1 ≤ log₂(n)</p>
+<p><em>k</em> ≤ log₂(n) + 1</p>
+<p>Since <em>k</em> represents the number of iterations, and <em>k</em> must be an integer, the maximum number of iterations is approximately log₂(n) + 1, which is a value that is proportional to log₂(n).</p>
+<h3 id="counting-the-operations">Counting the Operations</h3>
+<p>Within each iteration of the loop, we perform:</p>
+<ul>
+<li>One addition: <code>t := t + i</code></li>
+<li>One multiplication: <code>i := 2 * i</code></li>
+</ul>
+<p>Therefore, the number of operations in a single iteration is 2. Since the number of iterations is proportional to log₂(n), the total number of operations is roughly 2 * log₂(n) + 2.</p>
+<h3 id="big-o-notation">Big-O Notation</h3>
+<p>In Big-O notation, we ignore constant factors and lower-order terms. Thus:</p>
+<p>O(2 log₂(n) + 2) becomes O(log₂(n)).</p>
+<p>Furthermore, the base of a logarithm doesn’t matter in Big-O notation since different bases differ by only a constant factor. Therefore, log₂(n) and log(n) (base 10) or even ln(n) all represent the same time complexity. Therefore we can simply say:</p>
+<p>O(log₂(n)) becomes O(log n)</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>The number of operations performed in this algorithm segment is O(log <em>n</em>). This means that the number of operations grows logarithmically with respect to the input <em>n</em>. This growth rate is relatively slow, indicating that this algorithm is efficient, especially compared to algorithms with linear or quadratic complexity.</p>
+
+    </main>
+
+    <footer>
+        Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a> 
+        and authored by <a href="https://noprofits.org">No Profits</a> 
+        • <a href="../colophon.html">Colophon</a>
+    </footer>
+</body>
+
+</html>
