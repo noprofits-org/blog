@@ -1,326 +1,287 @@
 /* Base styles */
 :root {
     color-scheme: dark;
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #242424;
+    --text-primary: #ffffff;
+    --text-secondary: #ffffff;
+    --accent: #3291ff;
+    --code-bg: #002e0988;
+    --border-color: #2a2a2a;
 }
 
 body {
-    background-color: #000000;
-    color: #ffffff;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.8;
     margin: 0;
-    padding: 0 1rem;
+    padding: 64px;
 }
 
-/* Layout */
+/* Layout improvements */
 .container {
-    max-width: 960px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 48px;
 }
 
-/* Header */
+/* Enhanced Header */
 header {
-    border-bottom: 1px solid #0c0c0c;
-    margin: 0 auto 2rem auto;
+    background-color: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
     padding: 1rem 0;
-    max-width: 960px;
+}
+
+.header-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 48px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .logo a {
-    color: #ffffff;
+    color: var(--text-primary);
     font-size: 1.5rem;
-    font-weight: bold;
+    font-weight: 700;
     text-decoration: none;
+    letter-spacing: -0.02em;
+    margin-left: 8px;
 }
 
 nav {
     display: flex;
-    gap: 1.5rem;
+    gap: 2rem;
+    margin-left: 10px;
 }
 
 nav a {
-    color: #ffffff;
+    color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
+    transition: color 0.2s ease;
+    font-size: 0.95rem;
 }
 
 nav a:hover {
-    color: #3291ff;
+    color: var(--accent);
 }
 
-/* Main content */
-main {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 0 0 2rem 0;
-}
-
-/* Typography */
+/* Typography Improvements */
 h1, h2, h3, h4, h5, h6 {
-    color: #ffffff;
-    line-height: 1.2;
+    color: var(--text-primary);
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    margin: 2.5rem 0 1.5rem 0;
 }
 
-h1 { font-size: 2.5rem; margin-bottom: 1.5rem; }
-h2 { font-size: 2rem; margin: 2rem 0 1rem; }
-h3 { font-size: 1.75rem; margin: 1.75rem 0 0.875rem; }
+h1 { 
+    font-size: 2.5rem; 
+    font-weight: 800;
+}
 
+h2 { 
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+h3 { 
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+/* Enhanced Link Styling */
 a {
-    color: #3291ff;
+    color: var(--accent);
     text-decoration: none;
+    transition: all 0.2s ease;
 }
 
 a:hover {
     text-decoration: underline;
+    opacity: 0.8;
 }
 
-/* Code blocks */
+/* Improved Code Blocks */
 pre, code {
-    background: #002e0988;
-    border-radius: 4px;
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    background: var(--code-bg);
+    border-radius: 6px;
+    font-family: "SF Mono", "Roboto Mono", Consolas, "Liberation Mono", Menlo, monospace;
     font-size: 0.9em;
-    padding: 0.2em 0.4em;
 }
 
 pre {
-    padding: 1em;
+    padding: 1.2em;
     overflow-x: auto;
+    border: 1px solid var(--border-color);
 }
 
-pre code {
-    padding: 0;
-    background: none;
+code {
+    padding: 0.2em 0.4em;
 }
 
-/* Images and diagrams */
-.tikzpicture {
-    display: block;
-    margin: 2rem auto;
-    max-width: 100%;
-    height: auto;
-    background: #ffffff;
-    padding: 1rem;
-    border-radius: 4px;
-}
-
-/* Footer */
-footer {
-    border-top: 1px solid #333;
-    color: #888;
-    font-size: 0.9rem;
-    margin: 2rem auto 0;
-    max-width: 960px;
-    padding: 1rem 0;
-    text-align: center;
-}
-
-/* Tables */
-table {
-    border-collapse: collapse;
-    margin: 1rem 0;
-    width: 100%;
-}
-
-th, td {
-    border: 1px solid #333;
-    padding: 0.5rem;
-    text-align: left;
-}
-
-th {
-    background: #2d2d2d;
-}
-
-/* Post metadata */
-.post-info {
-    color: #888;
-    font-size: 0.9rem;
-    margin-bottom: 2rem;
-}
-
-/* Tags */
-.tags {
-    list-style: none;
-    padding: 0;
-    margin: 1rem 0;
-}
-
-.tags li {
-    display: inline-block;
-    margin-right: 0.5rem;
-}
-
-.tag {
-    background: #1e1e1e;
-    border-radius: 4px;
-    color: #fff;
-    padding: 0.2em 0.6em;
-    font-size: 0.9em;
-    text-decoration: none;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    body {
-        font-size: 15px;
-    }
-    
-    header {
-        flex-direction: column;
-        text-align: center;
-        gap: 1rem;
-    }
-    
-    nav {
-        justify-content: center;
-    }
-}
-
-/* References */
-.csl-bib-body {
-    margin: 0;
-    padding-left: 0;
-}
-
-.csl-entry {
-    margin-bottom: 1em;
-    display: flex;
-}
-
-.csl-left-margin {
-    min-width: 2em;
-    text-align: right;
-    margin-right: 1em;
-}
-
-.csl-right-inline {
-    margin: 0;
-    padding: 0;
-}
-
-/* RST table styles */
-table.docutils {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 1em 0;
-}
-
-table.docutils td, table.docutils th {
-    padding: 0.5em;
-    border: 1px solid #ddd;
-}
-
-/* RST admonition styles */
-div.note, div.warning {
-    padding: 1em;
-    margin: 1em 0;
-    border-radius: 4px;
-}
-
-div.note {
-    color:#000000;
-    background-color: #e8f4f8;
-    border-left: 4px solid #4a9eca;
-}
-
-div.warning {
-    color:#000000;
-    background-color: #fdf7f7;
-    border-left: 4px solid #d9534f;
-}
-
-/* Code highlighting */
-pre.sourceCode {
-    background: #1e1e1e;
-    padding: 1em;
-    border-radius: 4px;
-    overflow-x: auto;
-}
-
-code.sourceCode {
-    color: #d4d4d4;
-}
-
-/* Python specific syntax highlighting */
-.kw { color: #569cd6; }  /* keywords like class, def */
-.dt { color: #4ec9b0; }  /* types like str, int */
-.co { color: #6a9955; }  /* comments */
-.st { color: #ce9178; }  /* strings */
-.cf { color: #c586c0; }  /* control flow like if, while */
-.op { color: #d4d4d4; }  /* operators */
-.va { color: #9cdcfe; }  /* variables */
-.bu { color: #4ec9b0; }  /* built-ins */
-
-/* Hero section */
-.hero {
-    margin: 2rem 0 4rem 0;
-    text-align: center;
-}
-
-.hero .tagline {
-    font-size: 1.2rem;
-    color: #888;
-    margin-top: 1rem;
-}
-
-/* Topic grid */
+/* Enhanced Topic Grid */
 .topic-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    margin: 2rem 0 4rem 0;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2.5rem 0;
 }
 
 .topic {
+    background: var(--bg-secondary);
+    border-radius: 12px;
     padding: 1.5rem;
-    background: #111;
-    border-radius: 8px;
-    transition: transform 0.2s;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    border: 1px solid var(--border-color);
 }
 
 .topic:hover {
-    transform: translateY(-5px);
-    background: #1a1a1a;
+    transform: translateY(-4px);
+    background: var(--bg-secondary);
 }
 
 .topic h3 {
     margin-top: 0;
-    color: #fff;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .topic p {
-    color: #888;
-    margin-bottom: 0;
+    color: var(--text-secondary);
+    margin: 0.5rem 0 0 0;
+    line-height: 1.6;
 }
 
-/* Recent posts section */
+/* Enhanced Post List */
 .recent-posts {
-    margin: 4rem 0;
+    margin: 3rem 0;
 }
 
-.recent-posts ul {
+.post-list {
     list-style: none;
     padding: 0;
 }
 
-.recent-posts li {
-    padding: 1rem 0;
-    border-bottom: 1px solid #333;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.post-item {
+    padding: 1.2rem;
+    margin: 0.5rem 0;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    transition: transform 0.2s ease;
 }
 
-/* Archive link */
-.archive-link {
+.post-item:hover {
+    transform: translateY(-2px);
+}
+
+.post-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.post-meta {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+/* Math and Chemical Equations */
+.math, .chemical-equation {
+    overflow-x: auto;
+    padding: 1rem 0;
+    font-size: 1.1em;
+}
+
+/* TikZ Diagrams */
+.tikzpicture {
+    display: block;
+    margin: 2.5rem auto;
+    max-width: 100%;
+    height: auto;
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Improved Footer */
+footer {
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 4rem;
+    padding: 2rem 0;
     text-align: center;
-    margin-top: 2rem;
-    font-style: italic;
-    color: #888;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-equation {
+        font-size: 2.1rem;
+        padding: 0 0;
+    }
+    body {
+        font-size: 15px;
+        padding:  0 24px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    nav {
+        justify-content: center;
+        width: 100%;
+        gap: 1.5rem;
+    }
+
+    .container {
+        padding: 0 24px;
+    }
+    
+    .header-content {
+        padding: 0 24px;
+    }
+
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.5rem; }
+}
+
+/* Hero Section Enhancement */
+.hero {
+    text-align: center;
+    padding: 1.2rem 0;
+    background: linear-gradient(to bottom, var(--bg-primary), var(--bg-secondary));
+    
+}
+
+.hero-equation {
+    margin-bottom: 2.5rem;
+    font-size: 2.5rem;
+    opacity: 0.8;
+}
+
+.hero h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+
+/* MathJax specific styling */
+.MathJax {
+    font-size: 1.2em !important;
 }
