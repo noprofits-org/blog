@@ -24,6 +24,7 @@ import Data.Hashable (hash)
 import qualified Network.URI.Encode as URI
 import System.IO.Temp (withSystemTempDirectory)
 import System.Exit (ExitCode(..))
+import Text.Pandoc.Highlighting (pygments)
 
 -------------------------------------------------------------------------------
 main :: IO ()
@@ -169,12 +170,16 @@ bibtexMathCompiler cslFileName bibFileName = do
                          , Ext_latex_macros
                          , Ext_raw_tex
                          , Ext_raw_html
+                         , Ext_fenced_code_blocks        -- Add these
+                         , Ext_backtick_code_blocks      -- code block
+                         , Ext_fenced_code_attributes 
                          ]
         defaultExtensions = writerExtensions defaultHakyllWriterOptions
         newExtensions = foldr enableExtension defaultExtensions mathExtensions
         writerOptions = defaultHakyllWriterOptions
             { writerExtensions = newExtensions
             , writerHTMLMathMethod = MathJax ""
+            , writerHighlightStyle = Just pygments  -- Add this line
             }
         readerOptions = defaultHakyllReaderOptions
             { readerExtensions = enableExtension Ext_raw_html $
