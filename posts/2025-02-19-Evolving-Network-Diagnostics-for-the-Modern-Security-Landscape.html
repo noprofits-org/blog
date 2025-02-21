@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">NoProfits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <div class="info">
+    <h3>Network Path Analysis - Evolving Network Diagnostics for the Modern Security Landscape</h3>
+    Posted on February 19, 2025
+    
+</div>
+
+<h2 id="abstract">Abstract</h2>
+<h2 id="introduction">Introduction</h2>
+<p>In today’s networks, security isn’t just an added feature; it’s the foundational architecture. Modern networks are increasingly hardened, employing sophisticated firewalls, intrusion detection systems, and traffic filtering policies. While essential for protecting against threats, these security measures significantly impact the effectiveness of traditional network diagnostic tools like <code>ping</code>, <code>traceroute</code>, and even basic DNS queries using tools like <code>dig</code>. These classic utilities, which heavily rely on the Internet Control Message Protocol (ICMP) and simple UDP probes, often find themselves blocked or rate-limited in security-conscious environments, leaving network administrators and security professionals with a diminished ability to diagnose and troubleshoot effectively.</p>
+<p>This blog post modernizes our approach to network diagnostics by introducing a suite of advanced tools designed to navigate the challenges of security-hardened networks. We move beyond the limitations of ICMP-centric utilities and embrace tools that leverage TCP, UDP, and application-layer protocols to gain deeper insights into network behavior. This updated methodology not only ensures continued diagnostic capability but also provides a more accurate representation of network performance as experienced by modern applications and users.</p>
+<p>In this experiment, we will explore kdig for advanced DNS analysis, hping3 for flexible connectivity and latency testing, tcptraceroute for path discovery through firewalls, and nping for comprehensive network probing and analysis. These tools represent a significant evolution in network diagnostics, offering robust capabilities for understanding network behavior in the face of modern security implementations. By mastering these techniques, network professionals can regain visibility and control, ensuring network reliability and performance even in the most rigorously secured environments.</p>
+<h3 id="key-concepts-and-definitions">Key Concepts and Definitions:</h3>
+<h3 id="network-diagnostic-tools">Network Diagnostic Tools</h3>
+<h3 id="objectives">Objectives</h3>
+<h2 id="experimental">Experimental</h2>
+<p>Using a 2.6 GHz 6-Core Intel Core i7 MacBook Pro with 16 GB 2667 MHz DDR4 RAM running macOS Sequoia 15.3.1 and built in Wi-Fi run following terminal commands. All commands are non-intrusive network diagnostics. Some commands require administrator privileges (sudo). Rate limiting is built into tools to prevent network flooding. All targets are public services designed to handle routine diagnostics.</p>
+<ol type="1">
+<li>Advanced DNS Resolution Analysis with kdig:</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic A record lookup and query timing</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kdig</span> +stats level3.net</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Explore CNAME chain resolution</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kdig</span> +trace aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># DNSSEC validation check</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kdig</span> +dnssec aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Query specific record types (e.g., MX records for email servers)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kdig</span> MX gmail.com</span></code></pre></div>
+<ol start="2" type="1">
+<li>Flexible Connectivity and Latency Testing with hping3:</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP SYN ping to port 80 (HTTP)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> hping3 <span class="at">-S</span> <span class="at">-p</span> 80 <span class="at">-c</span> 5 aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP SYN ping to port 443 (HTTPS) with smaller packet size (testing a possible MTU effect in TCP)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> hping3 <span class="at">-S</span> <span class="at">-p</span> 443 <span class="at">-c</span> 5 <span class="at">-d</span> 1400 aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># UDP ping (for comparison, even if often filtered, might reveal something)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> hping3 <span class="at">-2</span> <span class="at">-c</span> 5 aws.amazon.com</span></code></pre></div>
+<ol start="3" type="1">
+<li>Firewall-Penetrating Path Analysis with tcptraceroute:</li>
+</ol>
+<div class="sourceCode" id="cb8"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP traceroute to port 80</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> tcptraceroute <span class="at">-n</span> <span class="at">-p</span> 80 aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP traceroute to port 443</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> tcptraceroute <span class="at">-n</span> <span class="at">-p</span> 443 aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare with standard traceroute (for reference and to highlight differences)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="ex">traceroute</span> <span class="at">-n</span> aws.amazon.com</span></code></pre></div>
+<ol start="4" type="1">
+<li>Comprehensive Network Probing with nping:</li>
+</ol>
+<div class="sourceCode" id="cb11"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP SYN scan and timing to port 80</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nping <span class="at">--tcp-syn</span> <span class="at">-p</span> 80 <span class="at">--count</span> 5 <span class="at">--delay</span> 100ms aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># UDP probe and timing</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nping <span class="at">--udp</span> <span class="at">-p</span> 53 <span class="at">--count</span> 5 <span class="at">--delay</span> 100ms aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ICMP probe and timing (for comparison)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nping <span class="at">--icmp</span> <span class="at">--ping</span> <span class="at">--count</span> 5 <span class="at">--delay</span> 100ms aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP Traceroute-like path discovery with nping (using TCP SYN)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nping <span class="at">--tcp-syn</span> <span class="at">--traceroute</span> <span class="at">-p</span> 80 aws.amazon.com</span></code></pre></div>
+<h2 id="results">Results</h2>
+<h2 id="discussion">Discussion</h2>
+<h3 id="conclusion">Conclusion</h3>
+<h3 id="references">References</h3>
+
+    </main>
+
+    <footer>
+        Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a> 
+        and authored by <a href="https://noprofits.org">No Profits</a> 
+        • <a href="../colophon.html">Colophon</a>
+    </footer>
+</body>
+
+</html>
