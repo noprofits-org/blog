@@ -3,7 +3,7 @@ window.MathJax = {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
         displayMath: [['$$', '$$'], ['\\[', '\\]']],
         processEscapes: true,
-        packages: ['base', 'ams', 'noerrors', 'noundefined', '[tex]/mhchem'],
+        packages: {'[+]': ['base', 'ams', 'noerrors', 'noundefined', '[tex]/mhchem']},
         tags: 'ams'
     },
     options: {
@@ -12,8 +12,5 @@ window.MathJax = {
     },
     loader: {
         load: ['[tex]/mhchem']
-    },
-    mhchem: {
-        legacy: false
     }
 };

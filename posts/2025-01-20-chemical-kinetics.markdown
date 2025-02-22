@@ -6,11 +6,11 @@ tags: chemistry, mathematics
 
 The decomposition of hydrogen peroxide (H₂O₂) into water and oxygen is a classic example of first-order kinetics:
 
-$\ce{2H2O2 -> 2H2O + O2}$
+$$\ce{2H2O2 -> 2H2O + O2}$$
 
 The rate of decomposition follows first-order kinetics, which means:
 
-$\frac{d[H_2O_2]}{dt} = -k[H_2O_2]$
+$$\frac{d[H_2O_2]}{dt} = -k[H_2O_2]$$
 
 where:
 - $[H_2O_2]$ is the concentration of hydrogen peroxide in $\text{mol}\cdot\text{L}^{-1}$
@@ -19,7 +19,7 @@ where:
 
 The integrated rate law gives us:
 
-$[H_2O_2]_t = [H_2O_2]_0 e^{-kt}$
+$$[H_2O_2]_t = [H_2O_2]_0 e^{-kt}$$
 
 When we plot $\ln([H_2O_2]_t/[H_2O_2]_0)$ versus time, we get a straight line with slope $-k$:
 
@@ -57,6 +57,8 @@ We can visualize this data with a plot:
 
 ```tikzpicture
 \begin{axis}[
+    width= 14cm,
+    height=10cm,
     xlabel={Time (hours)},
     ylabel={$\ln\left(\frac{[\ce{H2O2}]_t}{[\ce{H2O2}]_0}\right)$},
     title={First-Order Kinetics of \ce{H2O2} Decomposition},
@@ -74,9 +76,9 @@ We can visualize this data with a plot:
         fill opacity=0.8
     },
     tick style={color=black},
-    every axis label/.style={font=\small},
-    every tick label/.style={font=\small},
-    title style={font=\small\bfseries},
+    every axis label/.style={font=\Large},
+    every tick label/.style={font=\Large},
+    title style={font=\Large\bfseries},
     scaled ticks=false
 ]
 

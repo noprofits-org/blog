@@ -223,7 +223,13 @@ code {
     background: #ffffff;
     padding: 1.5rem;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 6px 4px 6px rgb(104, 104, 104);
+}
+
+.tikzpicture img {
+    width: 100%;
+    height: auto;
+    display: block; /* Remove any extra space below the image */
 }
 
 /* Improved Footer */

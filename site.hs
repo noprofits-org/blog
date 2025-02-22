@@ -100,8 +100,9 @@ tikzFilter cb@(CodeBlock (id, classes, namevals) contents)
     | "tikzpicture" `elem` classes = do
         svg <- unsafeCompiler $ tikzToSvg (T.unpack contents)
         let dataUri = "data:image/svg+xml;utf8," ++ URI.encode (filter (/= '\n') svg)
-            imgAttrs = (id, "tikzpicture":classes, namevals)
-        return $ Para [Image imgAttrs [] (T.pack dataUri, T.empty)]
+            divAttrs = (id, "tikzpicture":classes, namevals)
+            imgElement = RawBlock (Format "html") $ T.pack $ "<img src=\"" <> dataUri <> "\" alt=\"TikZ Plot\" style=\"width: 100%; height: auto;\">"
+        return $ Div divAttrs [imgElement]
 tikzFilter block = return block
 
 -- | Convert TikZ to SVG using temporary files
