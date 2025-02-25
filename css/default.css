@@ -64,7 +64,6 @@ header {
 nav {
     display: flex;
     gap: 2rem;
-    margin-right: 10px;
     float: right;
 }
 
@@ -211,23 +210,24 @@ code {
 .math, .chemical-equation {
     overflow-x: auto;
     padding: 1rem 0;
-    font-size: 1.1em;
+    font-size: 1em;
 }
 
 /* TikZ Diagrams */
 .tikzpicture {
     display: block;
     margin: 2.5rem auto;
-    max-width: 100%;
+    max-width: 75%;
     height: auto;
     background: #ffffff;
     padding: 1.5rem;
     border-radius: 8px;
-    box-shadow: 6px 4px 6px rgb(104, 104, 104);
+    border: 1px solid black;
+
 }
 
 .tikzpicture img {
-    width: 100%;
+    width: 75%;
     height: auto;
     display: block; /* Remove any extra space below the image */
 }
@@ -244,6 +244,52 @@ footer {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    /* Alternative: Card layout for better readability on small screens */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    tr {
+        margin: 10px 0;
+        border: 1px solid #ddd;
+        background-color: #000000;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        border-radius: 5px;
+    }
+
+    td {
+        border: none;
+        padding: 10px;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    td:before {
+        content: attr(data-label);
+        margin-right: 10px;
+        min-width: 120px;
+        color: #ffffff;
+    }
+
+    /* Add data-label attributes to table cells in your HTML */
+    table td {
+        data-label: "Target", "Query Type", "Resolution", "Query Time / ms", "Response Size / bytes", "DNS Server";
+        /* Adjust for each column in your tables */
+    }
+
     .hero-equation {
         font-size: 0.2rem;
         padding: 0 0;
@@ -417,4 +463,219 @@ tr:hover {
 
 .csl-right-inline {
     flex: 1;
+}
+
+/* PDF Download Button Styling */
+.pdf-download {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.pdf-button {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid white;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.pdf-button:hover {
+    background-color: #0070f3;
+    text-decoration: none;
+}
+
+.pdf-icon {
+    margin-right: 8px;
+}
+
+/* Print-friendly styles */
+
+@media print {
+    /* Basic page setup */
+    body {
+        background-color: white !important;
+        color: black !important;
+        font-family: "Times New Roman", Times, serif !important;
+        font-size: 12pt !important;
+        line-height: 1.5 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    
+    /* Layout improvements */
+    .container, main {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Typography for academic style */
+    h1, h2, h3, h4, h5, h6 {
+        color: black !important;
+        font-family: "Times New Roman", Times, serif !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+        margin-top: 1em !important;
+    }
+    
+    h1 { font-size: 18pt !important; }
+    h2 { font-size: 16pt !important; }
+    h3 { font-size: 14pt !important; }
+    
+    p, li {
+        color: black !important;
+        orphans: 3 !important;
+        widows: 3 !important;
+    }
+    
+    /* Hide non-essential elements */
+    header, footer, nav, .pdf-download, 
+    button, .copy-button, .print-pdf-button {
+        display: none !important;
+    }
+    
+    /* Code blocks */
+    pre, code {
+        font-family: "Courier New", Courier, monospace !important;
+        font-size: 10pt !important;
+        background: white !important;
+        border: 1px solid #ddd !important;
+        color: black !important;
+        white-space: pre-wrap !important;
+    }
+    
+    /* Tables - clean formatting with minimal borders */
+    @media print {
+        /* Force tables to display properly in print mode */
+        table, table.any-class, table[any-attribute] {
+            display: table !important;
+            width: 100% !important;
+            border-collapse: collapse !important;
+            background-color: transparent !important;
+            color: black !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+        
+        thead, tbody, tfoot {
+            display: table-row-group !important;
+        }
+        
+        tr, tr:nth-child(even), tr:hover {
+            display: table-row !important;
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            margin: 0 !important;
+        }
+        
+        th, td, th:first-child, td:first-child, th:last-child, td:last-child {
+            display: table-cell !important;
+            border-bottom: 1px solid #ddd !important;
+            border-top: 0 !important;
+            border-left: 0 !important;
+            border-right: 0 !important;
+            padding: 8px !important;
+            text-align: left !important;
+            color: black !important;
+            background-color: white !important;
+            position: static !important;
+            float: none !important;
+            min-width: 0 !important;
+        }
+        
+        th, th:first-child, th:last-child {
+            font-weight: bold !important;
+            border-bottom: 2px solid #888 !important;
+        }
+        
+        /* Remove any pseudo-elements used for responsive tables */
+        td:before, td:after, th:before, th:after {
+            content: none !important;
+            display: none !important;
+        }
+    }
+    
+    /* Links - show URLs */
+    a {
+        color: black !important;
+        text-decoration: none !important;
+        word-wrap: break-word !important;
+    }
+    
+    a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 90%;
+    }
+    
+    /* Page breaks */
+    img, figure, .tikzpicture {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        max-width: 75% !important;
+        height: auto !important;
+    }
+    
+    /* Title formatting - aligned left with content flowing after it */
+    .info {
+        text-align: left !important;
+        margin-bottom: 1em !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+    
+    .info h3 {
+        font-size: 18pt !important;
+        margin-bottom: 0.5em !important;
+    }
+    
+    /* Math and chemistry equations - ensure they render well */
+    .math, .MathJax {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    
+    /* Citations */
+    .csl-entry {
+        text-indent: -1.5em !important;
+        margin-left: 1.5em !important;
+    }
+    
+    /* Page margins */
+    @page {
+        margin: 2cm !important;
+    }
+}
+
+/* Print button styling */
+.print-pdf-button {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.print-button {
+    display: inline-flex;
+    align-items: center;
+    background-color: black;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    border: 1px solid white;
+    cursor: pointer;
+}
+
+.print-button:hover {
+    background-color: #333333;
+}
+
+.print-icon {
+    margin-right: 8px;
 }

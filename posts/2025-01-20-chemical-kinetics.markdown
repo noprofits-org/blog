@@ -57,8 +57,8 @@ We can visualize this data with a plot:
 
 ```tikzpicture
 \begin{axis}[
-    width= 14cm,
-    height=10cm,
+    width= 10cm,
+    height=8cm,
     xlabel={Time (hours)},
     ylabel={$\ln\left(\frac{[\ce{H2O2}]_t}{[\ce{H2O2}]_0}\right)$},
     title={First-Order Kinetics of \ce{H2O2} Decomposition},
