@@ -19,11 +19,11 @@ In this experiment, we will explore `kdig` for advanced DNS analysis, `nping` fo
 
 ### Key Concepts and Definitions:
 
-The Internet Control Message Protocol (ICMP) enables network devices to exchange diagnostic information, critical for tools like `ping` and `traceroute` but often filtered in security-hardened networks`[@rfc792]`. Domain Name System Security Extensions (DNSSEC) ensure DNS query integrity, supported by `kdig` for secure resolution. Time To Live (TTL) limits packet circulation, aiding path analysis, while Maximum Transmission Unit (MTU) defines packet size limits, impacting performance`[@stevens1994tcpip]`.
+The Internet Control Message Protocol (ICMP) enables network devices to exchange diagnostic information, critical for tools like `ping` and `traceroute` but often filtered in security-hardened networks[@rfc792]. Domain Name System Security Extensions (DNSSEC) ensure DNS query integrity, supported by `kdig` for secure resolution. Time To Live (TTL) limits packet circulation, aiding path analysis, while Maximum Transmission Unit (MTU) defines packet size limits, impacting performance[@stevens1994tcpip].
 
 ### Network Diagnostic Tools
 
-`kdig`, from Knot DNS, offers advanced DNS querying with DNSSEC support, surpassing `dig` in security-focused environments`[@KnotDNS]`. `nping`, part of Nmap, crafts TCP, UDP, and ICMP packets for flexible testing, bypassing ICMP restrictions.[@NmapNping] `tcptraceroute` uses TCP to trace paths through firewalls, complementing ICMP-based `traceroute`, which relies on ICMP.[@Jac88]
+`kdig`, from Knot DNS, offers advanced DNS querying with DNSSEC support, surpassing `dig` in security-focused environments[@KnotDNS]. `nping`, part of Nmap, crafts TCP, UDP, and ICMP packets for flexible testing, bypassing ICMP restrictions.[@NmapNping] `tcptraceroute` uses TCP to trace paths through firewalls, complementing ICMP-based `traceroute`, which relies on ICMP.[@Jac88]
 
 ### Notes on Execution
 Run each command multiple times (e.g., 3 runs) to account for network variability and collect average results. Record outputs, including errors or timeouts, as they indicate filtering or security policies. For example, packet loss in UDP/ICMP tests suggests potential filtering by firewalls or ISPs. If a target blocks a specific port or protocol, try an alternative (e.g., google.com or cloudflare.com instead of aws.amazon.com).
