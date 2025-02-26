@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">NoProfits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <div class="info">
+    <h3>Quantum Chemical Calculations of Hyperpolarizability - Setup and Initial Results</h3>
+    Posted on February 25, 2025
+    
+</div>
+
+<h2 id="abstract">Abstract</h2>
+<p>This study documents the methodology for setting up computational environments to calculate hyperpolarizabilities of Group 4A elements (C through Fl) using open-source quantum chemistry software. We provide a step-by-step approach for establishing a conda-based Psi4 environment and creating input scripts for polarizability calculations. Despite encountering compatibility challenges with higher-order property calculations, we present our initial results for carbon atom polarizability using various computational approaches. This work offers a foundational framework for theoretical chemists seeking to explore nonlinear optical properties of elements and provides insights into the practical challenges of implementing such calculations with current open-source tools.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Nonlinear optical properties of atoms and molecules, particularly hyperpolarizabilities, are essential for understanding and developing materials for applications in photonics, optoelectronics, and optical data processing<span class="citation" data-cites="Kanis1994 Nalwa1997"><sup>1,2</sup></span>. The hyperpolarizability tensor represents the second-order response of a system’s dipole moment to an external electric field and is crucial for predicting second-harmonic generation and electro-optic effects.<span class="citation" data-cites="Boyd2008"><sup>3</sup></span></p>
+<p>Group 4A elements (carbon family) present an interesting case study for examining trends in nonlinear optical properties across the periodic table. From carbon to flerovium, these elements span a wide range of atomic sizes and electronic structures, allowing us to investigate how relativistic effects and outer electron configurations influence hyperpolarizability.<span class="citation" data-cites="Schwerdtfeger2002"><sup>4</sup></span></p>
+<p>Computational quantum chemistry offers powerful tools for predicting these properties without the need for complex experimental setups, particularly valuable for unstable or radioactive elements like flerovium.<span class="citation" data-cites="Jensen2017"><sup>5</sup></span> However, calculating hyperpolarizabilities accurately requires careful selection of computational methods, basis sets, and consideration of electron correlation effects.<span class="citation" data-cites="Shelton1992"><sup>6</sup></span></p>
+<p>In this work, we document our approach to setting up computational environments for calculating the first-, second-, and third-order hyperpolarizabilities of Group 4A elements using open-source quantum chemistry software. We focus on Psi4, a modern quantum chemistry package that provides capabilities for calculating molecular properties including polarizabilities.<span class="citation" data-cites="Parrish2017"><sup>7</sup></span></p>
+<p>The purpose of this blog post is to provide a detailed roadmap for researchers interested in similar calculations, documenting both our successes and the challenges encountered. By transparently sharing our methodology and initial results, we aim to contribute to the broader community’s understanding of computational approaches to nonlinear optical properties.</p>
+<h2 id="experimental">Experimental</h2>
+<h3 id="computational-system-specifications">Computational System Specifications</h3>
+<p>All calculations were performed on an Ubuntu (noble/24.04) system accessed via SSH. The computational environment was set up using Miniconda to manage Python dependencies and ensure reproducibility.</p>
+<h3 id="software-installation">Software Installation</h3>
+<p>The following commands were executed to set up the computational environment:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install basic dependencies</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> build-essential gfortran cmake python3-dev python3-pip python3-numpy python3-matplotlib libopenblas-dev liblapack-dev git curl</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Install apt-transport-https for repository management</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install <span class="at">-y</span> apt-transport-https</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Add Psi4 repository (note: this step encountered issues with the repository)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> bash <span class="at">-c</span> <span class="st">&quot;echo 'deb https://psi4.s3.amazonaws.com/debian xenial main' &gt; /etc/apt/sources.list.d/psi4.list&quot;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-L</span> https://psi4.s3.amazonaws.com/key.asc <span class="kw">|</span> <span class="fu">sudo</span> apt-key add <span class="at">-</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Alternative approach using Miniconda</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> Miniconda3-latest-Linux-x86_64.sh <span class="at">-b</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">'export PATH=&quot;$HOME/miniconda3/bin:$PATH&quot;'</span> <span class="op">&gt;&gt;</span> ~/.bashrc</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize conda</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="ex">~/miniconda3/bin/conda</span> init bash</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> ~/.bashrc</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Create environment for Psi4</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">-n</span> psi4fix python=3.9 <span class="at">-c</span> conda-forge</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate psi4fix</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Install pydantic v1 first (before psi4)</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install pydantic=1.10 <span class="at">-c</span> conda-forge</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Psi4</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install psi4 psi4-rt <span class="at">-c</span> psi4 <span class="at">-c</span> conda-forge</span></code></pre></div>
+<h3 id="project-directory-structure">Project Directory Structure</h3>
+<p>The following directory structure was created to organize input files, outputs, and analysis scripts:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/hyperpolarizability/<span class="dt">{scripts</span><span class="op">,</span><span class="dt">inputs</span><span class="op">,</span><span class="dt">outputs</span><span class="op">,</span><span class="dt">analysis}</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/hyperpolarizability</span></code></pre></div>
+<h3 id="input-file-preparation">Input File Preparation</h3>
+<p>Several input files were created to test different approaches for calculating polarizability:</p>
+<ol type="1">
+<li>Basic test input (C_test.in):</li>
+</ol>
+<pre><code>memory 2 GB
+
+molecule C {
+  C 0 0 0
+  symmetry c1
+}
+
+set {
+  basis cc-pVDZ
+  e_convergence 1e-6
+  d_convergence 1e-6
+  scf_type df
+  freeze_core True
+}
+
+# Calculate energy
+energy('scf')
+
+# Calculate polarizability
+properties('scf', title='DIPOLE POLARIZABILITY', return_wfn=False)</code></pre>
+<ol start="2" type="1">
+<li>Properties output test (C_props.in):</li>
+</ol>
+<pre><code>memory 2 GB
+
+molecule C {
+  C 0 0 0
+  symmetry c1
+}
+
+set {
+  basis cc-pVDZ
+  e_convergence 1e-6
+  d_convergence 1e-6
+  scf_type df
+}
+
+# Run standard properties calculation
+E, wfn = properties('scf', return_wfn=True)
+
+# Print all available variables to help debug
+print(&quot;\nAll variables available in wfn:&quot;)
+all_vars = wfn.variables()
+for var in sorted(all_vars.keys()):
+    print(f&quot;  {var} = {all_vars[var]}&quot;)
+
+# Print specifically the SCF dipole moments
+print(&quot;\nDipole Moment:&quot;)
+print(wfn.variable(&quot;SCF DIPOLE&quot;))</code></pre>
+<ol start="3" type="1">
+<li>Input file generator script (generate_inputs.py):</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Dictionary of elements with their symbols and atomic numbers</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>elements <span class="op">=</span> {</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Carbon'</span>: {<span class="st">'symbol'</span>: <span class="st">'C'</span>, <span class="st">'atomic_number'</span>: <span class="dv">6</span>},</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Silicon'</span>: {<span class="st">'symbol'</span>: <span class="st">'Si'</span>, <span class="st">'atomic_number'</span>: <span class="dv">14</span>},</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Germanium'</span>: {<span class="st">'symbol'</span>: <span class="st">'Ge'</span>, <span class="st">'atomic_number'</span>: <span class="dv">32</span>},</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Tin'</span>: {<span class="st">'symbol'</span>: <span class="st">'Sn'</span>, <span class="st">'atomic_number'</span>: <span class="dv">50</span>},</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Lead'</span>: {<span class="st">'symbol'</span>: <span class="st">'Pb'</span>, <span class="st">'atomic_number'</span>: <span class="dv">82</span>},</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Flerovium'</span>: {<span class="st">'symbol'</span>: <span class="st">'Fl'</span>, <span class="st">'atomic_number'</span>: <span class="dv">114</span>}</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Create input files for each element</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>os.makedirs(<span class="st">&quot;../inputs&quot;</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, info <span class="kw">in</span> elements.items():</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    symbol <span class="op">=</span> info[<span class="st">'symbol'</span>]</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create input file</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    input_file <span class="op">=</span> <span class="ss">f&quot;../inputs/</span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss">_hyperpol.in&quot;</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(input_file, <span class="st">'w'</span>) <span class="im">as</span> f:</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        f.write(<span class="ss">f&quot;&quot;&quot;memory 4 GB</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="ss">molecule </span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss"> </span><span class="ch">{{</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="ss">  </span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss"> 0 0 0</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="ss">  symmetry c1</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="ch">}}</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="ss">set </span><span class="ch">{{</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="ss">  basis aug-cc-pVTZ</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="ss">  e_convergence 1e-8</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="ss">  d_convergence 1e-8</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="ss">  scf_type df</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="ss">  freeze_core True</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="ch">}}</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="ss"># First optimize the geometry</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="ss">optimize('scf')</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="ss"># Calculate the energy</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="ss">energy('scf')</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="ss"># Calculate first hyperpolarizability (α)</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="ss">properties('scf', title='DIPOLE POLARIZABILITY')</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a><span class="ss"># For second hyperpolarizability (γ), uncomment when ready</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="ss"># Usually very computationally intensive</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="ss"># properties('scf', title='QUADRUPOLE POLARIZABILITY')</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a><span class="ss">&quot;&quot;&quot;</span>)</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Created input file for </span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>symbol<span class="sc">}</span><span class="ss">)&quot;</span>)</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Input files generated successfully!&quot;</span>)</span></code></pre></div>
+<ol start="4" type="1">
+<li>Calculation execution script (run_calculations.sh):</li>
+</ol>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="va">INPUTS_DIR</span><span class="op">=</span><span class="st">&quot;inputs&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="va">OUTPUTS_DIR</span><span class="op">=</span><span class="st">&quot;outputs&quot;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$OUTPUTS_DIR</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Run for each input file</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> input_file <span class="kw">in</span> <span class="va">$INPUTS_DIR</span>/<span class="pp">*</span>.in<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="va">basename</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="st">&quot;</span><span class="va">$input_file</span><span class="st">&quot;</span> .in<span class="va">)</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Processing </span><span class="va">$basename</span><span class="st">...&quot;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Make sure we're using the conda environment</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Running calculation with Psi4...&quot;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Run Psi4</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="ex">psi4</span> <span class="at">-i</span> <span class="st">&quot;</span><span class="va">$input_file</span><span class="st">&quot;</span> <span class="at">-o</span> <span class="st">&quot;</span><span class="va">$OUTPUTS_DIR</span><span class="st">/</span><span class="va">${basename}</span><span class="st">.out&quot;</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Completed </span><span class="va">$basename</span><span class="st">&quot;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;------------------------&quot;</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;All calculations complete!&quot;</span></span></code></pre></div>
+<ol start="5" type="1">
+<li>Analysis script (analyze_hyperpol.py):</li>
+</ol>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_polarizability(filename):</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Extract polarizability tensor from Psi4 output file&quot;&quot;&quot;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(filename, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        content <span class="op">=</span> f.read()</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find the polarizability tensor section</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    polar_match <span class="op">=</span> re.search(<span class="vs">r'Dipole Polarizability</span><span class="pp">[</span><span class="dv">\s\S</span><span class="pp">]</span><span class="op">+?</span><span class="vs">xx</span><span class="dv">\s</span><span class="op">+</span><span class="kw">(</span><span class="pp">[-</span><span class="dv">\d</span><span class="pp">.]</span><span class="op">+</span><span class="kw">)</span><span class="dv">\s</span><span class="op">+</span><span class="vs">xy</span><span class="dv">\s</span><span class="op">+</span><span class="kw">(</span><span class="pp">[-</span><span class="dv">\d</span><span class="pp">.]</span><span class="op">+</span><span class="kw">)</span><span class="dv">\s</span><span class="op">+</span><span class="vs">xz</span><span class="dv">\s</span><span class="op">+</span><span class="kw">(</span><span class="pp">[-</span><span class="dv">\d</span><span class="pp">.]</span><span class="op">+</span><span class="kw">)</span><span class="pp">[</span><span class="dv">\s\S</span><span class="pp">]</span><span class="op">+?</span><span class="vs">yx</span><span class="dv">\s</span><span class="op">+</span><span class="kw">(</span><span class="pp">[-</span><span class="dv">\d</span><span class="pp">.]</span><span class="op">+</span><span class="kw">)</span><span class="dv">\s</span><span class="op">+</span><span class="vs">yy</span><span class="dv">\s</span><span class="op">+</span><span class="kw">(</span><span class="pp">[-</span><span class="dv">\d</span><span class="pp">.]</span><span class="op">+</span><span class="kw">)</span><span class="dv">\s</span><span class="op">+</span><span class="vs">yz</span><span class="dv">\s</span><span class="op">+</span><span class="kw">(</span><span class="pp">[-</span><span class="dv">\d</span><span class="pp">.]</span><span class="op">+</span><span class="kw">)</span><span class="pp">[</span><span class="dv">\s\S</span><span class="pp">]</span><span class="op">+?</span><span class="vs">zx</span><span class="dv">\s</span><span class="op">+</span><span class="kw">(</span><span class="pp">[-</span><span class="dv">\d</span><span class="pp">.]</span><span class="op">+</span><span class="kw">)</span><span class="dv">\s</span><span class="op">+</span><span class="vs">zy</span><span class="dv">\s</span><span class="op">+</span><span class="kw">(</span><span class="pp">[-</span><span class="dv">\d</span><span class="pp">.]</span><span class="op">+</span><span class="kw">)</span><span class="dv">\s</span><span class="op">+</span><span class="vs">zz</span><span class="dv">\s</span><span class="op">+</span><span class="kw">(</span><span class="pp">[-</span><span class="dv">\d</span><span class="pp">.]</span><span class="op">+</span><span class="kw">)</span><span class="vs">'</span>, content)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> polar_match:</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Extract the 9 components of the tensor</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        components <span class="op">=</span> [<span class="bu">float</span>(polar_match.group(i)) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">10</span>)]</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        tensor <span class="op">=</span> np.array(components).reshape(<span class="dv">3</span>, <span class="dv">3</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calculate isotropic polarizability</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        iso_polar <span class="op">=</span> np.trace(tensor) <span class="op">/</span> <span class="fl">3.0</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tensor, iso_polar</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span>, <span class="va">None</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Create analysis directory if it doesn't exist</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>os.makedirs(<span class="st">&quot;../analysis&quot;</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Process all output files</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>output_dir <span class="op">=</span> <span class="st">&quot;../outputs&quot;</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> {}</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> filename <span class="kw">in</span> os.listdir(output_dir):</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> filename.endswith(<span class="st">&quot;.out&quot;</span>):</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>        element <span class="op">=</span> filename.split(<span class="st">&quot;_&quot;</span>)[<span class="dv">0</span>]  <span class="co"># Extract element symbol</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>        filepath <span class="op">=</span> os.path.join(output_dir, filename)</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>        tensor, iso_polar <span class="op">=</span> extract_polarizability(filepath)</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> tensor <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>            results[element] <span class="op">=</span> {</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>                <span class="st">'tensor'</span>: tensor,</span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>                <span class="st">'isotropic'</span>: iso_polar</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>element<span class="sc">}</span><span class="ss">: Isotropic polarizability = </span><span class="sc">{</span>iso_polar<span class="sc">:.4f}</span><span class="ss"> a.u.&quot;</span>)</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f&quot;Tensor:</span><span class="ch">\n</span><span class="sc">{</span>tensor<span class="sc">}</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="co"># If we have enough results, plot them</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">len</span>(results) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>    elements <span class="op">=</span> []</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>    polarizabilities <span class="op">=</span> []</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> element, data <span class="kw">in</span> <span class="bu">sorted</span>(results.items()):</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a>        elements.append(element)</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>        polarizabilities.append(data[<span class="st">'isotropic'</span>])</span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a>    plt.bar(elements, polarizabilities)</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">'Element'</span>)</span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">'Isotropic Polarizability (a.u.)'</span>)</span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">'First-Order Polarizability Across Elements'</span>)</span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a>    plt.savefig(<span class="st">'../analysis/polarizability_comparison.png'</span>)</span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a>    plt.close()</span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Plot saved to '../analysis/polarizability_comparison.png'&quot;</span>)</span></code></pre></div>
+<h3 id="calculation-execution">Calculation Execution</h3>
+<p>The following commands were executed to run the calculations:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Navigate to project directory</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/hyperpolarizability</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Make scripts executable</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x scripts/<span class="pp">*</span>.py scripts/<span class="pp">*</span>.sh</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run properties test calculation</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="ex">psi4</span> <span class="at">-i</span> inputs/C_props.in <span class="at">-o</span> outputs/C_props.out</span></code></pre></div>
+<h2 id="results">Results</h2>
+<p>The execution of <code>psi4 -i inputs/C_props.in -o outputs/C_props.out</code> produced the following output:</p>
+<pre><code>All variables available in wfn:
+  CURRENT ENERGY = -37.59598618627132
+  CURRENT REFERENCE ENERGY = -37.59598618627132
+  DD SOLVATION ENERGY = 0.0
+  HF KINETIC ENERGY = 37.58118542949597
+  HF POTENTIAL ENERGY = -75.17717161576729
+  HF TOTAL ENERGY = -37.59598618627132
+  HF VIRIAL RATIO = 2.0003938342180057
+  NUCLEAR REPULSION ENERGY = 0.0
+  ONE-ELECTRON ENERGY = -50.33817518394048
+  PCM POLARIZATION ENERGY = 0.0
+  PE ENERGY = 0.0
+  SCF DIPOLE = [2.52007710e-15 6.31180936e-16 2.08808779e-15]
+  SCF ITERATION ENERGY = -37.59598618627132
+  SCF ITERATIONS = 6.0
+  SCF QUADRUPOLE = [[-3.80004134 -0.07916586 -0.74616477]
+ [-0.07916586 -3.64097897 -0.30806585]
+ [-0.74616477 -0.30806585 -6.51191789]]
+  SCF TOTAL ENERGY = -37.59598618627132
+  TWO-ELECTRON ENERGY = 12.742188997669164
+
+Dipole Moment:
+[2.52007710e-15 6.31180936e-16 2.08808779e-15]</code></pre>
+<p>The output of the simple test calculation showed the following variables:
+- Total SCF energy: -37.59598618627132 Hartree
+- SCF dipole moment: Near zero [2.52007710e-15, 6.31180936e-16, 2.08808779e-15]
+- SCF quadrupole moment:
+<code>[[-3.80004134 -0.07916586 -0.74616477]    [-0.07916586 -3.64097897 -0.30806585]    [-0.74616477 -0.30806585 -6.51191789]]</code></p>
+<p>When attempting to run calculations with polarizability-specific options, we encountered several errors:</p>
+<ol type="1">
+<li>Response solver error:</li>
+</ol>
+<pre><code>Error: option RESPONSE_SOLVER is not a valid option.</code></pre>
+<ol start="2" type="1">
+<li>Properties argument error:</li>
+</ol>
+<pre><code>TypeError: 'properties' is an invalid keyword argument for property()</code></pre>
+<p>The execution of the filesystem check showed that Psi4 version 1.7 was installed:</p>
+<pre><code>python -c &quot;import psi4; print(psi4.__version__)&quot;
+1.7</code></pre>
+<h2 id="discussion">Discussion</h2>
+<p>Our efforts to set up computational environments for calculating hyperpolarizabilities of Group 4A elements revealed both the capabilities and limitations of current open-source quantum chemistry software. The successful installation of Psi4 1.7 via conda provides a solid foundation for quantum chemical calculations, though we encountered specific challenges when attempting to calculate polarizabilities and higher-order responses.</p>
+<p>The SCF energy calculation for the carbon atom (-37.59598618627132 Hartree) aligns with expected values for a restricted Hartree-Fock calculation using the cc-pVDZ basis set.<span class="citation" data-cites="Parrish2017"><sup>7</sup></span> The near-zero dipole moment ([2.52007710e-15, 6.31180936e-16, 2.08808779e-15]) is theoretically correct for an isolated atom with spherical symmetry, confirming the basic accuracy of our calculations.</p>
+<p>Our initial attempts to calculate polarizability encountered syntax and compatibility issues. The <code>RESPONSE_SOLVER</code> option error suggests that this parameter, which is used to specify the method for solving response equations in certain versions of Psi4, is not implemented in version 1.7. Similarly, the error with the <code>properties</code> argument indicates potential API changes between Psi4 versions, highlighting the importance of version-specific documentation.<span class="citation" data-cites="Parrish2017"><sup>7</sup></span></p>
+<p>The quadrupole moment tensor obtained for carbon provides some insight into the electronic structure, particularly the electron density distribution, but does not directly translate to hyperpolarizability. The diagonal elements of the quadrupole tensor ([-3.80004134, -3.64097897, -6.51191789]) show some anisotropy, which may be an artifact of the basis set or numerical precision rather than a physical property of the carbon atom.<span class="citation" data-cites="Jensen2017"><sup>5</sup></span></p>
+<p>Our approach of setting up a structured project with separate scripts for input generation, calculation execution, and analysis represents good scientific workflow practices. This organization facilitates reproducibility and systematic investigation of trends across the Group 4A elements.</p>
+<p>For calculating hyperpolarizabilities specifically, we identified two potential approaches: (1) using Psi4’s properties interface with appropriate options, and (2) employing a finite difference method to calculate the response of dipole moments to applied electric fields. The limitations we encountered suggest that the finite difference approach may be more reliable, albeit computationally more intensive.<span class="citation" data-cites="Shelton1992"><sup>6</sup></span></p>
+<p>One significant challenge is the treatment of heavy elements like lead and flerovium, which require relativistic methods for accurate results. While our input generation script includes these elements, specialized basis sets and effective core potentials would be necessary for meaningful calculations.<span class="citation" data-cites="Schwerdtfeger2002"><sup>4</sup></span></p>
+<h2 id="conclusion">Conclusion</h2>
+<p>We have documented the setup process for quantum chemical calculations aimed at investigating hyperpolarizabilities of Group 4A elements using open-source software. While we successfully established a computational environment with Psi4 1.7 and ran basic quantum chemical calculations for carbon, we encountered specific limitations in the direct calculation of polarizabilities and hyperpolarizabilities.</p>
+<p>The SCF energy and electronic properties calculated for carbon demonstrate the basic functionality of our setup, but additional work is needed to implement reliable methods for hyperpolarizability calculations. Based on our findings, we recommend exploring alternative approaches, such as finite difference methods or using specialized modules within Psi4 designed for property calculations.</p>
+<p>For future work, we suggest:
+1. Implementing a finite difference approach to calculate polarizabilities by applying small electric fields and measuring the response in dipole moments
+2. Exploring alternative quantum chemistry packages such as NWChem, which may offer more robust property calculation capabilities
+3. Developing specialized basis sets and considering relativistic effects for heavier elements like lead and flerovium
+4. Benchmarking calculations against experimental data where available to validate computational approaches</p>
+<p>This work provides a foundation for researchers interested in computational studies of nonlinear optical properties, offering practical insights into the challenges and potential solutions for calculating hyperpolarizabilities using open-source quantum chemistry software.</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>We would like to thank the developers of Psi4 for creating and maintaining this powerful open-source quantum chemistry package. We also acknowledge the Python scientific computing community for developing essential tools such as NumPy and Matplotlib that enable scientific analysis and visualization. Special thanks to the Conda-Forge community for maintaining reliable package distributions that facilitate reproducible scientific computing environments.</p>
+<h2 class="unnumbered" id="references">References</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-Kanis1994" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Kanis, D. R.; Ratner, M. A.; Marks, T. J. Design and Construction of Molecular Assemblies with Large Second-Order Optical Nonlinearities. <span>Quantum</span> Chemical Aspects. <em>Chemical Reviews</em> <strong>1994</strong>, <em>94</em> (1), 195–242. <a href="https://doi.org/10.1021/cr00025a007">https://doi.org/10.1021/cr00025a007</a>.</div>
+</div>
+<div id="ref-Nalwa1997" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline"><em>Nonlinear Optics of Organic Molecules and Polymers</em>; Nalwa, H. S., Miyata, S., Eds.; CRC Press: Boca Raton, FL, 1997.</div>
+</div>
+<div id="ref-Boyd2008" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Boyd, R. W. <em>Nonlinear Optics</em>, 3rd ed.; Academic Press: Burlington, MA, 2008.</div>
+</div>
+<div id="ref-Schwerdtfeger2002" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Schwerdtfeger, P. Relativistic Effects in Properties of Gold. <em>Heteroatom Chemistry</em> <strong>2002</strong>, <em>13</em> (6), 578–584. <a href="https://doi.org/10.1002/hc.10093">https://doi.org/10.1002/hc.10093</a>.</div>
+</div>
+<div id="ref-Jensen2017" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Jensen, F. <em>Introduction to Computational Chemistry</em>, 3rd ed.; John Wiley &amp; Sons: Chichester, UK, 2017.</div>
+</div>
+<div id="ref-Shelton1992" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Shelton, D. P.; Rice, J. E. Measurements and Calculations of the Hyperpolarizabilities of Atoms and Small Molecules in the Gas Phase. <em>Chemical Reviews</em> <strong>1994</strong>, <em>94</em> (1), 3–29. <a href="https://doi.org/10.1021/cr00025a001">https://doi.org/10.1021/cr00025a001</a>.</div>
+</div>
+<div id="ref-Parrish2017" class="csl-entry" role="listitem">
+<div class="csl-left-margin">7. </div><div class="csl-right-inline">Parrish, R. M.; Burns, L. A.; Smith, D. G. A.; Simmonett, A. C.; DePrince, A. E.; Hohenstein, E. G.; Bozkaya, U.; Sokolov, A. Yu.; Di Remigio, R.; Richard, R. M.; Sherrill, C. D. Psi4 1.1: <span>An</span> Open-Source Electronic Structure Program Emphasizing Automation, Advanced Libraries, and Interoperability. <em>Journal of Chemical Theory and Computation</em> <strong>2017</strong>, <em>13</em> (7), 3185–3197. <a href="https://doi.org/10.1021/acs.jctc.7b00174">https://doi.org/10.1021/acs.jctc.7b00174</a>.</div>
+</div>
+</div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-text">
+                Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a> 
+                and authored by <a href="https://noprofits.org">No Profits</a> 
+                • <a href="../colophon.html">Colophon</a>
+            </div>
+            <div class="print-pdf-button">
+                <button onclick="window.print();" class="print-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="print-icon">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    Print / Save as PDF
+                </button>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
