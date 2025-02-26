@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">NoProfits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <div class="info">
+    <h3>Mathematical Framework for Hyperpolarizability Calculations</h3>
+    Posted on February 25, 2025
+    
+</div>
+
+<h2 id="introduction">Introduction</h2>
+<p>Hyperpolarizability calculations represent a complex area of quantum chemistry that connects theoretical physics with practical applications in nonlinear optics and materials science. This post outlines the mathematical foundations that underpin the computational approaches we attempted to implement using Psi4. Understanding these equations is essential for interpreting results and troubleshooting computational issues in hyperpolarizability studies.<span class="citation" data-cites="Jensen2017"><sup>1</sup></span></p>
+<h2 id="energy-expansion-in-an-external-electric-field">Energy Expansion in an External Electric Field</h2>
+<p>When a molecule is placed in an external electric field <span class="math inline">\(\vec{F}\)</span>, its energy can be expressed as a Taylor series expansion:<span class="citation" data-cites="Bishop1990"><sup>2</sup></span></p>
+<p><span class="math display">\[E(\vec{F}) = E^{(0)} - \sum_i \mu_i F_i - \frac{1}{2!} \sum_{ij} \alpha_{ij} F_i F_j - \frac{1}{3!} \sum_{ijk} \beta_{ijk} F_i F_j F_k - \frac{1}{4!} \sum_{ijkl} \gamma_{ijkl} F_i F_j F_k F_l - \ldots\]</span></p>
+<p>where:
+- <span class="math inline">\(E^{(0)}\)</span> is the energy of the molecule in the absence of an electric field
+- <span class="math inline">\(\mu_i\)</span> is the permanent dipole moment (first-order term)
+- <span class="math inline">\(\alpha_{ij}\)</span> is the polarizability tensor (second-order term)
+- <span class="math inline">\(\beta_{ijk}\)</span> is the first hyperpolarizability tensor (third-order term)
+- <span class="math inline">\(\gamma_{ijkl}\)</span> is the second hyperpolarizability tensor (fourth-order term)
+- <span class="math inline">\(i, j, k, l\)</span> refer to Cartesian coordinates (<span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span>, <span class="math inline">\(z\)</span>)</p>
+<p>This expansion provides the theoretical basis for extracting polarizability and hyperpolarizability values from energy calculations.<span class="citation" data-cites="Kurtz1990"><sup>3</sup></span></p>
+<h2 id="dipole-moment-expansion">Dipole Moment Expansion</h2>
+<p>Similarly, the dipole moment of a molecule in the presence of an electric field can be expressed as:<span class="citation" data-cites="Boyd2008"><sup>4</sup></span></p>
+<p><span class="math display">\[\mu_i(\vec{F}) = \mu_i^{(0)} + \sum_j \alpha_{ij} F_j + \frac{1}{2!} \sum_{jk} \beta_{ijk} F_j F_k + \frac{1}{3!} \sum_{jkl} \gamma_{ijkl} F_j F_k F_l + \ldots\]</span></p>
+<p>where <span class="math inline">\(\mu_i^{(0)}\)</span> is the permanent dipole moment in the absence of an external field.</p>
+<h2 id="relation-to-energy-derivatives">Relation to Energy Derivatives</h2>
+<p>These properties can be rigorously defined as derivatives of the energy with respect to the field components:<span class="citation" data-cites="Karna1991"><sup>5</sup></span></p>
+<p><span class="math display">\[\mu_i = -\left(\frac{\partial E}{\partial F_i}\right)_{\vec{F}=0}\]</span></p>
+<p><span class="math display">\[\alpha_{ij} = -\left(\frac{\partial^2 E}{\partial F_i \partial F_j}\right)_{\vec{F}=0}\]</span></p>
+<p><span class="math display">\[\beta_{ijk} = -\left(\frac{\partial^3 E}{\partial F_i \partial F_j \partial F_k}\right)_{\vec{F}=0}\]</span></p>
+<p><span class="math display">\[\gamma_{ijkl} = -\left(\frac{\partial^4 E}{\partial F_i \partial F_j \partial F_k \partial F_l}\right)_{\vec{F}=0}\]</span></p>
+<p>Alternatively, these properties can be expressed as derivatives of the dipole moment:</p>
+<p><span class="math display">\[\alpha_{ij} = \left(\frac{\partial \mu_i}{\partial F_j}\right)_{\vec{F}=0}\]</span></p>
+<p><span class="math display">\[\beta_{ijk} = \left(\frac{\partial^2 \mu_i}{\partial F_j \partial F_k}\right)_{\vec{F}=0}\]</span></p>
+<p><span class="math display">\[\gamma_{ijkl} = \left(\frac{\partial^3 \mu_i}{\partial F_j \partial F_k \partial F_l}\right)_{\vec{F}=0}\]</span></p>
+<h2 id="finite-field-method">Finite Field Method</h2>
+<p>In computational chemistry, a common approach to calculate these properties is the finite field (FF) method.<span class="citation" data-cites="Cohen1975"><sup>6</sup></span> For example, the polarizability component <span class="math inline">\(\alpha_{xx}\)</span> can be approximated as:</p>
+<p><span class="math display">\[\alpha_{xx} \approx \frac{\mu_x(F_x=+h) - \mu_x(F_x=-h)}{2h}\]</span></p>
+<p>where <span class="math inline">\(h\)</span> is a small electric field strength (typically 0.001-0.005 atomic units).</p>
+<p>For the first hyperpolarizability component <span class="math inline">\(\beta_{xxx}\)</span>, a similar finite difference approach gives:<span class="citation" data-cites="Rice1991"><sup>7</sup></span></p>
+<p><span class="math display">\[\beta_{xxx} \approx \frac{\mu_x(F_x=+h) - 2\mu_x(F_x=0) + \mu_x(F_x=-h)}{h^2}\]</span></p>
+<p>More generally, using a 5-point stencil for better numerical stability:<span class="citation" data-cites="Sekino1986"><sup>8</sup></span></p>
+<p><span class="math display">\[\beta_{xxx} \approx \frac{-\mu_x(F_x=+2h) + 8\mu_x(F_x=+h) - 8\mu_x(F_x=-h) + \mu_x(F_x=-2h)}{12h^2}\]</span></p>
+<h2 id="coupled-perturbed-hartree-fock-method">Coupled-Perturbed Hartree-Fock Method</h2>
+<p>In quantum chemistry software like Psi4, polarizabilities and hyperpolarizabilities can be calculated using response theory, particularly the Coupled-Perturbed Hartree-Fock (CPHF) method.<span class="citation" data-cites="Karna1991"><sup>5</sup></span> In this approach, we solve for the response of the molecular orbitals to an external field.</p>
+<p>The CPHF equations can be written as:</p>
+<p><span class="math display">\[\sum_{bj} (A_{ai,bj} - \omega \delta_{ab}\delta_{ij})U_{bj}^{(k)}(\omega) = -V_{ai}^{(k)}\]</span></p>
+<p>where:
+- <span class="math inline">\(a, b\)</span> refer to virtual (unoccupied) orbitals
+- <span class="math inline">\(i, j\)</span> refer to occupied orbitals
+- <span class="math inline">\(A_{ai,bj}\)</span> is the electronic Hessian matrix
+- <span class="math inline">\(U_{bj}^{(k)}(\omega)\)</span> is the orbital response to a perturbation in the <span class="math inline">\(k\)</span> direction
+- <span class="math inline">\(V_{ai}^{(k)}\)</span> is the perturbation matrix element
+- <span class="math inline">\(\omega\)</span> is the frequency of the electric field (0 for static properties)</p>
+<p>Once the orbital response <span class="math inline">\(U_{bj}^{(k)}\)</span> is determined, the polarizability is calculated as:<span class="citation" data-cites="Parrish2017"><sup>9</sup></span></p>
+<p><span class="math display">\[\alpha_{ij}(\omega) = -\sum_{ak} U_{ak}^{(i)}(\omega) V_{ak}^{(j)} + \sum_{ak} U_{ak}^{(j)}(\omega) V_{ak}^{(i)}\]</span></p>
+<h2 id="isotropic-averages-and-invariants">Isotropic Averages and Invariants</h2>
+<p>For analysis purposes, it’s common to calculate isotropic (orientation-independent) values:<span class="citation" data-cites="Shelton1992"><sup>10</sup></span></p>
+<p><strong>Isotropic polarizability</strong>:
+<span class="math display">\[\alpha = \frac{1}{3}(\alpha_{xx} + \alpha_{yy} + \alpha_{zz})\]</span></p>
+<p><strong>Isotropic first hyperpolarizability</strong>:
+<span class="math display">\[\beta = \sqrt{\beta_x^2 + \beta_y^2 + \beta_z^2}\]</span></p>
+<p>where:
+<span class="math display">\[\beta_i = \frac{1}{3}\sum_j (\beta_{ijj} + \beta_{jij} + \beta_{jji})\]</span></p>
+<p><strong>Isotropic second hyperpolarizability</strong>:
+<span class="math display">\[\gamma = \frac{1}{5}(\gamma_{xxxx} + \gamma_{yyyy} + \gamma_{zzzz} + 2\gamma_{xxyy} + 2\gamma_{xxzz} + 2\gamma_{yyzz})\]</span></p>
+<h2 id="units-and-conversion">Units and Conversion</h2>
+<p>In quantum chemistry calculations, properties are typically reported in atomic units (a.u.), which often need conversion for comparison with experimental values:<span class="citation" data-cites="Kajzar1989"><sup>11</sup></span></p>
+<ul>
+<li>Polarizability: 1 a.u. = 0.1482×10^(-24) cm³</li>
+<li>First hyperpolarizability: 1 a.u. = 8.6393×10^(-33) cm⁴/statvolt = 3.2063×10^(-53) C³m³/J²</li>
+<li>Second hyperpolarizability: 1 a.u. = 5.0367×10^(-40) cm⁵/statvolt = 6.2353×10^(-65) C⁴m⁴/J³</li>
+</ul>
+<h2 id="computational-implementation-considerations">Computational Implementation Considerations</h2>
+<p>When implementing these calculations in quantum chemistry packages like Psi4, several practical considerations arise:<span class="citation" data-cites="Parrish2017"><sup>9</sup></span></p>
+<ol type="1">
+<li><strong>Basis set selection</strong>: Diffuse functions are crucial for accurate polarizability calculations, as they capture the response of the electron density to external fields</li>
+<li><strong>Field strength</strong>: The finite field method requires careful selection of field strengths—too large causes nonlinear effects, too small leads to numerical noise</li>
+<li><strong>Symmetry handling</strong>: Electric fields break molecular symmetry, which can complicate SCF convergence</li>
+<li><strong>Method dependence</strong>: Accurate hyperpolarizability calculations typically require correlated methods beyond Hartree-Fock, such as MP2, CCSD, or DFT with appropriate functionals</li>
+</ol>
+<p>Our attempts to implement these calculations in Psi4 encountered challenges related to the specific implementation of property calculations in Psi4 1.7, particularly in the syntax for requesting polarizability calculations and handling response equations.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The mathematical framework presented here forms the theoretical foundation for the computational approaches we attempted to implement. While we encountered practical challenges in our specific implementation with Psi4 1.7, the equations remain valid and could be implemented using alternative approaches or software packages. The finite field method, in particular, offers a robust alternative that can be applied across different software environments, provided appropriate care is taken in selecting field strengths and handling numerical derivatives.<span class="citation" data-cites="Jensen2017"><sup>1</sup></span></p>
+<h2 class="unnumbered" id="references">References</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-Jensen2017" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Jensen, F. <em>Introduction to Computational Chemistry</em>, 3rd ed.; John Wiley &amp; Sons: Chichester, UK, 2017.</div>
+</div>
+<div id="ref-Bishop1990" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">Bishop, D. M. The Virial Theorem and Hypervirial Functions in Molecular Quantum Mechanics. <em>Reviews of Modern Physics</em> <strong>1990</strong>, <em>62</em> (2), 343–374. <a href="https://doi.org/10.1103/RevModPhys.62.343">https://doi.org/10.1103/RevModPhys.62.343</a>.</div>
+</div>
+<div id="ref-Kurtz1990" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Kurtz, H. A.; Stewart, J. J. P.; Dieter, K. M. Calculation of the Nonlinear Optical Properties of Molecules. <em>Journal of Computational Chemistry</em> <strong>1990</strong>, <em>11</em> (1), 82–87. <a href="https://doi.org/10.1002/jcc.540110110">https://doi.org/10.1002/jcc.540110110</a>.</div>
+</div>
+<div id="ref-Boyd2008" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Boyd, R. W. <em>Nonlinear Optics</em>, 3rd ed.; Academic Press: Burlington, MA, 2008.</div>
+</div>
+<div id="ref-Karna1991" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Karna, S. P.; Dupuis, M. Frequency Dependent Nonlinear Optical Properties of Molecules: <span>Formulation</span> and Implementation in the <span>HONDO</span> Program. <em>Journal of Computational Chemistry</em> <strong>1991</strong>, <em>12</em> (4), 487–504. <a href="https://doi.org/10.1002/jcc.540120409">https://doi.org/10.1002/jcc.540120409</a>.</div>
+</div>
+<div id="ref-Cohen1975" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Cohen, H. D.; Roothaan, C. C. J. Electric Dipole Polarizability of Atoms by the <span>Hartree</span>—<span>Fock</span> Method. <span>I</span>. <span>Theory</span> for Closed-Shell Systems. <em>The Journal of Chemical Physics</em> <strong>1965</strong>, <em>43</em> (10), S34–S39. <a href="https://doi.org/10.1063/1.1701512">https://doi.org/10.1063/1.1701512</a>.</div>
+</div>
+<div id="ref-Rice1991" class="csl-entry" role="listitem">
+<div class="csl-left-margin">7. </div><div class="csl-right-inline">Rice, J. E.; Handy, N. C. The Calculation of Frequency-Dependent Hyperpolarizabilities Using Coupled-Perturbed <span>Hartree-Fock</span> Theory. <em>The Journal of Chemical Physics</em> <strong>1991</strong>, <em>94</em> (7), 4959–4971. <a href="https://doi.org/10.1063/1.460558">https://doi.org/10.1063/1.460558</a>.</div>
+</div>
+<div id="ref-Sekino1986" class="csl-entry" role="listitem">
+<div class="csl-left-margin">8. </div><div class="csl-right-inline">Sekino, H.; Bartlett, R. J. Frequency Dependent Nonlinear Optical Properties of Molecules. <em>The Journal of Chemical Physics</em> <strong>1986</strong>, <em>85</em> (2), 976–989. <a href="https://doi.org/10.1063/1.451255">https://doi.org/10.1063/1.451255</a>.</div>
+</div>
+<div id="ref-Parrish2017" class="csl-entry" role="listitem">
+<div class="csl-left-margin">9. </div><div class="csl-right-inline">Parrish, R. M.; Burns, L. A.; Smith, D. G. A.; Simmonett, A. C.; DePrince, A. E.; Hohenstein, E. G.; Bozkaya, U.; Sokolov, A. Yu.; Di Remigio, R.; Richard, R. M.; Sherrill, C. D. Psi4 1.1: <span>An</span> Open-Source Electronic Structure Program Emphasizing Automation, Advanced Libraries, and Interoperability. <em>Journal of Chemical Theory and Computation</em> <strong>2017</strong>, <em>13</em> (7), 3185–3197. <a href="https://doi.org/10.1021/acs.jctc.7b00174">https://doi.org/10.1021/acs.jctc.7b00174</a>.</div>
+</div>
+<div id="ref-Shelton1992" class="csl-entry" role="listitem">
+<div class="csl-left-margin">10. </div><div class="csl-right-inline">Shelton, D. P.; Rice, J. E. Measurements and Calculations of the Hyperpolarizabilities of Atoms and Small Molecules in the Gas Phase. <em>Chemical Reviews</em> <strong>1994</strong>, <em>94</em> (1), 3–29. <a href="https://doi.org/10.1021/cr00025a001">https://doi.org/10.1021/cr00025a001</a>.</div>
+</div>
+<div id="ref-Kajzar1989" class="csl-entry" role="listitem">
+<div class="csl-left-margin">11. </div><div class="csl-right-inline">Kajzar, F.; Messier, J. First Hyperpolarizability of Conjugated Molecules. In <em>Nonlinear optical properties of organic molecules and crystals</em>; Chemla, D. S., Zyss, J., Eds.; Academic Press: Orlando, FL, 1989; pp 51–82.</div>
+</div>
+</div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-text">
+                Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a> 
+                and authored by <a href="https://noprofits.org">No Profits</a> 
+                • <a href="../colophon.html">Colophon</a>
+            </div>
+            <div class="print-pdf-button">
+                <button onclick="window.print();" class="print-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="print-icon">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    Print / Save as PDF
+                </button>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
