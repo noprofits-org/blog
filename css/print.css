@@ -1,0 +1,162 @@
+/* print.css - Styles applied when printing the page
+ * Optimized for academic/paper style output
+ */
+
+ @media print {
+    /* Basic page setup */
+    body {
+        background-color: white !important;
+        color: black !important;
+        font-family: "Times New Roman", Times, serif !important;
+        font-size: 12pt !important;
+        line-height: 1.5 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+    
+    /* Layout improvements */
+    .container, main {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Typography for academic style */
+    h1, h2, h3, h4, h5, h6 {
+        color: black !important;
+        font-family: "Times New Roman", Times, serif !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+        margin-top: 1em !important;
+    }
+    
+    h1 { font-size: 18pt !important; }
+    h2 { font-size: 16pt !important; }
+    h3 { font-size: 14pt !important; }
+    
+    p, li {
+        color: black !important;
+        orphans: 3 !important;
+        widows: 3 !important;
+    }
+    
+    /* Hide non-essential elements */
+    header, footer, nav, .pdf-download, 
+    button, .copy-button, .print-pdf-button {
+        display: none !important;
+    }
+    
+    /* Code blocks */
+    pre, code {
+        font-family: "Courier New", Courier, monospace !important;
+        font-size: 10pt !important;
+        background: white !important;
+        border: 1px solid #ddd !important;
+        color: black !important;
+        white-space: pre-wrap !important;
+    }
+    
+    /* Tables - clean formatting with minimal borders */
+    table {
+        display: table !important;
+        width: 100% !important;
+        border-collapse: collapse !important;
+        background-color: transparent !important;
+        color: black !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    
+    thead, tbody, tfoot {
+        display: table-row-group !important;
+    }
+    
+    tr, tr:nth-child(even), tr:hover {
+        display: table-row !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+    }
+    
+    th, td {
+        display: table-cell !important;
+        border-bottom: 1px solid #ddd !important;
+        border-top: 0 !important;
+        border-left: 0 !important;
+        border-right: 0 !important;
+        padding: 8px !important;
+        text-align: center !important;
+        color: black !important;
+        background-color: white !important;
+        position: static !important;
+        float: none !important;
+        min-width: 0 !important;
+    }
+    
+    th {
+        font-weight: bold !important;
+        border-bottom: 2px solid #888 !important;
+    }
+    
+    /* Remove any pseudo-elements used for responsive tables */
+    td:before, td:after, th:before, th:after {
+        content: none !important;
+        display: none !important;
+    }
+    
+    /* Links - show URLs */
+    a {
+        color: black !important;
+        text-decoration: none !important;
+        word-wrap: break-word !important;
+    }
+    
+    a[href^="http"]:after {
+        content: " (" attr(href) ")";
+        font-size: 90%;
+    }
+    
+    /* Page breaks */
+    img, figure, .tikzpicture {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        max-width: 75% !important;
+        height: auto !important;
+        background: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Title formatting - aligned left with content flowing after it */
+    .info {
+        text-align: left !important;
+        margin-bottom: 1em !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+    
+    .info h3 {
+        font-size: 18pt !important;
+        margin-bottom: 0.5em !important;
+    }
+    
+    /* Math and chemistry equations - ensure they render well */
+    .math, .MathJax {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    
+    /* Citations */
+    .csl-entry {
+        text-indent: -1.5em !important;
+        margin-left: 1.5em !important;
+    }
+    
+    /* Page margins */
+    @page {
+        margin: 2cm !important;
+    }
+}

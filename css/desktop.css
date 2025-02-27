@@ -1,0 +1,119 @@
+/* desktop.css - Styles specific to desktop/large screen views
+ * Used for screens 769px and wider
+ */
+
+ @media (min-width: 769px) {
+    /* Desktop body and layout adjustments */
+    body {
+        padding: 64px 0;
+        margin-left: 35px;
+        margin-right: 35px;
+
+    }
+    
+    .container {
+        padding: 0 48px;
+    }
+    
+    .header-content {
+        padding: 0 48px;
+    }
+    
+    /* Desktop typography adjustments */
+    .logo a {
+        font-size: 1.5rem;
+    }
+    
+    nav a {
+        font-size: 0.95rem;
+    }
+    
+    /* Desktop fixed footer */
+    footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        padding: 1rem 2rem;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    main {
+        padding-bottom: 4rem;
+    }
+    
+    /* Desktop hero and equations */
+    .hero-equation {
+        font-size: 1.8rem;
+        opacity: 0.9;
+    }
+    
+    /* Desktop TikZ diagrams */
+    .tikzpicture {
+        max-width: 500px;
+    }
+    
+    .tikzpicture img {
+        width: 100%;
+    }
+    
+ /* Desktop table styling */
+@media (min-width: 769px) {
+    /* Table layout and structure */
+    table {
+        width: 70% !important;
+        margin: 2rem auto !important;
+        border: none !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+        border-collapse: collapse !important;
+    }
+    
+    /* Table header styling */
+    th {
+        text-align: center !important;
+        font-weight: 600 !important;
+        border-bottom: 2px solid var(--border-color) !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: none !important;
+        padding: 10px 16px !important;
+        background-color: transparent !important;
+    }
+    
+    /* Table cell styling */
+    td {
+        text-align: center !important;
+        border: none !important;
+        padding: 8px 16px !important;
+    }
+    
+    /* Alternating row colors - subtle or none */
+    tr:nth-child(even), tr:nth-child(odd) {
+        background-color: transparent !important;
+    }
+    
+    /* Remove hover effect */
+    tr:hover {
+        background-color: transparent !important;
+    }
+    
+    /* Optional - for better numeric alignment */
+    /* Add this class to columns with numbers: <td class="numeric">123.45</td> */
+    td.numeric {
+        text-align: right !important;
+    }
+}
+    
+    /* Desktop navigation spacing */
+    nav {
+        justify-content: right;
+        gap: 2.5rem;
+    }
+    
+    /* Desktop code blocks */
+    pre {
+        padding: 1.4em;
+    }
+}

@@ -169,28 +169,28 @@ Our calculations yielded the following isotropic polarizability values:
 
 ```tikzpicture
 \begin{axis}[
-    width=10cm,
-    height=7cm,
+    width=12cm, % Slightly wider for better visibility
+    height=8cm,
     xlabel={Element},
     ylabel={Polarizability / a.u.},
-    xtick={0,1,2},
+    xtick={0,1,2}, % Only C, Si, Ge (no Sn, Pb since N/A)
     xticklabels={C, Si, Ge},
     ymin=0, ymax=25,
     grid=major,
-    grid style={line width=.2pt, draw=gray!50},
+    grid style={line width=0.1pt, draw=gray!30}, % Subtle grid lines
     axis lines=left,
-    bar width=0.7cm,
+    bar width=0.5cm, % Thinner bars for clarity
     ybar,
     title={Polarizability of Group 4A Elements},
-    title style={font=\large\bfseries},
-    every axis label/.style={font=\normalsize},
-    every tick label/.style={font=\normalsize},
-    enlarge x limits=0.25,
+    title style={font=\large\bfseries, color=black}, % Black title for contrast
+    every axis label/.style={font=\normalsize, color=black},
+    every tick label/.style={font=\normalsize, color=black},
+    enlarge x limits=0.2, % More space around bars
     ymajorgrids=true
 ]
 
-% Plot the data with black bars and opacity
-\addplot[fill=black!80, draw=black] coordinates {(0,7.11) (1,20.17) (2,20.19)};
+% Plot the data with a professional color (dark gray or blue)
+\addplot[fill=gray!50, draw=black, opacity=0.8] coordinates {(0,7.11) (1,20.17) (2,20.19)};
 \end{axis}
 ```
 

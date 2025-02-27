@@ -1,0 +1,159 @@
+/* mobile.css - Styles specific to mobile/small screen views
+ * Applied for screens up to 768px wide
+ */
+
+ @media (max-width: 768px) {
+    /* Mobile body and layout adjustments */
+    body {
+        padding: 24px 0;
+        font-size: 15px;
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+    
+    .container {
+        padding: 0 16px;
+    }
+    
+    /* Mobile header adjustments */
+    .header-content {
+        padding: 0 16px;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    /* Hide logo on mobile for space */
+    .logo {
+        display: none;
+    }
+    
+    /* Centered navigation on mobile */
+    nav {
+        justify-content: center;
+        width: 100%;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+    }
+    
+    nav a {
+        font-size: 0.9rem;
+        padding: 4px 10px;
+    }
+    
+    /* Mobile typography sizing */
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.6rem; }
+    h3 { font-size: 1.4rem; }
+    
+    /* Mobile footer adjustments */
+    footer {
+        position: static;
+        padding: 1rem;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .print-pdf-button {
+        margin-top: 1rem;
+    }
+    
+    main {
+        padding-bottom: 0;
+    }
+    
+    /* Mobile hero and equations */
+    .hero-equation {
+        font-size: 1.2rem;
+        padding: 0;
+        overflow-x: auto;
+    }
+    
+    /* Mobile table adjustments - scrollable tables */
+    table {
+        overflow-x: auto;
+        white-space: nowrap;
+        display: block;
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent) var(--bg-secondary);
+    }
+    
+    table::-webkit-scrollbar {
+        height: 6px;
+    }
+    
+    table::-webkit-scrollbar-track {
+        background: var(--bg-secondary);
+        border-radius: 3px;
+    }
+    
+    table::-webkit-scrollbar-thumb {
+        background-color: var(--accent);
+        border-radius: 3px;
+    }
+    
+    /* Optional card-style tables for very small screens */
+    /* Add class="responsive-card-table" to tables that should use this style */
+    .responsive-card-table, 
+    .responsive-card-table thead, 
+    .responsive-card-table tbody, 
+    .responsive-card-table th, 
+    .responsive-card-table td, 
+    .responsive-card-table tr {
+        display: block;
+    }
+    
+    .responsive-card-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    .responsive-card-table tr {
+        margin: 10px 0;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: var(--bg-secondary);
+    }
+    
+    .responsive-card-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        border-bottom: 1px solid var(--border-color);
+        text-align: right;
+    }
+    
+    .responsive-card-table td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        margin-right: 10px;
+        min-width: 120px;
+        color: var(--text-secondary);
+        text-align: left;
+    }
+    
+    .responsive-card-table td:last-child {
+        border-bottom: none;
+    }
+    
+    /* Mobile code adjustments */
+    pre, code {
+        font-size: 0.85em;
+    }
+    
+    pre {
+        padding: 1em;
+    }
+    
+    /* Mobile TikZ diagrams */
+    .tikzpicture {
+        max-width: 95%;
+        padding: 1rem;
+    }
+}
