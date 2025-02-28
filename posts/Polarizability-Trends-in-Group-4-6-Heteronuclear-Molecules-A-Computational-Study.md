@@ -256,7 +256,7 @@ for g14 in group14:
 
 ### Visualization Code
 
-For visualization of the results, we used the following Python code (placeholder - actual code to be added):
+For visualization of the results, we used the following Python code:
 
 ```python
 import numpy as np
