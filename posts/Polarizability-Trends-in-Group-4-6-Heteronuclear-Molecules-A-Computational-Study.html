@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">NoProfits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <div class="info">
+    <h3>Polarizability Trends in Group 14-16 Heteronuclear Molecules - A Computational Study</h3>
+    Posted on February 27, 2025
+    
+</div>
+
+<h2 id="abstract">Abstract</h2>
+<p>This study presents a systematic computational investigation of polarizabilities in heteronuclear diatomic molecules formed from Group 14 (IVA) and Group 16 (VIA) elements. Using the finite field method implemented in Psi4 1.7, we calculated longitudinal polarizabilities for twenty molecular combinations (CO, CS, CSe, CTe, SiO, SiS, SiSe, SiTe, GeO, GeS, GeSe, GeTe, SnO, SnS, SnSe, SnTe, PbO, PbS, PbSe, PbTe). Results reveal clear periodic trends, with polarizability increasing both down Group 14 and across Group 16, reaching a maximum of 130.9 a.u. for PbTe. The data demonstrate that changes in the Group 16 element have a more pronounced effect on polarizability than changes in the Group 14 element. This work provides valuable insights into the electronic response properties of these molecular systems and establishes structure-property relationships that could guide materials design for applications requiring specific polarizability characteristics.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Molecular polarizability—the response of a molecule’s electron density to an applied electric field—is a fundamental property that influences a wide range of physical and chemical phenomena, from intermolecular forces to optical properties.<span class="citation" data-cites="Jensen2017"><sup>1</sup></span> Heteronuclear diatomic molecules present an interesting case study for polarizability analysis, as they exhibit directional responses that depend on the constituent atoms’ electronic structures and the nature of the chemical bond between them.</p>
+<p>Group 14 (C, Si, Ge, Sn, Pb) and Group 16 (O, S, Se, Te) elements form a diverse set of diatomic molecules with varying bond lengths, electronic configurations, and degrees of covalent/ionic character. As one moves down these groups in the periodic table, several important changes occur: increasing atomic size, more diffuse valence orbitals, and for the heavier elements, significant relativistic effects.<span class="citation" data-cites="Pyykko2012"><sup>2</sup></span> These systematic variations make Group 14-16 combinations an ideal testbed for exploring how atomic properties translate into molecular polarizability trends.</p>
+<p>The polarizability tensor component αzz (along the molecular axis) can be approximated through the numerical derivative approach known as the finite field method:<span class="citation" data-cites="Cohen1975"><sup>3</sup></span></p>
+<p><span class="math display">\[\alpha_{zz} \approx \frac{\mu_z(F_z = +h) - \mu_z(F_z = -h)}{2h}\]</span></p>
+<p>where h represents the applied electric field strength and μz is the z-component of the dipole moment. This approach provides a straightforward approximation of how the molecular dipole responds to an external electric field, from which polarizability can be derived.</p>
+<p>Building upon our previous work on atomic polarizabilities of Group 14 elements, this study extends the investigation to heteronuclear molecules, with three primary objectives: (1) establishing a systematic dataset of molecular polarizabilities for Group 14-16 combinations, (2) identifying periodic trends and structure-property relationships, and (3) providing insights into the relative contributions of different elements to the overall molecular polarizability.</p>
+<p>The results from this work not only enhance our fundamental understanding of electronic structure in heteronuclear systems but also have practical implications for materials design in applications ranging from nonlinear optics to molecular sensing.<span class="citation" data-cites="Nalwa2001"><sup>4</sup></span></p>
+<h2 id="experimental">Experimental</h2>
+<h3 id="computational-setup">Computational Setup</h3>
+<p>Calculations were performed using Psi4 version 1.7 in a dedicated Conda environment on an Ubuntu 24.04 system. The project directory structure was organized as follows:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/projects/theo-chem/<span class="dt">{inputs</span><span class="op">,</span><span class="dt">outputs</span><span class="op">,</span><span class="dt">scripts}</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/projects/theo-chem</span></code></pre></div>
+<h3 id="calculation-methodology">Calculation Methodology</h3>
+<p>We employed the finite field method to calculate the longitudinal polarizability (αzz) of each molecule. This involved applying electric fields of +0.002, 0.0, and -0.002 atomic units along the molecular axis (z-direction) and measuring the resulting changes in the molecular dipole moment.</p>
+<p>For each calculation, the Group 14 atom was placed at the origin, with the Group 16 atom positioned along the positive z-axis at the appropriate bond length. Bond lengths were estimated based on experimental and theoretical values from the literature, with adjustments made for the heavier elements.</p>
+<h3 id="python-implementation">Python Implementation</h3>
+<p>The polarizability calculations were implemented in a Python script that automated the process for all molecular combinations. The script defined the molecular geometries, set appropriate basis sets for each element, handled the electric field perturbations, and calculated the polarizabilities from the dipole responses.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> psi4</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Define elements from each group</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>group14 <span class="op">=</span> [<span class="st">&quot;C&quot;</span>, <span class="st">&quot;Si&quot;</span>, <span class="st">&quot;Ge&quot;</span>, <span class="st">&quot;Sn&quot;</span>, <span class="st">&quot;Pb&quot;</span>]</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>group16 <span class="op">=</span> [<span class="st">&quot;O&quot;</span>, <span class="st">&quot;S&quot;</span>, <span class="st">&quot;Se&quot;</span>, <span class="st">&quot;Te&quot;</span>, <span class="st">&quot;Po&quot;</span>]</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Define basis sets for each element</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>basis_sets <span class="op">=</span> {</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Group 14</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;C&quot;</span>: <span class="st">&quot;cc-pVDZ&quot;</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Si&quot;</span>: <span class="st">&quot;cc-pVDZ&quot;</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Ge&quot;</span>: <span class="st">&quot;cc-pVDZ&quot;</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Sn&quot;</span>: <span class="st">&quot;def2-svp&quot;</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Pb&quot;</span>: <span class="st">&quot;def2-svp&quot;</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Group 16</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;O&quot;</span>: <span class="st">&quot;cc-pVDZ&quot;</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;S&quot;</span>: <span class="st">&quot;cc-pVDZ&quot;</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Se&quot;</span>: <span class="st">&quot;cc-pVDZ&quot;</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Te&quot;</span>: <span class="st">&quot;def2-svp&quot;</span>,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Po&quot;</span>: <span class="st">&quot;def2-svp&quot;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimated bond lengths in Ångstroms (approximate values)</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>bond_lengths <span class="op">=</span> {</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;C&quot;</span>, <span class="st">&quot;O&quot;</span>): <span class="fl">1.13</span>,   <span class="co"># CO</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;C&quot;</span>, <span class="st">&quot;S&quot;</span>): <span class="fl">1.61</span>,   <span class="co"># CS</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;C&quot;</span>, <span class="st">&quot;Se&quot;</span>): <span class="fl">1.71</span>,  <span class="co"># CSe</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;C&quot;</span>, <span class="st">&quot;Te&quot;</span>): <span class="fl">1.95</span>,  <span class="co"># CTe</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;C&quot;</span>, <span class="st">&quot;Po&quot;</span>): <span class="fl">2.10</span>,  <span class="co"># CPo (estimated)</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Si&quot;</span>, <span class="st">&quot;O&quot;</span>): <span class="fl">1.63</span>,  <span class="co"># SiO</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Si&quot;</span>, <span class="st">&quot;S&quot;</span>): <span class="fl">2.00</span>,  <span class="co"># SiS</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Si&quot;</span>, <span class="st">&quot;Se&quot;</span>): <span class="fl">2.06</span>, <span class="co"># SiSe</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Si&quot;</span>, <span class="st">&quot;Te&quot;</span>): <span class="fl">2.32</span>, <span class="co"># SiTe</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Si&quot;</span>, <span class="st">&quot;Po&quot;</span>): <span class="fl">2.47</span>, <span class="co"># SiPo (estimated)</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Ge&quot;</span>, <span class="st">&quot;O&quot;</span>): <span class="fl">1.65</span>,  <span class="co"># GeO</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Ge&quot;</span>, <span class="st">&quot;S&quot;</span>): <span class="fl">2.01</span>,  <span class="co"># GeS</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Ge&quot;</span>, <span class="st">&quot;Se&quot;</span>): <span class="fl">2.14</span>, <span class="co"># GeSe</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Ge&quot;</span>, <span class="st">&quot;Te&quot;</span>): <span class="fl">2.36</span>, <span class="co"># GeTe</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Ge&quot;</span>, <span class="st">&quot;Po&quot;</span>): <span class="fl">2.51</span>, <span class="co"># GePo (estimated)</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Sn&quot;</span>, <span class="st">&quot;O&quot;</span>): <span class="fl">1.84</span>,  <span class="co"># SnO</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Sn&quot;</span>, <span class="st">&quot;S&quot;</span>): <span class="fl">2.21</span>,  <span class="co"># SnS</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Sn&quot;</span>, <span class="st">&quot;Se&quot;</span>): <span class="fl">2.33</span>, <span class="co"># SnSe</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Sn&quot;</span>, <span class="st">&quot;Te&quot;</span>): <span class="fl">2.53</span>, <span class="co"># SnTe</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Sn&quot;</span>, <span class="st">&quot;Po&quot;</span>): <span class="fl">2.68</span>, <span class="co"># SnPo (estimated)</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Pb&quot;</span>, <span class="st">&quot;O&quot;</span>): <span class="fl">1.92</span>,  <span class="co"># PbO</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Pb&quot;</span>, <span class="st">&quot;S&quot;</span>): <span class="fl">2.29</span>,  <span class="co"># PbS</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Pb&quot;</span>, <span class="st">&quot;Se&quot;</span>): <span class="fl">2.40</span>, <span class="co"># PbSe</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Pb&quot;</span>, <span class="st">&quot;Te&quot;</span>): <span class="fl">2.60</span>, <span class="co"># PbTe</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;Pb&quot;</span>, <span class="st">&quot;Po&quot;</span>): <span class="fl">2.75</span>  <span class="co"># PbPo (estimated)</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Define electric field strengths (in atomic units)</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>fields <span class="op">=</span> [<span class="fl">0.002</span>, <span class="fl">0.0</span>, <span class="op">-</span><span class="fl">0.002</span>]</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Directory setup</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>project_dir <span class="op">=</span> <span class="st">&quot;/home/peter/projects/theo-chem&quot;</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>output_dir <span class="op">=</span> os.path.join(project_dir, <span class="st">&quot;outputs&quot;</span>)</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>os.makedirs(output_dir, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> run_calculation(group14_element, group16_element, field):</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>    molecule_name <span class="op">=</span> <span class="ss">f&quot;</span><span class="sc">{</span>group14_element<span class="sc">}{</span>group16_element<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>    job_name <span class="op">=</span> <span class="ss">f&quot;</span><span class="sc">{</span>molecule_name<span class="sc">}</span><span class="ss">_field</span><span class="sc">{</span>field<span class="sc">:+g}</span><span class="ss">&quot;</span>.replace(<span class="st">&quot;-&quot;</span>, <span class="st">&quot;minus&quot;</span>)</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>    output_file <span class="op">=</span> os.path.join(output_dir, <span class="ss">f&quot;</span><span class="sc">{</span>job_name<span class="sc">}</span><span class="ss">.out&quot;</span>)</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get bond length in Bohr (convert from Ångstrom)</span></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>    bond_length <span class="op">=</span> bond_lengths.get((group14_element, group16_element), <span class="fl">2.0</span>) <span class="op">*</span> <span class="fl">1.889725989</span></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set up Psi4</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>    psi4.core.set_output_file(output_file, <span class="va">False</span>)</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>    psi4.set_memory(<span class="st">'2 GB'</span>)</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define molecule - place group14 element at origin and group16 element along z-axis</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>    mol_string <span class="op">=</span> <span class="ss">f&quot;&quot;&quot;</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="ss">    0 1</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>group14_element<span class="sc">}</span><span class="ss"> 0.0 0.0 0.0</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>group16_element<span class="sc">}</span><span class="ss"> 0.0 0.0 </span><span class="sc">{</span>bond_length<span class="sc">}</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="ss">    units bohr</span></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="ss">    symmetry c1</span></span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="ss">    &quot;&quot;&quot;</span></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>    molecule <span class="op">=</span> psi4.geometry(mol_string)</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Handle ECP elements</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>    needs_ecp <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> group14_element <span class="kw">in</span> [<span class="st">&quot;Sn&quot;</span>, <span class="st">&quot;Pb&quot;</span>] <span class="kw">or</span> group16_element <span class="kw">in</span> [<span class="st">&quot;Te&quot;</span>, <span class="st">&quot;Po&quot;</span>]:</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>        needs_ecp <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>        psi4.set_options({</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>            <span class="st">'puream'</span>: <span class="va">True</span>,</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>            <span class="st">'df_basis_scf'</span>: <span class="st">'def2-universal-jkfit'</span></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set basis</span></span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Handle ECP elements and set basis sets correctly</span></span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> needs_ecp:</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Use def2-svp and def2-ecp for all atoms when any heavy element is present</span></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>        psi4.set_options({<span class="st">'basis'</span>: <span class="st">'def2-svp'</span>})</span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Set ECPs for specific elements</span></span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> group14_element <span class="kw">in</span> [<span class="st">&quot;Sn&quot;</span>, <span class="st">&quot;Pb&quot;</span>]:</span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>            molecule.set_basis_by_symbol(group14_element, <span class="st">&quot;def2-ecp&quot;</span>, <span class="st">&quot;ECP&quot;</span>)</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> group16_element <span class="kw">in</span> [<span class="st">&quot;Te&quot;</span>, <span class="st">&quot;Po&quot;</span>]:</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>            molecule.set_basis_by_symbol(group16_element, <span class="st">&quot;def2-ecp&quot;</span>, <span class="st">&quot;ECP&quot;</span>)</span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>        <span class="co"># For molecules without ECPs, set the basis to the larger of the two basis sets</span></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>        <span class="co"># (This is a simplification - ideally we'd use mixed basis sets)</span></span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>        psi4.set_options({<span class="st">'basis'</span>: basis_sets[group14_element]})</span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>    <span class="co"># General calculation settings</span></span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>    psi4.set_options({</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>        <span class="st">'scf_type'</span>: <span class="st">'df'</span>,</span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>        <span class="st">'e_convergence'</span>: <span class="fl">1e-8</span>,</span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>        <span class="st">'d_convergence'</span>: <span class="fl">1e-8</span>,</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>        <span class="st">'maxiter'</span>: <span class="dv">150</span>,      <span class="co"># Increase max iterations for potentially difficult convergence</span></span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>        <span class="st">'guess'</span>: <span class="st">'sad'</span>       <span class="co"># Use superposition of atomic densities for initial guess</span></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Apply electric field if needed</span></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> field <span class="op">!=</span> <span class="fl">0.0</span>:</span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>        psi4.set_options({</span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>            <span class="st">'perturb_h'</span>: <span class="va">True</span>,</span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>            <span class="st">'perturb_with'</span>: <span class="st">'dipole'</span>,</span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>            <span class="st">'perturb_dipole'</span>: [<span class="fl">0.0</span>, <span class="fl">0.0</span>, field]  <span class="co"># Field along z-axis (molecular axis)</span></span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Run the calculation</span></span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>        energy, wfn <span class="op">=</span> psi4.energy(<span class="st">'scf'</span>, return_wfn<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>        dipole <span class="op">=</span> wfn.variable(<span class="st">&quot;SCF DIPOLE&quot;</span>)</span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Successfully calculated </span><span class="sc">{</span>molecule_name<span class="sc">}</span><span class="ss"> with field </span><span class="sc">{</span>field<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Energy: </span><span class="sc">{</span>energy<span class="sc">}</span><span class="ss"> Eh, Dipole: </span><span class="sc">{</span>dipole<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> dipole</span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Error in calculation for </span><span class="sc">{</span>molecule_name<span class="sc">}</span><span class="ss"> with field </span><span class="sc">{</span>field<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="co"># Main workflow</span></span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> {}</span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>skip_elements <span class="op">=</span> [<span class="st">&quot;Po&quot;</span>]  <span class="co"># Polonium calculations might be problematic, skip if necessary</span></span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a><span class="co"># Process each molecule combination</span></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> g14 <span class="kw">in</span> group14:</span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> g16 <span class="kw">in</span> group16:</span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> g16 <span class="kw">in</span> skip_elements:</span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a>        molecule_name <span class="op">=</span> <span class="ss">f&quot;</span><span class="sc">{</span>g14<span class="sc">}{</span>g16<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="ch">\n</span><span class="ss">Processing molecule: </span><span class="sc">{</span>molecule_name<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>        dipoles <span class="op">=</span> {}</span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> field <span class="kw">in</span> fields:</span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a>            dipole <span class="op">=</span> run_calculation(g14, g16, field)</span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> dipole <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a>                dipoles[field] <span class="op">=</span> dipole[<span class="dv">2</span>]  <span class="co"># Z-component (index 2) since molecule is along z-axis</span></span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calculate polarizability using finite field method</span></span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(dipoles) <span class="op">==</span> <span class="dv">3</span>:  <span class="co"># Ensure we have all three field strengths</span></span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a>            h <span class="op">=</span> <span class="fl">0.002</span>  <span class="co"># Field strength</span></span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a>            alpha_zz <span class="op">=</span> (dipoles[<span class="fl">0.002</span>] <span class="op">-</span> dipoles[<span class="op">-</span><span class="fl">0.002</span>]) <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> h)</span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Take absolute value for conventional reporting</span></span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a>            results[molecule_name] <span class="op">=</span> <span class="bu">abs</span>(alpha_zz)</span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f&quot;Polarizability for </span><span class="sc">{</span>molecule_name<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span><span class="bu">abs</span>(alpha_zz)<span class="sc">:.4f}</span><span class="ss"> a.u.&quot;</span>)</span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Polarizability results summary:&quot;</span>)</span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Molecule | Polarizability (a.u.)&quot;</span>)</span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;---------|----------------------&quot;</span>)</span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> molecule, alpha <span class="kw">in</span> <span class="bu">sorted</span>(results.items()):</span>
+<span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>molecule<span class="sc">:7}</span><span class="ss"> | </span><span class="sc">{</span>alpha<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a 2D table for better visualization</span></span>
+<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Polarizability Matrix (Group 14 × Group 16):&quot;</span>)</span>
+<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a>headers <span class="op">=</span> [g16 <span class="cf">for</span> g16 <span class="kw">in</span> group16 <span class="cf">if</span> g16 <span class="kw">not</span> <span class="kw">in</span> skip_elements]</span>
+<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span><span class="st">'Element'</span><span class="sc">:&lt;7}</span><span class="ss"> | &quot;</span> <span class="op">+</span> <span class="st">&quot; | &quot;</span>.join(<span class="ss">f&quot;</span><span class="sc">{</span>h<span class="sc">:^7}</span><span class="ss">&quot;</span> <span class="cf">for</span> h <span class="kw">in</span> headers))</span>
+<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;-&quot;</span> <span class="op">*</span> (<span class="dv">8</span> <span class="op">+</span> <span class="dv">10</span> <span class="op">*</span> <span class="bu">len</span>(headers)))</span>
+<span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> g14 <span class="kw">in</span> group14:</span>
+<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a>    row <span class="op">=</span> <span class="ss">f&quot;</span><span class="sc">{</span>g14<span class="sc">:&lt;7}</span><span class="ss"> | &quot;</span></span>
+<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> g16 <span class="kw">in</span> group16:</span>
+<span id="cb2-184"><a href="#cb2-184" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> g16 <span class="kw">in</span> skip_elements:</span>
+<span id="cb2-185"><a href="#cb2-185" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a>        molecule <span class="op">=</span> <span class="ss">f&quot;</span><span class="sc">{</span>g14<span class="sc">}{</span>g16<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb2-187"><a href="#cb2-187" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> molecule <span class="kw">in</span> results:</span>
+<span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a>            row <span class="op">+=</span> <span class="ss">f&quot;</span><span class="sc">{</span>results[molecule]<span class="sc">:7.4f}</span><span class="ss"> | &quot;</span></span>
+<span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a>            row <span class="op">+=</span> <span class="ss">f&quot;</span><span class="sc">{</span><span class="st">'--'</span><span class="sc">:^7}</span><span class="ss"> | &quot;</span></span>
+<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(row[:<span class="op">-</span><span class="dv">2</span>])  <span class="co"># Remove trailing &quot; | &quot;</span></span></code></pre></div>
+<h3 id="basis-set-selection">Basis Set Selection</h3>
+<p>Appropriate basis sets were selected based on the elements involved:
+- For C, Si, Ge, O, S, and Se: cc-pVDZ basis sets were employed
+- For Sn, Pb, and Te: def2-SVP basis sets with effective core potentials (ECPs) were used to account for relativistic effects</p>
+<p>Polonium-containing compounds were excluded from this study due to the specialized relativistic treatment they would require and their limited practical relevance.</p>
+<h2 id="results">Results</h2>
+<p>Our calculations yielded polarizability values for twenty different Group 14-16 diatomic molecules. The complete results are presented in Table 1.</p>
+<p><strong>Table 1: Calculated Longitudinal Polarizabilities (α<sub>zz</sub>) for Group 14-16 Molecules</strong></p>
+<table>
+<thead>
+<tr>
+<th>Molecule</th>
+<th style="text-align: right;">Polarizability (a.u.)</th>
+<th>Molecule</th>
+<th style="text-align: right;">Polarizability (a.u.)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CO</td>
+<td style="text-align: right;">12.21</td>
+<td>GeO</td>
+<td style="text-align: right;">29.02</td>
+</tr>
+<tr>
+<td>CS</td>
+<td style="text-align: right;">35.81</td>
+<td>GeS</td>
+<td style="text-align: right;">61.50</td>
+</tr>
+<tr>
+<td>CSe</td>
+<td style="text-align: right;">42.69</td>
+<td>GeSe</td>
+<td style="text-align: right;">75.70</td>
+</tr>
+<tr>
+<td>CTe</td>
+<td style="text-align: right;">59.46</td>
+<td>GeTe</td>
+<td style="text-align: right;">103.98</td>
+</tr>
+<tr>
+<td>SiO</td>
+<td style="text-align: right;">27.84</td>
+<td>SnO</td>
+<td style="text-align: right;">38.23</td>
+</tr>
+<tr>
+<td>SiS</td>
+<td style="text-align: right;">59.98</td>
+<td>SnS</td>
+<td style="text-align: right;">73.20</td>
+</tr>
+<tr>
+<td>SiSe</td>
+<td style="text-align: right;">69.83</td>
+<td>SnSe</td>
+<td style="text-align: right;">90.72</td>
+</tr>
+<tr>
+<td>SiTe</td>
+<td style="text-align: right;">98.64</td>
+<td>SnTe</td>
+<td style="text-align: right;">123.34</td>
+</tr>
+<tr>
+<td>PbO</td>
+<td style="text-align: right;">41.29</td>
+<td>PbTe</td>
+<td style="text-align: right;">130.91</td>
+</tr>
+<tr>
+<td>PbS</td>
+<td style="text-align: right;">78.28</td>
+<td>PbSe</td>
+<td style="text-align: right;">96.42</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Figure 1: 3D Surface Plot of Polarizabilities</strong></p>
+<p><img src="../images/polarizability_3d_surface.png" alt="3D Surface Polarizability"></p>
+<p><strong>Figure 2: Heatmap of Polarizabilities Across Group 14-16 Combinations</strong></p>
+<p><img src="../images/polarizability_heatmap.png" alt="Polarizability Heatmap"></p>
+<p><strong>Figure 3: Polarizability Trends for Group 14 Elements Across Group 16</strong></p>
+<p><img src="../images/polarizability_trends.png" alt="Polarizability Trends"></p>
+<h2 id="discussion">Discussion</h2>
+<h3 id="periodic-trends-and-patterns">Periodic Trends and Patterns</h3>
+<p>The results reveal several clear trends in the polarizabilities of Group 14-16 diatomic molecules:</p>
+<ol type="1">
+<li><p><strong>Increasing polarizability down Group 14:</strong>
+For a fixed Group 16 element, polarizability increases as we move from C to Pb. For example, with oxygen compounds: CO (12.21 a.u.) &lt; SiO (27.84 a.u.) &lt; GeO (29.02 a.u.) &lt; SnO (38.23 a.u.) &lt; PbO (41.29 a.u.). This trend reflects the increasing atomic size and more diffuse electron clouds of heavier Group 14 elements.</p></li>
+<li><p><strong>Pronounced increase across Group 16:</strong>
+For a fixed Group 14 element, polarizability increases dramatically as we move from O to Te. For carbon compounds: CO (12.21 a.u.) &lt; CS (35.81 a.u.) &lt; CSe (42.69 a.u.) &lt; CTe (59.46 a.u.). The Group 16 element choice has a larger effect on polarizability than the Group 14 element, with increases of 3-4× when moving from O to Te compared to 2-3× when moving from C to Pb.</p></li>
+<li><p><strong>Maximum values for heaviest combinations:</strong>
+The highest polarizabilities are observed for the heaviest combinations, with PbTe (130.91 a.u.) showing approximately 10.7 times the polarizability of CO (12.21 a.u.).</p></li>
+<li><p><strong>Non-linear progression:</strong>
+The increase in polarizability is not strictly linear with atomic number, suggesting that factors beyond atomic size influence the electronic response properties.</p></li>
+</ol>
+<h3 id="structure-property-relationships">Structure-Property Relationships</h3>
+<p>Several structural factors correlate with the observed polarizability trends:</p>
+<ol type="1">
+<li><p><strong>Bond length effects:</strong>
+Longer bonds generally correlate with higher polarizabilities, as electron density is more diffuse and more easily distorted by external fields. The increasing bond lengths down both groups contribute to the overall polarizability increase.</p></li>
+<li><p><strong>Valence electron contributions:</strong>
+The more diffuse valence electron distributions in heavier elements lead to enhanced polarizability. This is particularly evident with Te compounds, which show dramatically higher polarizabilities than their O counterparts.</p></li>
+<li><p><strong>Electronegativity differences:</strong>
+The decreasing electronegativity difference between Group 14 and 16 elements for heavier combinations may allow for more symmetric electron distribution and greater polarizability.</p></li>
+</ol>
+<h3 id="comparison-to-previous-work">Comparison to Previous Work</h3>
+<p>Our results for the CO molecule (12.21 a.u.) align reasonably well with experimental values (~13-17 a.u.) and previous computational studies.<span class="citation" data-cites="Maroulis1996"><sup>5</sup></span> The trend of increasing polarizability down groups is consistent with general chemical intuition and prior studies of atomic polarizabilities.</p>
+<p>The relatively larger impact of Group 16 elements on polarizability compared to Group 14 elements is an interesting observation that warrants further investigation. This may relate to the greater variability in valence p-orbital diffuseness across the chalcogens compared to the Group 14 elements.<span class="citation" data-cites="Schwerdtfeger2002"><sup>6</sup></span></p>
+<h3 id="computational-considerations">Computational Considerations</h3>
+<p>The use of ECPs for heavier elements (Sn, Pb, Te) was essential for handling these calculations efficiently. Without proper treatment of relativistic effects, calculations for these elements would likely yield unreliable results. The absence of polonium compounds in our study reflects the additional computational challenges posed by very heavy elements, where even more sophisticated relativistic treatments would be necessary.</p>
+<h2 id="implications-and-applications">Implications and Applications</h2>
+<p>The systematic dataset of molecular polarizabilities presented here has several potential applications:</p>
+<ol type="1">
+<li><p><strong>Nonlinear optical materials:</strong>
+Molecules with high polarizabilities are candidates for nonlinear optical applications. Our results suggest that Te-containing compounds, particularly PbTe and SnTe, could be promising in this regard.</p></li>
+<li><p><strong>Intermolecular force modeling:</strong>
+Accurate polarizability values are essential for modeling dispersion forces and other non-bonded interactions in molecular simulations.</p></li>
+<li><p><strong>Raman spectroscopy:</strong>
+Polarizability derivatives determine Raman activity. The trends identified here could help predict relative Raman intensities across related molecules.</p></li>
+<li><p><strong>Refractive index prediction:</strong>
+Molecular polarizability directly relates to macroscopic refractive index, making these values useful for predicting optical properties of materials.</p></li>
+</ol>
+<h2 id="conclusion">Conclusion</h2>
+<p>This study has successfully mapped the polarizability landscape across twenty Group 14-16 diatomic molecules, revealing clear periodic trends and structure-property relationships. The polarizability increases both down Group 14 and across Group 16, with the heaviest combinations showing the highest values. Group 16 elements have a more pronounced effect on polarizability than Group 14 elements, suggesting that chalcogen selection is particularly important in designing materials with specific polarizability requirements.</p>
+<p>The computational methodology employed here—combining the finite field approach with appropriate basis sets and ECPs—proved effective for systematically investigating these trends. This approach could be readily extended to other molecular systems and properties.</p>
+<p>Future work could explore:</p>
+<ol type="1">
+<li>Higher-level calculations (MP2, CCSD) on select molecules to assess electron correlation effects on polarizability</li>
+<li>Calculation of full polarizability tensors to examine anisotropy in the electronic response</li>
+<li>Extension to polyatomic molecules containing Group 14 and 16 elements</li>
+<li>Investigation of hyperpolarizability for these molecular systems, which is relevant for nonlinear optical applications</li>
+<li>Incorporation of vibrational contributions to polarizability for comparison with experimental measurements</li>
+</ol>
+<p>By establishing these fundamental structure-property relationships, this work contributes to our understanding of molecular electronic response properties and provides valuable insights for materials design in various technological applications.</p>
+<h2 id="acknowledgments">Acknowledgments</h2>
+<p>We acknowledge the contributions of the Psi4 development team and the Conda-Forge community for providing and maintaining the open-source tools that made this research possible.</p>
+<h2 class="unnumbered" id="references">References</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-Jensen2017" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Jensen, F. <em>Introduction to Computational Chemistry</em>, 3rd ed.; John Wiley &amp; Sons: Chichester, UK, 2017.</div>
+</div>
+<div id="ref-Pyykko2012" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">Pyykkö, P. Relativistic Effects in Chemistry: More Common Than You Thought. <em>Annual review of physical chemistry</em> <strong>2012</strong>, <em>63</em>, 45–64.</div>
+</div>
+<div id="ref-Cohen1975" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Cohen, H. D.; Roothaan, C. C. J. Electric Dipole Polarizability of Atoms by the <span>Hartree</span>—<span>Fock</span> Method. <span>I</span>. <span>Theory</span> for Closed-Shell Systems. <em>The Journal of Chemical Physics</em> <strong>1965</strong>, <em>43</em> (10), S34–S39. <a href="https://doi.org/10.1063/1.1701512">https://doi.org/10.1063/1.1701512</a>.</div>
+</div>
+<div id="ref-Nalwa2001" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Nalwa, H. S. <em>Handbook of Advanced Electronic and Photonic Materials and Devices</em>; Academic press, 2001.</div>
+</div>
+<div id="ref-Maroulis1996" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Maroulis, G. Accurate Electric Multipole Moment, Static Polarizability and Hyperpolarizability Derivatives for N2. <em>The Journal of chemical physics</em> <strong>1996</strong>, <em>104</em> (1), 368–376.</div>
+</div>
+<div id="ref-Schwerdtfeger2002" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Schwerdtfeger, P. Atomic Static Dipole Polarizabilities. <em>Atoms, Molecules and Clusters in Electric Fields: Theoretical Approaches to the Calculation of Electric Polarizability</em> <strong>2002</strong>, 1–32.</div>
+</div>
+</div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-text">
+                Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a> 
+                and authored by <a href="https://noprofits.org">No Profits</a> 
+                • <a href="../colophon.html">Colophon</a>
+            </div>
+            <div class="print-pdf-button">
+                <button onclick="window.print();" class="print-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="print-icon">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    Print / Save as PDF
+                </button>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

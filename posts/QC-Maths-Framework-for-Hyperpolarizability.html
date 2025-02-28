@@ -50,11 +50,11 @@
 - <span class="math inline">\(i, j, k, l\)</span> refer to Cartesian coordinates (<span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span>, <span class="math inline">\(z\)</span>)</p>
 <p>This expansion provides the theoretical basis for extracting polarizability and hyperpolarizability values from energy calculations.<span class="citation" data-cites="Kurtz1990"><sup>3</sup></span></p>
 <h2 id="dipole-moment-expansion">Dipole Moment Expansion</h2>
-<p>Similarly, the dipole moment of a molecule in the presence of an electric field can be expressed as:<span class="citation" data-cites="Boyd2008"><sup>4</sup></span></p>
+<p>Similarly, the dipole moment of a molecule in the presence of an electric field can be expressed as:<span class="citation" data-cites="Boyd2008"><sup><strong>Boyd2008?</strong></sup></span></p>
 <p><span class="math display">\[\mu_i(\vec{F}) = \mu_i^{(0)} + \sum_j \alpha_{ij} F_j + \frac{1}{2!} \sum_{jk} \beta_{ijk} F_j F_k + \frac{1}{3!} \sum_{jkl} \gamma_{ijkl} F_j F_k F_l + \ldots\]</span></p>
 <p>where <span class="math inline">\(\mu_i^{(0)}\)</span> is the permanent dipole moment in the absence of an external field.</p>
 <h2 id="relation-to-energy-derivatives">Relation to Energy Derivatives</h2>
-<p>These properties can be rigorously defined as derivatives of the energy with respect to the field components:<span class="citation" data-cites="Karna1991"><sup>5</sup></span></p>
+<p>These properties can be rigorously defined as derivatives of the energy with respect to the field components:<span class="citation" data-cites="Karna1991"><sup>4</sup></span></p>
 <p><span class="math display">\[\mu_i = -\left(\frac{\partial E}{\partial F_i}\right)_{\vec{F}=0}\]</span></p>
 <p><span class="math display">\[\alpha_{ij} = -\left(\frac{\partial^2 E}{\partial F_i \partial F_j}\right)_{\vec{F}=0}\]</span></p>
 <p><span class="math display">\[\beta_{ijk} = -\left(\frac{\partial^3 E}{\partial F_i \partial F_j \partial F_k}\right)_{\vec{F}=0}\]</span></p>
@@ -64,15 +64,15 @@
 <p><span class="math display">\[\beta_{ijk} = \left(\frac{\partial^2 \mu_i}{\partial F_j \partial F_k}\right)_{\vec{F}=0}\]</span></p>
 <p><span class="math display">\[\gamma_{ijkl} = \left(\frac{\partial^3 \mu_i}{\partial F_j \partial F_k \partial F_l}\right)_{\vec{F}=0}\]</span></p>
 <h2 id="finite-field-method">Finite Field Method</h2>
-<p>In computational chemistry, a common approach to calculate these properties is the finite field (FF) method.<span class="citation" data-cites="Cohen1975"><sup>6</sup></span> For example, the polarizability component <span class="math inline">\(\alpha_{xx}\)</span> can be approximated as:</p>
+<p>In computational chemistry, a common approach to calculate these properties is the finite field (FF) method.<span class="citation" data-cites="Cohen1975"><sup>5</sup></span> For example, the polarizability component <span class="math inline">\(\alpha_{xx}\)</span> can be approximated as:</p>
 <p><span class="math display">\[\alpha_{xx} \approx \frac{\mu_x(F_x=+h) - \mu_x(F_x=-h)}{2h}\]</span></p>
 <p>where <span class="math inline">\(h\)</span> is a small electric field strength (typically 0.001-0.005 atomic units).</p>
-<p>For the first hyperpolarizability component <span class="math inline">\(\beta_{xxx}\)</span>, a similar finite difference approach gives:<span class="citation" data-cites="Rice1991"><sup>7</sup></span></p>
+<p>For the first hyperpolarizability component <span class="math inline">\(\beta_{xxx}\)</span>, a similar finite difference approach gives:<span class="citation" data-cites="Rice1991"><sup>6</sup></span></p>
 <p><span class="math display">\[\beta_{xxx} \approx \frac{\mu_x(F_x=+h) - 2\mu_x(F_x=0) + \mu_x(F_x=-h)}{h^2}\]</span></p>
-<p>More generally, using a 5-point stencil for better numerical stability:<span class="citation" data-cites="Sekino1986"><sup>8</sup></span></p>
+<p>More generally, using a 5-point stencil for better numerical stability:<span class="citation" data-cites="Sekino1986"><sup>7</sup></span></p>
 <p><span class="math display">\[\beta_{xxx} \approx \frac{-\mu_x(F_x=+2h) + 8\mu_x(F_x=+h) - 8\mu_x(F_x=-h) + \mu_x(F_x=-2h)}{12h^2}\]</span></p>
 <h2 id="coupled-perturbed-hartree-fock-method">Coupled-Perturbed Hartree-Fock Method</h2>
-<p>In quantum chemistry software like Psi4, polarizabilities and hyperpolarizabilities can be calculated using response theory, particularly the Coupled-Perturbed Hartree-Fock (CPHF) method.<span class="citation" data-cites="Karna1991"><sup>5</sup></span> In this approach, we solve for the response of the molecular orbitals to an external field.</p>
+<p>In quantum chemistry software like Psi4, polarizabilities and hyperpolarizabilities can be calculated using response theory, particularly the Coupled-Perturbed Hartree-Fock (CPHF) method.<span class="citation" data-cites="Karna1991"><sup>4</sup></span> In this approach, we solve for the response of the molecular orbitals to an external field.</p>
 <p>The CPHF equations can be written as:</p>
 <p><span class="math display">\[\sum_{bj} (A_{ai,bj} - \omega \delta_{ab}\delta_{ij})U_{bj}^{(k)}(\omega) = -V_{ai}^{(k)}\]</span></p>
 <p>where:
@@ -82,10 +82,10 @@
 - <span class="math inline">\(U_{bj}^{(k)}(\omega)\)</span> is the orbital response to a perturbation in the <span class="math inline">\(k\)</span> direction
 - <span class="math inline">\(V_{ai}^{(k)}\)</span> is the perturbation matrix element
 - <span class="math inline">\(\omega\)</span> is the frequency of the electric field (0 for static properties)</p>
-<p>Once the orbital response <span class="math inline">\(U_{bj}^{(k)}\)</span> is determined, the polarizability is calculated as:<span class="citation" data-cites="Parrish2017"><sup>9</sup></span></p>
+<p>Once the orbital response <span class="math inline">\(U_{bj}^{(k)}\)</span> is determined, the polarizability is calculated as:<span class="citation" data-cites="Parrish2017"><sup>8</sup></span></p>
 <p><span class="math display">\[\alpha_{ij}(\omega) = -\sum_{ak} U_{ak}^{(i)}(\omega) V_{ak}^{(j)} + \sum_{ak} U_{ak}^{(j)}(\omega) V_{ak}^{(i)}\]</span></p>
 <h2 id="isotropic-averages-and-invariants">Isotropic Averages and Invariants</h2>
-<p>For analysis purposes, it’s common to calculate isotropic (orientation-independent) values:<span class="citation" data-cites="Shelton1992"><sup>10</sup></span></p>
+<p>For analysis purposes, it’s common to calculate isotropic (orientation-independent) values:<span class="citation" data-cites="Shelton1992"><sup>9</sup></span></p>
 <p><strong>Isotropic polarizability</strong>:
 <span class="math display">\[\alpha = \frac{1}{3}(\alpha_{xx} + \alpha_{yy} + \alpha_{zz})\]</span></p>
 <p><strong>Isotropic first hyperpolarizability</strong>:
@@ -95,14 +95,14 @@
 <p><strong>Isotropic second hyperpolarizability</strong>:
 <span class="math display">\[\gamma = \frac{1}{5}(\gamma_{xxxx} + \gamma_{yyyy} + \gamma_{zzzz} + 2\gamma_{xxyy} + 2\gamma_{xxzz} + 2\gamma_{yyzz})\]</span></p>
 <h2 id="units-and-conversion">Units and Conversion</h2>
-<p>In quantum chemistry calculations, properties are typically reported in atomic units (a.u.), which often need conversion for comparison with experimental values:<span class="citation" data-cites="Kajzar1989"><sup>11</sup></span></p>
+<p>In quantum chemistry calculations, properties are typically reported in atomic units (a.u.), which often need conversion for comparison with experimental values:<span class="citation" data-cites="Kajzar1989"><sup>10</sup></span></p>
 <ul>
 <li>Polarizability: 1 a.u. = 0.1482×10^(-24) cm³</li>
 <li>First hyperpolarizability: 1 a.u. = 8.6393×10^(-33) cm⁴/statvolt = 3.2063×10^(-53) C³m³/J²</li>
 <li>Second hyperpolarizability: 1 a.u. = 5.0367×10^(-40) cm⁵/statvolt = 6.2353×10^(-65) C⁴m⁴/J³</li>
 </ul>
 <h2 id="computational-implementation-considerations">Computational Implementation Considerations</h2>
-<p>When implementing these calculations in quantum chemistry packages like Psi4, several practical considerations arise:<span class="citation" data-cites="Parrish2017"><sup>9</sup></span></p>
+<p>When implementing these calculations in quantum chemistry packages like Psi4, several practical considerations arise:<span class="citation" data-cites="Parrish2017"><sup>8</sup></span></p>
 <ol type="1">
 <li><strong>Basis set selection</strong>: Diffuse functions are crucial for accurate polarizability calculations, as they capture the response of the electron density to external fields</li>
 <li><strong>Field strength</strong>: The finite field method requires careful selection of field strengths—too large causes nonlinear effects, too small leads to numerical noise</li>
@@ -123,29 +123,26 @@
 <div id="ref-Kurtz1990" class="csl-entry" role="listitem">
 <div class="csl-left-margin">3. </div><div class="csl-right-inline">Kurtz, H. A.; Stewart, J. J. P.; Dieter, K. M. Calculation of the Nonlinear Optical Properties of Molecules. <em>Journal of Computational Chemistry</em> <strong>1990</strong>, <em>11</em> (1), 82–87. <a href="https://doi.org/10.1002/jcc.540110110">https://doi.org/10.1002/jcc.540110110</a>.</div>
 </div>
-<div id="ref-Boyd2008" class="csl-entry" role="listitem">
-<div class="csl-left-margin">4. </div><div class="csl-right-inline">Boyd, R. W. <em>Nonlinear Optics</em>, 3rd ed.; Academic Press: Burlington, MA, 2008.</div>
-</div>
 <div id="ref-Karna1991" class="csl-entry" role="listitem">
-<div class="csl-left-margin">5. </div><div class="csl-right-inline">Karna, S. P.; Dupuis, M. Frequency Dependent Nonlinear Optical Properties of Molecules: <span>Formulation</span> and Implementation in the <span>HONDO</span> Program. <em>Journal of Computational Chemistry</em> <strong>1991</strong>, <em>12</em> (4), 487–504. <a href="https://doi.org/10.1002/jcc.540120409">https://doi.org/10.1002/jcc.540120409</a>.</div>
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Karna, S. P.; Dupuis, M. Frequency Dependent Nonlinear Optical Properties of Molecules: <span>Formulation</span> and Implementation in the <span>HONDO</span> Program. <em>Journal of Computational Chemistry</em> <strong>1991</strong>, <em>12</em> (4), 487–504. <a href="https://doi.org/10.1002/jcc.540120409">https://doi.org/10.1002/jcc.540120409</a>.</div>
 </div>
 <div id="ref-Cohen1975" class="csl-entry" role="listitem">
-<div class="csl-left-margin">6. </div><div class="csl-right-inline">Cohen, H. D.; Roothaan, C. C. J. Electric Dipole Polarizability of Atoms by the <span>Hartree</span>—<span>Fock</span> Method. <span>I</span>. <span>Theory</span> for Closed-Shell Systems. <em>The Journal of Chemical Physics</em> <strong>1965</strong>, <em>43</em> (10), S34–S39. <a href="https://doi.org/10.1063/1.1701512">https://doi.org/10.1063/1.1701512</a>.</div>
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Cohen, H. D.; Roothaan, C. C. J. Electric Dipole Polarizability of Atoms by the <span>Hartree</span>—<span>Fock</span> Method. <span>I</span>. <span>Theory</span> for Closed-Shell Systems. <em>The Journal of Chemical Physics</em> <strong>1965</strong>, <em>43</em> (10), S34–S39. <a href="https://doi.org/10.1063/1.1701512">https://doi.org/10.1063/1.1701512</a>.</div>
 </div>
 <div id="ref-Rice1991" class="csl-entry" role="listitem">
-<div class="csl-left-margin">7. </div><div class="csl-right-inline">Rice, J. E.; Handy, N. C. The Calculation of Frequency-Dependent Hyperpolarizabilities Using Coupled-Perturbed <span>Hartree-Fock</span> Theory. <em>The Journal of Chemical Physics</em> <strong>1991</strong>, <em>94</em> (7), 4959–4971. <a href="https://doi.org/10.1063/1.460558">https://doi.org/10.1063/1.460558</a>.</div>
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Rice, J. E.; Handy, N. C. The Calculation of Frequency-Dependent Hyperpolarizabilities Using Coupled-Perturbed <span>Hartree-Fock</span> Theory. <em>The Journal of Chemical Physics</em> <strong>1991</strong>, <em>94</em> (7), 4959–4971. <a href="https://doi.org/10.1063/1.460558">https://doi.org/10.1063/1.460558</a>.</div>
 </div>
 <div id="ref-Sekino1986" class="csl-entry" role="listitem">
-<div class="csl-left-margin">8. </div><div class="csl-right-inline">Sekino, H.; Bartlett, R. J. Frequency Dependent Nonlinear Optical Properties of Molecules. <em>The Journal of Chemical Physics</em> <strong>1986</strong>, <em>85</em> (2), 976–989. <a href="https://doi.org/10.1063/1.451255">https://doi.org/10.1063/1.451255</a>.</div>
+<div class="csl-left-margin">7. </div><div class="csl-right-inline">Sekino, H.; Bartlett, R. J. Frequency Dependent Nonlinear Optical Properties of Molecules. <em>The Journal of Chemical Physics</em> <strong>1986</strong>, <em>85</em> (2), 976–989. <a href="https://doi.org/10.1063/1.451255">https://doi.org/10.1063/1.451255</a>.</div>
 </div>
 <div id="ref-Parrish2017" class="csl-entry" role="listitem">
-<div class="csl-left-margin">9. </div><div class="csl-right-inline">Parrish, R. M.; Burns, L. A.; Smith, D. G. A.; Simmonett, A. C.; DePrince, A. E.; Hohenstein, E. G.; Bozkaya, U.; Sokolov, A. Yu.; Di Remigio, R.; Richard, R. M.; Sherrill, C. D. Psi4 1.1: <span>An</span> Open-Source Electronic Structure Program Emphasizing Automation, Advanced Libraries, and Interoperability. <em>Journal of Chemical Theory and Computation</em> <strong>2017</strong>, <em>13</em> (7), 3185–3197. <a href="https://doi.org/10.1021/acs.jctc.7b00174">https://doi.org/10.1021/acs.jctc.7b00174</a>.</div>
+<div class="csl-left-margin">8. </div><div class="csl-right-inline">Parrish, R. M.; Burns, L. A.; Smith, D. G. A.; Simmonett, A. C.; DePrince, A. E.; Hohenstein, E. G.; Bozkaya, U.; Sokolov, A. Yu.; Di Remigio, R.; Richard, R. M.; Sherrill, C. D. Psi4 1.1: <span>An</span> Open-Source Electronic Structure Program Emphasizing Automation, Advanced Libraries, and Interoperability. <em>Journal of Chemical Theory and Computation</em> <strong>2017</strong>, <em>13</em> (7), 3185–3197. <a href="https://doi.org/10.1021/acs.jctc.7b00174">https://doi.org/10.1021/acs.jctc.7b00174</a>.</div>
 </div>
 <div id="ref-Shelton1992" class="csl-entry" role="listitem">
-<div class="csl-left-margin">10. </div><div class="csl-right-inline">Shelton, D. P.; Rice, J. E. Measurements and Calculations of the Hyperpolarizabilities of Atoms and Small Molecules in the Gas Phase. <em>Chemical Reviews</em> <strong>1994</strong>, <em>94</em> (1), 3–29. <a href="https://doi.org/10.1021/cr00025a001">https://doi.org/10.1021/cr00025a001</a>.</div>
+<div class="csl-left-margin">9. </div><div class="csl-right-inline">Shelton, D. P.; Rice, J. E. Measurements and Calculations of the Hyperpolarizabilities of Atoms and Small Molecules in the Gas Phase. <em>Chemical Reviews</em> <strong>1994</strong>, <em>94</em> (1), 3–29. <a href="https://doi.org/10.1021/cr00025a001">https://doi.org/10.1021/cr00025a001</a>.</div>
 </div>
 <div id="ref-Kajzar1989" class="csl-entry" role="listitem">
-<div class="csl-left-margin">11. </div><div class="csl-right-inline">Kajzar, F.; Messier, J. First Hyperpolarizability of Conjugated Molecules. In <em>Nonlinear optical properties of organic molecules and crystals</em>; Chemla, D. S., Zyss, J., Eds.; Academic Press: Orlando, FL, 1989; pp 51–82.</div>
+<div class="csl-left-margin">10. </div><div class="csl-right-inline">Kajzar, F.; Messier, J. First Hyperpolarizability of Conjugated Molecules. In <em>Nonlinear optical properties of organic molecules and crystals</em>; Chemla, D. S., Zyss, J., Eds.; Academic Press: Orlando, FL, 1989; pp 51–82.</div>
 </div>
 </div>
     </main>
