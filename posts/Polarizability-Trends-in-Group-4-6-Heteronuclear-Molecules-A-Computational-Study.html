@@ -31,29 +31,43 @@
 
     <main role="main">
         <div class="info">
-    <h3>Polarizability Trends in Group 14-16 Heteronuclear Molecules - A Computational Study</h3>
+    <h3>Polarizability Trends in Group IVA-VIA Heteronuclear Molecules - A Computational Study</h3>
     Posted on February 27, 2025
     
 </div>
 
 <h2 id="abstract">Abstract</h2>
-<p>This study presents a systematic computational investigation of polarizabilities in heteronuclear diatomic molecules formed from Group 14 (IVA) and Group 16 (VIA) elements. Using the finite field method implemented in Psi4 1.7, we calculated longitudinal polarizabilities for twenty molecular combinations (CO, CS, CSe, CTe, SiO, SiS, SiSe, SiTe, GeO, GeS, GeSe, GeTe, SnO, SnS, SnSe, SnTe, PbO, PbS, PbSe, PbTe). Results reveal clear periodic trends, with polarizability increasing both down Group 14 and across Group 16, reaching a maximum of 130.9 a.u. for PbTe. The data demonstrate that changes in the Group 16 element have a more pronounced effect on polarizability than changes in the Group 14 element. This work provides valuable insights into the electronic response properties of these molecular systems and establishes structure-property relationships that could guide materials design for applications requiring specific polarizability characteristics.</p>
+<p>This study presents a systematic computational investigation of polarizabilities in heteronuclear diatomic molecules formed from Group IVA (C, Si, Ge, Sn, Pb) and Group VIA (O, S, Se, Te) elements. Using the finite field method implemented in Psi4 1.7, we calculated longitudinal polarizabilities for twenty molecular combinations (CO, CS, CSe, CTe, SiO, SiS, SiSe, SiTe, GeO, GeS, GeSe, GeTe, SnO, SnS, SnSe, SnTe, PbO, PbS, PbSe, PbTe). Results reveal clear periodic trends, with polarizability increasing both down Group IVA and across Group VIA, reaching a maximum of 130.9 a.u. for PbTe. The data demonstrate that changes in the Group VIA element have a more pronounced effect on polarizability than changes in the Group IVA element. This work highlights the effectiveness of combining automation, Python scripting, and open-source quantum chemistry software to efficiently generate, analyze, and visualize data across a systematic series of molecules.</p>
 <h2 id="introduction">Introduction</h2>
 <p>Molecular polarizability—the response of a molecule’s electron density to an applied electric field—is a fundamental property that influences a wide range of physical and chemical phenomena, from intermolecular forces to optical properties.<span class="citation" data-cites="Jensen2017"><sup>1</sup></span> Heteronuclear diatomic molecules present an interesting case study for polarizability analysis, as they exhibit directional responses that depend on the constituent atoms’ electronic structures and the nature of the chemical bond between them.</p>
-<p>Group 14 (C, Si, Ge, Sn, Pb) and Group 16 (O, S, Se, Te) elements form a diverse set of diatomic molecules with varying bond lengths, electronic configurations, and degrees of covalent/ionic character. As one moves down these groups in the periodic table, several important changes occur: increasing atomic size, more diffuse valence orbitals, and for the heavier elements, significant relativistic effects.<span class="citation" data-cites="Pyykko2012"><sup>2</sup></span> These systematic variations make Group 14-16 combinations an ideal testbed for exploring how atomic properties translate into molecular polarizability trends.</p>
+<p>Group IVA (C, Si, Ge, Sn, Pb) and Group VIA (O, S, Se, Te) elements form a diverse set of diatomic molecules with varying bond lengths, electronic configurations, and degrees of covalent/ionic character. As one moves down these groups in the periodic table, several important changes occur: increasing atomic size, more diffuse valence orbitals, and for the heavier elements, significant relativistic effects.<span class="citation" data-cites="Pyykko2012"><sup>2</sup></span> These systematic variations make Group IVA-VIA combinations an ideal testbed for exploring how atomic properties translate into molecular polarizability trends.</p>
 <p>The polarizability tensor component αzz (along the molecular axis) can be approximated through the numerical derivative approach known as the finite field method:<span class="citation" data-cites="Cohen1975"><sup>3</sup></span></p>
 <p><span class="math display">\[\alpha_{zz} \approx \frac{\mu_z(F_z = +h) - \mu_z(F_z = -h)}{2h}\]</span></p>
 <p>where h represents the applied electric field strength and μz is the z-component of the dipole moment. This approach provides a straightforward approximation of how the molecular dipole responds to an external electric field, from which polarizability can be derived.</p>
-<p>Building upon our previous work on atomic polarizabilities of Group 14 elements, this study extends the investigation to heteronuclear molecules, with three primary objectives: (1) establishing a systematic dataset of molecular polarizabilities for Group 14-16 combinations, (2) identifying periodic trends and structure-property relationships, and (3) providing insights into the relative contributions of different elements to the overall molecular polarizability.</p>
-<p>The results from this work not only enhance our fundamental understanding of electronic structure in heteronuclear systems but also have practical implications for materials design in applications ranging from nonlinear optics to molecular sensing.<span class="citation" data-cites="Nalwa2001"><sup>4</sup></span></p>
+<p>Building upon our previous work on atomic polarizabilities of Group IVA elements, this study extends the investigation to heteronuclear molecules, with three primary objectives: (1) demonstrating the power of computational automation for systematic property prediction across a molecular series, (2) identifying periodic trends and structure-property relationships, and (3) providing insights into the relative contributions of different elements to the overall molecular polarizability.</p>
+<p>While the polarizability values themselves may inform materials development, the primary strength of this work lies in showcasing how modern computational chemistry tools, particularly open-source software like Psi4 and Python, enable rapid, systematic investigation of molecular properties with minimal manual intervention.</p>
 <h2 id="experimental">Experimental</h2>
-<h3 id="computational-setup">Computational Setup</h3>
-<p>Calculations were performed using Psi4 version 1.7 in a dedicated Conda environment on an Ubuntu 24.04 system. The project directory structure was organized as follows:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/projects/theo-chem/<span class="dt">{inputs</span><span class="op">,</span><span class="dt">outputs</span><span class="op">,</span><span class="dt">scripts}</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/projects/theo-chem</span></code></pre></div>
+<h3 id="computational-environment-setup">Computational Environment Setup</h3>
+<p>One of the most time-consuming aspects of this project was establishing the proper computational environment. After several attempts, we successfully set up Psi4 1.7 in a dedicated Conda environment with the following steps:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new conda environment for quantum chemistry</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">-n</span> qchem python=3.8</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate qchem</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Install pydantic first with a compatible version</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pydantic==1.10.8</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Psi4 through conda (using the psi4 channel):</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install <span class="at">-c</span> psi4 psi4</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install <span class="at">-c</span> psi4 dftd3 gcp</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Install additional dependencies</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install numpy scipy matplotlib</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Test installation</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import psi4; print(psi4.__version__)&quot;</span></span></code></pre></div>
 <h3 id="calculation-methodology">Calculation Methodology</h3>
 <p>We employed the finite field method to calculate the longitudinal polarizability (αzz) of each molecule. This involved applying electric fields of +0.002, 0.0, and -0.002 atomic units along the molecular axis (z-direction) and measuring the resulting changes in the molecular dipole moment.</p>
-<p>For each calculation, the Group 14 atom was placed at the origin, with the Group 16 atom positioned along the positive z-axis at the appropriate bond length. Bond lengths were estimated based on experimental and theoretical values from the literature, with adjustments made for the heavier elements.</p>
+<p>For each calculation, the Group IVA atom was placed at the origin, with the Group VIA atom positioned along the positive z-axis at the appropriate bond length. Bond lengths were estimated based on experimental and theoretical values from the literature, with adjustments made for the heavier elements.</p>
 <h3 id="python-implementation">Python Implementation</h3>
 <p>The polarizability calculations were implemented in a Python script that automated the process for all molecular combinations. The script defined the molecular geometries, set appropriate basis sets for each element, handled the electric field perturbations, and calculated the polarizabilities from the dipole responses.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
@@ -247,14 +261,135 @@
 <span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
 <span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a>            row <span class="op">+=</span> <span class="ss">f&quot;</span><span class="sc">{</span><span class="st">'--'</span><span class="sc">:^7}</span><span class="ss"> | &quot;</span></span>
 <span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(row[:<span class="op">-</span><span class="dv">2</span>])  <span class="co"># Remove trailing &quot; | &quot;</span></span></code></pre></div>
+<h3 id="visualization-code">Visualization Code</h3>
+<p>For visualization of the results, we used the following Python code (placeholder - actual code to be added):</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> cm</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mpl_toolkits.mplot3d <span class="im">import</span> Axes3D</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Raw data from calculations</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> [</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'C'</span>, <span class="st">'O'</span>, <span class="fl">12.2066</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'C'</span>, <span class="st">'S'</span>, <span class="fl">35.8138</span>),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'C'</span>, <span class="st">'Se'</span>, <span class="fl">42.6850</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'C'</span>, <span class="st">'Te'</span>, <span class="fl">59.4634</span>),</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Si'</span>, <span class="st">'O'</span>, <span class="fl">27.8381</span>),</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Si'</span>, <span class="st">'S'</span>, <span class="fl">59.9759</span>),</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Si'</span>, <span class="st">'Se'</span>, <span class="fl">69.8347</span>),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Si'</span>, <span class="st">'Te'</span>, <span class="fl">98.6399</span>),</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Ge'</span>, <span class="st">'O'</span>, <span class="fl">29.0197</span>),</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Ge'</span>, <span class="st">'S'</span>, <span class="fl">61.4975</span>),</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Ge'</span>, <span class="st">'Se'</span>, <span class="fl">75.6987</span>),</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Ge'</span>, <span class="st">'Te'</span>, <span class="fl">103.9827</span>),</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Sn'</span>, <span class="st">'O'</span>, <span class="fl">38.2285</span>),</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Sn'</span>, <span class="st">'S'</span>, <span class="fl">73.2007</span>),</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Sn'</span>, <span class="st">'Se'</span>, <span class="fl">90.7225</span>),</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Sn'</span>, <span class="st">'Te'</span>, <span class="fl">123.3437</span>),</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Pb'</span>, <span class="st">'O'</span>, <span class="fl">41.2930</span>),</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Pb'</span>, <span class="st">'S'</span>, <span class="fl">78.2760</span>),</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Pb'</span>, <span class="st">'Se'</span>, <span class="fl">96.4192</span>),</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    (<span class="st">'Pb'</span>, <span class="st">'Te'</span>, <span class="fl">130.9124</span>)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the elements and their positions on the axes</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>group14 <span class="op">=</span> [<span class="st">'C'</span>, <span class="st">'Si'</span>, <span class="st">'Ge'</span>, <span class="st">'Sn'</span>, <span class="st">'Pb'</span>]</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>group16 <span class="op">=</span> [<span class="st">'O'</span>, <span class="st">'S'</span>, <span class="st">'Se'</span>, <span class="st">'Te'</span>]</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a grid of x, y coordinates for the plot</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>X, Y <span class="op">=</span> np.meshgrid(np.arange(<span class="bu">len</span>(group14)), np.arange(<span class="bu">len</span>(group16)))</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a 2D array to hold polarizability values</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>Z <span class="op">=</span> np.zeros((<span class="bu">len</span>(group16), <span class="bu">len</span>(group14)))</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill the Z array with polarizability values</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> g14_elem, g16_elem, polar <span class="kw">in</span> data:</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    x_idx <span class="op">=</span> group14.index(g14_elem)</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    y_idx <span class="op">=</span> group16.index(g16_elem)</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    Z[y_idx, x_idx] <span class="op">=</span> polar</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the figure</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">10</span>))</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> fig.add_subplot(<span class="dv">111</span>, projection<span class="op">=</span><span class="st">'3d'</span>)</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the surface plot</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>surf <span class="op">=</span> ax.plot_surface(X, Y, Z, cmap<span class="op">=</span>cm.viridis, </span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>                      linewidth<span class="op">=</span><span class="dv">0</span>, antialiased<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a color bar</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>cbar <span class="op">=</span> fig.colorbar(surf, ax<span class="op">=</span>ax, shrink<span class="op">=</span><span class="fl">0.6</span>, aspect<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>cbar.set_label(<span class="st">'Polarizability (a.u.)'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Add scatter points for clarity</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> g14_elem, g16_elem, polar <span class="kw">in</span> data:</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>    x_idx <span class="op">=</span> group14.index(g14_elem)</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>    y_idx <span class="op">=</span> group16.index(g16_elem)</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>    ax.scatter(x_idx, y_idx, polar, color<span class="op">=</span><span class="st">'red'</span>, s<span class="op">=</span><span class="dv">50</span>)</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the tick labels</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(np.arange(<span class="bu">len</span>(group14)))</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(group14)</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>ax.set_yticks(np.arange(<span class="bu">len</span>(group16)))</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>ax.set_yticklabels(group16)</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Set labels and title</span></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Group 14 (IVA) Elements'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, labelpad<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Group 16 (VIA) Elements'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, labelpad<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>ax.set_zlabel(<span class="st">'Polarizability (a.u.)'</span>, fontsize<span class="op">=</span><span class="dv">14</span>, labelpad<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Polarizability of Group 14-16 Diatomic Molecules'</span>, fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="co"># Adjust the view angle for better visualization</span></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>ax.view_init(elev<span class="op">=</span><span class="dv">30</span>, azim<span class="op">=</span><span class="dv">240</span>)</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the figure</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'polarizability_3d_surface.png'</span>, dpi<span class="op">=</span><span class="dv">300</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>plt.close()</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a heatmap visualization</span></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>heatmap <span class="op">=</span> plt.imshow(Z, cmap<span class="op">=</span><span class="st">'viridis'</span>)</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>plt.colorbar(heatmap, label<span class="op">=</span><span class="st">'Polarizability (a.u.)'</span>)</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="co"># Add labels and title for heatmap</span></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>plt.xticks(np.arange(<span class="bu">len</span>(group14)), group14)</span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>plt.yticks(np.arange(<span class="bu">len</span>(group16)), group16)</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Group 14 (IVA) Elements'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Group 16 (VIA) Elements'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Polarizability Heatmap of Group 14-16 Molecules'</span>, fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="co"># Add values to each cell</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(group16)):</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(group14)):</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>        text <span class="op">=</span> plt.text(j, i, <span class="ss">f&quot;</span><span class="sc">{</span>Z[i, j]<span class="sc">:.1f}</span><span class="ss">&quot;</span>,</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>                       ha<span class="op">=</span><span class="st">&quot;center&quot;</span>, va<span class="op">=</span><span class="st">&quot;center&quot;</span>, color<span class="op">=</span><span class="st">&quot;w&quot;</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'polarizability_heatmap.png'</span>, dpi<span class="op">=</span><span class="dv">300</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>plt.close()</span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a line plot showing trends</span></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, g14 <span class="kw">in</span> <span class="bu">enumerate</span>(group14):</span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a>    polarizabilities <span class="op">=</span> Z[:, i]</span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a>    plt.plot(np.arange(<span class="bu">len</span>(group16)), polarizabilities, <span class="st">'o-'</span>, linewidth<span class="op">=</span><span class="dv">2</span>, markersize<span class="op">=</span><span class="dv">8</span>, label<span class="op">=</span>g14)</span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a>plt.xticks(np.arange(<span class="bu">len</span>(group16)), group16)</span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Group 16 (VIA) Element'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Polarizability (a.u.)'</span>, fontsize<span class="op">=</span><span class="dv">14</span>)</span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Polarizability Trends Across Group 16 Elements'</span>, fontsize<span class="op">=</span><span class="dv">16</span>)</span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a>plt.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>plt.legend(title<span class="op">=</span><span class="st">'Group 14 Element'</span>, title_fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'polarizability_trends.png'</span>, dpi<span class="op">=</span><span class="dv">300</span>, bbox_inches<span class="op">=</span><span class="st">'tight'</span>)</span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a>plt.close()</span></code></pre></div>
 <h3 id="basis-set-selection">Basis Set Selection</h3>
 <p>Appropriate basis sets were selected based on the elements involved:
 - For C, Si, Ge, O, S, and Se: cc-pVDZ basis sets were employed
 - For Sn, Pb, and Te: def2-SVP basis sets with effective core potentials (ECPs) were used to account for relativistic effects</p>
 <p>Polonium-containing compounds were excluded from this study due to the specialized relativistic treatment they would require and their limited practical relevance.</p>
 <h2 id="results">Results</h2>
-<p>Our calculations yielded polarizability values for twenty different Group 14-16 diatomic molecules. The complete results are presented in Table 1.</p>
-<p><strong>Table 1: Calculated Longitudinal Polarizabilities (α<sub>zz</sub>) for Group 14-16 Molecules</strong></p>
+<p>Our calculations yielded polarizability values for twenty different Group IVA-VIA diatomic molecules. The complete results are presented in Table 1.</p>
+<p><strong>Table 1: Calculated Longitudinal Polarizabilities (α<sub>zz</sub>) for Group IVA-VIA Molecules</strong></p>
 <table>
 <thead>
 <tr>
@@ -327,64 +462,57 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Figure 1: 3D Surface Plot of Polarizabilities</strong></p>
-<p><img src="../images/polarizability_3d_surface.png" alt="3D Surface Polarizability"></p>
-<p><strong>Figure 2: Heatmap of Polarizabilities Across Group 14-16 Combinations</strong></p>
-<p><img src="../images/polarizability_heatmap.png" alt="Polarizability Heatmap"></p>
-<p><strong>Figure 3: Polarizability Trends for Group 14 Elements Across Group 16</strong></p>
-<p><img src="../images/polarizability_trends.png" alt="Polarizability Trends"></p>
+<figure>
+<img src="../images/polarizability_3d_surface.png" alt="3D Surface Polarizability">
+<figcaption>
+<strong>Figure 1:</strong> 3D Surface Plot of Polarizabilities. Three-dimensional visualization showing how polarizability varies across different combinations of Group IVA elements and Group VIA elements.
+</figcaption>
+</figure>
+<figure>
+<img src="../images/polarizability_heatmap.png" alt="Polarizability Heatmap">
+<figcaption>
+<strong>Figure 2:</strong> Heatmap of Polarizabilities Across Group IVA-VIA Combinations. Color-coded representation showing the systematic increase in polarizability values when moving from lighter to heavier elements.
+</figcaption>
+</figure>
+<figure>
+<img src="../images/polarizability_trends.png" alt="Polarizability Trends">
+<figcaption>
+<strong>Figure 3:</strong> Polarizability Trends for Group IVA Elements Across Group VIA. Line plot demonstrating the consistent increase in polarizability when moving from oxygen to tellurium compounds for each Group IVA element.
+</figcaption>
+</figure>
+<figure>
+<img src="../images/bond_length_vs_polarizability.png" alt="Bond Length vs. Polarizability">
+<figcaption>
+<strong>Figure 4:</strong> Bond Length vs. Polarizability Correlation. Scatter plot showing the relationship between bond length and polarizability across all twenty molecular combinations, with trend lines for each Group IVA element.
+</figcaption>
+</figure>
 <h2 id="discussion">Discussion</h2>
 <h3 id="periodic-trends-and-patterns">Periodic Trends and Patterns</h3>
-<p>The results reveal several clear trends in the polarizabilities of Group 14-16 diatomic molecules:</p>
-<ol type="1">
-<li><p><strong>Increasing polarizability down Group 14:</strong>
-For a fixed Group 16 element, polarizability increases as we move from C to Pb. For example, with oxygen compounds: CO (12.21 a.u.) &lt; SiO (27.84 a.u.) &lt; GeO (29.02 a.u.) &lt; SnO (38.23 a.u.) &lt; PbO (41.29 a.u.). This trend reflects the increasing atomic size and more diffuse electron clouds of heavier Group 14 elements.</p></li>
-<li><p><strong>Pronounced increase across Group 16:</strong>
-For a fixed Group 14 element, polarizability increases dramatically as we move from O to Te. For carbon compounds: CO (12.21 a.u.) &lt; CS (35.81 a.u.) &lt; CSe (42.69 a.u.) &lt; CTe (59.46 a.u.). The Group 16 element choice has a larger effect on polarizability than the Group 14 element, with increases of 3-4× when moving from O to Te compared to 2-3× when moving from C to Pb.</p></li>
-<li><p><strong>Maximum values for heaviest combinations:</strong>
-The highest polarizabilities are observed for the heaviest combinations, with PbTe (130.91 a.u.) showing approximately 10.7 times the polarizability of CO (12.21 a.u.).</p></li>
-<li><p><strong>Non-linear progression:</strong>
-The increase in polarizability is not strictly linear with atomic number, suggesting that factors beyond atomic size influence the electronic response properties.</p></li>
-</ol>
+<p>The results reveal several clear trends in the polarizabilities of Group IVA-VIA diatomic molecules. For a fixed Group VIA element, polarizability increases as we move from C to Pb. For example, with oxygen compounds: CO (12.21 a.u.) &lt; SiO (27.84 a.u.) &lt; GeO (29.02 a.u.) &lt; SnO (38.23 a.u.) &lt; PbO (41.29 a.u.). This trend reflects the increasing atomic size and more diffuse electron clouds of heavier Group IVA elements.</p>
+<p>For a fixed Group IVA element, polarizability increases dramatically as we move from O to Te. For carbon compounds: CO (12.21 a.u.) &lt; CS (35.81 a.u.) &lt; CSe (42.69 a.u.) &lt; CTe (59.46 a.u.). The Group VIA element choice has a larger effect on polarizability than the Group IVA element, with increases of 3-4× when moving from O to Te compared to 2-3× when moving from C to Pb.</p>
+<p>The highest polarizabilities are observed for the heaviest combinations, with PbTe (130.91 a.u.) showing approximately 10.7 times the polarizability of CO (12.21 a.u.). The increase in polarizability is not strictly linear with atomic number, suggesting that factors beyond atomic size influence the electronic response properties.</p>
 <h3 id="structure-property-relationships">Structure-Property Relationships</h3>
-<p>Several structural factors correlate with the observed polarizability trends:</p>
-<ol type="1">
-<li><p><strong>Bond length effects:</strong>
-Longer bonds generally correlate with higher polarizabilities, as electron density is more diffuse and more easily distorted by external fields. The increasing bond lengths down both groups contribute to the overall polarizability increase.</p></li>
-<li><p><strong>Valence electron contributions:</strong>
-The more diffuse valence electron distributions in heavier elements lead to enhanced polarizability. This is particularly evident with Te compounds, which show dramatically higher polarizabilities than their O counterparts.</p></li>
-<li><p><strong>Electronegativity differences:</strong>
-The decreasing electronegativity difference between Group 14 and 16 elements for heavier combinations may allow for more symmetric electron distribution and greater polarizability.</p></li>
-</ol>
+<p>Longer bonds generally correlate with higher polarizabilities, as shown in Figure 4. This correlation exists because electron density in longer bonds is more diffuse and more easily distorted by external fields. The increasing bond lengths down both groups contribute to the overall polarizability increase.</p>
+<p>The more diffuse valence electron distributions in heavier elements lead to enhanced polarizability. This is particularly evident with Te compounds, which show dramatically higher polarizabilities than their O counterparts. Beyond orbital diffuseness, the sheer number of electrons also plays a significant role—heavier elements simply have more electrons that can respond to external fields, contributing substantially to the observed polarizability trends.</p>
+<p>The decreasing electronegativity difference between Group IVA and VIA elements for heavier combinations may allow for more symmetric electron distribution and greater polarizability. Contrary to what might be initially expected, our data doesn’t show a clear correlation between bond polarity and polarizability. In fact, the less polar bonds (like those in PbTe) often exhibit greater polarizability, suggesting that electron cloud size and diffuseness dominate over polarization effects in these systems.</p>
 <h3 id="comparison-to-previous-work">Comparison to Previous Work</h3>
-<p>Our results for the CO molecule (12.21 a.u.) align reasonably well with experimental values (~13-17 a.u.) and previous computational studies.<span class="citation" data-cites="Maroulis1996"><sup>5</sup></span> The trend of increasing polarizability down groups is consistent with general chemical intuition and prior studies of atomic polarizabilities.</p>
-<p>The relatively larger impact of Group 16 elements on polarizability compared to Group 14 elements is an interesting observation that warrants further investigation. This may relate to the greater variability in valence p-orbital diffuseness across the chalcogens compared to the Group 14 elements.<span class="citation" data-cites="Schwerdtfeger2002"><sup>6</sup></span></p>
+<p>Our results for the CO molecule (12.21 a.u.) align reasonably well with experimental values (~13-17 a.u.) and previous computational studies.<span class="citation" data-cites="Maroulis1996"><sup>4</sup></span> The trend of increasing polarizability down groups is consistent with general chemical intuition and prior studies of atomic polarizabilities.</p>
+<p>The relatively larger impact of Group VIA elements on polarizability compared to Group IVA elements is an interesting observation that warrants further investigation. This may relate to the greater variability in valence p-orbital diffuseness across the chalcogens compared to the Group IVA elements.<span class="citation" data-cites="Schwerdtfeger2002"><sup>5</sup></span> Additionally, the Group VIA elements add more electrons to the system as we move down the group compared to the Group IVA elements, providing more electrons that can respond to an external field.</p>
 <h3 id="computational-considerations">Computational Considerations</h3>
 <p>The use of ECPs for heavier elements (Sn, Pb, Te) was essential for handling these calculations efficiently. Without proper treatment of relativistic effects, calculations for these elements would likely yield unreliable results. The absence of polonium compounds in our study reflects the additional computational challenges posed by very heavy elements, where even more sophisticated relativistic treatments would be necessary.</p>
+<p>It would be valuable to extend this work to include frequency-dependent polarizabilities, which would allow us to explore how these molecules respond to electromagnetic radiation at different wavelengths. While Psi4 does have capabilities for response property calculations, implementing frequency-dependent polarizabilities would require time-dependent methods beyond the scope of this initial study. Such an extension would provide insight into the optical dispersion properties of these molecules.</p>
+<h3 id="computational-efficiency">Computational Efficiency</h3>
+<p>One of the most significant advantages of our approach was the automation of calculations across the entire series of molecules. The entire computational workflow—from molecule definition to code implementation to polarizability calculation—took approximately 4-6 hours for all twenty molecules on a modern desktop computer with the aid of AI (Claude 3.7 Sonnet). This efficiency highlights the power of combining quantum chemistry software with scripting for high-throughput property prediction and prompt engineering, significantly lowering the bar of accessibility and raising the bar for the proliferation of scientific exploration. Such an approach makes computational chemistry more accessible to researchers who might not have specialized programming expertise while simultaneously enabling more comprehensive scientific investigations.</p>
 <h2 id="implications-and-applications">Implications and Applications</h2>
-<p>The systematic dataset of molecular polarizabilities presented here has several potential applications:</p>
-<ol type="1">
-<li><p><strong>Nonlinear optical materials:</strong>
-Molecules with high polarizabilities are candidates for nonlinear optical applications. Our results suggest that Te-containing compounds, particularly PbTe and SnTe, could be promising in this regard.</p></li>
-<li><p><strong>Intermolecular force modeling:</strong>
-Accurate polarizability values are essential for modeling dispersion forces and other non-bonded interactions in molecular simulations.</p></li>
-<li><p><strong>Raman spectroscopy:</strong>
-Polarizability derivatives determine Raman activity. The trends identified here could help predict relative Raman intensities across related molecules.</p></li>
-<li><p><strong>Refractive index prediction:</strong>
-Molecular polarizability directly relates to macroscopic refractive index, making these values useful for predicting optical properties of materials.</p></li>
-</ol>
+<p>The systematic dataset of molecular polarizabilities presented here contributes to our understanding of fundamental structure-property relationships. While molecules with high polarizabilities are candidates for nonlinear optical applications, it’s important to note that state-of-the-art nonlinear optical materials like LiNbO₃ rely on non-centrosymmetric crystalline structures to achieve high second-order optical responses (χ²). Our simple diatomic molecules, while instructive for understanding polarizability trends, would need to be incorporated into more complex, asymmetric structures to be competitive for actual nonlinear optical device applications.<span class="citation" data-cites="Boyd2008"><sup>6</sup></span></p>
+<p>Accurate polarizability values are essential for modeling dispersion forces and other non-bonded interactions in molecular simulations. The systematic trends identified here could be incorporated into force field development for simulations involving Group IVA and VIA elements.<span class="citation" data-cites="Stone2013"><sup>7</sup></span> Similarly, polarizability derivatives determine Raman activity. The trends identified here could help predict relative Raman intensities across related molecules, possibly guiding experimental spectroscopic investigations.<span class="citation" data-cites="Neugebauer2007"><sup>8</sup></span></p>
+<p>Beyond specific applications, this work demonstrates a methodologically sound approach to computational materials exploration that could be extended to other properties and molecular systems. The combination of automated calculations with systematic variation of molecular composition provides an efficient strategy for mapping structure-property relationships across chemical space.<span class="citation" data-cites="Curtarolo2013"><sup>9</sup></span></p>
 <h2 id="conclusion">Conclusion</h2>
-<p>This study has successfully mapped the polarizability landscape across twenty Group 14-16 diatomic molecules, revealing clear periodic trends and structure-property relationships. The polarizability increases both down Group 14 and across Group 16, with the heaviest combinations showing the highest values. Group 16 elements have a more pronounced effect on polarizability than Group 14 elements, suggesting that chalcogen selection is particularly important in designing materials with specific polarizability requirements.</p>
+<p>This study has successfully mapped the polarizability landscape across twenty Group IVA-VIA diatomic molecules, revealing clear periodic trends and structure-property relationships. The polarizability increases both down Group IVA and across Group VIA, with the heaviest combinations showing the highest values. Group VIA elements have a more pronounced effect on polarizability than Group IVA elements, suggesting that chalcogen selection is particularly important in designing materials with specific polarizability requirements.</p>
 <p>The computational methodology employed here—combining the finite field approach with appropriate basis sets and ECPs—proved effective for systematically investigating these trends. This approach could be readily extended to other molecular systems and properties.</p>
-<p>Future work could explore:</p>
-<ol type="1">
-<li>Higher-level calculations (MP2, CCSD) on select molecules to assess electron correlation effects on polarizability</li>
-<li>Calculation of full polarizability tensors to examine anisotropy in the electronic response</li>
-<li>Extension to polyatomic molecules containing Group 14 and 16 elements</li>
-<li>Investigation of hyperpolarizability for these molecular systems, which is relevant for nonlinear optical applications</li>
-<li>Incorporation of vibrational contributions to polarizability for comparison with experimental measurements</li>
-</ol>
-<p>By establishing these fundamental structure-property relationships, this work contributes to our understanding of molecular electronic response properties and provides valuable insights for materials design in various technological applications.</p>
+<p>Perhaps more importantly, this work highlights the power of combining open-source quantum chemistry software (Psi4) with Python automation to rapidly generate and analyze data across a systematic series of molecules. The entire project—from environment setup to data visualization—was completed in a remarkably short timeframe, demonstrating the efficiency of modern computational chemistry approaches and the incorporation of prompt engineering techniques.</p>
+<p>Future work could explore several promising directions. Higher-level calculations (MP2, CCSD) on select molecules would help assess electron correlation effects on polarizability, potentially improving accuracy for the heavier elements. Calculation of full polarizability tensors would allow examination of anisotropy in the electronic response, revealing directional dependencies not captured by the longitudinal component alone. The methodology could be extended to polyatomic molecules containing Group IVA and VIA elements, opening pathways to more complex and practically relevant systems. Investigation of frequency-dependent polarizabilities and hyperpolarizability would provide insights into optical dispersion and nonlinear optical properties, respectively. Finally, incorporating vibrational contributions to polarizability would enable more direct comparison with experimental measurements, which naturally include these effects.</p>
+<p>By establishing these fundamental structure-property relationships and demonstrating an efficient computational workflow, this work contributes to our understanding of molecular electronic response properties and provides a template for future computational explorations of chemical space.</p>
 <h2 id="acknowledgments">Acknowledgments</h2>
 <p>We acknowledge the contributions of the Psi4 development team and the Conda-Forge community for providing and maintaining the open-source tools that made this research possible.</p>
 <h2 class="unnumbered" id="references">References</h2>
@@ -398,14 +526,23 @@ Molecular polarizability directly relates to macroscopic refractive index, makin
 <div id="ref-Cohen1975" class="csl-entry" role="listitem">
 <div class="csl-left-margin">3. </div><div class="csl-right-inline">Cohen, H. D.; Roothaan, C. C. J. Electric Dipole Polarizability of Atoms by the <span>Hartree</span>—<span>Fock</span> Method. <span>I</span>. <span>Theory</span> for Closed-Shell Systems. <em>The Journal of Chemical Physics</em> <strong>1965</strong>, <em>43</em> (10), S34–S39. <a href="https://doi.org/10.1063/1.1701512">https://doi.org/10.1063/1.1701512</a>.</div>
 </div>
-<div id="ref-Nalwa2001" class="csl-entry" role="listitem">
-<div class="csl-left-margin">4. </div><div class="csl-right-inline">Nalwa, H. S. <em>Handbook of Advanced Electronic and Photonic Materials and Devices</em>; Academic press, 2001.</div>
-</div>
 <div id="ref-Maroulis1996" class="csl-entry" role="listitem">
-<div class="csl-left-margin">5. </div><div class="csl-right-inline">Maroulis, G. Accurate Electric Multipole Moment, Static Polarizability and Hyperpolarizability Derivatives for N2. <em>The Journal of chemical physics</em> <strong>1996</strong>, <em>104</em> (1), 368–376.</div>
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Maroulis, G. Accurate Electric Multipole Moment, Static Polarizability and Hyperpolarizability Derivatives for N2. <em>The Journal of chemical physics</em> <strong>1996</strong>, <em>104</em> (1), 368–376.</div>
 </div>
 <div id="ref-Schwerdtfeger2002" class="csl-entry" role="listitem">
-<div class="csl-left-margin">6. </div><div class="csl-right-inline">Schwerdtfeger, P. Atomic Static Dipole Polarizabilities. <em>Atoms, Molecules and Clusters in Electric Fields: Theoretical Approaches to the Calculation of Electric Polarizability</em> <strong>2002</strong>, 1–32.</div>
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Schwerdtfeger, P. Atomic Static Dipole Polarizabilities. <em>Atoms, Molecules and Clusters in Electric Fields: Theoretical Approaches to the Calculation of Electric Polarizability</em> <strong>2002</strong>, 1–32.</div>
+</div>
+<div id="ref-Boyd2008" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Boyd, R. W. <em>Nonlinear Optics</em>, 3rd ed.; Academic Press: Burlington, MA, 2008.</div>
+</div>
+<div id="ref-Stone2013" class="csl-entry" role="listitem">
+<div class="csl-left-margin">7. </div><div class="csl-right-inline">Stone, A. J. <em>The Theory of Intermolecular Forces</em>, 2nd ed.; Oxford University Press: Oxford, UK, 2013.</div>
+</div>
+<div id="ref-Neugebauer2007" class="csl-entry" role="listitem">
+<div class="csl-left-margin">8. </div><div class="csl-right-inline">Neugebauer, J.; Reiher, M.; Kind, C.; Hess, B. A. Quantum Chemical Calculation of Vibrational Spectra of Large Molecules—<span>Raman</span> and <span>IR</span> Spectra for Buckminsterfullerene. <em>Journal of Computational Chemistry</em> <strong>2007</strong>, <em>23</em> (9), 895–910. <a href="https://doi.org/10.1002/jcc.10089">https://doi.org/10.1002/jcc.10089</a>.</div>
+</div>
+<div id="ref-Curtarolo2013" class="csl-entry" role="listitem">
+<div class="csl-left-margin">9. </div><div class="csl-right-inline">Curtarolo, S.; Hart, G. L. W.; Nardelli, M. B.; Mingo, N.; Sanvito, S.; Levy, O. The High-Throughput Highway to Computational Materials Design. <em>Nature Materials</em> <strong>2013</strong>, <em>12</em> (3), 191–201. <a href="https://doi.org/10.1038/nmat3568">https://doi.org/10.1038/nmat3568</a>.</div>
 </div>
 </div>
     </main>
