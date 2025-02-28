@@ -124,10 +124,13 @@
     img, figure, .tikzpicture {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
-        max-width: 75% !important;
-        height: auto !important;
+        width: 60% !important; /* 60% of page width */
+        height: auto !important; /* Maintain aspect ratio */
+        max-width: 100% !important; /* Prevent overflow */
         background: none !important;
         box-shadow: none !important;
+        display: block !important;
+        margin: 0 auto !important; /* Center the image */
     }
     
     /* Title formatting - aligned left with content flowing after it */

@@ -11,6 +11,14 @@
 
     }
     
+    img {
+        width: 60vw; /* 60% of viewport width */
+        height: auto; /* Maintain aspect ratio */
+        max-width: 100%; /* Prevent overflow */
+        display: block; /* Avoid inline spacing issues */
+        margin: 0 auto; /* Center the image */
+    }
+    
     .container {
         padding: 0 48px;
     }
