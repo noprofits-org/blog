@@ -121,16 +121,39 @@
     }
     
     /* Page breaks */
-    img, figure, .tikzpicture {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-        width: 60% !important; /* 60% of page width */
-        height: auto !important; /* Maintain aspect ratio */
-        max-width: 100% !important; /* Prevent overflow */
-        background: none !important;
-        box-shadow: none !important;
+    figure {
+        page-break-inside: avoid !important; /* Prevent breaks inside the figure */
+        break-inside: avoid !important; /* Modern equivalent for broader support */
+        display: block !important; /* Ensure it’s treated as a single block */
+        width: 100% !important; /* Full width for layout consistency */
+        margin: 1em 0 !important; /* Spacing above and below */
+    }
+
+    figure img {
+        width: 60% !important; /* Match your earlier requirement */
+        height: auto !important;
+        max-width: 100% !important;
         display: block !important;
         margin: 0 auto !important; /* Center the image */
+    }
+
+    figcaption {
+        text-align: justify !important; /* Center captions for academic style */
+        font-size: 12pt !important; /* Match body text size */
+        color: black !important;
+        margin-top: 0.5em !important; /* Space between image and caption */
+        page-break-before: avoid !important; /* Avoid breaking before caption */
+    }
+
+    /* Adjust existing img rule to avoid conflicts */
+    img, .tikzpicture {
+        /* Remove or adjust if standalone images exist outside figures */
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        max-width: 100% !important;
+        height: auto !important;
+        background: none !important;
+        box-shadow: none !important;
     }
     
     /* Title formatting - aligned left with content flowing after it */
