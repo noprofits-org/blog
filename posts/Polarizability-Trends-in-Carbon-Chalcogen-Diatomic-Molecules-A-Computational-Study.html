@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">NoProfits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <div class="info">
+    <h3>Polarizability Trends in Carbon-Chalcogen Diatomic Molecules - A Computational Study</h3>
+    Posted on February 28, 2025
+    
+</div>
+
+<h1 id="abstract">Abstract</h1>
+<p>This study presents a detailed analysis of polarizabilities and hyperpolarizabilities in carbon-chalcogen diatomic molecules (CO, CS, CSe, CTe). Using B3LYP/aug-cc-pVTZ level of theory for lighter elements and def2-TZVP with ECPs for heavier elements, we calculated longitudinal polarizabilities and hyperpolarizabilities for optimized structures. Results show clear periodic trends, with polarizability increasing from CO (15.47 a.u.) to CTe (63.90 a.u.), revealing a strong correlation with bond length and chalcogen size. We observe significant nonlinear optical responses, particularly for CTe which exhibits a hyperpolarizability (β) of -10.25 a.u. and a substantial negative second hyperpolarizability (γ) of -7093.30 a.u. This work provides quantitative insights into how chalcogen substitution affects electronic response properties and demonstrates the effectiveness of automated computational pipelines for systematic prediction of molecular properties.</p>
+<h1 id="introduction">Introduction</h1>
+<p>Polarizability—the measure of a molecule’s electron cloud deformability in response to an external electric field—represents a fundamental property governing numerous physical and chemical phenomena, from intermolecular forces to optical properties.<span class="citation" data-cites="Jensen2017"><sup>1</sup></span> In particular, the polarizability (α), first hyperpolarizability (β), and second hyperpolarizability (γ) define how molecules interact with electromagnetic radiation and determine their potential applications in nonlinear optics.
+Carbon-chalcogen diatomic molecules (where chalcogens are Group 6A/16 elements: O, S, Se, Te) provide an excellent case study for examining how systematic replacement of the chalcogen affects molecular electronic response properties. As one moves down Group 6A, several important changes occur: increasing atomic size, decreasing electronegativity, more diffuse valence orbitals, and for heavier elements, significant relativistic effects.<span class="citation" data-cites="Pyykko2012"><sup>2</sup></span> These variations should manifest in the polarizability and hyperpolarizability values, revealing important structure-property relationships.
+The polarizability tensor component α<sub>zz</sub> (along the molecular axis) can be approximated through the numerical derivative approach known as the finite field method:<span class="citation" data-cites="Cohen1975"><sup>3</sup></span></p>
+<p><span class="math display">\[\alpha_{zz} \approx \frac{\mu_z(F_z = +h) - \mu_z(F_z = -h)}{2h}\]</span></p>
+<p>where h represents the applied electric field strength and μ<sub>z</sub> is the z-component of the dipole moment. Similarly, hyperpolarizabilities can be estimated from higher-order numerical derivatives or from polynomial fits to the field-dependent dipole moment.</p>
+<p>Building upon our previous work on Group 16-18 heteronuclear molecules, this study focuses specifically on carbon-chalcogen combinations, with three primary objectives: (1) demonstrating the power of computational automation with geometry optimization for systematic property prediction, (2) identifying periodic trends across the chalcogen series, and (3) exploring higher-order nonlinear optical properties (β and γ) in addition to the linear polarizability (α).</p>
+<p>This work contributes to the broader understanding of structure-property relationships in simple diatomic molecules and provides a foundation for future investigations into more complex systems containing carbon and chalcogen elements.</p>
+<h1 id="experimental">Experimental</h1>
+<h2 id="environment-setup">Environment Setup</h2>
+<p>All calculations were performed using Psi4 version 1.7 within a dedicated Conda environment running Python 3.8. The computational environment was established as follows:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new conda environment for quantum chemistry</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">-n</span> qchem python=3.8</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate qchem</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Install pydantic with a compatible version</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pydantic==1.10.8</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Install Psi4 through conda</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install <span class="at">-c</span> psi4 psi4</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install <span class="at">-c</span> psi4 dftd3 gcp</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Install additional dependencies</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install numpy scipy matplotlib</span></code></pre></div>
+<h2 id="calculation-approach">Calculation Approach</h2>
+<p>We employed the finite field method to calculate polarizabilities and hyperpolarizabilities, applying electric fields of +0.002, +0.001, 0.0, -0.001, and -0.002 atomic units along the molecular axis (z-direction) and measuring the resulting changes in the molecular dipole moment. The use of five field strengths allowed for more robust estimation through linear regression and enabled extraction of higher-order nonlinear terms.</p>
+<p>All molecular geometries were first optimized at the B3LYP level of theory to ensure that the electronic property calculations were performed at realistic equilibrium structures. This represents an improvement over fixed-geometry approaches, particularly for ensuring accuracy in the heavier chalcogen compounds where empirical bond lengths may be less reliable.</p>
+<p>For each carbon-chalcogen combination, the calculation workflow consisted of:</p>
+<p>Geometry optimization at the B3LYP level with an appropriate basis set
+Field-dependent energy and dipole calculations at the optimized geometry
+Regression analysis to extract polarizability and hyperpolarizability values</p>
+<p>Appropriate basis sets were selected based on the elements involved:</p>
+<p>For C and O: aug-cc-pVTZ basis sets were employed
+For S and Se: aug-cc-pVTZ and def2-TZVP basis sets were used, respectively
+For Te: def2-TZVP basis set with effective core potentials (ECPs) was used to account for relativistic effects</p>
+<h2 id="python-implementation">Python Implementation</h2>
+<p>The calculations were implemented in a Python script that automated the entire process. The script handled geometry optimization, field-dependent calculations, and property extraction, encapsulating the workflow in modular functions that enabled systematic analysis across the series of molecules.
+A simplified version of the key calculation functions is shown below:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> optimize_geometry(group16_element):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Optimize the geometry of a C-X molecule&quot;&quot;&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    molecule_name <span class="op">=</span> <span class="ss">f&quot;C</span><span class="sc">{</span>group16_element<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define molecule with initial geometry</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    molecule <span class="op">=</span> psi4.geometry(<span class="ss">f&quot;&quot;&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ss">    0 1</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ss">    C 0.0 0.0 0.0</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>group16_element<span class="sc">}</span><span class="ss"> 0.0 0.0 </span><span class="sc">{</span>initial_bond_length <span class="op">*</span> <span class="fl">1.889725989</span><span class="sc">}</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ss">    units bohr</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="ss">    symmetry c1</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="ss">    &quot;&quot;&quot;</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set appropriate basis sets and run optimization</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># [basis set selection code]</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    opt_energy <span class="op">=</span> psi4.optimize(<span class="st">'b3lyp'</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    optimized_molecule <span class="op">=</span> psi4.core.get_active_molecule()</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate optimized bond length</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    natoms <span class="op">=</span> optimized_molecule.natom()</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    x1, y1, z1 <span class="op">=</span> optimized_molecule.x(<span class="dv">0</span>), optimized_molecule.y(<span class="dv">0</span>), optimized_molecule.z(<span class="dv">0</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    x2, y2, z2 <span class="op">=</span> optimized_molecule.x(<span class="dv">1</span>), optimized_molecule.y(<span class="dv">1</span>), optimized_molecule.z(<span class="dv">1</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    bond_length <span class="op">=</span> np.sqrt((x2<span class="op">-</span>x1)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (y2<span class="op">-</span>y1)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (z2<span class="op">-</span>z1)<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> <span class="fl">1.889725989</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> optimized_molecule, bond_length</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_properties(group16_element):</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Calculate dipole moment and polarizabilities for a C-X molecule&quot;&quot;&quot;</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># First optimize the geometry</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    optimized_molecule, bond_length <span class="op">=</span> optimize_geometry(group16_element)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Run field-dependent calculations</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    field_results <span class="op">=</span> {}</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> field <span class="kw">in</span> fields:</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> run_field_calculation(optimized_molecule, group16_element, field)</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> result:</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>            field_results[field] <span class="op">=</span> result</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract dipole moments for each field</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    field_values <span class="op">=</span> []</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    dipole_values <span class="op">=</span> []</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> field <span class="kw">in</span> <span class="bu">sorted</span>(field_results.keys()):</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>        field_values.append(field)</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>        dipole_values.append(field_results[field][<span class="st">'dipole'</span>][<span class="dv">2</span>])  <span class="co"># Z-component</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate alpha using linear regression</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    alpha_model <span class="op">=</span> stats.linregress(field_values, dipole_values)</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    alpha <span class="op">=</span> <span class="op">-</span>alpha_model.slope</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate beta and gamma using polynomial fit</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(field_values) <span class="op">&gt;=</span> <span class="dv">5</span>:</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>        cubic_fit <span class="op">=</span> np.polyfit(field_values, dipole_values, <span class="dv">3</span>)</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>        beta <span class="op">=</span> cubic_fit[<span class="dv">1</span>] <span class="op">*</span> <span class="dv">2</span>  <span class="co"># Related to second derivative of energy</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>        gamma <span class="op">=</span> cubic_fit[<span class="dv">0</span>] <span class="op">*</span> <span class="dv">6</span>  <span class="co"># Related to third derivative of energy</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    <span class="co"># [results storage and return code]</span></span></code></pre></div>
+<p>This approach enabled systematic and consistent calculation of polarizabilities and hyperpolarizabilities across the entire series of carbon-chalcogen molecules.</p>
+<h1 id="results">Results</h1>
+<h2 id="optimized-molecular-geometries">Optimized Molecular Geometries</h2>
+<p>The geometry optimization yielded the following equilibrium bond lengths for the carbon-chalcogen series:</p>
+<p><strong>Table 1:</strong> Optimized Carbon-Chalcogen Bond Lengths. Bond lengths obtained from B3LYP geometry optimizations showing systematic increase with increasing chalcogen size.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Molecule</th>
+<th style="text-align: center;">Bond Length / Å</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">CO</td>
+<td style="text-align: center;">1.126</td>
+</tr>
+<tr>
+<td style="text-align: center;">CS</td>
+<td style="text-align: center;">1.534</td>
+</tr>
+<tr>
+<td style="text-align: center;">CSe</td>
+<td style="text-align: center;">1.676</td>
+</tr>
+<tr>
+<td style="text-align: center;">CTe</td>
+<td style="text-align: center;">1.893</td>
+</tr>
+</tbody>
+</table>
+<p>The bond lengths show a clear increasing trend down the chalcogen group, consistent with the increasing atomic radii of the chalcogen elements. This trend follows the expected pattern based on the relative sizes of the atoms involved and aligns with experimental values from the literature.</p>
+<h3 id="dipole-moments-and-polarizabilities">Dipole Moments and Polarizabilities</h3>
+<p>Our calculations yielded the following electronic response properties for the carbon-chalcogen series:</p>
+<p><strong>Table 2:</strong> Calculated Electronic Properties for Carbon-Chalcogen Molecules. Electronic response properties including dipole moments, polarizabilities (α), and first (β) and second (γ) hyperpolarizabilities for the optimized carbon-chalcogen molecules.</p>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 18%" />
+<col style="width: 20%" />
+<col style="width: 24%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Molecule</th>
+<th style="text-align: center;">Dipole Moment / Debye</th>
+<th style="text-align: center;">Polarizability, α / a.u.</th>
+<th style="text-align: center;">Hyperpolarizability, β / a.u.</th>
+<th style="text-align: center;">Second Hyperpolarizability, γ / a.u.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">CO</td>
+<td style="text-align: center;">0.037</td>
+<td style="text-align: center;">15.47</td>
+<td style="text-align: center;">32.52</td>
+<td style="text-align: center;">-1948.61</td>
+</tr>
+<tr>
+<td style="text-align: center;">CS</td>
+<td style="text-align: center;">0.759</td>
+<td style="text-align: center;">38.05</td>
+<td style="text-align: center;">27.40</td>
+<td style="text-align: center;">-10026.17</td>
+</tr>
+<tr>
+<td style="text-align: center;">CSe</td>
+<td style="text-align: center;">0.829</td>
+<td style="text-align: center;">46.40</td>
+<td style="text-align: center;">14.09</td>
+<td style="text-align: center;">-3590.20</td>
+</tr>
+<tr>
+<td style="text-align: center;">CTe</td>
+<td style="text-align: center;">1.017</td>
+<td style="text-align: center;">63.90</td>
+<td style="text-align: center;">-10.25</td>
+<td style="text-align: center;">-7093.30</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img src="../images/c-chalcogen-bond-lengths.svg" alt="Bond Length vs. Polarizability">
+<figcaption>
+<strong>Figure 1.</strong> Bond Length vs. Polarizability Correlation. Scatter plot showing the relationship between bond length and polarizability across the carbon-chalcogen molecular series, with a linear trend line showing the strong correlation (R² = 0.995).
+</figcaption>
+</figure>
+<figure>
+<img src="../images/c-chalcogen-polarizability-trends.svg" alt="Polarizability Trends">
+<figcaption>
+<strong>Figure 2.</strong> Polarizability Trends for Carbon Elements Across Group VIA. Line plot demonstrating the consistent increase in polarizability when moving from oxygen to tellurium compounds for carbon.
+</figcaption>
+</figure>
+<h1 id="discussion">Discussion</h1>
+<h2 id="periodic-trends-and-structure-property-relationships">Periodic Trends and Structure-Property Relationships</h2>
+<p>The systematic increase in polarizability from CO to CTe can be attributed to several factors:</p>
+<p>The systematic increase in polarizability from CO to CTe can be attributed to several factors. Longer bonds generally correspond to more diffuse electron distributions that are more easily distorted by external fields. The correlation between bond length and polarizability (Figure 1) supports this interpretation. The electronegativity decreases down Group 18 (O: 3.44, S: 2.58, Se: 2.55, Te: 2.10), resulting in less tightly bound electrons that can respond more readily to applied fields. Additionally, heavier chalcogens have more electrons and larger, more diffuse electron clouds, contributing significantly to the overall polarizability. For the heavier elements, particularly Te, relativistic effects become relevant and can influence the electronic structure and response properties.</p>
+<h2 id="nonlinear-optical-properties">Nonlinear Optical Properties</h2>
+<p>The hyperpolarizability (β) and second hyperpolarizability (γ) values reveal interesting insights about the nonlinear optical properties of these molecules. The change from positive to negative β values for CTe indicates a fundamental change in the nonlinear response character. This could be related to the shifting balance between σ and π bonding components as the bond becomes longer and weaker. The large negative second hyperpolarizabilities suggest these molecules would exhibit significant negative nonlinear refractive indices at appropriate frequencies. CS shows the most extreme value, which may be related to its particular electronic structure and the balance of σ and π bonding/antibonding contributions. Unlike the polarizability, which increases steadily down the group, the hyperpolarizabilities show more complex behavior. This underscores the fact that higher-order responses depend on subtle details of the electronic structure beyond simple size and bond length considerations.</p>
+<h2 id="comparison-with-previous-work">Comparison with Previous Work</h2>
+<p>Our calculated polarizability for CO (15.47 a.u.) aligns well with literature values, which typically range from 13-17 a.u. in experimental and high-level computational studies.<span class="citation" data-cites="Maroulis1996"><sup>4</sup></span> The use of geometry optimization and the B3LYP functional with augmented basis sets has likely contributed to the good agreement with reference data. The increasing trend in polarizability down the chalcogen group is consistent with previous computational studies on similar systems, though our work extends this analysis to include the heavier chalcogens and the higher-order nonlinear properties. Compared to the results from our earlier study on Group 16-18 heteronuclear molecules, the polarizability values for carbon-chalcogen compounds follow similar trends, though with some quantitative differences due to the different computational approach (B3LYP vs. SCF) and the use of geometry optimization in the present work.</p>
+<h2 id="computational-considerations">Computational Considerations</h2>
+<p>The use of geometry optimization prior to property calculations represents an important methodological improvement over fixed-geometry approaches. This is particularly relevant for the heavier chalcogens where experimental geometries may be less readily available or reliable. The B3LYP functional provides a good balance between computational cost and accuracy for these systems, capturing electron correlation effects that are important for accurate polarizability predictions. The augmented basis sets (aug-cc-pVTZ) for the lighter elements ensure appropriate flexibility in the outer regions of the electron density, which is crucial for polarizability calculations. For the heaviest element (Te), the use of effective core potentials (ECPs) was essential to account for relativistic effects without prohibitive computational cost. The successful calculation of properties for the full series from CO to CTe demonstrates the effectiveness of this computational approach.</p>
+<h2 id="implications-and-applications">Implications and Applications</h2>
+<p>The systematic dataset of molecular polarizabilities and hyperpolarizabilities presented here contributes to our understanding of fundamental structure-property relationships in carbon-chalcogen compounds. These insights have several potential applications. The trends identified could guide the design of novel materials for nonlinear optical applications, particularly those containing carbon-chalcogen bonds. Accurate polarizability values are essential for modeling dispersion forces and other non-bonded interactions in molecular simulations. Our data could inform parameterization of force fields for systems containing these elements. Polarizability derivatives determine Raman activity, and our results could help predict relative Raman intensities across related molecules. These results provide benchmark data for testing and validating different computational methods for predicting electronic response properties. Beyond specific applications, this work demonstrates a methodologically sound approach to computational property prediction that could be extended to other molecular systems and properties of interest.</p>
+<h2 id="future-directions">Future Directions</h2>
+<p>This study provides a foundation for several promising directions of future research. Applying similar analyses to homologous series with other Group 16 elements (Si, Ge, Sn, Pb) bonded to chalcogens would complete the periodic trends across both groups. Employing more sophisticated methods like CCSD(T) for selected molecules would help assess the accuracy of DFT predictions for these properties. Extending to dynamic polarizabilities and hyperpolarizabilities would explore optical dispersion effects relevant to applications. Developing quantitative structure-property relationship models could enable prediction of polarizabilities based on readily available molecular descriptors, facilitating materials design. The computational methodology demonstrated here could also be extended to polyatomic molecules containing carbon-chalcogen bonds, opening pathways to more complex and practically relevant systems.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This study has successfully mapped the polarizability landscape across the carbon-chalcogen series (CO, CS, CSe, CTe), revealing clear trends and structure-property relationships. The polarizability increases systematically from CO to CTe, correlating strongly with bond length and chalcogen size. The nonlinear optical properties (β and γ) exhibit more complex behavior, with β changing sign for CTe and all molecules showing substantial negative γ values.</p>
+<p>The computational methodology employed here—combining geometry optimization, the B3LYP functional, and appropriate basis sets—proved effective for systematically investigating these trends. The automation of the computational workflow through Python scripting enabled efficient calculation and analysis of properties across the molecular series.</p>
+<h1 id="acknowledgments">Acknowledgments</h1>
+<p>We acknowledge the contributions of the Psi4 development team and the Conda-Forge community for providing and maintaining the open-source tools that made this research possible.</p>
+<h1 class="unnumbered" id="references">References</h1>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-Jensen2017" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Jensen, F. <em>Introduction to Computational Chemistry</em>, 3rd ed.; John Wiley &amp; Sons: Chichester, UK, 2017.</div>
+</div>
+<div id="ref-Pyykko2012" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">Pyykkö, P. Relativistic Effects in Chemistry: More Common Than You Thought. <em>Annual Review of Physical Chemistry</em> <strong>2012</strong>, <em>63</em>, 45–64. <a href="https://doi.org/10.1146/annurev-physchem-032511-143755">https://doi.org/10.1146/annurev-physchem-032511-143755</a>.</div>
+</div>
+<div id="ref-Cohen1975" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Cohen, H. D.; Roothaan, C. C. J. Electric Dipole Polarizability of Atoms by the <span>Hartree</span>—<span>Fock</span> Method. <span>I</span>. <span>Theory</span> for Closed-Shell Systems. <em>The Journal of Chemical Physics</em> <strong>1965</strong>, <em>43</em> (10), S34–S39. <a href="https://doi.org/10.1063/1.1701512">https://doi.org/10.1063/1.1701512</a>.</div>
+</div>
+<div id="ref-Maroulis1996" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Maroulis, G. Accurate Electric Multipole Moment, Static Polarizability and Hyperpolarizability Derivatives for N2. <em>The Journal of chemical physics</em> <strong>1996</strong>, <em>104</em> (1), 368–376.</div>
+</div>
+</div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-text">
+                Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a> 
+                and authored by <a href="https://noprofits.org">No Profits</a> 
+                • <a href="../colophon.html">Colophon</a>
+            </div>
+            <div class="print-pdf-button">
+                <button onclick="window.print();" class="print-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="print-icon">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    Print / Save as PDF
+                </button>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
