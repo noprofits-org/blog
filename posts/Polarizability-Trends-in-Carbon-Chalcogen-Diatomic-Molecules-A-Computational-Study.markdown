@@ -2,7 +2,7 @@
 title: Polarizability Trends in Carbon-Chalcogen Diatomic Molecules - A Computational Study
 date: 2025-02-28
 tags: quantum chemistry, polarizability, computational chemistry, psi4, carbon, chalcogens
-description: A systematic computational investigation of polarizability in diatomic molecules formed between carbon and Group 18 (O, S, Se, Te) elements, with analysis of geometry-optimized structures and higher-order electronic properties.
+description: A systematic computational investigation of polarizability in diatomic molecules formed between carbon and Group 16 (O, S, Se, Te) elements, with analysis of geometry-optimized structures and higher-order electronic properties.
 ---
 
 # Abstract
@@ -10,14 +10,14 @@ This study presents a detailed analysis of polarizabilities and hyperpolarizabil
 
 # Introduction
 Polarizability—the measure of a molecule's electron cloud deformability in response to an external electric field—represents a fundamental property governing numerous physical and chemical phenomena, from intermolecular forces to optical properties.[@Jensen2017] In particular, the polarizability (α), first hyperpolarizability (β), and second hyperpolarizability (γ) define how molecules interact with electromagnetic radiation and determine their potential applications in nonlinear optics.
-Carbon-chalcogen diatomic molecules (where chalcogens are Group 6A/16 elements: O, S, Se, Te) provide an excellent case study for examining how systematic replacement of the chalcogen affects molecular electronic response properties. As one moves down Group 6A, several important changes occur: increasing atomic size, decreasing electronegativity, more diffuse valence orbitals, and for heavier elements, significant relativistic effects.[@Pyykko2012] These variations should manifest in the polarizability and hyperpolarizability values, revealing important structure-property relationships.
+Carbon-chalcogen diatomic molecules (where chalcogens are Group 6A/14 elements: O, S, Se, Te) provide an excellent case study for examining how systematic replacement of the chalcogen affects molecular electronic response properties. As one moves down Group 6A, several important changes occur: increasing atomic size, decreasing electronegativity, more diffuse valence orbitals, and for heavier elements, significant relativistic effects.[@Pyykko2012] These variations should manifest in the polarizability and hyperpolarizability values, revealing important structure-property relationships.
 The polarizability tensor component α<sub>zz</sub> (along the molecular axis) can be approximated through the numerical derivative approach known as the finite field method:[@Cohen1975]
 
 $$\alpha_{zz} \approx \frac{\mu_z(F_z = +h) - \mu_z(F_z = -h)}{2h}$$
 
 where h represents the applied electric field strength and μ<sub>z</sub> is the z-component of the dipole moment. Similarly, hyperpolarizabilities can be estimated from higher-order numerical derivatives or from polynomial fits to the field-dependent dipole moment.
 
-Building upon our previous work on Group 16-18 heteronuclear molecules, this study focuses specifically on carbon-chalcogen combinations, with three primary objectives: (1) demonstrating the power of computational automation with geometry optimization for systematic property prediction, (2) identifying periodic trends across the chalcogen series, and (3) exploring higher-order nonlinear optical properties (β and γ) in addition to the linear polarizability (α).
+Building upon our previous work on Group 14-16 heteronuclear molecules, this study focuses specifically on carbon-chalcogen combinations, with three primary objectives: (1) demonstrating the power of computational automation with geometry optimization for systematic property prediction, (2) identifying periodic trends across the chalcogen series, and (3) exploring higher-order nonlinear optical properties (β and γ) in addition to the linear polarizability (α).
 
 This work contributes to the broader understanding of structure-property relationships in simple diatomic molecules and provides a foundation for future investigations into more complex systems containing carbon and chalcogen elements.
 
@@ -64,15 +64,15 @@ The calculations were implemented in a Python script that automated the entire p
 A simplified version of the key calculation functions is shown below:
 
 ```python
-def optimize_geometry(group16_element):
+def optimize_geometry(group14_element):
     """Optimize the geometry of a C-X molecule"""
-    molecule_name = f"C{group16_element}"
+    molecule_name = f"C{group14_element}"
     
     # Define molecule with initial geometry
     molecule = psi4.geometry(f"""
     0 1
     C 0.0 0.0 0.0
-    {group16_element} 0.0 0.0 {initial_bond_length * 1.889725989}
+    {group14_element} 0.0 0.0 {initial_bond_length * 1.889725989}
     units bohr
     symmetry c1
     """)
@@ -91,15 +91,15 @@ def optimize_geometry(group16_element):
     
     return optimized_molecule, bond_length
 
-def calculate_properties(group16_element):
+def calculate_properties(group14_element):
     """Calculate dipole moment and polarizabilities for a C-X molecule"""
     # First optimize the geometry
-    optimized_molecule, bond_length = optimize_geometry(group16_element)
+    optimized_molecule, bond_length = optimize_geometry(group14_element)
     
     # Run field-dependent calculations
     field_results = {}
     for field in fields:
-        result = run_field_calculation(optimized_molecule, group16_element, field)
+        result = run_field_calculation(optimized_molecule, group14_element, field)
         if result:
             field_results[field] = result
     
@@ -172,7 +172,7 @@ Our calculations yielded the following electronic response properties for the ca
 
 The systematic increase in polarizability from CO to CTe can be attributed to several factors:
 
-The systematic increase in polarizability from CO to CTe can be attributed to several factors. Longer bonds generally correspond to more diffuse electron distributions that are more easily distorted by external fields. The correlation between bond length and polarizability (Figure 1) supports this interpretation. The electronegativity decreases down Group 18 (O: 3.44, S: 2.58, Se: 2.55, Te: 2.10), resulting in less tightly bound electrons that can respond more readily to applied fields. Additionally, heavier chalcogens have more electrons and larger, more diffuse electron clouds, contributing significantly to the overall polarizability. For the heavier elements, particularly Te, relativistic effects become relevant and can influence the electronic structure and response properties.
+The systematic increase in polarizability from CO to CTe can be attributed to several factors. Longer bonds generally correspond to more diffuse electron distributions that are more easily distorted by external fields. The correlation between bond length and polarizability (Figure 1) supports this interpretation. The electronegativity decreases down Group 16 (O: 3.44, S: 2.58, Se: 2.55, Te: 2.10), resulting in less tightly bound electrons that can respond more readily to applied fields. Additionally, heavier chalcogens have more electrons and larger, more diffuse electron clouds, contributing significantly to the overall polarizability. For the heavier elements, particularly Te, relativistic effects become relevant and can influence the electronic structure and response properties.
 
 ## Nonlinear Optical Properties
 
@@ -180,7 +180,7 @@ The hyperpolarizability (β) and second hyperpolarizability (γ) values reveal i
 
 ## Comparison with Previous Work
 
-Our calculated polarizability for CO (15.47 a.u.) aligns well with literature values, which typically range from 13-17 a.u. in experimental and high-level computational studies.[@Maroulis1996] The use of geometry optimization and the B3LYP functional with augmented basis sets has likely contributed to the good agreement with reference data. The increasing trend in polarizability down the chalcogen group is consistent with previous computational studies on similar systems, though our work extends this analysis to include the heavier chalcogens and the higher-order nonlinear properties. Compared to the results from our earlier study on Group 16-18 heteronuclear molecules, the polarizability values for carbon-chalcogen compounds follow similar trends, though with some quantitative differences due to the different computational approach (B3LYP vs. SCF) and the use of geometry optimization in the present work.
+Our calculated polarizability for CO (15.47 a.u.) aligns well with literature values, which typically range from 13-17 a.u. in experimental and high-level computational studies.[@Maroulis1996] The use of geometry optimization and the B3LYP functional with augmented basis sets has likely contributed to the good agreement with reference data. The increasing trend in polarizability down the chalcogen group is consistent with previous computational studies on similar systems, though our work extends this analysis to include the heavier chalcogens and the higher-order nonlinear properties. Compared to the results from our earlier study on Group 14-16 heteronuclear molecules, the polarizability values for carbon-chalcogen compounds follow similar trends, though with some quantitative differences due to the different computational approach (B3LYP vs. SCF) and the use of geometry optimization in the present work.
 
 ## Computational Considerations
 
@@ -192,7 +192,7 @@ The systematic dataset of molecular polarizabilities and hyperpolarizabilities p
 
 ## Future Directions
 
-This study provides a foundation for several promising directions of future research. Applying similar analyses to homologous series with other Group 16 elements (Si, Ge, Sn, Pb) bonded to chalcogens would complete the periodic trends across both groups. Employing more sophisticated methods like CCSD(T) for selected molecules would help assess the accuracy of DFT predictions for these properties. Extending to dynamic polarizabilities and hyperpolarizabilities would explore optical dispersion effects relevant to applications. Developing quantitative structure-property relationship models could enable prediction of polarizabilities based on readily available molecular descriptors, facilitating materials design. The computational methodology demonstrated here could also be extended to polyatomic molecules containing carbon-chalcogen bonds, opening pathways to more complex and practically relevant systems.
+This study provides a foundation for several promising directions of future research. Applying similar analyses to homologous series with other Group 14 elements (Si, Ge, Sn, Pb) bonded to chalcogens would complete the periodic trends across both groups. Employing more sophisticated methods like CCSD(T) for selected molecules would help assess the accuracy of DFT predictions for these properties. Extending to dynamic polarizabilities and hyperpolarizabilities would explore optical dispersion effects relevant to applications. Developing quantitative structure-property relationship models could enable prediction of polarizabilities based on readily available molecular descriptors, facilitating materials design. The computational methodology demonstrated here could also be extended to polyatomic molecules containing carbon-chalcogen bonds, opening pathways to more complex and practically relevant systems.
 
 ## Conclusion
 

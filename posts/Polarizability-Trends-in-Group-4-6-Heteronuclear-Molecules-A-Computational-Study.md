@@ -1,19 +1,19 @@
 ---
-title: Polarizability Trends in Group IVA-VIA Heteronuclear Molecules - A Computational Study
+title: Polarizability Trends in Group 14-16 Heteronuclear Molecules - A Computational Study
 date: 2025-02-27 
 tags: quantum chemistry, polarizability, computational chemistry, psi4, heteronuclear molecules
-description: A systematic computational investigation of polarizability trends in diatomic molecules formed between Group IVA (C, Si, Ge, Sn, Pb) and Group VIA (O, S, Se, Te) elements, showcasing the power of automation and open-source computational chemistry tools.
+description: A systematic computational investigation of polarizability trends in diatomic molecules formed between Group 14 (C, Si, Ge, Sn, Pb) and Group 16 (O, S, Se, Te) elements, showcasing the power of automation and open-source computational chemistry tools.
 ---
 
 ## Abstract
 
-This study presents a systematic computational investigation of polarizabilities in heteronuclear diatomic molecules formed from Group IVA (C, Si, Ge, Sn, Pb) and Group VIA (O, S, Se, Te) elements. Using the finite field method implemented in Psi4 1.7, we calculated longitudinal polarizabilities for twenty molecular combinations (CO, CS, CSe, CTe, SiO, SiS, SiSe, SiTe, GeO, GeS, GeSe, GeTe, SnO, SnS, SnSe, SnTe, PbO, PbS, PbSe, PbTe). Results reveal clear periodic trends, with polarizability increasing both down Group IVA and across Group VIA, reaching a maximum of 130.9 a.u. for PbTe. The data demonstrate that changes in the Group VIA element have a more pronounced effect on polarizability than changes in the Group IVA element. This work highlights the effectiveness of combining automation, Python scripting, and open-source quantum chemistry software to efficiently generate, analyze, and visualize data across a systematic series of molecules.
+This study presents a systematic computational investigation of polarizabilities in heteronuclear diatomic molecules formed from Group 14 (C, Si, Ge, Sn, Pb) and Group 16 (O, S, Se, Te) elements. Using the finite field method implemented in Psi4 1.7, we calculated longitudinal polarizabilities for twenty molecular combinations (CO, CS, CSe, CTe, SiO, SiS, SiSe, SiTe, GeO, GeS, GeSe, GeTe, SnO, SnS, SnSe, SnTe, PbO, PbS, PbSe, PbTe). Results reveal clear periodic trends, with polarizability increasing both down Group 14 and across Group 16, reaching a maximum of 130.9 a.u. for PbTe. The data demonstrate that changes in the Group 16 element have a more pronounced effect on polarizability than changes in the Group 14 element. This work highlights the effectiveness of combining automation, Python scripting, and open-source quantum chemistry software to efficiently generate, analyze, and visualize data across a systematic series of molecules.
 
 ## Introduction
 
 Molecular polarizability—the response of a molecule's electron density to an applied electric field—is a fundamental property that influences a wide range of physical and chemical phenomena, from intermolecular forces to optical properties.[@Jensen2017] Heteronuclear diatomic molecules present an interesting case study for polarizability analysis, as they exhibit directional responses that depend on the constituent atoms' electronic structures and the nature of the chemical bond between them.
 
-Group IVA (C, Si, Ge, Sn, Pb) and Group VIA (O, S, Se, Te) elements form a diverse set of diatomic molecules with varying bond lengths, electronic configurations, and degrees of covalent/ionic character. As one moves down these groups in the periodic table, several important changes occur: increasing atomic size, more diffuse valence orbitals, and for the heavier elements, significant relativistic effects.[@Pyykko2012] These systematic variations make Group IVA-VIA combinations an ideal testbed for exploring how atomic properties translate into molecular polarizability trends.
+Group 14 (C, Si, Ge, Sn, Pb) and Group 16 (O, S, Se, Te) elements form a diverse set of diatomic molecules with varying bond lengths, electronic configurations, and degrees of covalent/ionic character. As one moves down these groups in the periodic table, several important changes occur: increasing atomic size, more diffuse valence orbitals, and for the heavier elements, significant relativistic effects.[@Pyykko2012] These systematic variations make Group 14-16 combinations an ideal testbed for exploring how atomic properties translate into molecular polarizability trends.
 
 The polarizability tensor component αzz (along the molecular axis) can be approximated through the numerical derivative approach known as the finite field method:[@Cohen1975]
 
@@ -21,7 +21,7 @@ $$\alpha_{zz} \approx \frac{\mu_z(F_z = +h) - \mu_z(F_z = -h)}{2h}$$
 
 where h represents the applied electric field strength and μz is the z-component of the dipole moment. This approach provides a straightforward approximation of how the molecular dipole responds to an external electric field, from which polarizability can be derived.
 
-Building upon our previous work on atomic polarizabilities of Group IVA elements, this study extends the investigation to heteronuclear molecules, with three primary objectives: (1) demonstrating the power of computational automation for systematic property prediction across a molecular series, (2) identifying periodic trends and structure-property relationships, and (3) providing insights into the relative contributions of different elements to the overall molecular polarizability.
+Building upon our previous work on atomic polarizabilities of Group 14 elements, this study extends the investigation to heteronuclear molecules, with three primary objectives: (1) demonstrating the power of computational automation for systematic property prediction across a molecular series, (2) identifying periodic trends and structure-property relationships, and (3) providing insights into the relative contributions of different elements to the overall molecular polarizability.
 
 While the polarizability values themselves may inform materials development, the primary strength of this work lies in showcasing how modern computational chemistry tools, particularly open-source software like Psi4 and Python, enable rapid, systematic investigation of molecular properties with minimal manual intervention.
 
@@ -54,7 +54,7 @@ python -c "import psi4; print(psi4.__version__)"
 
 We employed the finite field method to calculate the longitudinal polarizability (αzz) of each molecule. This involved applying electric fields of +0.002, 0.0, and -0.002 atomic units along the molecular axis (z-direction) and measuring the resulting changes in the molecular dipole moment.
 
-For each calculation, the Group IVA atom was placed at the origin, with the Group VIA atom positioned along the positive z-axis at the appropriate bond length. Bond lengths were estimated based on experimental and theoretical values from the literature, with adjustments made for the heavier elements.
+For each calculation, the Group 14 atom was placed at the origin, with the Group 16 atom positioned along the positive z-axis at the appropriate bond length. Bond lengths were estimated based on experimental and theoretical values from the literature, with adjustments made for the heavier elements.
 
 ### Python Implementation
 
@@ -329,8 +329,8 @@ ax.set_yticks(np.arange(len(group16)))
 ax.set_yticklabels(group16)
 
 # Set labels and title
-ax.set_xlabel('Group 14 (IVA) Elements', fontsize=14, labelpad=10)
-ax.set_ylabel('Group 16 (VIA) Elements', fontsize=14, labelpad=10)
+ax.set_xlabel('Group 14 Elements', fontsize=14, labelpad=10)
+ax.set_ylabel('Group 16 Elements', fontsize=14, labelpad=10)
 ax.set_zlabel('Polarizability (a.u.)', fontsize=14, labelpad=10)
 ax.set_title('Polarizability of Group 14-16 Diatomic Molecules', fontsize=16)
 
@@ -349,8 +349,8 @@ plt.colorbar(heatmap, label='Polarizability (a.u.)')
 # Add labels and title for heatmap
 plt.xticks(np.arange(len(group14)), group14)
 plt.yticks(np.arange(len(group16)), group16)
-plt.xlabel('Group 14 (IVA) Elements', fontsize=14)
-plt.ylabel('Group 16 (VIA) Elements', fontsize=14)
+plt.xlabel('Group 14 Elements', fontsize=14)
+plt.ylabel('Group 16 Elements', fontsize=14)
 plt.title('Polarizability Heatmap of Group 14-16 Molecules', fontsize=16)
 
 # Add values to each cell
@@ -370,7 +370,7 @@ for i, g14 in enumerate(group14):
     plt.plot(np.arange(len(group16)), polarizabilities, 'o-', linewidth=2, markersize=8, label=g14)
 
 plt.xticks(np.arange(len(group16)), group16)
-plt.xlabel('Group 16 (VIA) Element', fontsize=14)
+plt.xlabel('Group 16 Element', fontsize=14)
 plt.ylabel('Polarizability (a.u.)', fontsize=14)
 plt.title('Polarizability Trends Across Group 16 Elements', fontsize=16)
 plt.grid(True, linestyle='--', alpha=0.7)
@@ -390,9 +390,9 @@ Polonium-containing compounds were excluded from this study due to the specializ
 
 ## Results
 
-Our calculations yielded polarizability values for twenty different Group IVA-VIA diatomic molecules. The complete results are presented in Table 1.
+Our calculations yielded polarizability values for twenty different Group 14-16 diatomic molecules. The complete results are presented in Table 1.
 
-**Table 1: Calculated Longitudinal Polarizabilities (α<sub>zz</sub>) for Group IVA-VIA Molecules**
+**Table 1: Calculated Longitudinal Polarizabilities (α<sub>zz</sub>) for Group 14-16 Molecules**
 
 | Molecule | Polarizability (a.u.) | Molecule | Polarizability (a.u.) |
 |----------|----------------------:|----------|----------------------:|
@@ -409,31 +409,31 @@ Our calculations yielded polarizability values for twenty different Group IVA-VI
 
 <figure>
   <img src="/images/polarizability_3d_surface.png" alt="3D Surface Polarizability">
-  <figcaption><strong>Figure 1:</strong> 3D Surface Plot of Polarizabilities. Three-dimensional visualization showing how polarizability varies across different combinations of Group IVA elements and Group VIA elements.</figcaption>
+  <figcaption><strong>Figure 1:</strong> 3D Surface Plot of Polarizabilities. Three-dimensional visualization showing how polarizability varies across different combinations of Group 14 elements and Group 16 elements.</figcaption>
 </figure>
 
 <figure>
   <img src="/images/polarizability_heatmap.png" alt="Polarizability Heatmap">
-  <figcaption><strong>Figure 2:</strong> Heatmap of Polarizabilities Across Group IVA-VIA Combinations. Color-coded representation showing the systematic increase in polarizability values when moving from lighter to heavier elements.</figcaption>
+  <figcaption><strong>Figure 2:</strong> Heatmap of Polarizabilities Across Group 14-16 Combinations. Color-coded representation showing the systematic increase in polarizability values when moving from lighter to heavier elements.</figcaption>
 </figure>
 
 <figure>
   <img src="/images/polarizability_trends.png" alt="Polarizability Trends">
-  <figcaption><strong>Figure 3:</strong> Polarizability Trends for Group IVA Elements Across Group VIA. Line plot demonstrating the consistent increase in polarizability when moving from oxygen to tellurium compounds for each Group IVA element.</figcaption>
+  <figcaption><strong>Figure 3:</strong> Polarizability Trends for Group 14 Elements Across Group 16. Line plot demonstrating the consistent increase in polarizability when moving from oxygen to tellurium compounds for each Group 14 element.</figcaption>
 </figure>
 
 <figure>
   <img src="/images/bond_length_vs_polarizability.png" alt="Bond Length vs. Polarizability">
-  <figcaption><strong>Figure 4:</strong> Bond Length vs. Polarizability Correlation. Scatter plot showing the relationship between bond length and polarizability across all twenty molecular combinations, with trend lines for each Group IVA element.</figcaption>
+  <figcaption><strong>Figure 4:</strong> Bond Length vs. Polarizability Correlation. Scatter plot showing the relationship between bond length and polarizability across all twenty molecular combinations, with trend lines for each Group 14 element.</figcaption>
 </figure>
 
 ## Discussion
 
 ### Periodic Trends and Patterns
 
-The results reveal several clear trends in the polarizabilities of Group IVA-VIA diatomic molecules. For a fixed Group VIA element, polarizability increases as we move from C to Pb. For example, with oxygen compounds: CO (12.21 a.u.) < SiO (27.84 a.u.) < GeO (29.02 a.u.) < SnO (38.23 a.u.) < PbO (41.29 a.u.). This trend reflects the increasing atomic size and more diffuse electron clouds of heavier Group IVA elements.
+The results reveal several clear trends in the polarizabilities of Group 14-16 diatomic molecules. For a fixed Group 16 element, polarizability increases as we move from C to Pb. For example, with oxygen compounds: CO (12.21 a.u.) < SiO (27.84 a.u.) < GeO (29.02 a.u.) < SnO (38.23 a.u.) < PbO (41.29 a.u.). This trend reflects the increasing atomic size and more diffuse electron clouds of heavier Group 14 elements.
 
-For a fixed Group IVA element, polarizability increases dramatically as we move from O to Te. For carbon compounds: CO (12.21 a.u.) < CS (35.81 a.u.) < CSe (42.69 a.u.) < CTe (59.46 a.u.). The Group VIA element choice has a larger effect on polarizability than the Group IVA element, with increases of 3-4× when moving from O to Te compared to 2-3× when moving from C to Pb.
+For a fixed Group 14 element, polarizability increases dramatically as we move from O to Te. For carbon compounds: CO (12.21 a.u.) < CS (35.81 a.u.) < CSe (42.69 a.u.) < CTe (59.46 a.u.). The Group 16 element choice has a larger effect on polarizability than the Group 14 element, with increases of 3-4× when moving from O to Te compared to 2-3× when moving from C to Pb.
 
 The highest polarizabilities are observed for the heaviest combinations, with PbTe (130.91 a.u.) showing approximately 10.7 times the polarizability of CO (12.21 a.u.). The increase in polarizability is not strictly linear with atomic number, suggesting that factors beyond atomic size influence the electronic response properties.
 
@@ -443,13 +443,13 @@ Longer bonds generally correlate with higher polarizabilities, as shown in Figur
 
 The more diffuse valence electron distributions in heavier elements lead to enhanced polarizability. This is particularly evident with Te compounds, which show dramatically higher polarizabilities than their O counterparts. Beyond orbital diffuseness, the sheer number of electrons also plays a significant role—heavier elements simply have more electrons that can respond to external fields, contributing substantially to the observed polarizability trends.
 
-The decreasing electronegativity difference between Group IVA and VIA elements for heavier combinations may allow for more symmetric electron distribution and greater polarizability. Contrary to what might be initially expected, our data doesn't show a clear correlation between bond polarity and polarizability. In fact, the less polar bonds (like those in PbTe) often exhibit greater polarizability, suggesting that electron cloud size and diffuseness dominate over polarization effects in these systems.
+The decreasing electronegativity difference between Group 14 and 16 elements for heavier combinations may allow for more symmetric electron distribution and greater polarizability. Contrary to what might be initially expected, our data doesn't show a clear correlation between bond polarity and polarizability. In fact, the less polar bonds (like those in PbTe) often exhibit greater polarizability, suggesting that electron cloud size and diffuseness dominate over polarization effects in these systems.
 
 ### Comparison to Previous Work
 
 Our results for the CO molecule (12.21 a.u.) align reasonably well with experimental values (~13-17 a.u.) and previous computational studies.[@Maroulis1996] The trend of increasing polarizability down groups is consistent with general chemical intuition and prior studies of atomic polarizabilities.
 
-The relatively larger impact of Group VIA elements on polarizability compared to Group IVA elements is an interesting observation that warrants further investigation. This may relate to the greater variability in valence p-orbital diffuseness across the chalcogens compared to the Group IVA elements.[@Schwerdtfeger2002] Additionally, the Group VIA elements add more electrons to the system as we move down the group compared to the Group IVA elements, providing more electrons that can respond to an external field.
+The relatively larger impact of Group 16 elements on polarizability compared to Group 14 elements is an interesting observation that warrants further investigation. This may relate to the greater variability in valence p-orbital diffuseness across the chalcogens compared to the Group 14 elements.[@Schwerdtfeger2002] Additionally, the Group 16 elements add more electrons to the system as we move down the group compared to the Group 14 elements, providing more electrons that can respond to an external field.
 
 ### Computational Considerations
 
@@ -465,19 +465,19 @@ One of the most significant advantages of our approach was the automation of cal
 
 The systematic dataset of molecular polarizabilities presented here contributes to our understanding of fundamental structure-property relationships. While molecules with high polarizabilities are candidates for nonlinear optical applications, it's important to note that state-of-the-art nonlinear optical materials like LiNbO₃ rely on non-centrosymmetric crystalline structures to achieve high second-order optical responses (χ²). Our simple diatomic molecules, while instructive for understanding polarizability trends, would need to be incorporated into more complex, asymmetric structures to be competitive for actual nonlinear optical device applications.[@Boyd2008]
 
-Accurate polarizability values are essential for modeling dispersion forces and other non-bonded interactions in molecular simulations. The systematic trends identified here could be incorporated into force field development for simulations involving Group IVA and VIA elements.[@Stone2013] Similarly, polarizability derivatives determine Raman activity. The trends identified here could help predict relative Raman intensities across related molecules, possibly guiding experimental spectroscopic investigations.[@Neugebauer2007]
+Accurate polarizability values are essential for modeling dispersion forces and other non-bonded interactions in molecular simulations. The systematic trends identified here could be incorporated into force field development for simulations involving Group 14 and 16 elements.[@Stone2013] Similarly, polarizability derivatives determine Raman activity. The trends identified here could help predict relative Raman intensities across related molecules, possibly guiding experimental spectroscopic investigations.[@Neugebauer2007]
 
 Beyond specific applications, this work demonstrates a methodologically sound approach to computational materials exploration that could be extended to other properties and molecular systems. The combination of automated calculations with systematic variation of molecular composition provides an efficient strategy for mapping structure-property relationships across chemical space.[@Curtarolo2013]
 
 ## Conclusion
 
-This study has successfully mapped the polarizability landscape across twenty Group IVA-VIA diatomic molecules, revealing clear periodic trends and structure-property relationships. The polarizability increases both down Group IVA and across Group VIA, with the heaviest combinations showing the highest values. Group VIA elements have a more pronounced effect on polarizability than Group IVA elements, suggesting that chalcogen selection is particularly important in designing materials with specific polarizability requirements.
+This study has successfully mapped the polarizability landscape across twenty Group 14-16 diatomic molecules, revealing clear periodic trends and structure-property relationships. The polarizability increases both down Group 14 and across Group 16, with the heaviest combinations showing the highest values. Group 16 elements have a more pronounced effect on polarizability than Group 14 elements, suggesting that chalcogen selection is particularly important in designing materials with specific polarizability requirements.
 
 The computational methodology employed here—combining the finite field approach with appropriate basis sets and ECPs—proved effective for systematically investigating these trends. This approach could be readily extended to other molecular systems and properties.
 
 Perhaps more importantly, this work highlights the power of combining open-source quantum chemistry software (Psi4) with Python automation to rapidly generate and analyze data across a systematic series of molecules. The entire project—from environment setup to data visualization—was completed in a remarkably short timeframe, demonstrating the efficiency of modern computational chemistry approaches and the incorporation of prompt engineering techniques.
 
-Future work could explore several promising directions. Higher-level calculations (MP2, CCSD) on select molecules would help assess electron correlation effects on polarizability, potentially improving accuracy for the heavier elements. Calculation of full polarizability tensors would allow examination of anisotropy in the electronic response, revealing directional dependencies not captured by the longitudinal component alone. The methodology could be extended to polyatomic molecules containing Group IVA and VIA elements, opening pathways to more complex and practically relevant systems. Investigation of frequency-dependent polarizabilities and hyperpolarizability would provide insights into optical dispersion and nonlinear optical properties, respectively. Finally, incorporating vibrational contributions to polarizability would enable more direct comparison with experimental measurements, which naturally include these effects.
+Future work could explore several promising directions. Higher-level calculations (MP2, CCSD) on select molecules would help assess electron correlation effects on polarizability, potentially improving accuracy for the heavier elements. Calculation of full polarizability tensors would allow examination of anisotropy in the electronic response, revealing directional dependencies not captured by the longitudinal component alone. The methodology could be extended to polyatomic molecules containing Group 14 and 16 elements, opening pathways to more complex and practically relevant systems. Investigation of frequency-dependent polarizabilities and hyperpolarizability would provide insights into optical dispersion and nonlinear optical properties, respectively. Finally, incorporating vibrational contributions to polarizability would enable more direct comparison with experimental measurements, which naturally include these effects.
 
 By establishing these fundamental structure-property relationships and demonstrating an efficient computational workflow, this work contributes to our understanding of molecular electronic response properties and provides a template for future computational explorations of chemical space.
 

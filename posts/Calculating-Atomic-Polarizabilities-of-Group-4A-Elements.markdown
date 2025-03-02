@@ -1,29 +1,29 @@
 ---
-title: Calculating Atomic Polarizabilities of Group 4A Elements Using Psi4 - A Finite Field Approach 
+title: Calculating Atomic Polarizabilities of Group 14 Elements Using Psi4 - A Finite Field Approach 
 date: 2025-02-25 
 tags: quantum chemistry, hyperpolarizability, computational chemistry, psi4 
-description: An experimental study calculating polarizabilities of Group 4A elements using Psi4's finite field method, with results for C, Si, and Ge, and insights into limitations for heavier elements.
+description: An experimental study calculating polarizabilities of Group 14 elements using Psi4's finite field method, with results for C, Si, and Ge, and insights into limitations for heavier elements.
 ---
 
 ## Abstract
 
-This study explores the polarizabilities of Group 4A elements (C, Si, Ge, Sn, Pb) using the finite field method in Psi4 1.7. We successfully computed isotropic polarizabilities for carbon (7.11 a.u.), silicon (20.17 a.u.), and germanium (20.19 a.u.), revealing an increasing trend down the group. However, computational limitations arose when attempting calculations for heavier elements. This work demonstrates a practical workflow for atomic property calculations, highlights methodological challenges with heavier elements, and establishes a foundation for future investigations using alternative computational approaches.
+This study explores the polarizabilities of Group 14 elements (C, Si, Ge, Sn, Pb) using the finite field method in Psi4 1.7. We successfully computed isotropic polarizabilities for carbon (7.11 a.u.), silicon (20.17 a.u.), and germanium (20.19 a.u.), revealing an increasing trend down the group. However, computational limitations arose when attempting calculations for heavier elements. This work demonstrates a practical workflow for atomic property calculations, highlights methodological challenges with heavier elements, and establishes a foundation for future investigations using alternative computational approaches.
 
 ## Introduction
 
 Polarizability—the measure of an atom's electron cloud deformability in response to an external electric field—represents a fundamental property that governs numerous physical and chemical phenomena. From intermolecular forces to optical properties, polarizability provides critical insights into how atoms and molecules interact with electromagnetic radiation and with each other.
 
-Group 4A elements (C, Si, Ge, Sn, Pb) present an especially intriguing case study for polarizability analysis due to their systematic variation in atomic radius, electron configuration, and relativistic effects as one moves down the periodic table. The progressive filling of d and f orbitals prior to the p valence shell in heavier elements introduces electronic structure complexities that can significantly affect polarizability.
+Group 14 elements (C, Si, Ge, Sn, Pb) present an especially intriguing case study for polarizability analysis due to their systematic variation in atomic radius, electron configuration, and relativistic effects as one moves down the periodic table. The progressive filling of d and f orbitals prior to the p valence shell in heavier elements introduces electronic structure complexities that can significantly affect polarizability.
 
 Computational quantum chemistry offers powerful tools for investigating these properties without the experimental complexities of measuring atomic responses to electric fields. Open-source software packages like Psi4 have democratized access to sophisticated quantum chemical calculations, though these approaches come with their own methodological challenges and limitations, particularly for heavier elements where relativistic effects become significant.[@Parrish2017; @Schwerdtfeger2002]
 
-In this study, we implement a finite field approach within Psi4 to calculate polarizabilities across the Group 4A elements. The polarizability tensor component α<sub>xx</sub> can be approximated through the numerical derivative:
+In this study, we implement a finite field approach within Psi4 to calculate polarizabilities across the Group 14 elements. The polarizability tensor component α<sub>xx</sub> can be approximated through the numerical derivative:
 
 $$\alpha_{xx} \approx \frac{\mu_x(F_x = +h) - \mu_x(F_x = -h)}{2h}$$
 
 where h represents the applied electric field strength. This approach provides an approximation of the dipole response to an external electric field, from which polarizability can be derived.[@Cohen1975]
 
-For reproducibility, we developed a systematic workflow that automatically generates the necessary input files for each element at various field strengths, selecting appropriate basis sets for each element. Our work serves three primary objectives: (1) establishing a reproducible workflow for polarizability calculations, (2) documenting the polarizability trend across available Group 4A elements, and (3) identifying computational constraints that emerge when extending these calculations to heavier elements.
+For reproducibility, we developed a systematic workflow that automatically generates the necessary input files for each element at various field strengths, selecting appropriate basis sets for each element. Our work serves three primary objectives: (1) establishing a reproducible workflow for polarizability calculations, (2) documenting the polarizability trend across available Group 14 elements, and (3) identifying computational constraints that emerge when extending these calculations to heavier elements.
 
 The insights gained here will inform future work aimed at overcoming these limitations, potentially through alternative basis sets, pseudopotentials, or computational methodologies that better account for relativistic effects in heavier elements.[@Jensen2017]
 
@@ -181,7 +181,7 @@ Our calculations yielded the following isotropic polarizability values:
     axis lines=left,
     bar width=0.5cm, % Thinner bars for clarity
     ybar,
-    title={Polarizability of Group 4A Elements},
+    title={Polarizability of Group 14 Elements},
     title style={font=\large\bfseries, color=black}, % Black title for contrast
     every axis label/.style={font=\normalsize, color=black},
     every tick label/.style={font=\normalsize, color=black},
@@ -210,11 +210,11 @@ The directory structure and automated input generation scripts we developed succ
 
 ## Conclusion
 
-This study has successfully established a computational workflow for calculating atomic polarizabilities of Group 4A elements using the finite field method in Psi4. Our results confirm the expected trend of increasing polarizability down the group, with a significant jump from carbon to silicon, followed by a plateau between silicon and germanium. These findings align with theoretical expectations based on atomic size and electronic structure considerations.
+This study has successfully established a computational workflow for calculating atomic polarizabilities of Group 14 elements using the finite field method in Psi4. Our results confirm the expected trend of increasing polarizability down the group, with a significant jump from carbon to silicon, followed by a plateau between silicon and germanium. These findings align with theoretical expectations based on atomic size and electronic structure considerations.
 
 The inability to complete calculations for tin and lead due to basis set availability issues illuminates an important frontier in computational chemistry: the challenges associated with modeling heavier elements where relativistic effects become significant. This limitation sets a clear direction for future work. Implementation of custom basis sets and pseudopotentials within the Psi4 environment could extend these calculations to heavier elements. Exploration of alternative quantum chemistry software packages with more comprehensive basis set libraries for heavy elements might also prove fruitful. The application of augmented basis sets such as aug-cc-pVDZ would likely improve accuracy for the lighter elements already studied. Development of hybrid computational approaches incorporating relativistic corrections would address the fundamental challenges of accurately modeling heavier elements.[@Jensen2017; @Karna1991]
 
-By documenting both the successes and limitations of our approach, this work contributes to the broader understanding of computational methodology in quantum chemistry and provides a foundation for future investigations into the electronic properties of Group 4A elements and beyond.
+By documenting both the successes and limitations of our approach, this work contributes to the broader understanding of computational methodology in quantum chemistry and provides a foundation for future investigations into the electronic properties of Group 14 elements and beyond.
 
 ## Acknowledgments
 
