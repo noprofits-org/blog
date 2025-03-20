@@ -4,7 +4,7 @@ date: 2025-03-19
 tags: non-profits, financial-transparency, AI-tools, Form-990, ProPublica
 description: A comparative analysis of AI search tools in extracting and analyzing non-profit financial data, with practical applications for donors and stakeholders seeking transparency.
 ---
-
+<div class="tex2jax_ignore" markdown="1">
 ## Abstract
 
 This study examines the effectiveness of modern AI search tools in analyzing non-profit financial transparency. We compare the outputs of two leading AI systems—Deepseek and Grok—in extracting and interpreting Form 990 data for major non-profit organizations. Through systematic prompting focused on executive compensation, program expense ratios, fundraising efficiency, and revenue sources, we demonstrate significant variations in data presentation, analysis depth, and insight generation between these AI tools. The experiment, conducted in March 2025, highlights both the potential and limitations of AI-assisted financial analysis for promoting accountability in the non-profit sector, establishing a foundation for more informed donor decision-making.[@propublica2024]
@@ -751,4 +751,5 @@ However, the discrepancies in reported values and the limited ability of these s
 
 For NoProfits.org's mission of promoting transparency and accountability, these findings suggest an opportunity to develop standardized prompting techniques and verification protocols that maximize the utility of AI tools while mitigating their limitations. By establishing best practices for AI-assisted non-profit research, we can enhance the value these tools provide to donors, regulators, and the public.
 
+</div>
 ## References
