@@ -8,7 +8,6 @@
         padding: 64px 0;
         margin-left: 35px;
         margin-right: 35px;
-
     }
     
     img {
@@ -85,53 +84,14 @@
         width: 100%;
     }
     
- /* Desktop table styling */
-@media (min-width: 769px) {
-    /* Table layout and structure */
+    /* Desktop table styling - override mobile scrolling behavior */
     table {
-        width: 70% !important;
-        margin: 2rem auto !important;
-        border: none !important;
-        box-shadow: none !important;
-        background-color: transparent !important;
-        border-collapse: collapse !important;
+        display: table;
+        width: 100%;
+        overflow-x: visible;
+        white-space: normal;
+        margin: 1.5rem 0;
     }
-    
-    /* Table header styling */
-    th {
-        text-align: center !important;
-        font-weight: 600 !important;
-        border-bottom: 2px solid var(--border-color) !important;
-        border-top: none !important;
-        border-left: none !important;
-        border-right: none !important;
-        padding: 10px 16px !important;
-        background-color: transparent !important;
-    }
-    
-    /* Table cell styling */
-    td {
-        text-align: center !important;
-        border: none !important;
-        padding: 8px 16px !important;
-    }
-    
-    /* Alternating row colors - subtle or none */
-    tr:nth-child(even), tr:nth-child(odd) {
-        background-color: transparent !important;
-    }
-    
-    /* Remove hover effect */
-    tr:hover {
-        background-color: transparent !important;
-    }
-    
-    /* Optional - for better numeric alignment */
-    /* Add this class to columns with numbers: <td class="numeric">123.45</td> */
-    td.numeric {
-        text-align: right !important;
-    }
-}
     
     /* Desktop navigation spacing */
     nav {
