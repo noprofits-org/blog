@@ -488,7 +488,6 @@ All calculations were performed on the same computing system described in "Quant
     height=9cm,
     xlabel={Excited State},
     ylabel={Excitation Energy (eV)},
-    title={Formaldehyde Excited States: Comparison of Different Methods},
     grid=major,
     grid style={line width=.2pt, draw=gray!50},
     axis lines=left,
@@ -628,7 +627,6 @@ All calculations were performed on the same computing system described in "Quant
     height=9cm,
     xlabel={Excited State},
     ylabel={Oscillator Strength},
-    title={Oscillator Strengths for Formaldehyde Excited States},
     grid=major,
     grid style={line width=.2pt, draw=gray!50},
     axis lines=left,
@@ -645,12 +643,12 @@ All calculations were performed on the same computing system described in "Quant
     ybar,
     bar width=0.15cm,
     legend style={
-        at={(0.5,1.05)},
+        at={(0.5,1)},
         anchor=south,
         legend columns=4,
         draw=none,
         fill=white,
-        fill opacity=0.8
+        fill opacity=1
     }
 ]
 
@@ -734,6 +732,118 @@ All calculations were performed on the same computing system described in "Quant
 \end{axis}
 ```
 **Figure 2.** Oscillator strengths for formaldehyde excited states calculated using different DFT functionals. All methods predict zero oscillator strength for the first excited state (n$\to\pi$* transition), consistent with its symmetry-forbidden nature. The $\omega$B97X-D functional predicts the most intense transition for state 12 (0.186), significantly stronger than comparable transitions calculated with other functionals. States 7 and 9 show consistently high oscillator strengths across all methods.
+
+```tikzpicture
+\begin{axis}[
+    width=12cm,
+    height=9cm,
+    xlabel={Excited State},
+    ylabel={Excitation Energy Difference (eV)},
+    grid=major,
+    grid style={line width=.2pt, draw=gray!50},
+    axis lines=left,
+    xmin=0.5,
+    xmax=12.5,
+    xtick={1,2,3,4,5,6,7,8,9,10,11,12},
+    legend pos=north east,
+    legend style={
+        draw=none,
+        fill=white,
+        fill opacity=0.8
+    },
+    tick style={color=black},
+    every axis label/.style={font=\large},
+    every tick label/.style={font=\large},
+    title style={font=\large\bfseries},
+    scaled ticks=false,
+    legend cell align={left}
+]
+
+% Calculate the differences and plot
+\addplot[
+    thick,
+    color=blue,
+    mark=*,
+    mark size=2pt,
+] coordinates {
+    (1, 3.96 - 4.15)
+    (2, 6.85 - 8.61)
+    (3, 7.64 - 9.59)
+    (4, 7.84 - 10.11)
+    (5, 8.34 - 10.85)
+    (6, 9.10 - 11.45)
+    (7, 9.50 - 11.61)
+    (8, 10.12 - 12.36)
+    (9, 10.31 - 14.16)
+    (10, 10.43 - 14.24)
+    (11, 11.30 - 15.01)
+    (12, 11.81 - 15.48)
+};
+
+\addplot[
+    thick,
+    color=red,
+    mark=square*,
+    mark size=2pt,
+] coordinates {
+    (1, 3.95 - 4.15)
+    (2, 7.16 - 8.61)
+    (3, 7.89 - 9.59)
+    (4, 8.15 - 10.11)
+    (5, 8.58 - 10.85)
+    (6, 9.19 - 11.45)
+    (7, 9.59 - 11.61)
+    (8, 10.26 - 12.36)
+    (9, 10.73 - 14.16)
+    (10, 10.79 - 14.24)
+    (11, 11.58 - 15.01)
+    (12, 12.28 - 15.48)
+};
+
+\addplot[
+    thick,
+    color=green!60!black,
+    mark=diamond*,
+    mark size=2.5pt,
+] coordinates {
+    (1, 3.97 - 4.15)
+    (2, 7.10 - 8.61)
+    (3, 7.87 - 9.59)
+    (4, 8.08 - 10.11)
+    (5, 8.57 - 10.85)
+    (6, 9.18 - 11.45)
+    (7, 9.62 - 11.61)
+    (8, 10.23 - 12.36)
+    (9, 10.55 - 14.16)
+    (10, 10.74 - 14.24)
+    (11, 11.57 - 15.01)
+    (12, 12.15 - 15.48)
+};
+
+\addplot[
+    thick,
+    color=orange,
+    mark=triangle*,
+    mark size=2.5pt,
+] coordinates {
+    (1, 3.99 - 4.15)
+    (2, 7.63 - 8.61)
+    (3, 8.36 - 9.59)
+    (4, 8.64 - 10.11)
+    (5, 9.05 - 10.85)
+    (6, 9.29 - 11.45)
+    (7, 9.69 - 11.61)
+    (8, 10.37 - 12.36)
+    (9, 10.99 - 14.16)
+    (10, 11.31 - 14.24)
+    (11, 12.15 - 15.01)
+    (12, 12.73 - 15.48)
+};
+
+\legend{B3LYP, CAM-B3LYP, PBE0, $\omega$B97X-D};
+\end{axis}
+```
+**Figure 3.** Difference in excitation energies (TD-DFT - EOM-CCSD) for formaldehyde calculated using different DFT functionals. This figure shows the deviation of TD-DFT predicted excitation energies from the EOM-CCSD reference values. Negative values indicate that TD-DFT underestimates the excitation energy compared to EOM-CCSD, while positive values indicate overestimation. This visualization helps to assess the relative accuracy of different TD-DFT functionals in comparison to the higher-level EOM-CCSD method.
 
 ## Discussion
 
