@@ -162,7 +162,7 @@ where $|\Phi_I\rangle$ are the reference CSFs (typically from CASSCF), and $|\Ph
 
 ## Basis Sets
 
-Basis sets are sets of atomic orbitals used to approximate molecular orbitals in quantum chemical calculations. The choice of basis set affects the accuracy and computational cost of the calculations. A fundamental understanding of different types of basis sets is essential for selecting appropriate ones for excited state calculations.[@Jensen2007]
+Basis sets are sets of atomic orbitals used to approximate molecular orbitals in quantum chemical calculations. The choice of basis set affects the accuracy and computational cost of the calculations. A fundamental understanding of different types of basis sets is essential for selecting appropriate ones for excited state calculations.[@Jensen2017]
 
 ### Types of Basis Sets
 
@@ -178,7 +178,7 @@ where $N$ is a normalization constant, $Y_{lm}$ are spherical harmonics, $r$ is 
 
 $$\phi_{nlm}(\mathbf{r}) = \sum_i c_i g_{nlm}(\mathbf{r}, \alpha_i)$$
 
-where $c_i$ are contraction coefficients. This mathematical form allows for efficient computation of the necessary integrals in quantum chemical calculations.[@Jensen2007]
+where $c_i$ are contraction coefficients. This mathematical form allows for efficient computation of the necessary integrals in quantum chemical calculations.[@Jensen2017]
 
 ### Basis Set Effects on Excited State Calculations
 
@@ -196,7 +196,7 @@ For the correlation energy, the extrapolation typically takes the form:
 
 $$E_X = E_{CBS} + B X^{-\alpha}$$
 
-where $X$ is the cardinal number of the basis set (2 for DZ, 3 for TZ, etc.), and $\alpha$ is typically between 2.2 and 3.0. These extrapolation schemes can significantly improve the accuracy of excited state calculations.[@Jensen2007]
+where $X$ is the cardinal number of the basis set (2 for DZ, 3 for TZ, etc.), and $\alpha$ is typically between 2.2 and 3.0. These extrapolation schemes can significantly improve the accuracy of excited state calculations.[@Jensen2017]
 
 ### Basis Set Differences
 
