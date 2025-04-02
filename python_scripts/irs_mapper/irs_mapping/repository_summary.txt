@@ -1,0 +1,100 @@
+IRS FORM 990 REPOSITORY STRUCTURE SUMMARY
+=========================================
+
+Total Years: 7
+Total Index Files: 53
+
+Years Available:
+  2019: 10 index files (1 CSV, 9 ZIP)
+  2020: 10 index files (1 CSV, 9 ZIP)
+  2021: 2 index files (1 CSV, 1 ZIP)
+  2022: 2 index files (1 CSV, 1 ZIP)
+  2023: 13 index files (1 CSV, 12 ZIP)
+  2024: 13 index files (1 CSV, 12 ZIP)
+  2025: 3 index files (1 CSV, 2 ZIP)
+
+Index File Structures:
+  2025 - index_2025.csv:
+    Type: CSV
+    Columns: 10
+    Headers: RETURN_ID, FILING_TYPE, EIN, TAX_PERIOD, SUB_DATE, TAXPAYER_NAME, RETURN_TYPE, DLN, OBJECT_ID, XML_BATCH_ID
+    EIN Column: EIN
+    Object ID Column: RETURN_ID
+
+  2025 - 2025_TEOS_XML_01A.zip:
+    Type: ZIP
+    File Size: 103669610 bytes
+    Note: ZIP file detected, but contents not examined to avoid large download
+
+  2024 - index_2024.csv:
+    Type: CSV
+    Columns: 10
+    Headers: RETURN_ID, FILING_TYPE, EIN, TAX_PERIOD, SUB_DATE, TAXPAYER_NAME, RETURN_TYPE, DLN, OBJECT_ID, XML_BATCH_ID
+    EIN Column: EIN
+    Object ID Column: RETURN_ID
+
+  2024 - 2024_TEOS_XML_01A.zip:
+    Type: ZIP
+    File Size: 104816571 bytes
+    Note: ZIP file detected, but contents not examined to avoid large download
+
+  2023 - index_2023.csv:
+    Type: CSV
+    Columns: 9
+    Headers: RETURN_ID, FILING_TYPE, EIN, TAX_PERIOD, SUB_DATE, TAXPAYER_NAME, RETURN_TYPE, DLN, OBJECT_ID
+    EIN Column: EIN
+    Object ID Column: RETURN_ID
+
+  2023 - 2023_TEOS_XML_01A.zip:
+    Type: ZIP
+    File Size: 123052879 bytes
+    Note: ZIP file detected, but contents not examined to avoid large download
+
+  2022 - index_2022.csv:
+    Type: CSV
+    Columns: 9
+    Headers: RETURN_ID, FILING_TYPE, EIN, TAX_PERIOD, SUB_DATE, TAXPAYER_NAME, RETURN_TYPE, DLN, OBJECT_ID
+    EIN Column: EIN
+    Object ID Column: RETURN_ID
+
+  2022 - 2022_TEOS_XML_01A.zip:
+    Type: ZIP
+    File Size: 2603666925 bytes
+    Note: ZIP file detected, but contents not examined to avoid large download
+
+  2021 - index_2021.csv:
+    Type: CSV
+    Columns: 9
+    Headers: RETURN_ID, FILING_TYPE, EIN, TAX_PERIOD, SUB_DATE, TAXPAYER_NAME, RETURN_TYPE, DLN, OBJECT_ID
+    EIN Column: EIN
+    Object ID Column: RETURN_ID
+
+  2021 - 2021_TEOS_XML_01A.zip:
+    Type: ZIP
+    File Size: 3715545729 bytes
+    Note: ZIP file detected, but contents not examined to avoid large download
+
+  2020 - index_2020.csv:
+    Type: CSV
+    Columns: 9
+    Headers: RETURN_ID, FILING_TYPE, EIN, TAX_PERIOD, SUB_DATE, TAXPAYER_NAME, RETURN_TYPE, DLN, OBJECT_ID
+    EIN Column: EIN
+    Object ID Column: RETURN_ID
+
+  2020 - 2020_TEOS_XML_CT1.zip:
+    Type: ZIP
+    File Size: 374013631 bytes
+    Note: ZIP file detected, but contents not examined to avoid large download
+
+  2019 - index_2019.csv:
+    Type: CSV
+    Columns: 9
+    Headers: RETURN_ID, FILING_TYPE, EIN, TAX_PERIOD, SUB_DATE, TAXPAYER_NAME, RETURN_TYPE, DLN, OBJECT_ID
+    EIN Column: EIN
+    Object ID Column: RETURN_ID
+
+  2019 - 2019_TEOS_XML_CT1.zip:
+    Type: ZIP
+    File Size: 15817 bytes
+    Note: ZIP file detected, but contents not examined to avoid large download
+

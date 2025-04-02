@@ -1,0 +1,10 @@
+{
+  "url": "https://apps.irs.gov/pub/epostcard/990/xml/2022/2022_TEOS_XML_01A.zip",
+  "file_type": "zip",
+  "year": "2022",
+  "structure_analyzed": true,
+  "is_accessible": true,
+  "content_type": "application/zip",
+  "file_size": 2603666925,
+  "note": "ZIP file detected, but contents not examined to avoid large download"
+}

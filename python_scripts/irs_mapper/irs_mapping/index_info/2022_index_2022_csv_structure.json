@@ -1,0 +1,79 @@
+{
+  "url": "https://apps.irs.gov/pub/epostcard/990/xml/2022/index_2022.csv",
+  "file_type": "csv",
+  "year": "2022",
+  "structure_analyzed": true,
+  "column_headers": [
+    "RETURN_ID",
+    "FILING_TYPE",
+    "EIN",
+    "TAX_PERIOD",
+    "SUB_DATE",
+    "TAXPAYER_NAME",
+    "RETURN_TYPE",
+    "DLN",
+    "OBJECT_ID"
+  ],
+  "sample_rows_count": 5,
+  "sample_rows": [
+    [
+      "19570369",
+      "EFILE",
+      "262729390",
+      "202106",
+      "2022",
+      "BROTHERS AND SISTERS EMERGING",
+      "990",
+      "93493013001462",
+      "202210139349300146"
+    ],
+    [
+      "19570402",
+      "EFILE",
+      "680127450",
+      "202106",
+      "2022",
+      "UJIMA FAMILY RECOVERY SERVICES",
+      "990",
+      "93493013007062",
+      "202210139349300706"
+    ],
+    [
+      "19570411",
+      "EFILE",
+      "596153330",
+      "202106",
+      "2022",
+      "ROTARY CLUB OF SARASOTA FOUNDATION ROTARY CLUB OF SARASOTA FOUNDATION",
+      "990",
+      "93493013004162",
+      "202210139349300416"
+    ],
+    [
+      "19570417",
+      "EFILE",
+      "421412399",
+      "202106",
+      "2022",
+      "GILBERT EDUCATION FOUNDATION",
+      "990",
+      "93493013016712",
+      "202210139349301671"
+    ],
+    [
+      "19570423",
+      "EFILE",
+      "870531899",
+      "202106",
+      "2022",
+      "Affordable Housing Associates Inc",
+      "990",
+      "93493013009212",
+      "202210139349300921"
+    ]
+  ],
+  "ein_column_index": 2,
+  "ein_column_name": "EIN",
+  "object_id_column_index": 0,
+  "object_id_column_name": "RETURN_ID"
+}

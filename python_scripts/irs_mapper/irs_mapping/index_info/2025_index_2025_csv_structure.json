@@ -1,0 +1,85 @@
+{
+  "url": "https://apps.irs.gov/pub/epostcard/990/xml/2025/index_2025.csv",
+  "file_type": "csv",
+  "year": "2025",
+  "structure_analyzed": true,
+  "column_headers": [
+    "RETURN_ID",
+    "FILING_TYPE",
+    "EIN",
+    "TAX_PERIOD",
+    "SUB_DATE",
+    "TAXPAYER_NAME",
+    "RETURN_TYPE",
+    "DLN",
+    "OBJECT_ID",
+    "XML_BATCH_ID"
+  ],
+  "sample_rows_count": 5,
+  "sample_rows": [
+    [
+      "",
+      "EFILE",
+      "237259307",
+      "202403",
+      "2025",
+      "MICHIGAN MASONIC HOME",
+      "990",
+      "93493022011225",
+      "202520229349301122",
+      "2025_TEOS_XML_01A"
+    ],
+    [
+      "",
+      "EFILE",
+      "730621374",
+      "202408",
+      "2025",
+      "Wagoner County Farm Bureau",
+      "990EZ",
+      "93492358008114",
+      "202413589349200811",
+      "2025_TEOS_XML_01A"
+    ],
+    [
+      "",
+      "EFILE",
+      "621516257",
+      "202406",
+      "2025",
+      "JEFFERSON COUNTY HABITAT FOR HUMANITY",
+      "990",
+      "93493021016095",
+      "202540219349301609",
+      "2025_TEOS_XML_01A"
+    ],
+    [
+      "",
+      "EFILE",
+      "043655838",
+      "202406",
+      "2025",
+      "READING EDUCATION FOUNDATION INC",
+      "990EZ",
+      "93492016013055",
+      "202500169349201305",
+      "2025_TEOS_XML_01A"
+    ],
+    [
+      "",
+      "EFILE",
+      "271367303",
+      "202404",
+      "2025",
+      "Schweikher House Preservation Trust",
+      "990EZ",
+      "93492355000104",
+      "202403559349200010",
+      "2025_TEOS_XML_01A"
+    ]
+  ],
+  "ein_column_index": 2,
+  "ein_column_name": "EIN",
+  "object_id_column_index": 0,
+  "object_id_column_name": "RETURN_ID"
+}

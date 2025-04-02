@@ -1,0 +1,85 @@
+{
+  "url": "https://apps.irs.gov/pub/epostcard/990/xml/2024/index_2024.csv",
+  "file_type": "csv",
+  "year": "2024",
+  "structure_analyzed": true,
+  "column_headers": [
+    "RETURN_ID",
+    "FILING_TYPE",
+    "EIN",
+    "TAX_PERIOD",
+    "SUB_DATE",
+    "TAXPAYER_NAME",
+    "RETURN_TYPE",
+    "DLN",
+    "OBJECT_ID",
+    "XML_BATCH_ID"
+  ],
+  "sample_rows_count": 5,
+  "sample_rows": [
+    [
+      "22398228",
+      "EFILE",
+      "630809530",
+      "202312",
+      "2024",
+      "WALKER COUNTY HUMANE SOCIETY",
+      "990EZ",
+      "93492022012314",
+      "202410229349201231",
+      "2024_TEOS_XML_01A"
+    ],
+    [
+      "22403064",
+      "EFILE",
+      "150406405",
+      "202312",
+      "2024",
+      "ONEONTA PLAINS CEMETERY ASSOCIATION INC",
+      "990",
+      "93493023009184",
+      "202430239349300918",
+      "2024_TEOS_XML_01A"
+    ],
+    [
+      "22545368",
+      "EFILE",
+      "591086812",
+      "202312",
+      "2024",
+      "INTERNATIONAL ASSOCIATION OF MACHINISTS & AEROSPACE WORKERS",
+      "990EZ",
+      "93492016002694",
+      "202440169349200269",
+      "2024_TEOS_XML_01A"
+    ],
+    [
+      "22352128",
+      "EFILE",
+      "920908632",
+      "202309",
+      "2024",
+      "BEN AND EMMA FOUNDATION",
+      "990PF",
+      "93491018007244",
+      "202440189349100724",
+      "2024_TEOS_XML_01A"
+    ],
+    [
+      "22500113",
+      "EFILE",
+      "831220569",
+      "202312",
+      "2024",
+      "SPIRIT AND TRUTH",
+      "990",
+      "93493018013104",
+      "202400189349301310",
+      "2024_TEOS_XML_01A"
+    ]
+  ],
+  "ein_column_index": 2,
+  "ein_column_name": "EIN",
+  "object_id_column_index": 0,
+  "object_id_column_name": "RETURN_ID"
+}

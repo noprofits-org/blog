@@ -1,0 +1,79 @@
+{
+  "url": "https://apps.irs.gov/pub/epostcard/990/xml/2020/index_2020.csv",
+  "file_type": "csv",
+  "year": "2020",
+  "structure_analyzed": true,
+  "column_headers": [
+    "RETURN_ID",
+    "FILING_TYPE",
+    "EIN",
+    "TAX_PERIOD",
+    "SUB_DATE",
+    "TAXPAYER_NAME",
+    "RETURN_TYPE",
+    "DLN",
+    "OBJECT_ID"
+  ],
+  "sample_rows_count": 5,
+  "sample_rows": [
+    [
+      "16988221",
+      "EFILE",
+      "261475115",
+      "201812",
+      "1/2/2020 3:03:27 PM",
+      "KALMAN FOUNDATION",
+      "990PF",
+      "93491315010639",
+      "201933159349101063"
+    ],
+    [
+      "16988237",
+      "EFILE",
+      "462017551",
+      "201812",
+      "1/2/2020 3:07:18 PM",
+      "TAIJI AND NAOKO TERASAKI FAMILY FOUNDATION",
+      "990PF",
+      "93491315011439",
+      "201933159349101143"
+    ],
+    [
+      "16988239",
+      "EFILE",
+      "456668539",
+      "201812",
+      "1/2/2020 3:07:19 PM",
+      "WARDEN FOUNDATION",
+      "990PF",
+      "93491315011539",
+      "201933159349101153"
+    ],
+    [
+      "16988243",
+      "EFILE",
+      "472955512",
+      "201812",
+      "1/2/2020 3:07:21 PM",
+      "IRVING AND DORIS GAMOW STEM CELL RESEARCH INSTITUTE",
+      "990PF",
+      "93491315011739",
+      "201933159349101173"
+    ],
+    [
+      "16988245",
+      "EFILE",
+      "201530666",
+      "201812",
+      "1/2/2020 3:07:22 PM",
+      "DOROTHY EULA JORDAN AND VELMA JEAN CUNNINGHAM FOUNDATION",
+      "990PF",
+      "93491315011839",
+      "201933159349101183"
+    ]
+  ],
+  "ein_column_index": 2,
+  "ein_column_name": "EIN",
+  "object_id_column_index": 0,
+  "object_id_column_name": "RETURN_ID"
+}

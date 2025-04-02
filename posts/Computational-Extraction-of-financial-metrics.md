@@ -755,32 +755,32 @@ if __name__ == "__main__":
 
 <figure>
   <img src="/images/fundraising_efficiency_chart.png" alt="Fundraising Efficiency Over Time">
-  <figcaption>This figure shows the Fundraising Efficiency (Contributions/Fundraising Expenses) values for all five nonprofit organizations from 2011-2023. The chart demonstrates variations in fundraising effectiveness across organizations and fluctuations within individual organizations over time.</figcaption>
+  <figcaption><strong>Figure 1.</strong> The Fundraising Efficiency (Contributions/Fundraising Expenses) values for all five nonprofit organizations from 2011-2023. The chart demonstrates variations in fundraising effectiveness across organizations and fluctuations within individual organizations over time.</figcaption>
 </figure>
 
 <figure>
   <img src="/images/13-6213516_American_Civil_Liberties_Union_Foundation_Inc_metrics.png" alt="ACLU Financial Metrics">
-  <figcaption>This chart displays the Fundraising Efficiency for the American Civil Liberties Union Foundation from 2012-2023, showing the organization's effectiveness in converting fundraising expenses into contributions over a twelve-year period.</figcaption>
+  <figcaption><strong>Figure 2.</strong> The Fundraising Efficiency for the American Civil Liberties Union Foundation from 2012-2023, showing the organization's effectiveness in converting fundraising expenses into contributions over a twelve-year period.</figcaption>
 </figure>
 
 <figure>
   <img src="/images/53-0196605_American_National_Red_Cross_metrics.png" alt="Red Cross Financial Metrics">
-  <figcaption>This visualization presents the Fundraising Efficiency for the American Red Cross from 2011-2022, illustrating the ratio of contributions received to expenses incurred for fundraising activities over an eleven-year timeframe.</figcaption>
+  <figcaption><strong>Figure 3.</strong> The Fundraising Efficiency for the American Red Cross from 2011-2022, illustrating the ratio of contributions received to expenses incurred for fundraising activities over an eleven-year timeframe.</figcaption>
 </figure>
 
 <figure>
   <img src="/images/13-1635294_United_Way_Worldwide_metrics.png" alt="United Way Financial Metrics">
-  <figcaption>This figure depicts the Fundraising Efficiency for United Way Worldwide from 2011-2022, showing the relationship between fundraising expenses and total contributions collected over eleven years of operations.</figcaption>
+  <figcaption><strong>Figure 4.</strong> The Fundraising Efficiency for United Way Worldwide from 2011-2022, showing the relationship between fundraising expenses and total contributions collected over eleven years of operations.</figcaption>
 </figure>
 
 <figure>
   <img src="/images/13-1644147_Planned_Parenthood_Federation_Of_America_metrics.png" alt="Planned Parenthood Financial Metrics">
-  <figcaption>This chart illustrates the Fundraising Efficiency for Planned Parenthood Federation of America from 2011-2022, tracking how effectively the organization has converted fundraising expenditures into contribution revenue throughout this period.</figcaption>
+  <figcaption><strong>Figure 5.</strong> The Fundraising Efficiency for Planned Parenthood Federation of America from 2011-2022, tracking how effectively the organization has converted fundraising expenditures into contribution revenue throughout this period.</figcaption>
 </figure>
 
 <figure>
   <img src="/images/53-0242652_Nature_Conservancy_metrics.png" alt="Nature Conservancy Financial Metrics">
-  <figcaption>This visualization shows the Fundraising Efficiency for the Nature Conservancy from 2011-2022, displaying the historical performance of the organization's fundraising activities in terms of returns generated per dollar spent.</figcaption>
+  <figcaption><strong>Figure 6.</strong> The Fundraising Efficiency for the Nature Conservancy from 2011-2022, displaying the historical performance of the organization's fundraising activities in terms of returns generated per dollar spent.</figcaption>
 </figure>
 
 ## Discussion
