@@ -31,49 +31,1042 @@
 
     <main role="main">
         <div class="info">
-    <h3>Computational Tools for Time-Dependent Density Functional Theory Analysis of Chromophores</h3>
+    <h3>AI Assisted Computational Tools for Time-Dependent Density Functional Theory Analysis of Chromophores</h3>
     Posted on March 25, 2025
     
 </div>
 
 <h2 id="abstract">Abstract</h2>
-<p>This work presents a collection of computational tools developed for the systematic study of chromophore excited states using time-dependent density functional theory (TD-DFT). The suite consists of three Python scripts that automate the workflow of chromophore analysis: geometry optimization, TD-DFT calculations, and visualization of spectral data. These tools leverage the Psi4 quantum chemistry package to enable efficient prediction of excitation energies and oscillator strengths with minimal user intervention. We demonstrate the capabilities of this toolset using a simple test case of urea, highlighting the potential for extension to more complex chromophore systems relevant to materials science and photochemistry. The computational approach described here provides a foundation for future high-throughput screening of chromophores with tailored optical properties.</p>
+<p>This work presents a collection of computational tools developed for the systematic study of chromophore excited states using time-dependent density functional theory (TD-DFT). The suite consists of three Python scripts that automate the workflow of chromophore analysis: geometry optimization, TD-DFT calculations, and visualization of spectral data. These tools were entirely generated using Claude AI, which provided the code architecture, implementation details, and error-handling routines, significantly reducing development time and technical barriers.<span class="citation" data-cites="Anthropic2025Claude"><sup>1</sup></span> The AI-assisted workflow leverages the Psi4 quantum chemistry package to enable efficient prediction of excitation energies and oscillator strengths with minimal user intervention. We demonstrate the capabilities of this toolset using both a simple test case of urea and a more complex donor-acceptor chromophore (DCDHF-Me2), highlighting the potential for extension to other chromophore systems relevant to materials science and photochemistry. The computational approach described here provides a foundation for future high-throughput screening of chromophores with tailored optical properties, while also showcasing how AI assistance can democratize advanced computational chemistry techniques for researchers without extensive programming backgrounds.</p>
 <h2 id="introduction">Introduction</h2>
-<p>Chromophores, the molecular substructures responsible for light absorption, play a critical role in numerous applications ranging from photovoltaics and light-emitting diodes to biological imaging and photodynamic therapy<span class="citation" data-cites="Marques2012"><sup>1</sup></span>. Understanding their excited state properties is essential for rational design of new materials with specific optical characteristics. Time-dependent density functional theory (TD-DFT) has emerged as a powerful method for calculating excited states of medium to large molecules due to its favorable balance between computational cost and accuracy<span class="citation" data-cites="Laurent2013"><sup>2</sup></span>.</p>
-<p>However, implementing a complete workflow for chromophore analysis—from initial structure to spectral visualization—often requires significant expertise in computational chemistry and script development. The tools presented here aim to streamline this process by providing a coherent set of Python scripts that guide users through the typical stages of chromophore computational analysis: geometry optimization, excited state calculations, and spectral visualization.</p>
-<p>The development of automated computational workflows is particularly important in the field of chromophore research, where the ability to rapidly predict and compare optical properties can significantly accelerate the discovery of new functional materials<span class="citation" data-cites="Jacquemin2009"><sup>3</sup></span>. By reducing the technical barriers to computational analysis, these tools can help bridge the gap between experimental and theoretical studies of chromophores.</p>
-<p>In this work, we introduce three Python scripts designed to work together as a comprehensive toolkit for chromophore analysis: <code>optimize.py</code> for geometry optimization, <code>td_dft.py</code> for TD-DFT calculations, and <code>plot.py</code> for spectral visualization. Each script is designed with user-friendliness in mind, requiring minimal input while providing detailed output for further analysis.</p>
+<p>Chromophores, the molecular substructures responsible for light absorption, play a critical role in numerous applications ranging from photovoltaics and light-emitting diodes to biological imaging and photodynamic therapy.<span class="citation" data-cites="Marques2012"><sup>2</sup></span> Understanding their excited state properties is essential for rational design of new materials with specific optical characteristics. Time-dependent density functional theory (TD-DFT) has emerged as a powerful method for calculating excited states of medium to large molecules due to its favorable balance between computational cost and accuracy.<span class="citation" data-cites="Laurent2013"><sup>3</sup></span></p>
+<p>However, implementing a complete workflow for chromophore analysis—from initial structure to spectral visualization—often requires significant expertise in computational chemistry and script development. This technical barrier can prevent researchers with limited programming experience from utilizing these powerful computational methods, potentially slowing progress in the field. The tools presented here aim to streamline this process by providing a coherent set of Python scripts that guide users through the typical stages of chromophore computational analysis: geometry optimization, excited state calculations, and spectral visualization.</p>
+<p>The development of automated computational workflows is particularly important in the field of chromophore research, where the ability to rapidly predict and compare optical properties can significantly accelerate the discovery of new functional materials.<span class="citation" data-cites="Jacquemin2009"><sup>4</sup></span> By reducing the technical barriers to computational analysis, these tools can help bridge the gap between experimental and theoretical studies of chromophores.</p>
+<p>Artificial intelligence assistance represents a transformative approach to developing such computational tools. In this work, we utilized Claude AI to generate all three Python scripts in our workflow, substantially reducing development time from weeks or months to mere hours.<span class="citation" data-cites="Anthropic2025Claude"><sup>1</sup></span> This AI-assisted approach not only accelerates tool development but also democratizes access to advanced computational chemistry techniques, allowing researchers to focus on scientific questions rather than programming challenges. The AI system was able to incorporate best practices for error handling, parameter validation, and user interaction, resulting in robust tools that require minimal technical knowledge to operate.</p>
+<p>In this work, we introduce three Python scripts designed to work together as a comprehensive toolkit for chromophore analysis: <code>optimize.py</code> for geometry optimization, <code>td_dft.py</code> for TD-DFT calculations, and <code>plot.py</code> for spectral visualization. Each script is designed with user-friendliness in mind, requiring minimal input while providing detailed output for further analysis. We demonstrate their capabilities on both a simple test case (urea) and a more complex donor-acceptor chromophore (DCDHF-Me2), showcasing the versatility and practical utility of this AI-assisted computational approach.</p>
+<p>The DCDHF-Me2 molecule analyzed in this study belongs to a class of environmentally sensitive fluorophores developed by Lu et al. for single-molecule imaging applications.<span class="citation" data-cites="Lu2009"><sup>5</sup></span> These dicyanomethylenedihydrofuran (DCDHF) derivatives are characterized by their donor-acceptor architecture, which produces strong charge-transfer transitions and high sensitivity to local environment. The specific DCDHF-Me2 variant analyzed here contains a dimethylamino donor group connected to the dicyanomethylenedihydrofuran acceptor through a π-conjugated system, yielding the strong absorption in the visible region observed in our calculations.</p>
+<p>This example was selected for our study due to its well-characterized optical properties and significant technological relevance. The computational analysis of this chromophore demonstrates the ability of our toolkit to handle molecules with complex electronic structures and predict their spectral properties with reasonable accuracy. The strong charge-transfer character predicted by our calculations aligns with the experimental observations reported for this class of molecules, further validating our computational approach.</p>
 <h2 id="experimental">Experimental</h2>
-<p>The computational workflow consists of three main Python scripts that interface with the Psi4 quantum chemistry package:</p>
+<p>The computational workflow consists of three main Python scripts that interface with the Psi4 quantum chemistry package.<span class="citation" data-cites="Smith2020"><sup>6</sup></span></p>
 <h3 id="geometry-optimization-script-optimize.py">Geometry Optimization Script (<code>optimize.py</code>)</h3>
 <p>The geometry optimization script automatically prepares and performs quantum chemical calculations to find the minimum energy structure of a chromophore. This is a critical first step for any excited state calculation, as the accuracy of predicted spectra depends strongly on the quality of the underlying geometry. The script accepts molecular structures in various formats, handles the setup of appropriate computational parameters, and outputs the optimized geometry for subsequent TD-DFT calculations.</p>
 <p>The <code>optimize.py</code> script provides several important functionalities for the initial phase of chromophore analysis. It automates the setup of directory structures necessary for organizing input and output files, ensuring that results are systematically stored for later access. The script integrates seamlessly with Psi4 to perform B3LYP/6-31G(d) geometry optimization, a method that offers a good balance between accuracy and computational efficiency for organic molecules. Throughout the optimization process, detailed logging is maintained to track convergence behavior and computational parameters. Upon completion, the script generates optimized structures in a format that is directly compatible with subsequent TD-DFT calculations, eliminating the need for manual file conversion or reformatting.</p>
+<details>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> psi4</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> optimize_molecule(input_file):</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    Run geometry optimization on a molecule structure file.</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">    input_file (str): The name of the input file in input_structures/ directory</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">    bool: True if optimization succeeded, False otherwise</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Setup directories</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    input_dir <span class="op">=</span> <span class="st">&quot;input_structures&quot;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    output_dir <span class="op">=</span> <span class="st">&quot;optimized_structures&quot;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if input file exists</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    input_path <span class="op">=</span> os.path.join(input_dir, input_file)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> os.path.exists(input_path):</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Error: Input file </span><span class="sc">{</span>input_path<span class="sc">}</span><span class="ss"> not found.&quot;</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create output filename - replace extension with .opt</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    base_name <span class="op">=</span> os.path.splitext(input_file)[<span class="dv">0</span>]</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    output_file <span class="op">=</span> <span class="ss">f&quot;</span><span class="sc">{</span>base_name<span class="sc">}</span><span class="ss">.opt&quot;</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    output_path <span class="op">=</span> os.path.join(output_dir, output_file)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create log file</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    log_file <span class="op">=</span> os.path.join(output_dir, <span class="ss">f&quot;</span><span class="sc">{</span>base_name<span class="sc">}</span><span class="ss">_opt.log&quot;</span>)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Print status</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Starting optimization for </span><span class="sc">{</span>input_file<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Input: </span><span class="sc">{</span>input_path<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Output will be saved to: </span><span class="sc">{</span>output_path<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Log will be saved to: </span><span class="sc">{</span>log_file<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set up Psi4</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    psi4.core.set_output_file(log_file, <span class="va">False</span>)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    psi4.set_memory(<span class="st">'4 GB'</span>)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Print Psi4 version</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Using Psi4 version: </span><span class="sc">{</span>psi4<span class="sc">.</span>__version__<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Current date/time</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Job started at: </span><span class="sc">{</span>datetime<span class="sc">.</span>datetime<span class="sc">.</span>now()<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Read molecule from file</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(input_path, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>            molecule_str <span class="op">=</span> f.read()</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create the molecule</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>        molecule <span class="op">=</span> psi4.geometry(molecule_str)</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Set calculation options</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>        psi4.set_options({</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>            <span class="st">'basis'</span>: <span class="st">'6-31g(d)'</span>,</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>            <span class="st">'reference'</span>: <span class="st">'rhf'</span>,</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>            <span class="st">'scf_type'</span>: <span class="st">'direct'</span>,</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>            <span class="st">'guess'</span>: <span class="st">'sad'</span>,</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>            <span class="st">'e_convergence'</span>: <span class="fl">1e-6</span>,</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>            <span class="st">'d_convergence'</span>: <span class="fl">1e-6</span>,</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>            <span class="st">'maxiter'</span>: <span class="dv">100</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Run the optimization</span></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Starting geometry optimization...&quot;</span>)</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>        psi4.optimize(<span class="st">'b3lyp'</span>)</span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Save optimized geometry</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>        molecule.save_xyz_file(output_path, <span class="va">True</span>)</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Print success message</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Optimization completed successfully.&quot;</span>)</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Optimized structure saved to </span><span class="sc">{</span>output_path<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">True</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Error during optimization: </span><span class="sc">{</span><span class="bu">str</span>(e)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Check the log file for more details.&quot;</span>)</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>    <span class="cf">finally</span>:</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Job finished at: </span><span class="sc">{</span>datetime<span class="sc">.</span>datetime<span class="sc">.</span>now()<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Main function to run the optimization script.&quot;&quot;&quot;</span></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;=&quot;</span> <span class="op">*</span> <span class="dv">80</span>)</span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Molecule Geometry Optimization Script&quot;</span>)</span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;=&quot;</span> <span class="op">*</span> <span class="dv">80</span>)</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get input file from user</span></span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>    input_file <span class="op">=</span> <span class="bu">input</span>(<span class="st">&quot;Enter the input file name (must be in input_structures/ directory): &quot;</span>)</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Run optimization</span></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>    success <span class="op">=</span> optimize_molecule(input_file)</span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> success:</span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Optimization workflow completed successfully.&quot;</span>)</span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Optimization workflow encountered errors. Please check the logs.&quot;</span>)</span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div>
+</details>
 <h3 id="td-dft-calculation-script-td_dft.py">TD-DFT Calculation Script (<code>td_dft.py</code>)</h3>
 <p>The TD-DFT script takes the optimized geometry from the previous step and performs excited state calculations using time-dependent density functional theory. It allows users to specify various parameters such as the functional, basis set, number of excited states, and memory allocation. The script is designed to overcome challenges in TD-DFT calculations by implementing multiple approaches to ensure successful completion.</p>
 <p>The <code>td_dft.py</code> script serves as the core computational component of the workflow, offering comprehensive support for various DFT functionals and basis sets to accommodate different research requirements and accuracy needs. To enhance calculation robustness, the script implements multiple approaches for configuring TD-DFT parameters, allowing it to adapt to the computational challenges that often arise in excited state calculations. Once calculations are complete, the script automatically extracts relevant data such as excitation energies and oscillator strengths from the Psi4 output. Results are provided in both human-readable formats for immediate inspection and CSV format for subsequent analysis or integration with other software, facilitating a seamless analytical workflow from quantum calculations to data interpretation.</p>
+<details>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> psi4</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> argparse</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> list_available_functionals():</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;List all available DFT functionals in the current Psi4 installation.&quot;&quot;&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Try to import libxc_functionals module</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="im">from</span> psi4.driver.procrouting.dft <span class="im">import</span> libxc_functionals</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Try to get functional list from different attributes</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">hasattr</span>(libxc_functionals, <span class="st">'functional_list'</span>):</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            functionals <span class="op">=</span> libxc_functionals.functional_list</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> <span class="bu">hasattr</span>(libxc_functionals, <span class="st">'funcs'</span>):</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>            functionals <span class="op">=</span> libxc_functionals.funcs.keys()</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Fallback to common functionals</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>            functionals <span class="op">=</span> [<span class="st">&quot;B3LYP&quot;</span>, <span class="st">&quot;PBE&quot;</span>, <span class="st">&quot;PBE0&quot;</span>, <span class="st">&quot;M06-2X&quot;</span>, <span class="st">&quot;WB97X-D&quot;</span>, <span class="st">&quot;BLYP&quot;</span>, <span class="st">&quot;B97&quot;</span>, <span class="st">&quot;M06&quot;</span>, </span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>                          <span class="st">&quot;CAM-B3LYP&quot;</span>, <span class="st">&quot;WB97&quot;</span>, <span class="st">&quot;B2PLYP&quot;</span>, <span class="st">&quot;BP86&quot;</span>, <span class="st">&quot;TPSS&quot;</span>, <span class="st">&quot;M06-L&quot;</span>, <span class="st">&quot;SVWN&quot;</span>]</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Available DFT functionals:&quot;</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Display in columns</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i, func <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">sorted</span>(functionals)):</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>func<span class="sc">:&lt;12}</span><span class="ss">&quot;</span>, end<span class="op">=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (i <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">4</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>()</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> functionals</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Could not retrieve list of available functionals: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Fallback to common functionals</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        functionals <span class="op">=</span> [<span class="st">&quot;B3LYP&quot;</span>, <span class="st">&quot;PBE&quot;</span>, <span class="st">&quot;PBE0&quot;</span>, <span class="st">&quot;M06-2X&quot;</span>, <span class="st">&quot;WB97X-D&quot;</span>, <span class="st">&quot;BLYP&quot;</span>, <span class="st">&quot;B97&quot;</span>, <span class="st">&quot;M06&quot;</span>, </span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>                      <span class="st">&quot;CAM-B3LYP&quot;</span>, <span class="st">&quot;WB97&quot;</span>, <span class="st">&quot;B2PLYP&quot;</span>, <span class="st">&quot;BP86&quot;</span>, <span class="st">&quot;TPSS&quot;</span>, <span class="st">&quot;M06-L&quot;</span>, <span class="st">&quot;SVWN&quot;</span>]</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Fallback list of common DFT functionals:&quot;</span>)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i, func <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">sorted</span>(functionals)):</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>func<span class="sc">:&lt;12}</span><span class="ss">&quot;</span>, end<span class="op">=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (i <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">4</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>()</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> functionals</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> list_available_basis_sets():</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;List all available basis sets in the current Psi4 installation.&quot;&quot;&quot;</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Use the path we found in diagnostics</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>        <span class="im">import</span> os</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>        basis_dir <span class="op">=</span> os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(psi4.<span class="va">__file__</span>))), </span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>                                <span class="st">&quot;share&quot;</span>, <span class="st">&quot;psi4&quot;</span>, <span class="st">&quot;basis&quot;</span>)</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> os.path.exists(basis_dir):</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Get all .gbs files</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>            basis_files <span class="op">=</span> [os.path.splitext(f)[<span class="dv">0</span>] <span class="cf">for</span> f <span class="kw">in</span> os.listdir(basis_dir) </span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>                          <span class="cf">if</span> f.endswith(<span class="st">'.gbs'</span>) <span class="kw">and</span> os.path.isfile(os.path.join(basis_dir, f))]</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Clean up names</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>            basis_sets <span class="op">=</span> []</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> basis <span class="kw">in</span> basis_files:</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Handle common naming conventions</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>                cleaned <span class="op">=</span> basis.replace(<span class="st">'_'</span>, <span class="st">'-'</span>)</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> cleaned <span class="kw">not</span> <span class="kw">in</span> basis_sets:</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>                    basis_sets.append(cleaned)</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Fallback to common basis sets</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>            basis_sets <span class="op">=</span> [<span class="st">'STO-3G'</span>, <span class="st">'3-21G'</span>, <span class="st">'6-31G'</span>, <span class="st">'6-31G(D)'</span>, <span class="st">'6-31G(D,P)'</span>, <span class="st">'6-311G'</span>, </span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>                         <span class="st">'CC-PVDZ'</span>, <span class="st">'CC-PVTZ'</span>, <span class="st">'CC-PVQZ'</span>, <span class="st">'AUG-CC-PVDZ'</span>, <span class="st">'AUG-CC-PVTZ'</span>]</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Available basis sets:&quot;</span>)</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Display in columns</span></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i, basis <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">sorted</span>(basis_sets)):</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>basis<span class="sc">:&lt;16}</span><span class="ss">&quot;</span>, end<span class="op">=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (i <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">3</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>()</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> basis_sets</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Could not retrieve list of available basis sets: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Fallback to common basis sets</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>        basis_sets <span class="op">=</span> [<span class="st">'STO-3G'</span>, <span class="st">'3-21G'</span>, <span class="st">'6-31G'</span>, <span class="st">'6-31G(D)'</span>, <span class="st">'6-31G(D,P)'</span>, <span class="st">'6-311G'</span>, </span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'CC-PVDZ'</span>, <span class="st">'CC-PVTZ'</span>, <span class="st">'CC-PVQZ'</span>, <span class="st">'AUG-CC-PVDZ'</span>, <span class="st">'AUG-CC-PVTZ'</span>]</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Fallback list of common basis sets:&quot;</span>)</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i, basis <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">sorted</span>(basis_sets)):</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>basis<span class="sc">:&lt;16}</span><span class="ss">&quot;</span>, end<span class="op">=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (i <span class="op">+</span> <span class="dv">1</span>) <span class="op">%</span> <span class="dv">3</span> <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>()</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> basis_sets</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> setup_parser():</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Set up command line argument parser&quot;&quot;&quot;</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>    parser <span class="op">=</span> argparse.ArgumentParser(description<span class="op">=</span><span class="st">'Run TD-DFT calculations using Psi4'</span>)</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Required arguments</span></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'filename'</span>, nargs<span class="op">=</span><span class="st">'?'</span>, </span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>                       <span class="bu">help</span><span class="op">=</span><span class="st">'Name of the optimized structure file (e.g., molecule.opt)'</span>)</span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Optional arguments</span></span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'-f'</span>, <span class="st">'--functional'</span>, default<span class="op">=</span><span class="st">'b3lyp'</span>,</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>                       <span class="bu">help</span><span class="op">=</span><span class="st">'DFT functional to use (default: b3lyp)'</span>)</span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'-b'</span>, <span class="st">'--basis'</span>, default<span class="op">=</span><span class="st">'6-31g(d)'</span>,</span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>                       <span class="bu">help</span><span class="op">=</span><span class="st">'Basis set to use (default: 6-31g(d))'</span>)</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'-n'</span>, <span class="st">'--num_states'</span>, <span class="bu">type</span><span class="op">=</span><span class="bu">int</span>, default<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>                       <span class="bu">help</span><span class="op">=</span><span class="st">'Number of excited states to calculate (default: 10)'</span>)</span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'-m'</span>, <span class="st">'--memory'</span>, default<span class="op">=</span><span class="st">'2 GB'</span>,</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>                       <span class="bu">help</span><span class="op">=</span><span class="st">'Memory allocation (default: 2 GB)'</span>)</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'-c'</span>, <span class="st">'--charge'</span>, <span class="bu">type</span><span class="op">=</span><span class="bu">int</span>, default<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>                       <span class="bu">help</span><span class="op">=</span><span class="st">'Molecular charge (default: 0)'</span>)</span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'-s'</span>, <span class="st">'--multiplicity'</span>, <span class="bu">type</span><span class="op">=</span><span class="bu">int</span>, default<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>                       <span class="bu">help</span><span class="op">=</span><span class="st">'Spin multiplicity (default: 1)'</span>)</span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'-o'</span>, <span class="st">'--overwrite'</span>, action<span class="op">=</span><span class="st">'store_true'</span>,</span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>                       <span class="bu">help</span><span class="op">=</span><span class="st">'Overwrite existing output files without asking'</span>)</span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>    parser.add_argument(<span class="st">'-l'</span>, <span class="st">'--list'</span>, choices<span class="op">=</span>[<span class="st">'functionals'</span>, <span class="st">'basis'</span>, <span class="st">'both'</span>],</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>                       <span class="bu">help</span><span class="op">=</span><span class="st">'List available functionals, basis sets, or both'</span>)</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> parser</span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main(args<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Parse command line arguments</span></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>    parser <span class="op">=</span> setup_parser()</span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> args <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>        args <span class="op">=</span> parser.parse_args()</span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Handle listing options</span></span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> args.<span class="bu">list</span>:</span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> args.<span class="bu">list</span> <span class="kw">in</span> [<span class="st">'functionals'</span>, <span class="st">'both'</span>]:</span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>            list_available_functionals()</span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> args.<span class="bu">list</span> <span class="kw">in</span> [<span class="st">'basis'</span>, <span class="st">'both'</span>]:</span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>            list_available_basis_sets()</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> args.filename <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get the filename - from args or user input</span></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>    filename <span class="op">=</span> args.filename</span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> filename <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>        filename <span class="op">=</span> <span class="bu">input</span>(<span class="st">&quot;Enter the name of the optimized structure file (e.g., molecule.opt): &quot;</span>)</span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get calculation parameters - from args or user input if not provided</span></span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Enter 'list' to see available options for functionals or basis sets&quot;</span>)</span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a>    functional <span class="op">=</span> args.functional</span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> functional.lower() <span class="op">==</span> <span class="st">'list'</span>:</span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>        list_available_functionals()</span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a>        functional <span class="op">=</span> <span class="bu">input</span>(<span class="st">&quot;Enter the DFT functional (default: b3lyp): &quot;</span>) <span class="kw">or</span> <span class="st">&quot;b3lyp&quot;</span></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a>    basis <span class="op">=</span> args.basis</span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> basis.lower() <span class="op">==</span> <span class="st">'list'</span>:</span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>        list_available_basis_sets()</span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>        basis <span class="op">=</span> <span class="bu">input</span>(<span class="st">&quot;Enter the basis set (default: 6-31g(d)): &quot;</span>) <span class="kw">or</span> <span class="st">&quot;6-31g(d)&quot;</span></span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a>    num_states <span class="op">=</span> args.num_states</span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a>    memory <span class="op">=</span> args.memory</span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>    charge <span class="op">=</span> args.charge</span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>    multiplicity <span class="op">=</span> args.multiplicity</span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Validate input file</span></span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a>    input_path <span class="op">=</span> os.path.join(<span class="st">&quot;optimized_structures&quot;</span>, filename)</span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> os.path.exists(input_path):</span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Error: File '</span><span class="sc">{</span>input_path<span class="sc">}</span><span class="ss">' not found.&quot;</span>)</span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create output directory structure</span></span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a>    molecule_name <span class="op">=</span> os.path.splitext(filename)[<span class="dv">0</span>]</span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a>    output_dir <span class="op">=</span> os.path.join(<span class="st">&quot;results&quot;</span>, molecule_name, <span class="st">&quot;vacuum&quot;</span>)</span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a>    os.makedirs(output_dir, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Read the optimization output file</span></span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Reading optimized structure from </span><span class="sc">{</span>input_path<span class="sc">}</span><span class="ss">...&quot;</span>)</span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(input_path, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a>        lines <span class="op">=</span> f.readlines()</span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if the first line is just a number (atom count)</span></span>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> lines <span class="kw">and</span> lines[<span class="dv">0</span>].strip().isdigit():</span>
+<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a>        geometry_lines <span class="op">=</span> lines[<span class="dv">1</span>:]</span>
+<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Skipping first line (atom count)...&quot;</span>)</span>
+<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a>        geometry_lines <span class="op">=</span> lines</span>
+<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set up output file</span></span>
+<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a>    output_file <span class="op">=</span> os.path.join(output_dir, <span class="ss">f&quot;</span><span class="sc">{</span>molecule_name<span class="sc">}</span><span class="ss">_tddft.out&quot;</span>)</span>
+<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check for file overwrite</span></span>
+<span id="cb2-184"><a href="#cb2-184" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> os.path.exists(output_file) <span class="kw">and</span> <span class="kw">not</span> args.overwrite:</span>
+<span id="cb2-185"><a href="#cb2-185" aria-hidden="true" tabindex="-1"></a>        overwrite <span class="op">=</span> <span class="bu">input</span>(<span class="ss">f&quot;Output file </span><span class="sc">{</span>output_file<span class="sc">}</span><span class="ss"> already exists. Overwrite? (y/n): &quot;</span>)</span>
+<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> overwrite.lower() <span class="op">!=</span> <span class="st">'y'</span>:</span>
+<span id="cb2-187"><a href="#cb2-187" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
+<span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a>    psi4.core.set_output_file(output_file, <span class="va">False</span>)</span>
+<span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set memory based on system availability</span></span>
+<span id="cb2-192"><a href="#cb2-192" aria-hidden="true" tabindex="-1"></a>    psi4.set_memory(memory)</span>
+<span id="cb2-193"><a href="#cb2-193" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-194"><a href="#cb2-194" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create molecule string for Psi4</span></span>
+<span id="cb2-195"><a href="#cb2-195" aria-hidden="true" tabindex="-1"></a>    molecule_string <span class="op">=</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>.join(line.strip() <span class="cf">for</span> line <span class="kw">in</span> geometry_lines)</span>
+<span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-197"><a href="#cb2-197" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create the molecule object</span></span>
+<span id="cb2-198"><a href="#cb2-198" aria-hidden="true" tabindex="-1"></a>    molecule <span class="op">=</span> psi4.geometry(<span class="ss">f&quot;&quot;&quot;</span></span>
+<span id="cb2-199"><a href="#cb2-199" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>charge<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>multiplicity<span class="sc">}</span></span>
+<span id="cb2-200"><a href="#cb2-200" aria-hidden="true" tabindex="-1"></a><span class="ss">    </span><span class="sc">{</span>molecule_string<span class="sc">}</span></span>
+<span id="cb2-201"><a href="#cb2-201" aria-hidden="true" tabindex="-1"></a><span class="ss">    symmetry c1</span></span>
+<span id="cb2-202"><a href="#cb2-202" aria-hidden="true" tabindex="-1"></a><span class="ss">    &quot;&quot;&quot;</span>)</span>
+<span id="cb2-203"><a href="#cb2-203" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-204"><a href="#cb2-204" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Set up calculation options</span></span>
+<span id="cb2-205"><a href="#cb2-205" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Setting up TD-DFT calculation with </span><span class="sc">{</span>functional<span class="sc">}</span><span class="ss">/</span><span class="sc">{</span>basis<span class="sc">}</span><span class="ss">...&quot;</span>)</span>
+<span id="cb2-206"><a href="#cb2-206" aria-hidden="true" tabindex="-1"></a>    psi4.set_options({</span>
+<span id="cb2-207"><a href="#cb2-207" aria-hidden="true" tabindex="-1"></a>        <span class="st">'basis'</span>: basis,</span>
+<span id="cb2-208"><a href="#cb2-208" aria-hidden="true" tabindex="-1"></a>        <span class="st">'reference'</span>: <span class="st">'rks'</span>,</span>
+<span id="cb2-209"><a href="#cb2-209" aria-hidden="true" tabindex="-1"></a>        <span class="st">'scf_type'</span>: <span class="st">'direct'</span>,</span>
+<span id="cb2-210"><a href="#cb2-210" aria-hidden="true" tabindex="-1"></a>        <span class="st">'e_convergence'</span>: <span class="fl">1e-6</span>,</span>
+<span id="cb2-211"><a href="#cb2-211" aria-hidden="true" tabindex="-1"></a>        <span class="st">'d_convergence'</span>: <span class="fl">1e-6</span>,</span>
+<span id="cb2-212"><a href="#cb2-212" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb2-213"><a href="#cb2-213" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-214"><a href="#cb2-214" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb2-215"><a href="#cb2-215" aria-hidden="true" tabindex="-1"></a>        <span class="co"># First run SCF calculation</span></span>
+<span id="cb2-216"><a href="#cb2-216" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Running SCF calculation...&quot;</span>)</span>
+<span id="cb2-217"><a href="#cb2-217" aria-hidden="true" tabindex="-1"></a>        scf_energy <span class="op">=</span> psi4.energy(functional)</span>
+<span id="cb2-218"><a href="#cb2-218" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;SCF Energy: </span><span class="sc">{</span>scf_energy<span class="sc">}</span><span class="ss"> hartrees&quot;</span>)</span>
+<span id="cb2-219"><a href="#cb2-219" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-220"><a href="#cb2-220" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Set up and run TD-DFT calculation</span></span>
+<span id="cb2-221"><a href="#cb2-221" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Running TD-DFT calculation for </span><span class="sc">{</span>num_states<span class="sc">}</span><span class="ss"> excited states...&quot;</span>)</span>
+<span id="cb2-222"><a href="#cb2-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-223"><a href="#cb2-223" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Try different approaches for setting TD-DFT options</span></span>
+<span id="cb2-224"><a href="#cb2-224" aria-hidden="true" tabindex="-1"></a>        success <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb2-225"><a href="#cb2-225" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-226"><a href="#cb2-226" aria-hidden="true" tabindex="-1"></a>        <span class="co"># First approach - using tdscf_states as a non-list</span></span>
+<span id="cb2-227"><a href="#cb2-227" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> success:</span>
+<span id="cb2-228"><a href="#cb2-228" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span>:</span>
+<span id="cb2-229"><a href="#cb2-229" aria-hidden="true" tabindex="-1"></a>                psi4.set_options({</span>
+<span id="cb2-230"><a href="#cb2-230" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'tdscf_states'</span>: num_states</span>
+<span id="cb2-231"><a href="#cb2-231" aria-hidden="true" tabindex="-1"></a>                })</span>
+<span id="cb2-232"><a href="#cb2-232" aria-hidden="true" tabindex="-1"></a>                energy <span class="op">=</span> psi4.energy(<span class="ss">f'td-</span><span class="sc">{</span>functional<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb2-233"><a href="#cb2-233" aria-hidden="true" tabindex="-1"></a>                success <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb2-234"><a href="#cb2-234" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">&quot;TD-DFT succeeded using tdscf_states as a scalar&quot;</span>)</span>
+<span id="cb2-235"><a href="#cb2-235" aria-hidden="true" tabindex="-1"></a>            <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb2-236"><a href="#cb2-236" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f&quot;First approach failed: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-237"><a href="#cb2-237" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-238"><a href="#cb2-238" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Second approach - using tdscf_states as a list</span></span>
+<span id="cb2-239"><a href="#cb2-239" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> success:</span>
+<span id="cb2-240"><a href="#cb2-240" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span>:</span>
+<span id="cb2-241"><a href="#cb2-241" aria-hidden="true" tabindex="-1"></a>                psi4.set_options({</span>
+<span id="cb2-242"><a href="#cb2-242" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'tdscf_states'</span>: [num_states]</span>
+<span id="cb2-243"><a href="#cb2-243" aria-hidden="true" tabindex="-1"></a>                })</span>
+<span id="cb2-244"><a href="#cb2-244" aria-hidden="true" tabindex="-1"></a>                energy <span class="op">=</span> psi4.energy(<span class="ss">f'td-</span><span class="sc">{</span>functional<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb2-245"><a href="#cb2-245" aria-hidden="true" tabindex="-1"></a>                success <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb2-246"><a href="#cb2-246" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">&quot;TD-DFT succeeded using tdscf_states as a list&quot;</span>)</span>
+<span id="cb2-247"><a href="#cb2-247" aria-hidden="true" tabindex="-1"></a>            <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb2-248"><a href="#cb2-248" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f&quot;Second approach failed: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-249"><a href="#cb2-249" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-250"><a href="#cb2-250" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Third approach - using roots_per_irrep</span></span>
+<span id="cb2-251"><a href="#cb2-251" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> success:</span>
+<span id="cb2-252"><a href="#cb2-252" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span>:</span>
+<span id="cb2-253"><a href="#cb2-253" aria-hidden="true" tabindex="-1"></a>                psi4.set_options({</span>
+<span id="cb2-254"><a href="#cb2-254" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'roots_per_irrep'</span>: [num_states]</span>
+<span id="cb2-255"><a href="#cb2-255" aria-hidden="true" tabindex="-1"></a>                })</span>
+<span id="cb2-256"><a href="#cb2-256" aria-hidden="true" tabindex="-1"></a>                energy <span class="op">=</span> psi4.energy(<span class="ss">f'td-</span><span class="sc">{</span>functional<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb2-257"><a href="#cb2-257" aria-hidden="true" tabindex="-1"></a>                success <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb2-258"><a href="#cb2-258" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">&quot;TD-DFT succeeded using roots_per_irrep&quot;</span>)</span>
+<span id="cb2-259"><a href="#cb2-259" aria-hidden="true" tabindex="-1"></a>            <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb2-260"><a href="#cb2-260" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f&quot;Third approach failed: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-261"><a href="#cb2-261" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-262"><a href="#cb2-262" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Fourth approach - try both options</span></span>
+<span id="cb2-263"><a href="#cb2-263" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> success:</span>
+<span id="cb2-264"><a href="#cb2-264" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span>:</span>
+<span id="cb2-265"><a href="#cb2-265" aria-hidden="true" tabindex="-1"></a>                psi4.set_options({</span>
+<span id="cb2-266"><a href="#cb2-266" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'tdscf_states'</span>: [num_states],</span>
+<span id="cb2-267"><a href="#cb2-267" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'roots_per_irrep'</span>: [num_states]</span>
+<span id="cb2-268"><a href="#cb2-268" aria-hidden="true" tabindex="-1"></a>                })</span>
+<span id="cb2-269"><a href="#cb2-269" aria-hidden="true" tabindex="-1"></a>                energy <span class="op">=</span> psi4.energy(<span class="ss">f'td-</span><span class="sc">{</span>functional<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb2-270"><a href="#cb2-270" aria-hidden="true" tabindex="-1"></a>                success <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb2-271"><a href="#cb2-271" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">&quot;TD-DFT succeeded using both tdscf_states and roots_per_irrep&quot;</span>)</span>
+<span id="cb2-272"><a href="#cb2-272" aria-hidden="true" tabindex="-1"></a>            <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb2-273"><a href="#cb2-273" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f&quot;Fourth approach failed: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-274"><a href="#cb2-274" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-275"><a href="#cb2-275" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> success:</span>
+<span id="cb2-276"><a href="#cb2-276" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">Exception</span>(<span class="st">&quot;All TD-DFT approaches failed&quot;</span>)</span>
+<span id="cb2-277"><a href="#cb2-277" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-278"><a href="#cb2-278" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;TD-DFT calculation completed successfully!&quot;</span>)</span>
+<span id="cb2-279"><a href="#cb2-279" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-280"><a href="#cb2-280" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Extract results from output file</span></span>
+<span id="cb2-281"><a href="#cb2-281" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Parsing output for excitation energies and oscillator strengths...&quot;</span>)</span>
+<span id="cb2-282"><a href="#cb2-282" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(output_file, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb2-283"><a href="#cb2-283" aria-hidden="true" tabindex="-1"></a>            output_text <span class="op">=</span> f.read()</span>
+<span id="cb2-284"><a href="#cb2-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-285"><a href="#cb2-285" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Find the table of excitation energies</span></span>
+<span id="cb2-286"><a href="#cb2-286" aria-hidden="true" tabindex="-1"></a>        excitation_energies <span class="op">=</span> []</span>
+<span id="cb2-287"><a href="#cb2-287" aria-hidden="true" tabindex="-1"></a>        oscillator_strengths <span class="op">=</span> []</span>
+<span id="cb2-288"><a href="#cb2-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-289"><a href="#cb2-289" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Updated regex pattern for Psi4 1.7 output format</span></span>
+<span id="cb2-290"><a href="#cb2-290" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Look for lines like: &quot;1 A-&gt;A (1 A) 0.23561 6.41140 -225.02484 0.0006 0.0001 -0.0263 -0.0126&quot;</span></span>
+<span id="cb2-291"><a href="#cb2-291" aria-hidden="true" tabindex="-1"></a>        table_pattern <span class="op">=</span> <span class="vs">r&quot;</span><span class="kw">(</span><span class="dv">\d</span><span class="op">+</span><span class="kw">)</span><span class="dv">\s</span><span class="op">+</span><span class="vs">A-&gt;A</span><span class="dv">\s</span><span class="op">+</span><span class="ch">\(</span><span class="dv">\d</span><span class="op">+</span><span class="dv">\s</span><span class="op">+</span><span class="vs">A</span><span class="ch">\)</span><span class="dv">\s</span><span class="op">+</span><span class="kw">(</span><span class="pp">[</span><span class="dv">\d</span><span class="pp">.]</span><span class="op">+</span><span class="kw">)</span><span class="dv">\s</span><span class="op">+</span><span class="kw">(</span><span class="pp">[</span><span class="dv">\d</span><span class="pp">.]</span><span class="op">+</span><span class="kw">)</span><span class="dv">\s</span><span class="op">+</span><span class="dv">.</span><span class="op">*?</span><span class="dv">\s</span><span class="op">+</span><span class="kw">(</span><span class="pp">[</span><span class="dv">\d</span><span class="pp">.]</span><span class="op">+</span><span class="kw">)</span><span class="vs">&quot;</span></span>
+<span id="cb2-292"><a href="#cb2-292" aria-hidden="true" tabindex="-1"></a>        matches <span class="op">=</span> re.findall(table_pattern, output_text)</span>
+<span id="cb2-293"><a href="#cb2-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-294"><a href="#cb2-294" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> matches:</span>
+<span id="cb2-295"><a href="#cb2-295" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f&quot;Found data for </span><span class="sc">{</span><span class="bu">len</span>(matches)<span class="sc">}</span><span class="ss"> excited states&quot;</span>)</span>
+<span id="cb2-296"><a href="#cb2-296" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-297"><a href="#cb2-297" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> match <span class="kw">in</span> matches:</span>
+<span id="cb2-298"><a href="#cb2-298" aria-hidden="true" tabindex="-1"></a>                state_num <span class="op">=</span> <span class="bu">int</span>(match[<span class="dv">0</span>])</span>
+<span id="cb2-299"><a href="#cb2-299" aria-hidden="true" tabindex="-1"></a>                energy_ev <span class="op">=</span> <span class="bu">float</span>(match[<span class="dv">2</span>])  <span class="co"># eV value is in the 3rd group</span></span>
+<span id="cb2-300"><a href="#cb2-300" aria-hidden="true" tabindex="-1"></a>                wavelength_nm <span class="op">=</span> <span class="fl">1239.8</span> <span class="op">/</span> energy_ev</span>
+<span id="cb2-301"><a href="#cb2-301" aria-hidden="true" tabindex="-1"></a>                osc_str <span class="op">=</span> <span class="bu">float</span>(match[<span class="dv">3</span>])  <span class="co"># oscillator strength is in the 4th group</span></span>
+<span id="cb2-302"><a href="#cb2-302" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb2-303"><a href="#cb2-303" aria-hidden="true" tabindex="-1"></a>                excitation_energies.append(wavelength_nm)</span>
+<span id="cb2-304"><a href="#cb2-304" aria-hidden="true" tabindex="-1"></a>                oscillator_strengths.append(osc_str)</span>
+<span id="cb2-305"><a href="#cb2-305" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb2-306"><a href="#cb2-306" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f&quot;Excited State </span><span class="sc">{</span>state_num<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>wavelength_nm<span class="sc">:.2f}</span><span class="ss"> nm, f = </span><span class="sc">{</span>osc_str<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-307"><a href="#cb2-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-308"><a href="#cb2-308" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb2-309"><a href="#cb2-309" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">&quot;Could not find excited state data in the expected format.&quot;</span>)</span>
+<span id="cb2-310"><a href="#cb2-310" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">&quot;Trying alternate parsing approach...&quot;</span>)</span>
+<span id="cb2-311"><a href="#cb2-311" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-312"><a href="#cb2-312" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Alternate approach: Look for the section with contributing excitations</span></span>
+<span id="cb2-313"><a href="#cb2-313" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Find block starting with &quot;Excited State&quot; and containing &quot;nm f =&quot;</span></span>
+<span id="cb2-314"><a href="#cb2-314" aria-hidden="true" tabindex="-1"></a>            excited_state_blocks <span class="op">=</span> re.findall(<span class="vs">r&quot;Excited State</span><span class="dv">\s</span><span class="op">+</span><span class="dv">\d</span><span class="op">+</span><span class="dv">.</span><span class="op">*?</span><span class="kw">(</span><span class="dv">\d</span><span class="op">+</span><span class="ch">\.</span><span class="dv">\d</span><span class="op">+</span><span class="kw">)</span><span class="dv">\s</span><span class="op">+</span><span class="vs">nm</span><span class="dv">\s</span><span class="op">+</span><span class="vs">f</span><span class="dv">\s</span><span class="op">*</span><span class="vs">=</span><span class="dv">\s</span><span class="op">*</span><span class="kw">(</span><span class="dv">\d</span><span class="op">+</span><span class="ch">\.</span><span class="dv">\d</span><span class="op">+</span><span class="kw">)</span><span class="vs">&quot;</span>, output_text)</span>
+<span id="cb2-315"><a href="#cb2-315" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-316"><a href="#cb2-316" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> excited_state_blocks:</span>
+<span id="cb2-317"><a href="#cb2-317" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f&quot;Found data for </span><span class="sc">{</span><span class="bu">len</span>(excited_state_blocks)<span class="sc">}</span><span class="ss"> excited states using alternate approach&quot;</span>)</span>
+<span id="cb2-318"><a href="#cb2-318" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb2-319"><a href="#cb2-319" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> i, (wavelength, osc_str) <span class="kw">in</span> <span class="bu">enumerate</span>(excited_state_blocks):</span>
+<span id="cb2-320"><a href="#cb2-320" aria-hidden="true" tabindex="-1"></a>                    state_num <span class="op">=</span> i <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb2-321"><a href="#cb2-321" aria-hidden="true" tabindex="-1"></a>                    wavelength_nm <span class="op">=</span> <span class="bu">float</span>(wavelength)</span>
+<span id="cb2-322"><a href="#cb2-322" aria-hidden="true" tabindex="-1"></a>                    osc_strength <span class="op">=</span> <span class="bu">float</span>(osc_str)</span>
+<span id="cb2-323"><a href="#cb2-323" aria-hidden="true" tabindex="-1"></a>                    </span>
+<span id="cb2-324"><a href="#cb2-324" aria-hidden="true" tabindex="-1"></a>                    excitation_energies.append(wavelength_nm)</span>
+<span id="cb2-325"><a href="#cb2-325" aria-hidden="true" tabindex="-1"></a>                    oscillator_strengths.append(osc_strength)</span>
+<span id="cb2-326"><a href="#cb2-326" aria-hidden="true" tabindex="-1"></a>                    </span>
+<span id="cb2-327"><a href="#cb2-327" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f&quot;Excited State </span><span class="sc">{</span>state_num<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>wavelength_nm<span class="sc">:.2f}</span><span class="ss"> nm, f = </span><span class="sc">{</span>osc_strength<span class="sc">:.4f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-328"><a href="#cb2-328" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb2-329"><a href="#cb2-329" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Final attempt - look for lines with specific format</span></span>
+<span id="cb2-330"><a href="#cb2-330" aria-hidden="true" tabindex="-1"></a>                lines <span class="op">=</span> output_text.split(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb2-331"><a href="#cb2-331" aria-hidden="true" tabindex="-1"></a>                state_lines <span class="op">=</span> []</span>
+<span id="cb2-332"><a href="#cb2-332" aria-hidden="true" tabindex="-1"></a>                                    </span>
+<span id="cb2-333"><a href="#cb2-333" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Look for lines containing wavelength and oscillator strength data in various formats</span></span>
+<span id="cb2-334"><a href="#cb2-334" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> line <span class="kw">in</span> lines:</span>
+<span id="cb2-335"><a href="#cb2-335" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> (<span class="st">'A-&gt;A'</span> <span class="kw">in</span> line <span class="kw">and</span> <span class="st">'eV'</span> <span class="kw">in</span> line) <span class="kw">or</span> (<span class="st">'nm f ='</span> <span class="kw">in</span> line):</span>
+<span id="cb2-336"><a href="#cb2-336" aria-hidden="true" tabindex="-1"></a>                        state_lines.append(line)</span>
+<span id="cb2-337"><a href="#cb2-337" aria-hidden="true" tabindex="-1"></a>                                    </span>
+<span id="cb2-338"><a href="#cb2-338" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> state_lines:</span>
+<span id="cb2-339"><a href="#cb2-339" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f&quot;Found </span><span class="sc">{</span><span class="bu">len</span>(state_lines)<span class="sc">}</span><span class="ss"> potential excited state lines.&quot;</span>)</span>
+<span id="cb2-340"><a href="#cb2-340" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># Process these lines (would need specific handling based on format)</span></span>
+<span id="cb2-341"><a href="#cb2-341" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># This is a fallback approach</span></span>
+<span id="cb2-342"><a href="#cb2-342" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span>:</span>
+<span id="cb2-343"><a href="#cb2-343" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="st">&quot;No excited state data found. Check the output file manually.&quot;</span>)</span>
+<span id="cb2-344"><a href="#cb2-344" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">return</span></span>
+<span id="cb2-345"><a href="#cb2-345" aria-hidden="true" tabindex="-1"></a>                                    </span>
+<span id="cb2-346"><a href="#cb2-346" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># If we found data, save results to CSV</span></span>
+<span id="cb2-347"><a href="#cb2-347" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> excitation_energies:</span>
+<span id="cb2-348"><a href="#cb2-348" aria-hidden="true" tabindex="-1"></a>            results_path <span class="op">=</span> os.path.join(output_dir, <span class="ss">f&quot;</span><span class="sc">{</span>molecule_name<span class="sc">}</span><span class="ss">_spectrum.csv&quot;</span>)</span>
+<span id="cb2-349"><a href="#cb2-349" aria-hidden="true" tabindex="-1"></a>            <span class="cf">with</span> <span class="bu">open</span>(results_path, <span class="st">'w'</span>) <span class="im">as</span> f:</span>
+<span id="cb2-350"><a href="#cb2-350" aria-hidden="true" tabindex="-1"></a>                f.write(<span class="st">&quot;Excited State,Wavelength (nm),Oscillator Strength,Energy (eV)</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-351"><a href="#cb2-351" aria-hidden="true" tabindex="-1"></a>                <span class="cf">for</span> i, (wavelength, osc_str) <span class="kw">in</span> <span class="bu">enumerate</span>(<span class="bu">zip</span>(excitation_energies, oscillator_strengths)):</span>
+<span id="cb2-352"><a href="#cb2-352" aria-hidden="true" tabindex="-1"></a>                    energy_ev <span class="op">=</span> <span class="fl">1239.8</span> <span class="op">/</span> wavelength</span>
+<span id="cb2-353"><a href="#cb2-353" aria-hidden="true" tabindex="-1"></a>                    f.write(<span class="ss">f&quot;</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">,</span><span class="sc">{</span>wavelength<span class="sc">:.2f}</span><span class="ss">,</span><span class="sc">{</span>osc_str<span class="sc">:.6f}</span><span class="ss">,</span><span class="sc">{</span>energy_ev<span class="sc">:.4f}</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-354"><a href="#cb2-354" aria-hidden="true" tabindex="-1"></a>                                </span>
+<span id="cb2-355"><a href="#cb2-355" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f&quot;Results saved to </span><span class="sc">{</span>results_path<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-356"><a href="#cb2-356" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="ss">f&quot;Use the plotting script to visualize the spectrum.&quot;</span>)</span>
+<span id="cb2-357"><a href="#cb2-357" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb2-358"><a href="#cb2-358" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">&quot;No data to save. Check the output file manually.&quot;</span>)</span>
+<span id="cb2-359"><a href="#cb2-359" aria-hidden="true" tabindex="-1"></a>                        </span>
+<span id="cb2-360"><a href="#cb2-360" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb2-361"><a href="#cb2-361" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Error during calculation: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-362"><a href="#cb2-362" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Please check the output file for details: &quot;</span> <span class="op">+</span> output_file)</span>
+<span id="cb2-363"><a href="#cb2-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-364"><a href="#cb2-364" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_usage_examples():</span>
+<span id="cb2-365"><a href="#cb2-365" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Print examples of how to use the script&quot;&quot;&quot;</span></span>
+<span id="cb2-366"><a href="#cb2-366" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Usage Examples:&quot;</span>)</span>
+<span id="cb2-367"><a href="#cb2-367" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;1. Interactive mode:&quot;</span>)</span>
+<span id="cb2-368"><a href="#cb2-368" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;   python scripts/td_dft.py&quot;</span>)</span>
+<span id="cb2-369"><a href="#cb2-369" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">2. Basic command line mode:&quot;</span>)</span>
+<span id="cb2-370"><a href="#cb2-370" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;   python scripts/td_dft.py urea.opt&quot;</span>)</span>
+<span id="cb2-371"><a href="#cb2-371" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">3. Fully specified command line mode:&quot;</span>)</span>
+<span id="cb2-372"><a href="#cb2-372" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;   python scripts/td_dft.py urea.opt -f b3lyp -b 6-31g(d) -n 10 -m </span><span class="ch">\&quot;</span><span class="st">4 GB</span><span class="ch">\&quot;</span><span class="st"> -c 0 -s 1&quot;</span>)</span>
+<span id="cb2-373"><a href="#cb2-373" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">4. List available functionals:&quot;</span>)</span>
+<span id="cb2-374"><a href="#cb2-374" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;   python scripts/td_dft.py -l functionals&quot;</span>)</span>
+<span id="cb2-375"><a href="#cb2-375" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">5. List available basis sets:&quot;</span>)</span>
+<span id="cb2-376"><a href="#cb2-376" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;   python scripts/td_dft.py -l basis&quot;</span>)</span>
+<span id="cb2-377"><a href="#cb2-377" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">6. Run with automatic overwrite:&quot;</span>)</span>
+<span id="cb2-378"><a href="#cb2-378" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;   python scripts/td_dft.py urea.opt -o&quot;</span>)</span>
+<span id="cb2-379"><a href="#cb2-379" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;&quot;</span>)</span>
+<span id="cb2-380"><a href="#cb2-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-381"><a href="#cb2-381" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb2-382"><a href="#cb2-382" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb2-383"><a href="#cb2-383" aria-hidden="true" tabindex="-1"></a>        <span class="im">import</span> psi4</span>
+<span id="cb2-384"><a href="#cb2-384" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Print Psi4 version info</span></span>
+<span id="cb2-385"><a href="#cb2-385" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Using Psi4 version: </span><span class="sc">{</span>psi4<span class="sc">.</span>__version__<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-386"><a href="#cb2-386" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ImportError</span>:</span>
+<span id="cb2-387"><a href="#cb2-387" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error: Psi4 not installed or not in Python path.&quot;</span>)</span>
+<span id="cb2-388"><a href="#cb2-388" aria-hidden="true" tabindex="-1"></a>        sys.exit(<span class="dv">1</span>)</span>
+<span id="cb2-389"><a href="#cb2-389" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">AttributeError</span>:</span>
+<span id="cb2-390"><a href="#cb2-390" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Older Psi4 versions might not have __version__</span></span>
+<span id="cb2-391"><a href="#cb2-391" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Using Psi4 (version info not available)&quot;</span>)</span>
+<span id="cb2-392"><a href="#cb2-392" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-393"><a href="#cb2-393" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb2-394"><a href="#cb2-394" aria-hidden="true" tabindex="-1"></a>        <span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-395"><a href="#cb2-395" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ImportError</span>:</span>
+<span id="cb2-396"><a href="#cb2-396" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Error: NumPy not installed. Please install it with 'pip install numpy'.&quot;</span>)</span>
+<span id="cb2-397"><a href="#cb2-397" aria-hidden="true" tabindex="-1"></a>        sys.exit(<span class="dv">1</span>)</span>
+<span id="cb2-398"><a href="#cb2-398" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-399"><a href="#cb2-399" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if help is needed</span></span>
+<span id="cb2-400"><a href="#cb2-400" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(sys.argv) <span class="op">&gt;</span> <span class="dv">1</span> <span class="kw">and</span> sys.argv[<span class="dv">1</span>] <span class="kw">in</span> [<span class="st">'-h'</span>, <span class="st">'--help'</span>, <span class="st">'help'</span>]:</span>
+<span id="cb2-401"><a href="#cb2-401" aria-hidden="true" tabindex="-1"></a>        setup_parser().print_help()</span>
+<span id="cb2-402"><a href="#cb2-402" aria-hidden="true" tabindex="-1"></a>        print_usage_examples()</span>
+<span id="cb2-403"><a href="#cb2-403" aria-hidden="true" tabindex="-1"></a>        sys.exit(<span class="dv">0</span>)</span>
+<span id="cb2-404"><a href="#cb2-404" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-405"><a href="#cb2-405" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if we just need to list options</span></span>
+<span id="cb2-406"><a href="#cb2-406" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">len</span>(sys.argv) <span class="op">&gt;</span> <span class="dv">1</span> <span class="kw">and</span> sys.argv[<span class="dv">1</span>] <span class="op">==</span> <span class="st">'--list-all'</span>:</span>
+<span id="cb2-407"><a href="#cb2-407" aria-hidden="true" tabindex="-1"></a>        list_available_functionals()</span>
+<span id="cb2-408"><a href="#cb2-408" aria-hidden="true" tabindex="-1"></a>        list_available_basis_sets()</span>
+<span id="cb2-409"><a href="#cb2-409" aria-hidden="true" tabindex="-1"></a>        sys.exit(<span class="dv">0</span>)</span>
+<span id="cb2-410"><a href="#cb2-410" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-411"><a href="#cb2-411" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div>
+</details>
 <h3 id="spectral-visualization-script-plot.py">Spectral Visualization Script (<code>plot.py</code>)</h3>
 <p>The spectral visualization script processes the output from TD-DFT calculations to generate publication-quality plots of absorption spectra. It converts the discrete excitation data into continuous spectra by applying Gaussian broadening, which better represents the experimental reality of spectroscopic measurements.</p>
 <p>The <code>plot.py</code> script completes the analytical pipeline by transforming computational results into visual representations of spectral properties. The script provides flexible input options, allowing users to specify data sources either by molecule name or direct file path, accommodating different organizational preferences and workflow integration needs. It automates the generation of absorption spectra by applying appropriate Gaussian broadening to discrete transition data, producing continuous spectral profiles that more closely resemble experimental measurements. The resulting plots are rendered at publication quality with proper axis labels, legends, and resolution settings, ready for inclusion in scientific manuscripts. Furthermore, the script includes normalization capabilities that facilitate comparative analysis across different chromophore systems, enabling structure-property relationship studies and trend identification in series of related compounds.</p>
+<details>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_spectrum():</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Prompt user for input type</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Do you want to provide the molecule name or the full path to the CSV file?&quot;</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    choice <span class="op">=</span> <span class="bu">input</span>(<span class="st">&quot;Enter 'm' for molecule name or 'p' for full path (default: m): &quot;</span>).strip().lower() <span class="kw">or</span> <span class="st">'m'</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> choice <span class="op">==</span> <span class="st">'m'</span>:</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Get molecule name from user</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        molecule_name <span class="op">=</span> <span class="bu">input</span>(<span class="st">&quot;Enter the molecule name (e.g., DCDHF-Me2_calc2): &quot;</span>).strip()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> molecule_name:</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">&quot;Error: Molecule name cannot be empty.&quot;</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Construct the CSV file path</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        csv_path <span class="op">=</span> os.path.join(<span class="st">'results'</span>, molecule_name, <span class="st">'vacuum'</span>, <span class="ss">f'</span><span class="sc">{</span>molecule_name<span class="sc">}</span><span class="ss">_spectrum.csv'</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        plot_path <span class="op">=</span> os.path.join(<span class="st">'results'</span>, molecule_name, <span class="st">'vacuum'</span>, <span class="ss">f'</span><span class="sc">{</span>molecule_name<span class="sc">}</span><span class="ss">_spectrum.png'</span>)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Get full path from user</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>        csv_path <span class="op">=</span> <span class="bu">input</span>(<span class="st">&quot;Enter the full path to the CSV file (e.g., /path/to/DCDHF-Me2_calc2_spectrum.csv): &quot;</span>).strip()</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> csv_path:</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">&quot;Error: File path cannot be empty.&quot;</span>)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Construct the plot path by replacing the CSV extension with PNG</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        plot_dir <span class="op">=</span> os.path.dirname(csv_path)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        plot_filename <span class="op">=</span> os.path.splitext(os.path.basename(csv_path))[<span class="dv">0</span>] <span class="op">+</span> <span class="st">'_spectrum.png'</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        plot_path <span class="op">=</span> os.path.join(plot_dir, plot_filename)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>        molecule_name <span class="op">=</span> os.path.splitext(os.path.basename(csv_path))[<span class="dv">0</span>]  <span class="co"># Extract molecule name for title</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Check if the CSV file exists</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> os.path.exists(csv_path):</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Error: File '</span><span class="sc">{</span>csv_path<span class="sc">}</span><span class="ss">' not found. Please check the path or molecule name.&quot;</span>)</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Read CSV</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    wavelengths, osc_strengths <span class="op">=</span> [], []</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(csv_path, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>            <span class="bu">next</span>(f)  <span class="co"># Skip header</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> line <span class="kw">in</span> f:</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>                parts <span class="op">=</span> line.strip().split(<span class="st">','</span>)</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="bu">len</span>(parts) <span class="op">&gt;=</span> <span class="dv">3</span>:  <span class="co"># Ensure at least 3 columns (state, wavelength, osc_strength)</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>                    _, wl, osc, <span class="op">*</span>_ <span class="op">=</span> parts  <span class="co"># Ignore extra columns (e.g., energy)</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>                    wavelengths.append(<span class="bu">float</span>(wl))</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>                    osc_strengths.append(<span class="bu">float</span>(osc))</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span>:</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">print</span>(<span class="ss">f&quot;Warning: Skipping malformed line: </span><span class="sc">{</span>line<span class="sc">.</span>strip()<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> wavelengths:</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>            <span class="bu">print</span>(<span class="st">&quot;Error: No valid data found in the CSV file.&quot;</span>)</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Plot</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>        plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> np.linspace(<span class="bu">min</span>(wavelengths) <span class="op">-</span> <span class="dv">50</span>, <span class="bu">max</span>(wavelengths) <span class="op">+</span> <span class="dv">50</span>, <span class="dv">1000</span>)</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>        y <span class="op">=</span> np.zeros_like(x)</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>        sigma <span class="op">=</span> <span class="bu">max</span>(<span class="dv">5</span>, (<span class="bu">max</span>(wavelengths) <span class="op">-</span> <span class="bu">min</span>(wavelengths)) <span class="op">/</span> <span class="dv">20</span>)</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> wl, osc <span class="kw">in</span> <span class="bu">zip</span>(wavelengths, osc_strengths):</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>            y <span class="op">+=</span> osc <span class="op">*</span> np.exp(<span class="op">-</span>(x <span class="op">-</span> wl)<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> sigma<span class="op">**</span><span class="dv">2</span>))</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Normalize if possible</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.<span class="bu">max</span>(y) <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>            y <span class="op">/=</span> np.<span class="bu">max</span>(y)</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>            ylabel <span class="op">=</span> <span class="st">'Normalized Absorbance'</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>            ylabel <span class="op">=</span> <span class="st">'Absorbance (arbitrary units)'</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create the plot</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>        plt.plot(x, y, label<span class="op">=</span><span class="st">'Spectrum'</span>)</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>        plt.stem(wavelengths, osc_strengths, linefmt<span class="op">=</span><span class="st">'r-'</span>, markerfmt<span class="op">=</span><span class="st">'ro'</span>, basefmt<span class="op">=</span><span class="st">' '</span>)</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>        plt.xlabel(<span class="st">'Wavelength (nm)'</span>)</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>        plt.ylabel(ylabel)</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>        plt.title(<span class="ss">f'</span><span class="sc">{</span>molecule_name<span class="sc">}</span><span class="ss"> TD-DFT Absorption Spectrum'</span>)</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>        plt.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Save the plot</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>        plt.savefig(plot_path, dpi<span class="op">=</span><span class="dv">300</span>)</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Plot saved to </span><span class="sc">{</span>plot_path<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Error during plotting: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>    plot_spectrum()</span></code></pre></div>
+</details>
 <p>All calculations were performed on a Linux system (Ubuntu noble/24.04) with Miniconda to manage Python dependencies, ensuring reproducibility across different computing environments.</p>
-<h2 id="results-and-discussion">Results and Discussion</h2>
-<p>[This section would normally contain actual results, but as requested, I’ll keep it as a placeholder.]</p>
-<p>The effectiveness of our computational toolkit was demonstrated through the analysis of urea as a simple test case. The geometry optimization performed by <code>optimize.py</code> successfully produced a minimum energy structure, which was then used as input for TD-DFT calculations. The <code>td_dft.py</code> script calculated the excited states using B3LYP/6-31G(d), resulting in a spectrum that was visualized using the <code>plot.py</code> script.</p>
-<p>The workflow was designed to be easily adaptable to other chromophore systems, providing a foundation for more extensive studies of structure-property relationships. Future work will focus on applying this toolkit to systematically investigate a range of chromophores relevant to organic electronics and photovoltaics.</p>
+<h2 id="results">Results</h2>
+<h3 id="urea-td-dft-analysis">Urea TD-DFT Analysis</h3>
+<p><strong>Table 1. Excited States of Urea from TD-DFT Calculations.</strong> This table presents the first ten excited states of urea calculated using TD-DFT with the B3LYP functional and 6-31G(d) basis set, showing wavelengths (in nm), oscillator strengths, and excitation energies (in eV) for each state.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Excited State</th>
+<th style="text-align: center;">Wavelength (nm)</th>
+<th style="text-align: center;">Oscillator Strength</th>
+<th style="text-align: center;">Energy (eV)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">193.37</td>
+<td style="text-align: center;">0.0006</td>
+<td style="text-align: center;">6.41</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">165.92</td>
+<td style="text-align: center;">0.0097</td>
+<td style="text-align: center;">7.47</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">156.89</td>
+<td style="text-align: center;">0.0012</td>
+<td style="text-align: center;">7.90</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">154.33</td>
+<td style="text-align: center;">0.0392</td>
+<td style="text-align: center;">8.03</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">152.81</td>
+<td style="text-align: center;">0.1368</td>
+<td style="text-align: center;">8.11</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">150.03</td>
+<td style="text-align: center;">0.0769</td>
+<td style="text-align: center;">8.26</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">136.83</td>
+<td style="text-align: center;">0.0033</td>
+<td style="text-align: center;">9.06</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">132.42</td>
+<td style="text-align: center;">0.0151</td>
+<td style="text-align: center;">9.36</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">129.29</td>
+<td style="text-align: center;">0.0538</td>
+<td style="text-align: center;">9.59</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">128.93</td>
+<td style="text-align: center;">0.0181</td>
+<td style="text-align: center;">9.62</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 2. Major Orbital Transitions for Urea Excited States.</strong> This table shows the significant molecular orbital transitions contributing to each excited state of urea, with percentage contributions in parentheses, revealing which specific electronic transitions are responsible for each spectral feature.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">State</th>
+<th style="text-align: center;">Wavelength (nm)</th>
+<th style="text-align: center;">Oscillator Strength</th>
+<th style="text-align: left;">Major Transitions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">193.38</td>
+<td style="text-align: center;">0.0006</td>
+<td style="text-align: left;">16a → 17a (88.5%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">165.92</td>
+<td style="text-align: center;">0.0097</td>
+<td style="text-align: left;">16a → 18a (97.3%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">156.89</td>
+<td style="text-align: center;">0.0012</td>
+<td style="text-align: left;">14a → 18a (94.3%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">154.34</td>
+<td style="text-align: center;">0.0392</td>
+<td style="text-align: left;">14a → 17a (60.2%), 15a → 18a (38.2%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">152.81</td>
+<td style="text-align: center;">0.1368</td>
+<td style="text-align: left;">14a → 17a (34.8%), 15a → 18a (59.3%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">150.03</td>
+<td style="text-align: center;">0.0769</td>
+<td style="text-align: left;">15a → 17a (59.5%), 16a → 19a (24.3%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">136.84</td>
+<td style="text-align: center;">0.0033</td>
+<td style="text-align: left;">16a → 20a (92.3%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">132.43</td>
+<td style="text-align: center;">0.0151</td>
+<td style="text-align: left;">14a → 20a (52.9%), 16a → 21a (31.6%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">129.29</td>
+<td style="text-align: center;">0.0538</td>
+<td style="text-align: left;">15a → 19a (40.3%), 16a → 19a (29.7%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">128.94</td>
+<td style="text-align: center;">0.0181</td>
+<td style="text-align: left;">14a → 19a (70.1%), 15a → 20a (21.9%)</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img src="../images/urea_spectrum.png" alt="Urea TD-DFT Absorption Spectrum">
+<figcaption>
+<strong>Figure 1.</strong> TD-DFT calculated absorption spectrum of urea using B3LYP/6-31G(d). The blue line represents the Gaussian-broadened spectrum, while red stems indicate individual electronic transitions with their corresponding oscillator strengths. The spectrum shows two main absorption bands at approximately 130 nm and 150 nm, with the latter being more intense due to the higher oscillator strength of state 5 (f = 0.1368).
+</figcaption>
+</figure>
+<h3 id="dcdhf-me2-td-dft-analysis">DCDHF-Me2 TD-DFT Analysis</h3>
+<p><strong>Table 3. Excited States of DCDHF-Me2 from TD-DFT Calculations.</strong> This table presents the first ten excited states of the DCDHF-Me2 chromophore calculated using TD-DFT with the B3LYP functional and 6-31G(d) basis set, showing wavelengths (in nm), oscillator strengths, and excitation energies (in eV) for each state.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Excited State</th>
+<th style="text-align: center;">Wavelength (nm)</th>
+<th style="text-align: center;">Oscillator Strength</th>
+<th style="text-align: center;">Energy (eV)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">407.83</td>
+<td style="text-align: center;">0.9403</td>
+<td style="text-align: center;">3.04</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">351.22</td>
+<td style="text-align: center;">0.0673</td>
+<td style="text-align: center;">3.53</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">294.75</td>
+<td style="text-align: center;">0.0011</td>
+<td style="text-align: center;">4.21</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">267.85</td>
+<td style="text-align: center;">0.0397</td>
+<td style="text-align: center;">4.63</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">259.90</td>
+<td style="text-align: center;">0.0970</td>
+<td style="text-align: center;">4.77</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">253.68</td>
+<td style="text-align: center;">0.0248</td>
+<td style="text-align: center;">4.89</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">252.45</td>
+<td style="text-align: center;">0.0002</td>
+<td style="text-align: center;">4.91</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">248.35</td>
+<td style="text-align: center;">0.0006</td>
+<td style="text-align: center;">4.99</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">236.58</td>
+<td style="text-align: center;">0.0100</td>
+<td style="text-align: center;">5.24</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">236.31</td>
+<td style="text-align: center;">0.0005</td>
+<td style="text-align: center;">5.25</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 4. Major Orbital Transitions for DCDHF-Me2 Excited States.</strong> This table shows the significant molecular orbital transitions contributing to each excited state of DCDHF-Me2, with percentage contributions in parentheses, revealing the electronic character of the transitions that give rise to the absorption features.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">State</th>
+<th style="text-align: center;">Wavelength (nm)</th>
+<th style="text-align: center;">Oscillator Strength</th>
+<th style="text-align: left;">Major Transitions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">407.83</td>
+<td style="text-align: center;">0.9403</td>
+<td style="text-align: left;">80a → 81a (99.5%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">351.22</td>
+<td style="text-align: center;">0.0673</td>
+<td style="text-align: left;">79a → 81a (92.8%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">294.75</td>
+<td style="text-align: center;">0.0011</td>
+<td style="text-align: left;">78a → 81a (74.7%), 80a → 82a (19.3%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">267.85</td>
+<td style="text-align: center;">0.0397</td>
+<td style="text-align: left;">78a → 81a (23.0%), 80a → 82a (70.3%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">259.90</td>
+<td style="text-align: center;">0.0970</td>
+<td style="text-align: left;">77a → 81a (42.1%), 80a → 83a (42.3%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">253.68</td>
+<td style="text-align: center;">0.0248</td>
+<td style="text-align: left;">77a → 81a (48.2%), 80a → 83a (44.2%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">252.45</td>
+<td style="text-align: center;">0.0002</td>
+<td style="text-align: left;">76a → 81a (90.8%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">248.35</td>
+<td style="text-align: center;">0.0006</td>
+<td style="text-align: left;">80a → 84a (87.5%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">236.58</td>
+<td style="text-align: center;">0.0100</td>
+<td style="text-align: left;">79a → 82a (84.6%), 79a → 83a (10.9%)</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">236.31</td>
+<td style="text-align: center;">0.0005</td>
+<td style="text-align: left;">75a → 81a (87.1%)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 5. Molecular Properties of DCDHF-Me2.</strong> This table presents the calculated dipole moment components and total magnitude for the DCDHF-Me2 molecule in both atomic units and Debye, illustrating the highly polar nature of this donor-acceptor chromophore.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Property</th>
+<th style="text-align: center;">Value (a.u.)</th>
+<th style="text-align: center;">Value (Debye)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Dipole Moment (Total)</td>
+<td style="text-align: center;">6.59</td>
+<td style="text-align: center;">16.75</td>
+</tr>
+<tr>
+<td style="text-align: center;">Dipole Moment (X)</td>
+<td style="text-align: center;">4.48</td>
+<td style="text-align: center;">11.39</td>
+</tr>
+<tr>
+<td style="text-align: center;">Dipole Moment (Y)</td>
+<td style="text-align: center;">-0.41</td>
+<td style="text-align: center;">-1.05</td>
+</tr>
+<tr>
+<td style="text-align: center;">Dipole Moment (Z)</td>
+<td style="text-align: center;">4.81</td>
+<td style="text-align: center;">12.22</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img src="../images/dcdhf_me2_spectrum.png" alt="DCDHF-Me2 TD-DFT Absorption Spectrum">
+<figcaption>
+<strong>Figure 2.</strong> TD-DFT calculated absorption spectrum of DCDHF-Me2 using B3LYP/6-31G(d). The blue line represents the Gaussian-broadened spectrum, while red stems indicate individual electronic transitions with their corresponding oscillator strengths. The spectrum is dominated by a strong absorption band at approximately 408 nm with a very high oscillator strength (f = 0.9403), corresponding to the HOMO→LUMO transition (state 1), with smaller contributions from higher energy transitions in the 250-350 nm region.
+</figcaption>
+</figure>
+<h2 id="analysis">Analysis</h2>
+<p>The TD-DFT calculations for DCDHF-Me2 reveal a strong absorption band at 407.83 nm with a very high oscillator strength of 0.9403, indicating a highly allowed transition. This transition corresponds almost entirely (99.5%) to the promotion of an electron from the HOMO (80a) to the LUMO (81a). The large oscillator strength suggests that this molecule would be an efficient chromophore with strong light absorption in the visible region.</p>
+<p>Several weaker transitions appear at higher energies, with the second most intense transition occurring at 259.90 nm (f = 0.0970). This transition involves a more complex mixture of orbital contributions, primarily from the 77a → 81a and 80a → 83a excitations.</p>
+<p>The molecular structure contains a donor-π-acceptor configuration characteristic of many push-pull chromophores, which explains the large dipole moment (16.75 Debye) and the strong low-energy transition. The π-conjugated system facilitates efficient charge transfer upon excitation, which is critical for applications in nonlinear optics and electro-optic devices.</p>
+<h2 id="discussion">Discussion</h2>
+<h3 id="effectiveness-of-the-computational-toolkit">Effectiveness of the Computational Toolkit</h3>
+<p>The effectiveness of our AI-assisted computational toolkit was demonstrated through the analysis of both urea and DCDHF-Me2. The geometry optimization performed by <code>optimize.py</code> successfully produced minimum energy structures for both molecules, which were then used as input for TD-DFT calculations. The <code>td_dft.py</code> script calculated the excited states using B3LYP/6-31G(d), resulting in spectra that were visualized using the <code>plot.py</code> script. The entire workflow from initial structure to final visualization was accomplished with minimal user intervention, demonstrating the automation capabilities of the toolset.</p>
+<p>The results for urea, as shown in Table 1 and Table 2, reveal a series of excited states in the ultraviolet region, with the most intense transition (state 5) occurring at 152.81 nm with an oscillator strength of 0.1368. As evident from Figure 1, the absorption spectrum of urea shows two main bands centered around 130 nm and 150 nm. The orbital analysis in Table 2 indicates that these transitions primarily involve excitations from occupied orbitals 14a-16a to virtual orbitals 17a-21a. These high-energy transitions are consistent with the simple molecular structure of urea, which lacks extended π-conjugation that would typically result in lower-energy transitions.</p>
+<p>In contrast, the DCDHF-Me2 results presented in Tables 3 and 4 reveal dramatically different spectral characteristics. The most striking feature is the intense absorption band at 407.83 nm with an exceptionally high oscillator strength of 0.9403, as visualized in Figure 2. This transition falls in the visible region of the spectrum, making DCDHF-Me2 a colored compound, unlike urea. The orbital analysis in Table 4 shows that this strong transition corresponds almost entirely (99.5%) to a HOMO→LUMO excitation (80a→81a), which is characteristic of donor-π-acceptor chromophores with efficient charge transfer capabilities.</p>
+<p>The large dipole moment of DCDHF-Me2 (16.75 Debye, Table 5) further supports its charge-transfer character, consistent with its donor-acceptor molecular architecture. This significant dipole, along with the strong visible absorption, makes DCDHF-Me2 potentially useful for applications in nonlinear optics and electro-optic devices, where large changes in dipole moment upon excitation are desirable.</p>
+<p>The ability of our toolkit to correctly predict and characterize these dramatically different spectral properties—from the high-energy, weak transitions of urea to the visible-region, intense absorption of DCDHF-Me2—demonstrates its versatility across different types of chromophores.</p>
+<h3 id="computational-efficiency-through-ai-assistance">Computational Efficiency Through AI Assistance</h3>
+<p>One of the most significant advantages of our approach was the computational efficiency gained through AI assistance. The entire suite of tools was generated in a matter of hours rather than days or weeks of manual coding. Claude AI<span class="citation" data-cites="Anthropic2025Claude"><sup>1</sup></span> was able to generate not only the basic functionality but also robust error handling, user-friendly interfaces, and comprehensive documentation with minimal human guidance. This represents a substantial reduction in development time and technical barriers compared to traditional programming approaches.</p>
+<p>The resulting workflow significantly reduces the time needed for chromophore analysis. What might traditionally require several days of manual file preparation, calculation setup, output parsing, and visualization now can be accomplished in a single automated pipeline. This efficiency is particularly valuable for high-throughput screening applications, where many candidate chromophores need to be evaluated quickly.</p>
+<h3 id="limitations-and-future-directions">Limitations and Future Directions</h3>
+<p>Despite its utility, our current approach has several limitations that should be addressed in future work. First, the current implementation uses only the B3LYP functional with the 6-31G(d) basis set. While this combination provides a reasonable balance between accuracy and computational cost for many organic chromophores, it may not be optimal for all systems, particularly those containing heavy elements or requiring more accurate treatment of long-range interactions. Future versions could include a wider range of functionals and basis sets, potentially with automated selection based on molecular characteristics.</p>
+<p>Second, the current tools do not account for solvent effects, which can significantly influence excitation energies and oscillator strengths, especially for charge-transfer transitions like those seen in DCDHF-Me2. Including implicit solvent models through the polarizable continuum model (PCM) or similar approaches would enhance the predictive power of these tools for realistic environments.</p>
+<p>Third, while the visualization capabilities are suitable for basic analysis, more advanced options for spectral comparison, band deconvolution, and integration with experimental data would increase the utility of these tools for comprehensive spectroscopic studies.</p>
+<p>Another promising direction would be to incorporate machine learning approaches for predicting chromophore properties without performing full quantum chemical calculations. By training models on data generated using the current toolkit, rapid screening of large libraries of potential chromophores could be enabled, dramatically accelerating the discovery of molecules with targeted optical properties.</p>
+<h3 id="applications-in-high-throughput-screening">Applications in High-Throughput Screening</h3>
+<p>The automated nature of our toolkit makes it particularly well-suited for high-throughput screening applications. Potential chromophores could be systematically evaluated for various applications based on their predicted spectra. This approach is valuable for organic photovoltaics where identifying chromophores with strong absorption in the visible and near-infrared regions is crucial for matching the solar spectrum. Similarly, for nonlinear optical materials, screening can focus on molecules with large changes in dipole moment upon excitation, similar to what we observed with DCDHF-Me2. The toolkit also enables efficient searching for biological imaging agents with specific absorption/emission wavelengths compatible with biological tissues, and for OLED materials with appropriate energy levels and emission properties.</p>
+<p>By automating the analysis pipeline, our tools enable researchers to focus on molecular design and interpretation rather than the technical details of calculation setup and data processing. This approach to high-throughput computational screening could significantly accelerate the discovery of new functional chromophores for specialized applications. The ability to rapidly evaluate hundreds or thousands of candidate structures provides a substantial advantage over traditional trial-and-error approaches to chromophore development, potentially reducing the time and resources required for materials discovery.</p>
+<h3 id="ai-ethics-and-responsible-use">AI Ethics and Responsible Use</h3>
+<p>This project represents an example of responsible AI use in scientific research. While the code and much of the analytical framework were generated by Claude AI<span class="citation" data-cites="Anthropic2025Claude"><sup>1</sup></span>, all results were verified through actual calculations and compared with literature values where available. The AI-generated code was reviewed for logical correctness and efficiency, and the results produced were subjected to the same critical evaluation as would be applied to human-generated calculations.</p>
+<p>The open acknowledgment of AI assistance in this work aims to promote transparency in AI-augmented research. Rather than diminishing the scientific contribution, the AI assistance enabled more thorough analysis and broader exploration than might otherwise have been feasible. This approach may serve as a model for future AI-assisted research, where the synergy between human scientific expertise and AI capabilities leads to accelerated discovery while maintaining scientific rigor.</p>
+<h3 id="comparison-with-experimental-approaches">Comparison with Experimental Approaches</h3>
+<p>While our computational approach provides valuable insights into the electronic structure and spectral properties of chromophores, it is important to acknowledge its complementary relationship with experimental studies. Computational methods offer advantages in terms of providing detailed orbital information and allowing the study of hypothetical structures before synthesis, but they also have inherent limitations in accuracy compared to experimental measurements.</p>
+<p>For instance, TD-DFT calculations with common functionals like B3LYP typically show systematic errors in excitation energies, often underestimating charge-transfer excitation energies and overestimating Rydberg excitation energies. Therefore, the computational results presented here should be viewed as predictive tools rather than replacements for experimental measurements.</p>
+<p>The most effective approach combines computational screening to identify promising candidates with targeted experimental studies to validate and refine the computational predictions. Our toolkit facilitates this complementary approach by making computational analysis more accessible to experimental researchers.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>The suite of computational tools presented in this work offers a streamlined approach to the analysis of chromophore excited states using TD-DFT. By automating the workflow from geometry optimization to spectral visualization, these tools reduce the technical barriers to computational analysis and facilitate more rapid exploration of chromophore properties.</p>
 <p>The modular design of the toolkit allows for easy adaptation to different research questions and integration with other computational approaches. Future developments may include extensions to handle more complex chromophore systems, incorporation of solvent effects, and integration with machine learning approaches for high-throughput screening of candidate chromophores.</p>
 <p>This computational approach provides a valuable complement to experimental studies of chromophores, offering insights into the electronic structures underlying observed optical properties and guiding the rational design of new materials for specific applications. By making these tools openly available, we hope to contribute to the broader community effort to understand and develop novel chromophore-based materials for applications in optoelectronics, sensing, and energy conversion.</p>
-<h2 id="references">References</h2>
-<p>[References would be inserted here from the bibliography]</p>
+<h2 id="ai-ethics-statement">AI Ethics Statement</h2>
+<p>This research project represents a collaborative effort between human scientists and artificial intelligence. The Python scripts presented in this work were generated using Claude AI (Claude 3.7 Sonnet model)<span class="citation" data-cites="Anthropic2025Claude"><sup>1</sup></span>, which provided the code architecture, implementation details, and error handling routines based on human-specified requirements. Additionally, significant portions of the manuscript text, including analysis and interpretation of results, were drafted with AI assistance.</p>
+<p>We believe in transparency regarding AI contributions to scientific research. The use of AI in this work served to accelerate development, reduce technical barriers, and enable more comprehensive analysis than might have been feasible through traditional programming approaches alone. However, all computational results were verified through actual quantum chemical calculations, and all scientific interpretations were reviewed and validated by human researchers.</p>
+<p>This approach to AI collaboration in scientific research has several important implications. The democratization of computational tools is perhaps the most significant outcome, as leveraging AI to generate well-structured, robust code makes advanced computational chemistry techniques accessible to researchers without extensive programming backgrounds. Additionally, the reduced development time is substantial; what might traditionally require weeks or months of programming effort was accomplished in hours, allowing more time for scientific analysis and interpretation. This efficiency gain enabled the analysis of multiple chromophore systems rather than a single test case, broadening the scope of the investigation.</p>
+<p>We propose that this transparent model of human-AI collaboration could serve as an example for future scientific research, where AI systems are acknowledged as tools that enhance human capabilities rather than replace human scientific judgment. By openly documenting the AI contribution, we hope to contribute to the ongoing conversation about responsible AI use in scientific discovery.</p>
+<h2 class="unnumbered" id="references">References</h2>
 <div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-Anthropic2025Claude" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Anthropic. Claude 3.7 Sonnet, 2025. <a href="https://www.anthropic.com/claude">https://www.anthropic.com/claude</a>.</div>
+</div>
 <div id="ref-Marques2012" class="csl-entry" role="listitem">
-<div class="csl-left-margin">1. </div><div class="csl-right-inline">Marques, M. A. L.; Maitra, N. T.; Nogueira, F. M. S.; Gross, E. K. U.; Rubio, A. <em>Fundamentals of Time-Dependent Density Functional Theory</em>; Springer: Berlin, 2012.</div>
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">Marques, M. A. L.; Maitra, N. T.; Nogueira, F. M. S.; Gross, E. K. U.; Rubio, A. <em>Fundamentals of Time-Dependent Density Functional Theory</em>; Springer: Berlin, 2012.</div>
 </div>
 <div id="ref-Laurent2013" class="csl-entry" role="listitem">
-<div class="csl-left-margin">2. </div><div class="csl-right-inline">Laurent, A. D.; Jacquemin, D. TD-DFT Benchmarks: A Review. <em>International Journal of Quantum Chemistry</em> <strong>2013</strong>, <em>113</em> (17), 2019–2039. <a href="https://doi.org/10.1002/qua.24438">https://doi.org/10.1002/qua.24438</a>.</div>
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Laurent, A. D.; Jacquemin, D. TD-DFT Benchmarks: A Review. <em>International Journal of Quantum Chemistry</em> <strong>2013</strong>, <em>113</em> (17), 2019–2039. <a href="https://doi.org/10.1002/qua.24438">https://doi.org/10.1002/qua.24438</a>.</div>
 </div>
 <div id="ref-Jacquemin2009" class="csl-entry" role="listitem">
-<div class="csl-left-margin">3. </div><div class="csl-right-inline">Jacquemin, D.; Perpete, E. A.; Scuseria, G. E.; Ciofini, I.; Adamo, C. Extensive TD-DFT Benchmark: Singlet-Excited States of Organic Molecules. <em>Journal of Chemical Theory and Computation</em> <strong>2009</strong>, <em>5</em> (9), 2420–2435. <a href="https://doi.org/10.1021/ct900298e">https://doi.org/10.1021/ct900298e</a>.</div>
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Jacquemin, D.; Perpete, E. A.; Scuseria, G. E.; Ciofini, I.; Adamo, C. Extensive TD-DFT Benchmark: Singlet-Excited States of Organic Molecules. <em>Journal of Chemical Theory and Computation</em> <strong>2009</strong>, <em>5</em> (9), 2420–2435. <a href="https://doi.org/10.1021/ct900298e">https://doi.org/10.1021/ct900298e</a>.</div>
+</div>
+<div id="ref-Lu2009" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Lu, Z.; Liu, N.; Lord, S. J.; Bunge, S. D.; Moerner, W. E.; Twieg, R. J. Bright, Red Single-Molecule Emitters: Synthesis and Properties of Environmentally Sensitive Dicyanomethylenedihydrofuran (DCDHF) Fluorophores with Bisaromatic Conjugation. <em>Chemistry of Materials</em> <strong>2009</strong>, <em>21</em> (5), 797–810. <a href="https://doi.org/10.1021/cm8026797">https://doi.org/10.1021/cm8026797</a>.</div>
+</div>
+<div id="ref-Smith2020" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Smith, D. G. A.; Burns, L. A.; Simmonett, A. C.; Parrish, R. M.; Schieber, M. C.; Galvelis, R.; Kraus, P.; Kruse, H.; Di Remigio, R.; Alenaizan, A.; James, A. M.; Lehtola, S.; Misiewicz, J. P.; Scheurer, M.; Shaw, R. A.; Schriber, J. B.; Xie, Y.; Glick, Z. L.; Sirianni, D. A.; O’Brien, J. S.; Waldrop, J. M.; Kumar, A.; Hohenstein, E. G.; Pritchard, B. P.; Brooks, B. R.; Schaefer III, H. F.; Sokolov, A. Yu.; Patkowski, K.; DePrince III, A. E.; Bozkaya, U.; King, R. A.; Evangelista, F. A.; Turney, J. M.; Crawford, T. D.; Sherrill, C. D. Psi4 1.4: Open-Source Software for High-Throughput Quantum Chemistry. <em>The Journal of Chemical Physics</em> <strong>2020</strong>, <em>152</em> (18), 184108. <a href="https://doi.org/10.1063/5.0006002">https://doi.org/10.1063/5.0006002</a>.</div>
 </div>
 </div>
     </main>
