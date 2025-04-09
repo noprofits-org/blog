@@ -1,5 +1,5 @@
 /* print.css - Styles applied when printing the page
- * Optimized for academic/paper style output
+ * Optimized for academic/paper style output with enhanced readability
  */
 
  @media print {
@@ -28,7 +28,8 @@
         font-family: "Times New Roman", Times, serif !important;
         page-break-after: avoid !important;
         break-after: avoid !important;
-        margin-top: 1em !important;
+        margin-top: 1.5em !important;
+        margin-bottom: 0.5em !important;
     }
     
     h1 { font-size: 18pt !important; }
@@ -47,17 +48,34 @@
         display: none !important;
     }
     
-    /* Code blocks */
-    pre, code {
-        font-family: "Courier New", Courier, monospace !important;
-        font-size: 10pt !important;
+    /* Improved code blocks */
+    pre {
         background: white !important;
-        border: 1px solid #ddd !important;
-        color: black !important;
+        border: 1px solid #000 !important; /* Single, darker border */
+        padding: 10px !important;
+        margin: 1.2em 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        box-shadow: none !important;
+        overflow-x: visible !important;
         white-space: pre-wrap !important;
     }
     
-    /* Tables - clean formatting with minimal borders */
+    code, pre code {
+        font-family: "Courier New", Courier, monospace !important;
+        font-size: 10pt !important;
+        color: black !important;
+        background: white !important;
+    }
+    
+    /* Inline code */
+    code:not(pre code) {
+        padding: 0.1em 0.4em !important;
+        border: 1px solid #ccc !important;
+        border-radius: 2px !important;
+    }
+    
+    /* Improved tables - better alignment and borders */
     table {
         display: table !important;
         width: 100% !important;
@@ -68,6 +86,7 @@
         break-inside: avoid !important;
         box-shadow: none !important;
         border: none !important;
+        margin: 1.5em 0 !important;
     }
     
     thead, tbody, tfoot {
@@ -82,24 +101,34 @@
         margin: 0 !important;
     }
     
-    th, td {
+    th {
         display: table-cell !important;
-        border-bottom: 1px solid #ddd !important;
+        border-bottom: 1.5px solid #000 !important; /* Darker header border */
         border-top: 0 !important;
         border-left: 0 !important;
         border-right: 0 !important;
         padding: 8px !important;
-        text-align: center !important;
+        text-align: left !important; /* Left-align headers by default */
         color: black !important;
         background-color: white !important;
-        position: static !important;
-        float: none !important;
-        min-width: 0 !important;
+        font-weight: bold !important;
     }
     
-    th {
-        font-weight: bold !important;
-        border-bottom: 2px solid #888 !important;
+    td {
+        display: table-cell !important;
+        border-bottom: 0.5px solid #777 !important; /* Subtle row borders */
+        border-top: 0 !important;
+        border-left: 0 !important;
+        border-right: 0 !important;
+        padding: 8px !important;
+        text-align: left !important; /* Left-align text by default */
+        color: black !important;
+        background-color: white !important;
+    }
+    
+    /* Cell alignment classes - can be added programmatically */
+    td.number, th.number {
+        text-align: right !important; /* Align numbers to the right */
     }
     
     /* Remove any pseudo-elements used for responsive tables */
@@ -122,32 +151,32 @@
     
     /* Page breaks */
     figure {
-        page-break-inside: avoid !important; /* Prevent breaks inside the figure */
-        break-inside: avoid !important; /* Modern equivalent for broader support */
-        display: block !important; /* Ensure it’s treated as a single block */
-        width: 100% !important; /* Full width for layout consistency */
-        margin: 1em 0 !important; /* Spacing above and below */
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        display: block !important;
+        width: 100% !important;
+        margin: 1.5em 0 !important;
     }
 
     figure img {
-        width: 60% !important; /* Match your earlier requirement */
+        width: 60% !important;
         height: auto !important;
         max-width: 100% !important;
         display: block !important;
-        margin: 0 auto !important; /* Center the image */
+        margin: 0 auto !important;
     }
 
     figcaption {
-        text-align: justify !important; /* Center captions for academic style */
-        font-size: 12pt !important; /* Match body text size */
+        text-align: center !important; /* Center captions for academic style */
+        font-size: 11pt !important;
+        font-style: italic !important;
         color: black !important;
-        margin-top: 0.5em !important; /* Space between image and caption */
-        page-break-before: avoid !important; /* Avoid breaking before caption */
+        margin-top: 0.7em !important;
+        page-break-before: avoid !important;
     }
 
     /* Adjust existing img rule to avoid conflicts */
     img, .tikzpicture {
-        /* Remove or adjust if standalone images exist outside figures */
         page-break-inside: avoid !important;
         break-inside: avoid !important;
         max-width: 100% !important;
@@ -156,10 +185,10 @@
         box-shadow: none !important;
     }
     
-    /* Title formatting - aligned left with content flowing after it */
+    /* Title formatting */
     .info {
         text-align: left !important;
-        margin-bottom: 1em !important;
+        margin-bottom: 1.5em !important;
         page-break-after: avoid !important;
         break-after: avoid !important;
     }
@@ -169,7 +198,7 @@
         margin-bottom: 0.5em !important;
     }
     
-    /* Math and chemistry equations - ensure they render well */
+    /* Math and chemistry equations */
     .math, .MathJax {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
@@ -181,8 +210,33 @@
         margin-left: 1.5em !important;
     }
     
-    /* Page margins */
+    /* Page margins and page numbers */
     @page {
         margin: 2cm !important;
+        @bottom-center {
+            content: counter(page);
+            font-family: "Times New Roman", Times, serif !important;
+            font-size: 10pt !important;
+        }
+    }
+    
+    /* Add more space between sections */
+    section {
+        margin-bottom: 2em !important;
+    }
+    
+    /* Ensure code captions print nicely */
+    pre + p strong, table + p strong, figure + p strong {
+        display: block !important;
+        margin-top: 0.5em !important;
+        font-style: italic !important;
+        text-align: center !important;
+    }
+    
+    /* Optional: Make code and table captions more distinctive */
+    .code-caption, .table-caption, figcaption {
+        font-style: italic !important;
+        text-align: center !important;
+        margin: 0.5em 0 1.5em 0 !important;
     }
 }
