@@ -48,6 +48,7 @@ jobs:
     - name: Create CNAME file
       run: |
         echo "blog.noprofits.org" > _site/CNAME
+        touch _site/.nojekyll
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
@@ -55,3 +56,4 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./_site
         cname: blog.noprofits.org
+        force_orphan: true
