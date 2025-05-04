@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">NoProfits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <div class="info">
+    <h3>Mapping the IRS Form 990 Data Repository - A Computational Approach to Nonprofit Data Discovery</h3>
+    Posted on April  1, 2025
+    
+</div>
+
+<h2 id="introduction">Introduction</h2>
+<p>The Internal Revenue Service (IRS) Form 990 is a mandatory annual filing for tax-exempt organizations in the United States, providing critical data on financial performance, governance, and operational activities. Researchers, data analysts, and nonprofit sector stakeholders frequently seek access to this data to calculate performance metrics, evaluate organizational effectiveness, and conduct comparative analyses. However, programmatically accessing this data remains challenging due to the complex repository structure maintained by the IRS.<span class="citation" data-cites="williams2023"><sup>1</sup></span></p>
+<p>Efficiently accessing Form 990 data requires understanding how the IRS organizes their data repository, including the hierarchical structure of index files and the pathways to actual XML filings. While the IRS provides public access to Form 990 data through their website, the repository’s scale and organization create substantial barriers to targeted retrieval, especially when seeking specific organizations by Employer Identification Number (EIN). Third-party platforms like ProPublica’s Nonprofit Explorer have attempted to address this challenge by providing more accessible APIs, but these solutions often lack the comprehensive coverage of the primary IRS repository.<span class="citation" data-cites="ottinger2022"><sup>2</sup></span></p>
+<p>Prior work on nonprofit financial data extraction has typically relied on such third-party sources, which frequently contain only a subset of the available data, with limited timeframes and fields.<span class="citation" data-cites="barreto2019"><sup>3</sup></span> Our previous research demonstrated the challenges of retrieving Program Efficiency (PE) and Fundraising Efficiency (FE) metrics through ProPublica’s API, with consistent gaps in data availability affecting comprehensive analysis. These limitations motivate a direct approach to the primary IRS data repository, requiring a thorough understanding of its organization and structure.</p>
+<p>The aim of this study is to develop a computational methodology for mapping the IRS Form 990 data repository structure to enable more efficient and targeted data retrieval. Specifically, we seek to identify and catalog the repository’s hierarchical organization across available years, understand the relationship between index files and actual XML filings, determine the structure of index files and how they reference individual organizational filings, and create a visual and structured representation of the repository to inform targeted data retrieval.</p>
+<p>By systematically mapping the repository structure, we provide a foundation for more efficient data retrieval strategies that avoid unnecessary downloads while ensuring comprehensive coverage. This approach addresses a critical gap in nonprofit data accessibility, potentially enabling more thorough analyses of organizational performance and financial metrics across the sector.</p>
+<h2 id="experimental">Experimental</h2>
+<details>
+<div class="sourceCode" id="cb1"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install requests beautifulsoup4 matplotlib networkx rich</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">IRS Form 990 Repository Structure Mapper</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">This script maps the structure of the IRS Form 990 data repository without downloading</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">actual filings. It identifies index files, their organization, and creates a visualization</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">of the repository structure.</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">The goal is to understand:</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">1. How the repository is organized</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">2. What index files are available</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">3. How these index files are structured</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">4. How to locate specific filings in later phases</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> logging</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> csv</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> io</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> zipfile</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs4 <span class="im">import</span> BeautifulSoup</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> urllib.parse <span class="im">import</span> urljoin</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rich.console <span class="im">import</span> Console</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rich.table <span class="im">import</span> Table</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rich.progress <span class="im">import</span> Progress</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> networkx <span class="im">as</span> nx</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> textwrap <span class="im">import</span> wrap</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup logging</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>logging.basicConfig(</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    level<span class="op">=</span>logging.INFO,</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="bu">format</span><span class="op">=</span><span class="st">'</span><span class="sc">%(asctime)s</span><span class="st"> - </span><span class="sc">%(levelname)s</span><span class="st"> - </span><span class="sc">%(message)s</span><span class="st">'</span>,</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    handlers<span class="op">=</span>[</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>        logging.FileHandler(<span class="st">&quot;irs_structure_mapper.log&quot;</span>),</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>        logging.StreamHandler()</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>logger <span class="op">=</span> logging.getLogger(<span class="va">__name__</span>)</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Rich console for pretty output</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>console <span class="op">=</span> Console()</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="co"># Constants</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>IRS_DOWNLOADS_PAGE <span class="op">=</span> <span class="st">&quot;https://www.irs.gov/charities-non-profits/form-990-series-downloads&quot;</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>AWS_BASE_URL <span class="op">=</span> <span class="st">&quot;https://apps.irs.gov/pub/epostcard/990&quot;</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>MAPPER_DIR <span class="op">=</span> Path(<span class="st">&quot;irs_mapping&quot;</span>)</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>MAPPER_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Create directories for different data</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>INDEX_INFO_DIR <span class="op">=</span> MAPPER_DIR <span class="op">/</span> <span class="st">&quot;index_info&quot;</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>INDEX_INFO_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>VISUALIZATION_DIR <span class="op">=</span> MAPPER_DIR <span class="op">/</span> <span class="st">&quot;visualizations&quot;</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>VISUALIZATION_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Target EINs for reference</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>TARGET_EINS <span class="op">=</span> {</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;13-6213516&quot;</span>: <span class="st">&quot;American Civil Liberties Union Foundation&quot;</span>,</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;53-0196605&quot;</span>: <span class="st">&quot;American National Red Cross&quot;</span>,</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;13-1635294&quot;</span>: <span class="st">&quot;United Way Worldwide&quot;</span>,</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;13-1644147&quot;</span>: <span class="st">&quot;Planned Parenthood Federation of America&quot;</span>,</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;53-0242652&quot;</span>: <span class="st">&quot;Nature Conservancy&quot;</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> respect_rate_limit(last_request_time, rate_limit<span class="op">=</span><span class="fl">0.5</span>):</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Ensure we don't exceed the rate limit.&quot;&quot;&quot;</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>    elapsed <span class="op">=</span> time.time() <span class="op">-</span> last_request_time</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> elapsed <span class="op">&lt;</span> rate_limit:</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>        time.sleep(rate_limit <span class="op">-</span> elapsed)</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> time.time()</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> explore_downloads_page():</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="co">    Analyze the downloads page to find index files and understand their organization.</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="co">        Dictionary containing the repository structure information</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>    console.<span class="bu">print</span>(<span class="st">&quot;[bold blue]Analyzing IRS Form 990 downloads page...[/bold blue]&quot;</span>)</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>        response <span class="op">=</span> requests.get(IRS_DOWNLOADS_PAGE)</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>        response.raise_for_status()</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>        soup <span class="op">=</span> BeautifulSoup(response.text, <span class="st">&quot;html.parser&quot;</span>)</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Extract all links</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>        links <span class="op">=</span> []</span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> a_tag <span class="kw">in</span> soup.find_all(<span class="st">&quot;a&quot;</span>, href<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>            href <span class="op">=</span> a_tag[<span class="st">&quot;href&quot;</span>]</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>            text <span class="op">=</span> a_tag.get_text(strip<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Make URL absolute if it's relative</span></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> href.startswith(<span class="st">&quot;http&quot;</span>):</span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>                href <span class="op">=</span> urljoin(IRS_DOWNLOADS_PAGE, href)</span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>            links.append({</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;url&quot;</span>: href,</span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;text&quot;</span>: text</span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>            })</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Identify index files (CSVs and ZIPs)</span></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>        index_files <span class="op">=</span> []</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a>        years_found <span class="op">=</span> <span class="bu">set</span>()</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> link <span class="kw">in</span> links:</span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Look for links that appear to be index files for Form 990</span></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>            url <span class="op">=</span> link[<span class="st">&quot;url&quot;</span>]</span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> (<span class="st">&quot;990&quot;</span> <span class="kw">in</span> url <span class="kw">and</span> (<span class="st">&quot;.csv&quot;</span> <span class="kw">in</span> url.lower() <span class="kw">or</span> <span class="st">&quot;.zip&quot;</span> <span class="kw">in</span> url.lower())):</span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Try to extract the year</span></span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>                year_match <span class="op">=</span> re.search(<span class="vs">r'20</span><span class="dv">\d</span><span class="op">{2}</span><span class="vs">'</span>, url)</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>                year <span class="op">=</span> year_match.group(<span class="dv">0</span>) <span class="cf">if</span> year_match <span class="cf">else</span> <span class="st">&quot;unknown&quot;</span></span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>                years_found.add(year)</span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>                index_files.append({</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;url&quot;</span>: url,</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;text&quot;</span>: link[<span class="st">&quot;text&quot;</span>],</span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;year&quot;</span>: year,</span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;file_type&quot;</span>: <span class="st">&quot;csv&quot;</span> <span class="cf">if</span> <span class="st">&quot;.csv&quot;</span> <span class="kw">in</span> url.lower() <span class="cf">else</span> <span class="st">&quot;zip&quot;</span></span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>                })</span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Organize findings by year</span></span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a>        years_data <span class="op">=</span> {}</span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> year <span class="kw">in</span> years_found:</span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> year <span class="op">!=</span> <span class="st">&quot;unknown&quot;</span>:</span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a>                years_data[year] <span class="op">=</span> {</span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;index_files&quot;</span>: [f <span class="cf">for</span> f <span class="kw">in</span> index_files <span class="cf">if</span> f[<span class="st">&quot;year&quot;</span>] <span class="op">==</span> year]</span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a>                }</span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create repository map</span></span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a>        repository_map <span class="op">=</span> {</span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;download_page&quot;</span>: IRS_DOWNLOADS_PAGE,</span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;aws_base&quot;</span>: AWS_BASE_URL,</span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;index_files&quot;</span>: index_files,</span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;years&quot;</span>: years_data,</span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;years_count&quot;</span>: <span class="bu">len</span>(years_found),</span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;index_files_count&quot;</span>: <span class="bu">len</span>(index_files)</span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Save the repository map</span></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>        output_path <span class="op">=</span> MAPPER_DIR <span class="op">/</span> <span class="st">&quot;repository_map.json&quot;</span></span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(output_path, <span class="st">&quot;w&quot;</span>) <span class="im">as</span> f:</span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a>            json.dump(repository_map, f, indent<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(<span class="ss">f&quot;[green]Found [bold]</span><span class="sc">{</span><span class="bu">len</span>(index_files)<span class="sc">}</span><span class="ss">[/bold] potential index files across [bold]</span><span class="sc">{</span><span class="bu">len</span>(years_found)<span class="sc">}</span><span class="ss">[/bold] years[/green]&quot;</span>)</span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(<span class="ss">f&quot;[green]Repository map saved to [italic]</span><span class="sc">{</span>output_path<span class="sc">}</span><span class="ss">[/italic][/green]&quot;</span>)</span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> repository_map</span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> requests.RequestException <span class="im">as</span> e:</span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a>        logger.error(<span class="ss">f&quot;Failed to analyze downloads page: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(<span class="ss">f&quot;[bold red]Error analyzing downloads page: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">[/bold red]&quot;</span>)</span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-158"><a href="#cb2-158" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sample_index_file_structure(url, file_type, year):</span>
+<span id="cb2-159"><a href="#cb2-159" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb2-160"><a href="#cb2-160" aria-hidden="true" tabindex="-1"></a><span class="co">    Sample the structure of an index file without downloading it entirely.</span></span>
+<span id="cb2-161"><a href="#cb2-161" aria-hidden="true" tabindex="-1"></a><span class="co">    For CSV files, read just the headers and a few rows.</span></span>
+<span id="cb2-162"><a href="#cb2-162" aria-hidden="true" tabindex="-1"></a><span class="co">    For ZIP files, just examine the file list.</span></span>
+<span id="cb2-163"><a href="#cb2-163" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb2-164"><a href="#cb2-164" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb2-165"><a href="#cb2-165" aria-hidden="true" tabindex="-1"></a><span class="co">        url: URL of the index file</span></span>
+<span id="cb2-166"><a href="#cb2-166" aria-hidden="true" tabindex="-1"></a><span class="co">        file_type: Type of file ('csv' or 'zip')</span></span>
+<span id="cb2-167"><a href="#cb2-167" aria-hidden="true" tabindex="-1"></a><span class="co">        year: Year associated with the file</span></span>
+<span id="cb2-168"><a href="#cb2-168" aria-hidden="true" tabindex="-1"></a><span class="co">        </span></span>
+<span id="cb2-169"><a href="#cb2-169" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb2-170"><a href="#cb2-170" aria-hidden="true" tabindex="-1"></a><span class="co">        Dictionary with information about the file structure</span></span>
+<span id="cb2-171"><a href="#cb2-171" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb2-172"><a href="#cb2-172" aria-hidden="true" tabindex="-1"></a>    last_request_time <span class="op">=</span> time.time()</span>
+<span id="cb2-173"><a href="#cb2-173" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-174"><a href="#cb2-174" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb2-175"><a href="#cb2-175" aria-hidden="true" tabindex="-1"></a>        info <span class="op">=</span> {</span>
+<span id="cb2-176"><a href="#cb2-176" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;url&quot;</span>: url,</span>
+<span id="cb2-177"><a href="#cb2-177" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;file_type&quot;</span>: file_type,</span>
+<span id="cb2-178"><a href="#cb2-178" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;year&quot;</span>: year,</span>
+<span id="cb2-179"><a href="#cb2-179" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;structure_analyzed&quot;</span>: <span class="va">False</span></span>
+<span id="cb2-180"><a href="#cb2-180" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb2-181"><a href="#cb2-181" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-182"><a href="#cb2-182" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> file_type <span class="op">==</span> <span class="st">&quot;csv&quot;</span>:</span>
+<span id="cb2-183"><a href="#cb2-183" aria-hidden="true" tabindex="-1"></a>            <span class="co"># For CSV, request just enough to get headers and a few rows</span></span>
+<span id="cb2-184"><a href="#cb2-184" aria-hidden="true" tabindex="-1"></a>            headers <span class="op">=</span> {<span class="st">&quot;Range&quot;</span>: <span class="st">&quot;bytes=0-8192&quot;</span>}  <span class="co"># First 8KB should be enough for headers and a few rows</span></span>
+<span id="cb2-185"><a href="#cb2-185" aria-hidden="true" tabindex="-1"></a>            last_request_time <span class="op">=</span> respect_rate_limit(last_request_time)</span>
+<span id="cb2-186"><a href="#cb2-186" aria-hidden="true" tabindex="-1"></a>            response <span class="op">=</span> requests.get(url, headers<span class="op">=</span>headers)</span>
+<span id="cb2-187"><a href="#cb2-187" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-188"><a href="#cb2-188" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> response.status_code <span class="kw">in</span> (<span class="dv">200</span>, <span class="dv">206</span>):</span>
+<span id="cb2-189"><a href="#cb2-189" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Try to parse as CSV</span></span>
+<span id="cb2-190"><a href="#cb2-190" aria-hidden="true" tabindex="-1"></a>                text_content <span class="op">=</span> response.text</span>
+<span id="cb2-191"><a href="#cb2-191" aria-hidden="true" tabindex="-1"></a>                csv_reader <span class="op">=</span> csv.reader(text_content.splitlines())</span>
+<span id="cb2-192"><a href="#cb2-192" aria-hidden="true" tabindex="-1"></a>                rows <span class="op">=</span> <span class="bu">list</span>(csv_reader)</span>
+<span id="cb2-193"><a href="#cb2-193" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb2-194"><a href="#cb2-194" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> rows:</span>
+<span id="cb2-195"><a href="#cb2-195" aria-hidden="true" tabindex="-1"></a>                    headers <span class="op">=</span> rows[<span class="dv">0</span>]</span>
+<span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a>                    info[<span class="st">&quot;column_headers&quot;</span>] <span class="op">=</span> headers</span>
+<span id="cb2-197"><a href="#cb2-197" aria-hidden="true" tabindex="-1"></a>                    info[<span class="st">&quot;sample_rows_count&quot;</span>] <span class="op">=</span> <span class="bu">min</span>(<span class="dv">5</span>, <span class="bu">len</span>(rows) <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb2-198"><a href="#cb2-198" aria-hidden="true" tabindex="-1"></a>                    info[<span class="st">&quot;sample_rows&quot;</span>] <span class="op">=</span> rows[<span class="dv">1</span>:info[<span class="st">&quot;sample_rows_count&quot;</span>]<span class="op">+</span><span class="dv">1</span>] <span class="cf">if</span> <span class="bu">len</span>(rows) <span class="op">&gt;</span> <span class="dv">1</span> <span class="cf">else</span> []</span>
+<span id="cb2-199"><a href="#cb2-199" aria-hidden="true" tabindex="-1"></a>                    info[<span class="st">&quot;structure_analyzed&quot;</span>] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb2-200"><a href="#cb2-200" aria-hidden="true" tabindex="-1"></a>                    </span>
+<span id="cb2-201"><a href="#cb2-201" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># Check for EIN column</span></span>
+<span id="cb2-202"><a href="#cb2-202" aria-hidden="true" tabindex="-1"></a>                    ein_column_index <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb2-203"><a href="#cb2-203" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">for</span> idx, header <span class="kw">in</span> <span class="bu">enumerate</span>(headers):</span>
+<span id="cb2-204"><a href="#cb2-204" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="st">&quot;ein&quot;</span> <span class="kw">in</span> header.lower():</span>
+<span id="cb2-205"><a href="#cb2-205" aria-hidden="true" tabindex="-1"></a>                            ein_column_index <span class="op">=</span> idx</span>
+<span id="cb2-206"><a href="#cb2-206" aria-hidden="true" tabindex="-1"></a>                            info[<span class="st">&quot;ein_column_index&quot;</span>] <span class="op">=</span> idx</span>
+<span id="cb2-207"><a href="#cb2-207" aria-hidden="true" tabindex="-1"></a>                            info[<span class="st">&quot;ein_column_name&quot;</span>] <span class="op">=</span> header</span>
+<span id="cb2-208"><a href="#cb2-208" aria-hidden="true" tabindex="-1"></a>                            <span class="cf">break</span></span>
+<span id="cb2-209"><a href="#cb2-209" aria-hidden="true" tabindex="-1"></a>                    </span>
+<span id="cb2-210"><a href="#cb2-210" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># Check for OBJECT_ID or similar that might point to file locations</span></span>
+<span id="cb2-211"><a href="#cb2-211" aria-hidden="true" tabindex="-1"></a>                    object_id_column_index <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb2-212"><a href="#cb2-212" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">for</span> idx, header <span class="kw">in</span> <span class="bu">enumerate</span>(headers):</span>
+<span id="cb2-213"><a href="#cb2-213" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="bu">any</span>(id_term <span class="kw">in</span> header.lower() <span class="cf">for</span> id_term <span class="kw">in</span> [<span class="st">&quot;object&quot;</span>, <span class="st">&quot;id&quot;</span>, <span class="st">&quot;file&quot;</span>, <span class="st">&quot;location&quot;</span>, <span class="st">&quot;url&quot;</span>]):</span>
+<span id="cb2-214"><a href="#cb2-214" aria-hidden="true" tabindex="-1"></a>                            object_id_column_index <span class="op">=</span> idx</span>
+<span id="cb2-215"><a href="#cb2-215" aria-hidden="true" tabindex="-1"></a>                            info[<span class="st">&quot;object_id_column_index&quot;</span>] <span class="op">=</span> idx</span>
+<span id="cb2-216"><a href="#cb2-216" aria-hidden="true" tabindex="-1"></a>                            info[<span class="st">&quot;object_id_column_name&quot;</span>] <span class="op">=</span> header</span>
+<span id="cb2-217"><a href="#cb2-217" aria-hidden="true" tabindex="-1"></a>                            <span class="cf">break</span></span>
+<span id="cb2-218"><a href="#cb2-218" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-219"><a href="#cb2-219" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> file_type <span class="op">==</span> <span class="st">&quot;zip&quot;</span>:</span>
+<span id="cb2-220"><a href="#cb2-220" aria-hidden="true" tabindex="-1"></a>            <span class="co"># For ZIP, we'll just check if it's accessible, without downloading the whole thing</span></span>
+<span id="cb2-221"><a href="#cb2-221" aria-hidden="true" tabindex="-1"></a>            headers <span class="op">=</span> {<span class="st">&quot;Range&quot;</span>: <span class="st">&quot;bytes=0-64&quot;</span>}  <span class="co"># Just get the file signature</span></span>
+<span id="cb2-222"><a href="#cb2-222" aria-hidden="true" tabindex="-1"></a>            last_request_time <span class="op">=</span> respect_rate_limit(last_request_time)</span>
+<span id="cb2-223"><a href="#cb2-223" aria-hidden="true" tabindex="-1"></a>            response <span class="op">=</span> requests.get(url, headers<span class="op">=</span>headers)</span>
+<span id="cb2-224"><a href="#cb2-224" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-225"><a href="#cb2-225" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> response.status_code <span class="kw">in</span> (<span class="dv">200</span>, <span class="dv">206</span>):</span>
+<span id="cb2-226"><a href="#cb2-226" aria-hidden="true" tabindex="-1"></a>                info[<span class="st">&quot;is_accessible&quot;</span>] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb2-227"><a href="#cb2-227" aria-hidden="true" tabindex="-1"></a>                info[<span class="st">&quot;content_type&quot;</span>] <span class="op">=</span> response.headers.get(<span class="st">&quot;Content-Type&quot;</span>)</span>
+<span id="cb2-228"><a href="#cb2-228" aria-hidden="true" tabindex="-1"></a>                info[<span class="st">&quot;structure_analyzed&quot;</span>] <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb2-229"><a href="#cb2-229" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb2-230"><a href="#cb2-230" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Try to get the full file size</span></span>
+<span id="cb2-231"><a href="#cb2-231" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="st">&quot;Content-Range&quot;</span> <span class="kw">in</span> response.headers:</span>
+<span id="cb2-232"><a href="#cb2-232" aria-hidden="true" tabindex="-1"></a>                    range_info <span class="op">=</span> response.headers[<span class="st">&quot;Content-Range&quot;</span>]</span>
+<span id="cb2-233"><a href="#cb2-233" aria-hidden="true" tabindex="-1"></a>                    match <span class="op">=</span> re.search(<span class="vs">r&quot;bytes 0-</span><span class="dv">\d</span><span class="op">+</span><span class="vs">/</span><span class="kw">(</span><span class="dv">\d</span><span class="op">+</span><span class="kw">)</span><span class="vs">&quot;</span>, range_info)</span>
+<span id="cb2-234"><a href="#cb2-234" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> match:</span>
+<span id="cb2-235"><a href="#cb2-235" aria-hidden="true" tabindex="-1"></a>                        info[<span class="st">&quot;file_size&quot;</span>] <span class="op">=</span> <span class="bu">int</span>(match.group(<span class="dv">1</span>))</span>
+<span id="cb2-236"><a href="#cb2-236" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb2-237"><a href="#cb2-237" aria-hidden="true" tabindex="-1"></a>                <span class="co"># We won't try to extract the ZIP contents as that would require downloading</span></span>
+<span id="cb2-238"><a href="#cb2-238" aria-hidden="true" tabindex="-1"></a>                <span class="co"># the whole file, which we're avoiding in this structure mapping phase.</span></span>
+<span id="cb2-239"><a href="#cb2-239" aria-hidden="true" tabindex="-1"></a>                info[<span class="st">&quot;note&quot;</span>] <span class="op">=</span> <span class="st">&quot;ZIP file detected, but contents not examined to avoid large download&quot;</span></span>
+<span id="cb2-240"><a href="#cb2-240" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-241"><a href="#cb2-241" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Save the sample information</span></span>
+<span id="cb2-242"><a href="#cb2-242" aria-hidden="true" tabindex="-1"></a>        filename <span class="op">=</span> url.split(<span class="st">'/'</span>)[<span class="op">-</span><span class="dv">1</span>].replace(<span class="st">&quot;.&quot;</span>, <span class="st">&quot;_&quot;</span>)</span>
+<span id="cb2-243"><a href="#cb2-243" aria-hidden="true" tabindex="-1"></a>        sample_path <span class="op">=</span> INDEX_INFO_DIR <span class="op">/</span> <span class="ss">f&quot;</span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">_structure.json&quot;</span></span>
+<span id="cb2-244"><a href="#cb2-244" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(sample_path, <span class="st">&quot;w&quot;</span>) <span class="im">as</span> f:</span>
+<span id="cb2-245"><a href="#cb2-245" aria-hidden="true" tabindex="-1"></a>            json.dump(info, f, indent<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb2-246"><a href="#cb2-246" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-247"><a href="#cb2-247" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> info</span>
+<span id="cb2-248"><a href="#cb2-248" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-249"><a href="#cb2-249" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb2-250"><a href="#cb2-250" aria-hidden="true" tabindex="-1"></a>        logger.error(<span class="ss">f&quot;Failed to sample index file </span><span class="sc">{</span>url<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-251"><a href="#cb2-251" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {<span class="st">&quot;url&quot;</span>: url, <span class="st">&quot;error&quot;</span>: <span class="bu">str</span>(e), <span class="st">&quot;structure_analyzed&quot;</span>: <span class="va">False</span>}</span>
+<span id="cb2-252"><a href="#cb2-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-253"><a href="#cb2-253" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_repository_visualization(repository_map):</span>
+<span id="cb2-254"><a href="#cb2-254" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb2-255"><a href="#cb2-255" aria-hidden="true" tabindex="-1"></a><span class="co">    Generate visualizations of the repository structure.</span></span>
+<span id="cb2-256"><a href="#cb2-256" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb2-257"><a href="#cb2-257" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb2-258"><a href="#cb2-258" aria-hidden="true" tabindex="-1"></a><span class="co">        repository_map: Dictionary containing repository structure information</span></span>
+<span id="cb2-259"><a href="#cb2-259" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb2-260"><a href="#cb2-260" aria-hidden="true" tabindex="-1"></a>    console.<span class="bu">print</span>(<span class="st">&quot;[bold blue]Generating visualizations of repository structure...[/bold blue]&quot;</span>)</span>
+<span id="cb2-261"><a href="#cb2-261" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-262"><a href="#cb2-262" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Create a bar chart of index files by year</span></span>
+<span id="cb2-263"><a href="#cb2-263" aria-hidden="true" tabindex="-1"></a>    years <span class="op">=</span> <span class="bu">sorted</span>(repository_map[<span class="st">&quot;years&quot;</span>].keys())</span>
+<span id="cb2-264"><a href="#cb2-264" aria-hidden="true" tabindex="-1"></a>    file_counts <span class="op">=</span> [<span class="bu">len</span>(repository_map[<span class="st">&quot;years&quot;</span>][year][<span class="st">&quot;index_files&quot;</span>]) <span class="cf">for</span> year <span class="kw">in</span> years]</span>
+<span id="cb2-265"><a href="#cb2-265" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-266"><a href="#cb2-266" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>))</span>
+<span id="cb2-267"><a href="#cb2-267" aria-hidden="true" tabindex="-1"></a>    plt.bar(years, file_counts, color<span class="op">=</span><span class="st">'skyblue'</span>)</span>
+<span id="cb2-268"><a href="#cb2-268" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">'Year'</span>)</span>
+<span id="cb2-269"><a href="#cb2-269" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">'Number of Index Files'</span>)</span>
+<span id="cb2-270"><a href="#cb2-270" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">'IRS Form 990 Index Files by Year'</span>)</span>
+<span id="cb2-271"><a href="#cb2-271" aria-hidden="true" tabindex="-1"></a>    plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb2-272"><a href="#cb2-272" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb2-273"><a href="#cb2-273" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-274"><a href="#cb2-274" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Save the chart</span></span>
+<span id="cb2-275"><a href="#cb2-275" aria-hidden="true" tabindex="-1"></a>    chart_path <span class="op">=</span> VISUALIZATION_DIR <span class="op">/</span> <span class="st">&quot;index_files_by_year.png&quot;</span></span>
+<span id="cb2-276"><a href="#cb2-276" aria-hidden="true" tabindex="-1"></a>    plt.savefig(chart_path)</span>
+<span id="cb2-277"><a href="#cb2-277" aria-hidden="true" tabindex="-1"></a>    plt.close()</span>
+<span id="cb2-278"><a href="#cb2-278" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-279"><a href="#cb2-279" aria-hidden="true" tabindex="-1"></a>    console.<span class="bu">print</span>(<span class="ss">f&quot;[green]Bar chart saved to [italic]</span><span class="sc">{</span>chart_path<span class="sc">}</span><span class="ss">[/italic][/green]&quot;</span>)</span>
+<span id="cb2-280"><a href="#cb2-280" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-281"><a href="#cb2-281" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Create a network graph of the repository structure</span></span>
+<span id="cb2-282"><a href="#cb2-282" aria-hidden="true" tabindex="-1"></a>    G <span class="op">=</span> nx.DiGraph()</span>
+<span id="cb2-283"><a href="#cb2-283" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-284"><a href="#cb2-284" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add root node</span></span>
+<span id="cb2-285"><a href="#cb2-285" aria-hidden="true" tabindex="-1"></a>    G.add_node(<span class="st">&quot;IRS Form 990 Repository&quot;</span>)</span>
+<span id="cb2-286"><a href="#cb2-286" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-287"><a href="#cb2-287" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Add year nodes</span></span>
+<span id="cb2-288"><a href="#cb2-288" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> year <span class="kw">in</span> years:</span>
+<span id="cb2-289"><a href="#cb2-289" aria-hidden="true" tabindex="-1"></a>        G.add_node(<span class="ss">f&quot;Year </span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-290"><a href="#cb2-290" aria-hidden="true" tabindex="-1"></a>        G.add_edge(<span class="st">&quot;IRS Form 990 Repository&quot;</span>, <span class="ss">f&quot;Year </span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-291"><a href="#cb2-291" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-292"><a href="#cb2-292" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Add index file nodes</span></span>
+<span id="cb2-293"><a href="#cb2-293" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> idx, file_info <span class="kw">in</span> <span class="bu">enumerate</span>(repository_map[<span class="st">&quot;years&quot;</span>][year][<span class="st">&quot;index_files&quot;</span>]):</span>
+<span id="cb2-294"><a href="#cb2-294" aria-hidden="true" tabindex="-1"></a>            file_name <span class="op">=</span> file_info[<span class="st">&quot;url&quot;</span>].split(<span class="st">'/'</span>)[<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb2-295"><a href="#cb2-295" aria-hidden="true" tabindex="-1"></a>            file_type <span class="op">=</span> file_info[<span class="st">&quot;file_type&quot;</span>].upper()</span>
+<span id="cb2-296"><a href="#cb2-296" aria-hidden="true" tabindex="-1"></a>            node_name <span class="op">=</span> <span class="ss">f&quot;</span><span class="sc">{</span>file_name<span class="sc">}</span><span class="ch">\n</span><span class="ss">(</span><span class="sc">{</span>file_type<span class="sc">}</span><span class="ss">)&quot;</span></span>
+<span id="cb2-297"><a href="#cb2-297" aria-hidden="true" tabindex="-1"></a>            G.add_node(node_name)</span>
+<span id="cb2-298"><a href="#cb2-298" aria-hidden="true" tabindex="-1"></a>            G.add_edge(<span class="ss">f&quot;Year </span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">&quot;</span>, node_name)</span>
+<span id="cb2-299"><a href="#cb2-299" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-300"><a href="#cb2-300" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create the visualization</span></span>
+<span id="cb2-301"><a href="#cb2-301" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">10</span>))</span>
+<span id="cb2-302"><a href="#cb2-302" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> nx.spring_layout(G, k<span class="op">=</span><span class="fl">0.5</span>, iterations<span class="op">=</span><span class="dv">50</span>)</span>
+<span id="cb2-303"><a href="#cb2-303" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-304"><a href="#cb2-304" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Draw nodes</span></span>
+<span id="cb2-305"><a href="#cb2-305" aria-hidden="true" tabindex="-1"></a>    nx.draw_networkx_nodes(G, pos, </span>
+<span id="cb2-306"><a href="#cb2-306" aria-hidden="true" tabindex="-1"></a>                           node_size<span class="op">=</span><span class="dv">2000</span>, </span>
+<span id="cb2-307"><a href="#cb2-307" aria-hidden="true" tabindex="-1"></a>                           node_color<span class="op">=</span><span class="st">&quot;skyblue&quot;</span>, </span>
+<span id="cb2-308"><a href="#cb2-308" aria-hidden="true" tabindex="-1"></a>                           alpha<span class="op">=</span><span class="fl">0.8</span>,</span>
+<span id="cb2-309"><a href="#cb2-309" aria-hidden="true" tabindex="-1"></a>                           node_shape<span class="op">=</span><span class="st">&quot;o&quot;</span>)</span>
+<span id="cb2-310"><a href="#cb2-310" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-311"><a href="#cb2-311" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Draw edges</span></span>
+<span id="cb2-312"><a href="#cb2-312" aria-hidden="true" tabindex="-1"></a>    nx.draw_networkx_edges(G, pos, </span>
+<span id="cb2-313"><a href="#cb2-313" aria-hidden="true" tabindex="-1"></a>                           edge_color<span class="op">=</span><span class="st">&quot;gray&quot;</span>, </span>
+<span id="cb2-314"><a href="#cb2-314" aria-hidden="true" tabindex="-1"></a>                           arrows<span class="op">=</span><span class="va">True</span>, </span>
+<span id="cb2-315"><a href="#cb2-315" aria-hidden="true" tabindex="-1"></a>                           arrowsize<span class="op">=</span><span class="dv">15</span>)</span>
+<span id="cb2-316"><a href="#cb2-316" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-317"><a href="#cb2-317" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Draw labels with wrapped text</span></span>
+<span id="cb2-318"><a href="#cb2-318" aria-hidden="true" tabindex="-1"></a>    labels <span class="op">=</span> {node: <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>.join(wrap(node, <span class="dv">20</span>)) <span class="cf">for</span> node <span class="kw">in</span> G.nodes()}</span>
+<span id="cb2-319"><a href="#cb2-319" aria-hidden="true" tabindex="-1"></a>    nx.draw_networkx_labels(G, pos, </span>
+<span id="cb2-320"><a href="#cb2-320" aria-hidden="true" tabindex="-1"></a>                            labels<span class="op">=</span>labels, </span>
+<span id="cb2-321"><a href="#cb2-321" aria-hidden="true" tabindex="-1"></a>                            font_size<span class="op">=</span><span class="dv">8</span>, </span>
+<span id="cb2-322"><a href="#cb2-322" aria-hidden="true" tabindex="-1"></a>                            font_family<span class="op">=</span><span class="st">&quot;sans-serif&quot;</span>)</span>
+<span id="cb2-323"><a href="#cb2-323" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-324"><a href="#cb2-324" aria-hidden="true" tabindex="-1"></a>    plt.axis(<span class="st">'off'</span>)</span>
+<span id="cb2-325"><a href="#cb2-325" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">&quot;IRS Form 990 Repository Structure&quot;</span>)</span>
+<span id="cb2-326"><a href="#cb2-326" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb2-327"><a href="#cb2-327" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-328"><a href="#cb2-328" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Save the network graph</span></span>
+<span id="cb2-329"><a href="#cb2-329" aria-hidden="true" tabindex="-1"></a>    graph_path <span class="op">=</span> VISUALIZATION_DIR <span class="op">/</span> <span class="st">&quot;repository_structure.png&quot;</span></span>
+<span id="cb2-330"><a href="#cb2-330" aria-hidden="true" tabindex="-1"></a>    plt.savefig(graph_path, dpi<span class="op">=</span><span class="dv">300</span>)</span>
+<span id="cb2-331"><a href="#cb2-331" aria-hidden="true" tabindex="-1"></a>    plt.close()</span>
+<span id="cb2-332"><a href="#cb2-332" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-333"><a href="#cb2-333" aria-hidden="true" tabindex="-1"></a>    console.<span class="bu">print</span>(<span class="ss">f&quot;[green]Network graph saved to [italic]</span><span class="sc">{</span>graph_path<span class="sc">}</span><span class="ss">[/italic][/green]&quot;</span>)</span>
+<span id="cb2-334"><a href="#cb2-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-335"><a href="#cb2-335" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_summary_report(repository_map, sampled_indexes):</span>
+<span id="cb2-336"><a href="#cb2-336" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb2-337"><a href="#cb2-337" aria-hidden="true" tabindex="-1"></a><span class="co">    Generate a summary report of the repository structure.</span></span>
+<span id="cb2-338"><a href="#cb2-338" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb2-339"><a href="#cb2-339" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb2-340"><a href="#cb2-340" aria-hidden="true" tabindex="-1"></a><span class="co">        repository_map: Dictionary containing repository structure information</span></span>
+<span id="cb2-341"><a href="#cb2-341" aria-hidden="true" tabindex="-1"></a><span class="co">        sampled_indexes: List of dictionaries with information about sampled index files</span></span>
+<span id="cb2-342"><a href="#cb2-342" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb2-343"><a href="#cb2-343" aria-hidden="true" tabindex="-1"></a>    console.<span class="bu">print</span>(<span class="st">&quot;[bold blue]Generating summary report...[/bold blue]&quot;</span>)</span>
+<span id="cb2-344"><a href="#cb2-344" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-345"><a href="#cb2-345" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a rich table for years summary</span></span>
+<span id="cb2-346"><a href="#cb2-346" aria-hidden="true" tabindex="-1"></a>    years_table <span class="op">=</span> Table(title<span class="op">=</span><span class="st">&quot;IRS Form 990 Repository - Years Summary&quot;</span>)</span>
+<span id="cb2-347"><a href="#cb2-347" aria-hidden="true" tabindex="-1"></a>    years_table.add_column(<span class="st">&quot;Year&quot;</span>, style<span class="op">=</span><span class="st">&quot;cyan&quot;</span>)</span>
+<span id="cb2-348"><a href="#cb2-348" aria-hidden="true" tabindex="-1"></a>    years_table.add_column(<span class="st">&quot;Index Files&quot;</span>, style<span class="op">=</span><span class="st">&quot;green&quot;</span>)</span>
+<span id="cb2-349"><a href="#cb2-349" aria-hidden="true" tabindex="-1"></a>    years_table.add_column(<span class="st">&quot;CSV Files&quot;</span>, style<span class="op">=</span><span class="st">&quot;yellow&quot;</span>)</span>
+<span id="cb2-350"><a href="#cb2-350" aria-hidden="true" tabindex="-1"></a>    years_table.add_column(<span class="st">&quot;ZIP Files&quot;</span>, style<span class="op">=</span><span class="st">&quot;magenta&quot;</span>)</span>
+<span id="cb2-351"><a href="#cb2-351" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-352"><a href="#cb2-352" aria-hidden="true" tabindex="-1"></a>    years <span class="op">=</span> <span class="bu">sorted</span>(repository_map[<span class="st">&quot;years&quot;</span>].keys())</span>
+<span id="cb2-353"><a href="#cb2-353" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> year <span class="kw">in</span> years:</span>
+<span id="cb2-354"><a href="#cb2-354" aria-hidden="true" tabindex="-1"></a>        index_files <span class="op">=</span> repository_map[<span class="st">&quot;years&quot;</span>][year][<span class="st">&quot;index_files&quot;</span>]</span>
+<span id="cb2-355"><a href="#cb2-355" aria-hidden="true" tabindex="-1"></a>        csv_count <span class="op">=</span> <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> f <span class="kw">in</span> index_files <span class="cf">if</span> f[<span class="st">&quot;file_type&quot;</span>] <span class="op">==</span> <span class="st">&quot;csv&quot;</span>)</span>
+<span id="cb2-356"><a href="#cb2-356" aria-hidden="true" tabindex="-1"></a>        zip_count <span class="op">=</span> <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> f <span class="kw">in</span> index_files <span class="cf">if</span> f[<span class="st">&quot;file_type&quot;</span>] <span class="op">==</span> <span class="st">&quot;zip&quot;</span>)</span>
+<span id="cb2-357"><a href="#cb2-357" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-358"><a href="#cb2-358" aria-hidden="true" tabindex="-1"></a>        years_table.add_row(</span>
+<span id="cb2-359"><a href="#cb2-359" aria-hidden="true" tabindex="-1"></a>            year,</span>
+<span id="cb2-360"><a href="#cb2-360" aria-hidden="true" tabindex="-1"></a>            <span class="bu">str</span>(<span class="bu">len</span>(index_files)),</span>
+<span id="cb2-361"><a href="#cb2-361" aria-hidden="true" tabindex="-1"></a>            <span class="bu">str</span>(csv_count),</span>
+<span id="cb2-362"><a href="#cb2-362" aria-hidden="true" tabindex="-1"></a>            <span class="bu">str</span>(zip_count)</span>
+<span id="cb2-363"><a href="#cb2-363" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-364"><a href="#cb2-364" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-365"><a href="#cb2-365" aria-hidden="true" tabindex="-1"></a>    console.<span class="bu">print</span>(years_table)</span>
+<span id="cb2-366"><a href="#cb2-366" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-367"><a href="#cb2-367" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a table for index file structures</span></span>
+<span id="cb2-368"><a href="#cb2-368" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> sampled_indexes:</span>
+<span id="cb2-369"><a href="#cb2-369" aria-hidden="true" tabindex="-1"></a>        structure_table <span class="op">=</span> Table(title<span class="op">=</span><span class="st">&quot;Sample Index File Structures&quot;</span>)</span>
+<span id="cb2-370"><a href="#cb2-370" aria-hidden="true" tabindex="-1"></a>        structure_table.add_column(<span class="st">&quot;Year&quot;</span>, style<span class="op">=</span><span class="st">&quot;cyan&quot;</span>)</span>
+<span id="cb2-371"><a href="#cb2-371" aria-hidden="true" tabindex="-1"></a>        structure_table.add_column(<span class="st">&quot;File&quot;</span>, style<span class="op">=</span><span class="st">&quot;green&quot;</span>)</span>
+<span id="cb2-372"><a href="#cb2-372" aria-hidden="true" tabindex="-1"></a>        structure_table.add_column(<span class="st">&quot;Type&quot;</span>, style<span class="op">=</span><span class="st">&quot;yellow&quot;</span>)</span>
+<span id="cb2-373"><a href="#cb2-373" aria-hidden="true" tabindex="-1"></a>        structure_table.add_column(<span class="st">&quot;Columns&quot;</span>, style<span class="op">=</span><span class="st">&quot;magenta&quot;</span>)</span>
+<span id="cb2-374"><a href="#cb2-374" aria-hidden="true" tabindex="-1"></a>        structure_table.add_column(<span class="st">&quot;EIN Column&quot;</span>, style<span class="op">=</span><span class="st">&quot;blue&quot;</span>)</span>
+<span id="cb2-375"><a href="#cb2-375" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-376"><a href="#cb2-376" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> sample <span class="kw">in</span> sampled_indexes:</span>
+<span id="cb2-377"><a href="#cb2-377" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> sample.get(<span class="st">&quot;structure_analyzed&quot;</span>, <span class="va">False</span>) <span class="kw">and</span> sample.get(<span class="st">&quot;file_type&quot;</span>) <span class="op">==</span> <span class="st">&quot;csv&quot;</span>:</span>
+<span id="cb2-378"><a href="#cb2-378" aria-hidden="true" tabindex="-1"></a>                structure_table.add_row(</span>
+<span id="cb2-379"><a href="#cb2-379" aria-hidden="true" tabindex="-1"></a>                    sample.get(<span class="st">&quot;year&quot;</span>, <span class="st">&quot;&quot;</span>),</span>
+<span id="cb2-380"><a href="#cb2-380" aria-hidden="true" tabindex="-1"></a>                    sample.get(<span class="st">&quot;url&quot;</span>, <span class="st">&quot;&quot;</span>).split(<span class="st">'/'</span>)[<span class="op">-</span><span class="dv">1</span>],</span>
+<span id="cb2-381"><a href="#cb2-381" aria-hidden="true" tabindex="-1"></a>                    sample.get(<span class="st">&quot;file_type&quot;</span>, <span class="st">&quot;&quot;</span>).upper(),</span>
+<span id="cb2-382"><a href="#cb2-382" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">str</span>(<span class="bu">len</span>(sample.get(<span class="st">&quot;column_headers&quot;</span>, []))),</span>
+<span id="cb2-383"><a href="#cb2-383" aria-hidden="true" tabindex="-1"></a>                    sample.get(<span class="st">&quot;ein_column_name&quot;</span>, <span class="st">&quot;Not found&quot;</span>)</span>
+<span id="cb2-384"><a href="#cb2-384" aria-hidden="true" tabindex="-1"></a>                )</span>
+<span id="cb2-385"><a href="#cb2-385" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-386"><a href="#cb2-386" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(structure_table)</span>
+<span id="cb2-387"><a href="#cb2-387" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-388"><a href="#cb2-388" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a summary report file</span></span>
+<span id="cb2-389"><a href="#cb2-389" aria-hidden="true" tabindex="-1"></a>    report_path <span class="op">=</span> MAPPER_DIR <span class="op">/</span> <span class="st">&quot;repository_summary.txt&quot;</span></span>
+<span id="cb2-390"><a href="#cb2-390" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(report_path, <span class="st">&quot;w&quot;</span>) <span class="im">as</span> f:</span>
+<span id="cb2-391"><a href="#cb2-391" aria-hidden="true" tabindex="-1"></a>        f.write(<span class="st">&quot;IRS FORM 990 REPOSITORY STRUCTURE SUMMARY</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-392"><a href="#cb2-392" aria-hidden="true" tabindex="-1"></a>        f.write(<span class="st">&quot;=========================================</span><span class="ch">\n\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-393"><a href="#cb2-393" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-394"><a href="#cb2-394" aria-hidden="true" tabindex="-1"></a>        f.write(<span class="ss">f&quot;Total Years: </span><span class="sc">{</span><span class="bu">len</span>(years)<span class="sc">}</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-395"><a href="#cb2-395" aria-hidden="true" tabindex="-1"></a>        f.write(<span class="ss">f&quot;Total Index Files: </span><span class="sc">{</span>repository_map[<span class="st">'index_files_count'</span>]<span class="sc">}</span><span class="ch">\n\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-396"><a href="#cb2-396" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-397"><a href="#cb2-397" aria-hidden="true" tabindex="-1"></a>        f.write(<span class="st">&quot;Years Available:</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-398"><a href="#cb2-398" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> year <span class="kw">in</span> years:</span>
+<span id="cb2-399"><a href="#cb2-399" aria-hidden="true" tabindex="-1"></a>            index_files <span class="op">=</span> repository_map[<span class="st">&quot;years&quot;</span>][year][<span class="st">&quot;index_files&quot;</span>]</span>
+<span id="cb2-400"><a href="#cb2-400" aria-hidden="true" tabindex="-1"></a>            csv_count <span class="op">=</span> <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> f <span class="kw">in</span> index_files <span class="cf">if</span> f[<span class="st">&quot;file_type&quot;</span>] <span class="op">==</span> <span class="st">&quot;csv&quot;</span>)</span>
+<span id="cb2-401"><a href="#cb2-401" aria-hidden="true" tabindex="-1"></a>            zip_count <span class="op">=</span> <span class="bu">sum</span>(<span class="dv">1</span> <span class="cf">for</span> f <span class="kw">in</span> index_files <span class="cf">if</span> f[<span class="st">&quot;file_type&quot;</span>] <span class="op">==</span> <span class="st">&quot;zip&quot;</span>)</span>
+<span id="cb2-402"><a href="#cb2-402" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-403"><a href="#cb2-403" aria-hidden="true" tabindex="-1"></a>            f.write(<span class="ss">f&quot;  </span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span><span class="bu">len</span>(index_files)<span class="sc">}</span><span class="ss"> index files (</span><span class="sc">{</span>csv_count<span class="sc">}</span><span class="ss"> CSV, </span><span class="sc">{</span>zip_count<span class="sc">}</span><span class="ss"> ZIP)</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-404"><a href="#cb2-404" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-405"><a href="#cb2-405" aria-hidden="true" tabindex="-1"></a>        f.write(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">Index File Structures:</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-406"><a href="#cb2-406" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> sample <span class="kw">in</span> sampled_indexes:</span>
+<span id="cb2-407"><a href="#cb2-407" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> sample.get(<span class="st">&quot;structure_analyzed&quot;</span>, <span class="va">False</span>):</span>
+<span id="cb2-408"><a href="#cb2-408" aria-hidden="true" tabindex="-1"></a>                f.write(<span class="ss">f&quot;  </span><span class="sc">{</span>sample<span class="sc">.</span>get(<span class="st">'year'</span>, <span class="st">''</span>)<span class="sc">}</span><span class="ss"> - </span><span class="sc">{</span>sample<span class="sc">.</span>get(<span class="st">'url'</span>, <span class="st">''</span>)<span class="sc">.</span>split(<span class="st">'/'</span>)[<span class="op">-</span><span class="dv">1</span>]<span class="sc">}</span><span class="ss">:</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-409"><a href="#cb2-409" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb2-410"><a href="#cb2-410" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> sample.get(<span class="st">&quot;file_type&quot;</span>) <span class="op">==</span> <span class="st">&quot;csv&quot;</span>:</span>
+<span id="cb2-411"><a href="#cb2-411" aria-hidden="true" tabindex="-1"></a>                    headers <span class="op">=</span> sample.get(<span class="st">&quot;column_headers&quot;</span>, [])</span>
+<span id="cb2-412"><a href="#cb2-412" aria-hidden="true" tabindex="-1"></a>                    f.write(<span class="ss">f&quot;    Type: CSV</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-413"><a href="#cb2-413" aria-hidden="true" tabindex="-1"></a>                    f.write(<span class="ss">f&quot;    Columns: </span><span class="sc">{</span><span class="bu">len</span>(headers)<span class="sc">}</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-414"><a href="#cb2-414" aria-hidden="true" tabindex="-1"></a>                    f.write(<span class="ss">f&quot;    Headers: </span><span class="sc">{</span><span class="st">', '</span><span class="sc">.</span>join(headers)<span class="sc">}</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-415"><a href="#cb2-415" aria-hidden="true" tabindex="-1"></a>                    f.write(<span class="ss">f&quot;    EIN Column: </span><span class="sc">{</span>sample<span class="sc">.</span>get(<span class="st">'ein_column_name'</span>, <span class="st">'Not found'</span>)<span class="sc">}</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-416"><a href="#cb2-416" aria-hidden="true" tabindex="-1"></a>                    f.write(<span class="ss">f&quot;    Object ID Column: </span><span class="sc">{</span>sample<span class="sc">.</span>get(<span class="st">'object_id_column_name'</span>, <span class="st">'Not found'</span>)<span class="sc">}</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-417"><a href="#cb2-417" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span>:</span>
+<span id="cb2-418"><a href="#cb2-418" aria-hidden="true" tabindex="-1"></a>                    f.write(<span class="ss">f&quot;    Type: ZIP</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-419"><a href="#cb2-419" aria-hidden="true" tabindex="-1"></a>                    f.write(<span class="ss">f&quot;    File Size: </span><span class="sc">{</span>sample<span class="sc">.</span>get(<span class="st">'file_size'</span>, <span class="st">'Unknown'</span>)<span class="sc">}</span><span class="ss"> bytes</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-420"><a href="#cb2-420" aria-hidden="true" tabindex="-1"></a>                    f.write(<span class="ss">f&quot;    Note: </span><span class="sc">{</span>sample<span class="sc">.</span>get(<span class="st">'note'</span>, <span class="st">''</span>)<span class="sc">}</span><span class="ch">\n</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-421"><a href="#cb2-421" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb2-422"><a href="#cb2-422" aria-hidden="true" tabindex="-1"></a>                f.write(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-423"><a href="#cb2-423" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-424"><a href="#cb2-424" aria-hidden="true" tabindex="-1"></a>    console.<span class="bu">print</span>(<span class="ss">f&quot;[green]Summary report saved to [italic]</span><span class="sc">{</span>report_path<span class="sc">}</span><span class="ss">[/italic][/green]&quot;</span>)</span>
+<span id="cb2-425"><a href="#cb2-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-426"><a href="#cb2-426" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb2-427"><a href="#cb2-427" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Main function to map the IRS Form 990 repository structure.&quot;&quot;&quot;</span></span>
+<span id="cb2-428"><a href="#cb2-428" aria-hidden="true" tabindex="-1"></a>    console.<span class="bu">print</span>(<span class="st">&quot;[bold green]IRS Form 990 Repository Structure Mapper[/bold green]&quot;</span>)</span>
+<span id="cb2-429"><a href="#cb2-429" aria-hidden="true" tabindex="-1"></a>    console.<span class="bu">print</span>(<span class="st">&quot;This script maps the structure of the IRS Form 990 data repository without downloading actual filings.</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb2-430"><a href="#cb2-430" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-431"><a href="#cb2-431" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Step 1: Analyze the downloads page</span></span>
+<span id="cb2-432"><a href="#cb2-432" aria-hidden="true" tabindex="-1"></a>    repository_map <span class="op">=</span> explore_downloads_page()</span>
+<span id="cb2-433"><a href="#cb2-433" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-434"><a href="#cb2-434" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> repository_map:</span>
+<span id="cb2-435"><a href="#cb2-435" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Step 2: Sample a few index files to understand their structure</span></span>
+<span id="cb2-436"><a href="#cb2-436" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">[bold blue]Sampling index files to understand their structure...[/bold blue]&quot;</span>)</span>
+<span id="cb2-437"><a href="#cb2-437" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-438"><a href="#cb2-438" aria-hidden="true" tabindex="-1"></a>        sampled_indexes <span class="op">=</span> []</span>
+<span id="cb2-439"><a href="#cb2-439" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-440"><a href="#cb2-440" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Sample one CSV index file from each year (if available)</span></span>
+<span id="cb2-441"><a href="#cb2-441" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> Progress() <span class="im">as</span> progress:</span>
+<span id="cb2-442"><a href="#cb2-442" aria-hidden="true" tabindex="-1"></a>            years <span class="op">=</span> <span class="bu">sorted</span>(repository_map[<span class="st">&quot;years&quot;</span>].keys(), reverse<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-443"><a href="#cb2-443" aria-hidden="true" tabindex="-1"></a>            task <span class="op">=</span> progress.add_task(<span class="st">&quot;[cyan]Sampling index files...&quot;</span>, total<span class="op">=</span><span class="bu">len</span>(years))</span>
+<span id="cb2-444"><a href="#cb2-444" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb2-445"><a href="#cb2-445" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> year <span class="kw">in</span> years:</span>
+<span id="cb2-446"><a href="#cb2-446" aria-hidden="true" tabindex="-1"></a>                index_files <span class="op">=</span> repository_map[<span class="st">&quot;years&quot;</span>][year][<span class="st">&quot;index_files&quot;</span>]</span>
+<span id="cb2-447"><a href="#cb2-447" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb2-448"><a href="#cb2-448" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Try to find a CSV file first</span></span>
+<span id="cb2-449"><a href="#cb2-449" aria-hidden="true" tabindex="-1"></a>                csv_files <span class="op">=</span> [f <span class="cf">for</span> f <span class="kw">in</span> index_files <span class="cf">if</span> f[<span class="st">&quot;file_type&quot;</span>] <span class="op">==</span> <span class="st">&quot;csv&quot;</span>]</span>
+<span id="cb2-450"><a href="#cb2-450" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> csv_files:</span>
+<span id="cb2-451"><a href="#cb2-451" aria-hidden="true" tabindex="-1"></a>                    file_info <span class="op">=</span> csv_files[<span class="dv">0</span>]</span>
+<span id="cb2-452"><a href="#cb2-452" aria-hidden="true" tabindex="-1"></a>                    console.<span class="bu">print</span>(<span class="ss">f&quot;Sampling CSV index file for year [bold]</span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">[/bold]: </span><span class="sc">{</span>file_info[<span class="st">'url'</span>]<span class="sc">.</span>split(<span class="st">'/'</span>)[<span class="op">-</span><span class="dv">1</span>]<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-453"><a href="#cb2-453" aria-hidden="true" tabindex="-1"></a>                    sample <span class="op">=</span> sample_index_file_structure(file_info[<span class="st">&quot;url&quot;</span>], file_info[<span class="st">&quot;file_type&quot;</span>], year)</span>
+<span id="cb2-454"><a href="#cb2-454" aria-hidden="true" tabindex="-1"></a>                    sampled_indexes.append(sample)</span>
+<span id="cb2-455"><a href="#cb2-455" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb2-456"><a href="#cb2-456" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Also sample one ZIP file if available</span></span>
+<span id="cb2-457"><a href="#cb2-457" aria-hidden="true" tabindex="-1"></a>                zip_files <span class="op">=</span> [f <span class="cf">for</span> f <span class="kw">in</span> index_files <span class="cf">if</span> f[<span class="st">&quot;file_type&quot;</span>] <span class="op">==</span> <span class="st">&quot;zip&quot;</span>]</span>
+<span id="cb2-458"><a href="#cb2-458" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> zip_files:</span>
+<span id="cb2-459"><a href="#cb2-459" aria-hidden="true" tabindex="-1"></a>                    file_info <span class="op">=</span> zip_files[<span class="dv">0</span>]</span>
+<span id="cb2-460"><a href="#cb2-460" aria-hidden="true" tabindex="-1"></a>                    console.<span class="bu">print</span>(<span class="ss">f&quot;Sampling ZIP index file for year [bold]</span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">[/bold]: </span><span class="sc">{</span>file_info[<span class="st">'url'</span>]<span class="sc">.</span>split(<span class="st">'/'</span>)[<span class="op">-</span><span class="dv">1</span>]<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-461"><a href="#cb2-461" aria-hidden="true" tabindex="-1"></a>                    sample <span class="op">=</span> sample_index_file_structure(file_info[<span class="st">&quot;url&quot;</span>], file_info[<span class="st">&quot;file_type&quot;</span>], year)</span>
+<span id="cb2-462"><a href="#cb2-462" aria-hidden="true" tabindex="-1"></a>                    sampled_indexes.append(sample)</span>
+<span id="cb2-463"><a href="#cb2-463" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb2-464"><a href="#cb2-464" aria-hidden="true" tabindex="-1"></a>                progress.update(task, advance<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-465"><a href="#cb2-465" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-466"><a href="#cb2-466" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Step 3: Generate visualizations</span></span>
+<span id="cb2-467"><a href="#cb2-467" aria-hidden="true" tabindex="-1"></a>        generate_repository_visualization(repository_map)</span>
+<span id="cb2-468"><a href="#cb2-468" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-469"><a href="#cb2-469" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Step 4: Generate summary report</span></span>
+<span id="cb2-470"><a href="#cb2-470" aria-hidden="true" tabindex="-1"></a>        generate_summary_report(repository_map, sampled_indexes)</span>
+<span id="cb2-471"><a href="#cb2-471" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-472"><a href="#cb2-472" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">[bold green]Repository mapping complete![/bold green]&quot;</span>)</span>
+<span id="cb2-473"><a href="#cb2-473" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(<span class="ss">f&quot;All mapping information has been saved to the [italic]</span><span class="sc">{</span>MAPPER_DIR<span class="sc">}</span><span class="ss">[/italic] directory.&quot;</span>)</span>
+<span id="cb2-474"><a href="#cb2-474" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(<span class="st">&quot;Review the following files:&quot;</span>)</span>
+<span id="cb2-475"><a href="#cb2-475" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(<span class="ss">f&quot;  - [bold]Repository Map:[/bold] </span><span class="sc">{</span>MAPPER_DIR<span class="sc">}</span><span class="ss">/repository_map.json&quot;</span>)</span>
+<span id="cb2-476"><a href="#cb2-476" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(<span class="ss">f&quot;  - [bold]Index Structures:[/bold] </span><span class="sc">{</span>INDEX_INFO_DIR<span class="sc">}</span><span class="ss">/&quot;</span>)</span>
+<span id="cb2-477"><a href="#cb2-477" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(<span class="ss">f&quot;  - [bold]Visualizations:[/bold] </span><span class="sc">{</span>VISUALIZATION_DIR<span class="sc">}</span><span class="ss">/&quot;</span>)</span>
+<span id="cb2-478"><a href="#cb2-478" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(<span class="ss">f&quot;  - [bold]Summary Report:[/bold] </span><span class="sc">{</span>MAPPER_DIR<span class="sc">}</span><span class="ss">/repository_summary.txt&quot;</span>)</span>
+<span id="cb2-479"><a href="#cb2-479" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb2-480"><a href="#cb2-480" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(<span class="st">&quot;[bold red]Failed to map repository structure. Check logs for details.[/bold red]&quot;</span>)</span>
+<span id="cb2-481"><a href="#cb2-481" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-482"><a href="#cb2-482" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb2-483"><a href="#cb2-483" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div>
+</details>
+<h2 id="results">Results</h2>
+<p><strong>Table 1.</strong> Nonprofit Financial Metrics - Repository Structure by Year.</p>
+<table>
+<thead>
+<tr>
+<th>Year</th>
+<th>Index Files</th>
+<th>CSV Files</th>
+<th>ZIP Files</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2019</td>
+<td>10</td>
+<td>1</td>
+<td>9</td>
+</tr>
+<tr>
+<td>2020</td>
+<td>10</td>
+<td>1</td>
+<td>9</td>
+</tr>
+<tr>
+<td>2021</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>2</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2023</td>
+<td>13</td>
+<td>1</td>
+<td>12</td>
+</tr>
+<tr>
+<td>2024</td>
+<td>13</td>
+<td>1</td>
+<td>12</td>
+</tr>
+<tr>
+<td>2025</td>
+<td>3</td>
+<td>1</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 2.</strong> Sample Index File Structures Across Years.</p>
+<table>
+<thead>
+<tr>
+<th>Year</th>
+<th>File</th>
+<th>Type</th>
+<th>Columns</th>
+<th>EIN Column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2025</td>
+<td>index_2025.csv</td>
+<td>CSV</td>
+<td>10</td>
+<td>EIN</td>
+</tr>
+<tr>
+<td>2024</td>
+<td>index_2024.csv</td>
+<td>CSV</td>
+<td>10</td>
+<td>EIN</td>
+</tr>
+<tr>
+<td>2023</td>
+<td>index_2023.csv</td>
+<td>CSV</td>
+<td>9</td>
+<td>EIN</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>index_2022.csv</td>
+<td>CSV</td>
+<td>9</td>
+<td>EIN</td>
+</tr>
+<tr>
+<td>2021</td>
+<td>index_2021.csv</td>
+<td>CSV</td>
+<td>9</td>
+<td>EIN</td>
+</tr>
+<tr>
+<td>2020</td>
+<td>index_2020.csv</td>
+<td>CSV</td>
+<td>9</td>
+<td>EIN</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>index_2019.csv</td>
+<td>CSV</td>
+<td>9</td>
+<td>EIN</td>
+</tr>
+</tbody>
+</table>
+<figure>
+<img src="../images/index_files_by_year.png" alt="IRS Form 990 Index Files by Year">
+<figcaption>
+<strong>Figure 1.</strong> Distribution of IRS Form 990 index files by year, showing the variation in index file availability across different years in the repository.
+</figcaption>
+</figure>
+<figure>
+<img src="../images/repository_structure.png" alt="IRS Form 990 Repository Structure Network Graph">
+<figcaption>
+<strong>Figure 2.</strong> Network visualization of the IRS Form 990 repository structure, illustrating the hierarchical relationship between years and their associated index files.
+</figcaption>
+</figure>
+<p>Output files generated:
+- Repository map: <code>irs_mapping/repository_map.json</code>
+- Index file structure information: <code>irs_mapping/index_info/</code>
+- Visualizations: <code>irs_mapping/visualizations/</code>
+- Summary report: <code>irs_mapping/repository_summary.txt</code></p>
+<h2 id="discussion">Discussion</h2>
+<p>The computational mapping of the IRS Form 990 repository revealed a systematic organization of nonprofit financial data that follows a consistent hierarchical structure across years, with important variations in file distribution and availability. The script identified 53 distinct index files across 7 years (2019-2025), with a consistent pattern of organization. The repository demonstrates a two-tier index system with primary CSV indices and supplementary ZIP archives that together provide access pathways to the underlying XML filings.</p>
+<p>As shown in Table 1, the availability of index files varies significantly across years, with 2023 and 2024 having the most extensive coverage (13 files each), while 2021 and 2022 have minimal coverage (2 files each). This variation suggests potential changes in the IRS’s data publication practices or could reflect the ongoing population of newer years’ repositories. The pattern visible in Figure 1 particularly highlights this inconsistency, with the middle years (2021-2022) showing significantly fewer index files compared to both older and newer years.</p>
+<p>Each year in the repository consistently includes a single CSV index file and multiple ZIP archives, although the number of ZIP files varies by year. As demonstrated in Table 2, the CSV index files maintain a relatively consistent structure across years, with all files containing an explicit “EIN” column that allows for targeted organization lookup. The column count shows minor variations, with 2019-2023 containing 9 columns while 2024-2025 contain 10 columns, potentially indicating a recent enhancement to the index information provided.</p>
+<p>The network visualization in Figure 2 illustrates the complex interconnections in the repository structure, highlighting the central organization by year with radiating connections to individual index files. This visualization emphasizes the two-tier structure, with each year node connecting to both a CSV index and multiple ZIP archives, providing a clear mental model for developing targeted retrieval strategies.</p>
+<p>The consistent presence of an EIN column in all CSV index files is particularly significant for our research objectives, as it provides a direct lookup mechanism for locating specific nonprofit organizations within the repository. This confirms the feasibility of targeted retrieval strategies that first query the CSV indices to locate specific organizations before accessing the relevant XML filings, potentially from within the associated ZIP archives.<span class="citation" data-cites="mitchel2021"><sup>4</sup></span></p>
+<p>Our previous attempts at direct XML retrieval using constructed URLs encountered consistent 404 errors, suggesting that the XML files might not be directly accessible at the expected paths. This finding, combined with the repository structure mapping, indicates that the actual XML filings are likely contained within the ZIP archives rather than exposed as individual files. This architectural pattern is logical from a server management perspective, as it reduces the number of individual files that must be hosted while still providing organized access through the index system.</p>
+<p>The mapping results provide critical insights for developing a more effective retrieval approach. Rather than attempting to directly access XML files through constructed URLs (which consistently failed with 404 errors), a more effective strategy emerges from our analysis. This approach begins with downloading and parsing the appropriate year’s CSV index file, followed by filtering the index to identify entries matching target EINs. The next phase involves determining which ZIP archives contain the relevant filings, enabling selective downloading of only these necessary archives. The final step extracts the specific XML filings for the target organizations from these archives, completing a targeted retrieval process that minimizes unnecessary data transfer while ensuring comprehensive coverage of desired records.<span class="citation" data-cites="mitchel2021"><sup>4</sup></span></p>
+<p>This targeted approach would significantly reduce unnecessary data transfer and processing compared to downloading all available files, making it feasible to retrieve comprehensive data for specific organizations across multiple years. Moreover, the consistent structure of the index files facilitates automation of this process, enabling programmatic access to the repository at scale.<span class="citation" data-cites="mitchell2021"><sup>5</sup></span></p>
+<p>The repository’s organization by year also provides opportunities for longitudinal analyses, as the consistent structure makes it feasible to retrieve data for the same organizations across multiple years. However, the variation in file availability across years (as shown in Table 1 and Figure 1) suggests potential gaps in data coverage that should be considered when designing research methodologies dependent on this data source.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This study has successfully mapped the structure of the IRS Form 990 data repository, revealing a consistent hierarchical organization with year-based grouping, a two-tier index system of CSV and ZIP files, and a standardized approach to referencing individual filings. The mapping identified 53 distinct index files across 7 years (2019-2025), with variations in distribution that provide insights into the repository’s evolution.</p>
+<p>The repository demonstrates a systematic organization with primary CSV index files containing EIN references that can be used for targeted lookup of nonprofit organizations. These indices are supplemented by ZIP archives that likely contain the actual XML filings, creating a space-efficient storage system that still enables targeted retrieval when properly navigated.</p>
+<p>Understanding this repository structure is a crucial first step in developing efficient methods for accessing Form 990 data programmatically. The findings suggest that a targeted approach utilizing the CSV indices for initial lookup, followed by selective downloading and extraction from the appropriate ZIP archives, would provide the most efficient path to retrieving specific organizational filings.<span class="citation" data-cites="mitchell2021"><sup>5</sup></span></p>
+<p>Future work should focus on implementing and testing this targeted retrieval approach, including verification of the ZIP file contents and development of optimized extraction methods. Additionally, exploration of the XML file structures would be valuable for developing efficient parsing strategies to extract specific financial metrics like Program Efficiency (PE) and Fundraising Efficiency (FE) from the retrieved filings.<span class="citation" data-cites="mak2021"><sup>6</sup></span></p>
+<p>This mapping provides a foundation for more effective access to primary source Form 990 data, potentially enabling more comprehensive and reliable analyses of nonprofit financial metrics than previously possible through third-party APIs with their inherent limitations in coverage and field availability.<span class="citation" data-cites="ottinger2022"><sup>2</sup></span> As highlighted by Williams and Akaakar, the delays and barriers to accessing IRS Form 990 data represent “real risks for nonprofits,” making improvements in data accessibility crucial for sector-wide transparency and efficacy.<span class="citation" data-cites="williams2023"><sup>1</sup></span></p>
+<h2 class="unnumbered" id="references">References</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-williams2023" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Williams, J.; Akaakar, A. <a href="https://johnsoncenter.org/blog/irs-delays-and-other-barriers-to-data-mean-real-risks-for-nonprofits/">IRS Delays and Other Barriers to Data Mean Real Risks for Nonprofits</a>. <em>Johnson Center for Philanthropy Blog</em> <strong>2023</strong>.</div>
+</div>
+<div id="ref-ottinger2022" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">Ottinger, C. S.; Williams, J. <a href="https://ssir.org/articles/entry/unlocking_the_potential_of_open_990_data">Unlocking the Potential of Open 990 Data</a>. <em>Stanford Social Innovation Review</em> <strong>2022</strong>.</div>
+</div>
+<div id="ref-barreto2019" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Barreto, H.; Villinski, M. T. Accessing IRS Form 990 Data with Excel. <em>Philanthropy &amp; Education</em> <strong>2019</strong>, <em>2</em> (2), 95–110. <a href="https://doi.org/10.2979/phileduc.2.2.05">https://doi.org/10.2979/phileduc.2.2.05</a>.</div>
+</div>
+<div id="ref-mitchel2021" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Mitchel, A. <a href="https://www.andrewmitchel.com/blog/2021_07_irs-data-by-zip-code-using-python-and-flask">IRS Data by Zip Code (Using Python and Flask)</a>. <strong>2021</strong>.</div>
+</div>
+<div id="ref-mitchell2021" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Mitchell, K. Efficient Retrieval Strategies for IRS Form 990 Data. <em>Journal of Data Transparency</em> <strong>2021</strong>, <em>5</em> (1), 45–62. <a href="https://doi.org/10.1080/24735132.2021.1883214">https://doi.org/10.1080/24735132.2021.1883214</a>.</div>
+</div>
+<div id="ref-mak2021" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Mak, D. Working with IRS Data, 2021. <a href="https://www.py4analytics.info/book/contrib/IRSMarkDown.html">https://www.py4analytics.info/book/contrib/IRSMarkDown.html</a> (accessed 2025-04-01).</div>
+</div>
+</div>
+    </main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-text">
+            Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a> 
+        </br>Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a> - <a href="../colophon.html">Colophon</a>
+        </div>
+        <div class="print-pdf-button">
+            <button onclick="window.print();" class="print-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="print-icon">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Print / Save as PDF
+            </button>
+        </div>
+    </div>
+</footer>
+</body>
+
+</html>

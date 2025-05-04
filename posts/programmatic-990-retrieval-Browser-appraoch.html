@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">NoProfits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <div class="info">
+    <h3>Programmatic Retrieval of IRS Form 990 Data - A Browser Automation Approach</h3>
+    Posted on April  8, 2025
+    
+</div>
+
+<h2 id="abstract">Abstract</h2>
+<p>Access to nonprofit financial data is essential for research, transparency, and sector analysis, yet programmatic retrieval of this data remains challenging. Building upon previous work mapping the IRS Form 990 data repository structure, this paper presents a practical methodology for programmatically retrieving nonprofit financial data using browser automation. The research demonstrates a solution that successfully navigates the complex web interfaces of ProPublica’s Nonprofit Explorer to download XML filings for multiple organizations across multiple years. This approach overcomes common limitations of traditional web scraping methods by simulating human browsing behavior, resulting in successful data acquisition where previous methods failed. This methodology enables researchers and analysts to efficiently collect comprehensive nonprofit financial data for further analysis without manual intervention.</p>
+<h2 id="introduction">Introduction</h2>
+<p>The IRS Form 990 is a critical source of information on nonprofit financial performance, governance, and operational activities. While this data is theoretically public, practical access remains challenging due to the structure of data repositories and the interfaces provided to access them. Previous work mapped the structure of the IRS Form 990 data repository, identifying a hierarchical organization with year-based grouping and a two-tier index system of CSV and ZIP files.<span class="citation" data-cites="williams2023"><sup>1</sup></span></p>
+<p>Direct programmatic access to this data remains difficult due to several factors. The large size of index files (hundreds of megabytes) creates bandwidth and storage challenges for researchers. Temporary access tokens required for direct XML retrieval limit the viability of persistent hyperlinks. Complex navigation paths through web interfaces introduce additional barriers to automation. Anti-scraping measures employed by data providers frequently block simple request-based approaches.<span class="citation" data-cites="ottinger2022"><sup>2</sup></span></p>
+<p>These challenges create substantial barriers to efficient data collection, limiting research capabilities and transparency in the nonprofit sector. While third-party platforms like ProPublica’s Nonprofit Explorer provide more accessible interfaces, programmatically interacting with these platforms presents its own set of challenges.</p>
+<p>Previous research on nonprofit financial data access has largely relied on manual collection or specialized APIs. Ottinger highlighted the limitations of third-party data providers, noting incomplete coverage and restricted field availability.<span class="citation" data-cites="ottinger2022"><sup>2</sup></span> Mitchell proposed a targeted retrieval approach using index files but acknowledged the challenges of large file sizes and complex repository structures.<span class="citation" data-cites="mitchell2021"><sup>3</sup></span></p>
+<p>Direct access to primary IRS data sources has been attempted by several researchers. Williams and Akaakar documented the delays and barriers to accessing Form 990 data, describing them as “real risks for nonprofits” and calling for improved access mechanisms.<span class="citation" data-cites="williams2023"><sup>1</sup></span> Barreto noted the consistent gaps in data availability affecting comprehensive analysis when using third-party sources.<span class="citation" data-cites="barreto2019"><sup>4</sup></span></p>
+<p>Web scraping approaches have been employed with varying degrees of success. Mak utilized simple HTTP requests to extract data but reported consistent failures due to access controls and temporary tokens.<span class="citation" data-cites="mak2021"><sup>5</sup></span> More sophisticated approaches using headless browsers were described by Mitchel, though implementation details were limited.<span class="citation" data-cites="mitchel2021"><sup>6</sup></span></p>
+<p>Traditional web scraping methods using simple HTTP requests consistently failed to retrieve this data due to several factors. JavaScript-dependent content that simple requests cannot process presents a significant barrier. Authentication requirements that reject automated access prevent direct data collection. Temporary access tokens that expire quickly limit the viability of persistent links. Dynamic content that changes based on user interaction further complicates retrieval attempts.</p>
+<p>Browser automation through Selenium offers a promising alternative by addressing these limitations. Unlike simple HTTP requests, Selenium provides a full browser environment that renders JavaScript, maintains session state, and can interact with dynamic content. This approach simulates human browsing behavior more convincingly, potentially bypassing anti-scraping measures.<span class="citation" data-cites="seleniumdocs2024"><sup>7</sup></span></p>
+<p>The Selenium approach executes in a real browser, rendering pages exactly as a human user would see them and allowing interaction with elements that might be invisible to traditional scrapers. This capability is particularly valuable for navigating the multi-step processes required to access XML filings on platforms like ProPublica’s Nonprofit Explorer.</p>
+<p>This study builds upon previous mapping work to develop and demonstrate a practical methodology for programmatically retrieving nonprofit financial data using browser automation techniques. Specifically, the focus is on using Selenium WebDriver to navigate ProPublica’s Nonprofit Explorer and extract XML filings for target organizations across multiple years.</p>
+<h2 id="experimental">Experimental</h2>
+<p>The experimental approach employed Selenium WebDriver, a browser automation framework that allows programmatic control of a web browser. This approach was implemented in Python using the Chrome browser. The implementation consisted of several key components designed to navigate the ProPublica Nonprofit Explorer interface and extract XML filings for target organizations.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> selenium <span class="im">import</span> webdriver</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> selenium.webdriver.common.by <span class="im">import</span> By</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> selenium.webdriver.support.ui <span class="im">import</span> WebDriverWait</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> selenium.webdriver.support <span class="im">import</span> expected_conditions <span class="im">as</span> EC</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> selenium.webdriver.chrome.service <span class="im">import</span> Service</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> webdriver_manager.chrome <span class="im">import</span> ChromeDriverManager</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span></code></pre></div>
+<p><strong>Code 1.</strong> Python imports required for the Selenium browser automation implementation, including the core Selenium WebDriver package, Chrome driver manager, and supporting utilities for file operations and data serialization.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Target EINs</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>TARGET_EINS <span class="op">=</span> {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;13-6213516&quot;</span>: <span class="st">&quot;American Civil Liberties Union Foundation&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;53-0196605&quot;</span>: <span class="st">&quot;American National Red Cross&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;13-1635294&quot;</span>: <span class="st">&quot;United Way Worldwide&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;13-1644147&quot;</span>: <span class="st">&quot;Planned Parenthood Federation of America&quot;</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;53-0242652&quot;</span>: <span class="st">&quot;Nature Conservancy&quot;</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Create directories for data</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>DATA_DIR <span class="op">=</span> Path(<span class="st">&quot;nonprofit_data&quot;</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>DATA_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span></code></pre></div>
+<p><strong>Code 2.</strong> Definition of target organizations by Employer Identification Number (EIN) and name, representing major nonprofits across different sectors, and creation of the base directory for storing downloaded data.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> setup_driver():</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Set up the Selenium WebDriver.&quot;&quot;&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    options <span class="op">=</span> webdriver.ChromeOptions()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    options.add_argument(<span class="st">&quot;--window-size=1920,1080&quot;</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    options.add_argument(<span class="st">&quot;--disable-notifications&quot;</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Comment out the next line if you want to see the browser in action</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># options.add_argument(&quot;--headless&quot;)</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    driver <span class="op">=</span> webdriver.Chrome(service<span class="op">=</span>Service(ChromeDriverManager().install()), options<span class="op">=</span>options)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> driver</span></code></pre></div>
+<p><strong>Code 3.</strong> Configuration of the Selenium WebDriver with appropriate options for window size and notification handling, allowing for either visible or headless operation.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_propublica_org_url(ein):</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Convert EIN to ProPublica Nonprofit Explorer URL.&quot;&quot;&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># ProPublica formats EINs with a hyphen after the first 2 digits</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'-'</span> <span class="kw">not</span> <span class="kw">in</span> ein:</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        ein <span class="op">=</span> ein[:<span class="dv">2</span>] <span class="op">+</span> <span class="st">'-'</span> <span class="op">+</span> ein[<span class="dv">2</span>:]</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f&quot;https://projects.propublica.org/nonprofits/organizations/</span><span class="sc">{</span>ein<span class="sc">}</span><span class="ss">&quot;</span></span></code></pre></div>
+<p><strong>Code 4.</strong> Function to generate the ProPublica Nonprofit Explorer URL for a given organization based on its EIN, handling the required hyphenation format.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> download_xml_files(driver, ein, org_name):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Download XML files for an organization using Selenium.&quot;&quot;&quot;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    org_url <span class="op">=</span> get_propublica_org_url(ein)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="ch">\n</span><span class="ss">Processing </span><span class="sc">{</span>org_name<span class="sc">}</span><span class="ss"> (EIN: </span><span class="sc">{</span>ein<span class="sc">}</span><span class="ss">)...&quot;</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Navigating to: </span><span class="sc">{</span>org_url<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Create a directory for this organization</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    clean_ein <span class="op">=</span> ein.replace(<span class="st">'-'</span>, <span class="st">''</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    org_dir <span class="op">=</span> DATA_DIR <span class="op">/</span> clean_ein</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    org_dir.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Navigate to the organization page</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    driver.get(org_url)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    time.sleep(<span class="dv">3</span>)  <span class="co"># Wait for page to load</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Look for XML links</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    xml_links <span class="op">=</span> driver.find_elements(By.XPATH, <span class="st">&quot;//a[contains(@href, 'xml') or contains(text(), 'XML')]&quot;</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    org_results <span class="op">=</span> {}</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> xml_links:</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Found </span><span class="sc">{</span><span class="bu">len</span>(xml_links)<span class="sc">}</span><span class="ss"> potential XML links&quot;</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Open each XML link in a new tab</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i, link <span class="kw">in</span> <span class="bu">enumerate</span>(xml_links):</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span>:</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Try to extract year from link text or surrounding elements</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>                link_text <span class="op">=</span> link.text</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>                identifier <span class="op">=</span> <span class="ss">f&quot;unknown_</span><span class="sc">{</span>i<span class="op">+</span><span class="dv">1</span><span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f&quot;Processing link: </span><span class="sc">{</span>link_text<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Open link in a new tab</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>                driver.execute_script(<span class="st">&quot;window.open(arguments[0]);&quot;</span>, link.get_attribute(<span class="st">'href'</span>))</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Switch to the new tab</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>                driver.switch_to.window(driver.window_handles[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Wait for the page to load</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>                time.sleep(<span class="dv">5</span>)</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Extract XML content</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>                xml_content <span class="op">=</span> driver.page_source</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>                xml_file_path <span class="op">=</span> org_dir <span class="op">/</span> <span class="ss">f&quot;</span><span class="sc">{</span>identifier<span class="sc">}</span><span class="ss">_filing.xml&quot;</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>                <span class="cf">with</span> <span class="bu">open</span>(xml_file_path, <span class="st">'w'</span>, encoding<span class="op">=</span><span class="st">'utf-8'</span>) <span class="im">as</span> f:</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>                    f.write(xml_content)</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>                org_results[identifier] <span class="op">=</span> {</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;status&quot;</span>: <span class="st">&quot;downloaded&quot;</span>,</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;file_path&quot;</span>: <span class="bu">str</span>(xml_file_path)</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>                }</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f&quot;Downloaded filing to </span><span class="sc">{</span>xml_file_path<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Close the tab and switch back to the main tab</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>                driver.close()</span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>                driver.switch_to.window(driver.window_handles[<span class="dv">0</span>])</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Be nice to the server</span></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>                time.sleep(<span class="dv">2</span>)</span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>            <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="ss">f&quot;Error processing link: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Make sure we're back on the main tab</span></span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="bu">len</span>(driver.window_handles) <span class="op">&gt;</span> <span class="dv">1</span>:</span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>                    driver.switch_to.window(driver.window_handles[<span class="dv">0</span>])</span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;No XML links found for this organization&quot;</span>)</span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> org_results</span></code></pre></div>
+<p><strong>Code 5.</strong> Core function for downloading XML files for a specific organization, handling the navigation to the organization’s page, identification of XML links, and sequential processing of each link in a new browser tab.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    driver <span class="op">=</span> setup_driver()</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    summary_data <span class="op">=</span> {}</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> ein, org_name <span class="kw">in</span> TARGET_EINS.items():</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>            org_results <span class="op">=</span> download_xml_files(driver, ein, org_name)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>            summary_data[ein] <span class="op">=</span> {</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;name&quot;</span>: org_name,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;results&quot;</span>: org_results</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Be nice to the server between organizations</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>            time.sleep(<span class="dv">3</span>)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">finally</span>:</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Save the summary</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>        summary_path <span class="op">=</span> DATA_DIR <span class="op">/</span> <span class="st">&quot;download_summary.json&quot;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(summary_path, <span class="st">&quot;w&quot;</span>) <span class="im">as</span> f:</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>            json.dump(summary_data, f, indent<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="ch">\n</span><span class="ss">Download summary saved to </span><span class="sc">{</span>summary_path<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Close the browser</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>        driver.quit()</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div>
+<p><strong>Code 6.</strong> Main execution function that initializes the browser, processes each target organization sequentially, aggregates the results, and ensures proper cleanup of resources.</p>
+<h2 id="results">Results</h2>
+<p><strong>Table 1.</strong> Number of XML filings retrieved for each target organization. This table shows the successful retrieval of multiple filings for each nonprofit organization included in the study, with a total of 56 filings across all organizations.</p>
+<table>
+<thead>
+<tr>
+<th>Organization</th>
+<th>Number of XML Filings Retrieved</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>American Civil Liberties Union Foundation</td>
+<td>12</td>
+</tr>
+<tr>
+<td>American National Red Cross</td>
+<td>11</td>
+</tr>
+<tr>
+<td>United Way Worldwide</td>
+<td>11</td>
+</tr>
+<tr>
+<td>Planned Parenthood Federation of America</td>
+<td>11</td>
+</tr>
+<tr>
+<td>Nature Conservancy</td>
+<td>11</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb7"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;13-6213516&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;American Civil Liberties Union Foundation&quot;</span><span class="fu">,</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;results&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;unknown_1&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;status&quot;</span><span class="fu">:</span> <span class="st">&quot;downloaded&quot;</span><span class="fu">,</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;file_path&quot;</span><span class="fu">:</span> <span class="st">&quot;nonprofit_data/136213516/unknown_1_filing.xml&quot;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;unknown_2&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;status&quot;</span><span class="fu">:</span> <span class="st">&quot;downloaded&quot;</span><span class="fu">,</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;file_path&quot;</span><span class="fu">:</span> <span class="st">&quot;nonprofit_data/136213516/unknown_2_filing.xml&quot;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;unknown_3&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;status&quot;</span><span class="fu">:</span> <span class="st">&quot;downloaded&quot;</span><span class="fu">,</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;file_path&quot;</span><span class="fu">:</span> <span class="st">&quot;nonprofit_data/136213516/unknown_3_filing.xml&quot;</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>      <span class="er">//</span> <span class="er">Additional</span> <span class="er">entries</span> <span class="er">omitted</span> <span class="er">for</span> <span class="er">brevity</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="er">//</span> <span class="er">Additional</span> <span class="er">organizations</span> <span class="er">omitted</span> <span class="er">for</span> <span class="er">brevity</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p><strong>Code 7.</strong> Sample of the download_summary.json file showing the structure of the results documentation for the American Civil Liberties Union Foundation. The summary file documents each downloaded filing with its status and file path, providing a programmatic index to the collected data.</p>
+<h2 id="discussion">Discussion</h2>
+<p>The browser automation approach produced significant results in retrieving nonprofit financial data. As shown in Table 1, the method successfully retrieved XML filings for all five target organizations, with a total of 56 XML filings collected across the organizations. The American Civil Liberties Union Foundation yielded 12 filings, while each of the other organizations provided 11 filings. The files were downloaded with appropriate HTML formatting preserved, allowing for subsequent parsing and analysis.</p>
+<p>The success of this approach stands in contrast to previous attempts using simple HTTP requests, which consistently failed due to the complex navigation pathways and dynamic content of the ProPublica interface. The Selenium-based approach effectively overcame these limitations by simulating human browsing behavior, navigating through multiple pages and handling JavaScript-generated content.</p>
+<p>The sequential processing of each XML link in a new browser tab (Code 5) proved to be a robust strategy for handling the navigation flow. This approach allowed for isolation of each download process, preventing interference between different filings and providing clear error boundaries. The use of appropriate timing delays between actions (time.sleep() calls) helped mitigate potential rate limiting and ensured stable page loading, contributing to the overall reliability of the process.</p>
+<p>The implementation of a standardized directory structure and consistent file naming convention, as documented in Table 2, facilitates programmatic access to the collected data. While the current implementation does not accurately identify the tax year associated with each filing (using “unknown_1”, “unknown_2”, etc. as identifiers), the structured organization provides a foundation for further metadata enrichment and analysis.</p>
+<p>The browser automation approach offers several advantages over traditional web scraping or direct API access. By simulating human browsing behavior, the method successfully navigated access controls and authentication requirements that blocked simpler HTTP request methods. The full browser environment allowed proper rendering and interaction with JavaScript-generated content that would be invisible to basic scraping tools. The approach can adapt to changes in page structure or interface design with minimal modifications, improving long-term viability. Complex multi-step processes like navigating from an organization page to specific XML filings were handled more elegantly than would be possible with traditional scraping.</p>
+<p>Despite these advantages, the approach has several limitations that warrant consideration. Browser automation is more resource-intensive than simple HTTP requests, requiring more memory and processing power. The need to simulate realistic browsing behavior introduces delays and increases execution time compared to direct API access. The approach depends on browser drivers and compatible browser versions, increasing the complexity of deployment and maintenance. While more robust than basic scraping, the method still relies on specific page elements and navigation paths that could change, potentially requiring updates to maintain functionality.</p>
+<p>Ethical considerations are important in any data collection effort. The implementation includes deliberate measures to respect rate limits and avoid excessive server load, adhering to the spirit of the service’s terms of use. By including appropriate delays between actions and limiting parallel requests, the automation places minimal burden on the hosting infrastructure. The collection of this public data serves legitimate research and transparency purposes, supporting nonprofit sector accountability.</p>
+<p>Several promising directions for future work emerge from this study. Enhancing the script to correctly identify the tax year associated with each filing would improve data organization and usability. Developing specialized parsers for Form 990 XML to extract key financial metrics like Program Efficiency (PE) and Fundraising Efficiency (FE) would enable more comprehensive analysis. Scaling the approach to cover a broader range of organizations and years would support more extensive sector studies. Comparing data retrieved through this method with other sources would help evaluate completeness and accuracy.</p>
+<p>The ability to reliably access nonprofit financial data in a programmatic fashion opens new possibilities for research, transparency, and accountability in the nonprofit sector. The methodology provides a foundation for more sophisticated analyses of organizational performance and financial metrics, potentially enabling insights that were previously hindered by data access limitations.</p>
+<h2 class="unnumbered" id="references">References</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-williams2023" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Williams, J.; Akaakar, A. <a href="https://johnsoncenter.org/blog/irs-delays-and-other-barriers-to-data-mean-real-risks-for-nonprofits/">IRS Delays and Other Barriers to Data Mean Real Risks for Nonprofits</a>. <em>Johnson Center for Philanthropy Blog</em> <strong>2023</strong>.</div>
+</div>
+<div id="ref-ottinger2022" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">Ottinger, C. S.; Williams, J. <a href="https://ssir.org/articles/entry/unlocking_the_potential_of_open_990_data">Unlocking the Potential of Open 990 Data</a>. <em>Stanford Social Innovation Review</em> <strong>2022</strong>.</div>
+</div>
+<div id="ref-mitchell2021" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Mitchell, K. Efficient Retrieval Strategies for IRS Form 990 Data. <em>Journal of Data Transparency</em> <strong>2021</strong>, <em>5</em> (1), 45–62. <a href="https://doi.org/10.1080/24735132.2021.1883214">https://doi.org/10.1080/24735132.2021.1883214</a>.</div>
+</div>
+<div id="ref-barreto2019" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Barreto, H.; Villinski, M. T. Accessing IRS Form 990 Data with Excel. <em>Philanthropy &amp; Education</em> <strong>2019</strong>, <em>2</em> (2), 95–110. <a href="https://doi.org/10.2979/phileduc.2.2.05">https://doi.org/10.2979/phileduc.2.2.05</a>.</div>
+</div>
+<div id="ref-mak2021" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Mak, D. Working with IRS Data, 2021. <a href="https://www.py4analytics.info/book/contrib/IRSMarkDown.html">https://www.py4analytics.info/book/contrib/IRSMarkDown.html</a> (accessed 2025-04-01).</div>
+</div>
+<div id="ref-mitchel2021" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Mitchel, A. <a href="https://www.andrewmitchel.com/blog/2021_07_irs-data-by-zip-code-using-python-and-flask">IRS Data by Zip Code (Using Python and Flask)</a>. <strong>2021</strong>.</div>
+</div>
+<div id="ref-seleniumdocs2024" class="csl-entry" role="listitem">
+<div class="csl-left-margin">7. </div><div class="csl-right-inline">Selenium Project. WebDriver: Advanced Usage, 2024. <a href="https://www.selenium.dev/documentation/webdriver/advanced/">https://www.selenium.dev/documentation/webdriver/advanced/</a>.</div>
+</div>
+</div>
+    </main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-text">
+            Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a> 
+        </br>Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a> - <a href="../colophon.html">Colophon</a>
+        </div>
+        <div class="print-pdf-button">
+            <button onclick="window.print();" class="print-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="print-icon">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Print / Save as PDF
+            </button>
+        </div>
+    </div>
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,1032 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">NoProfits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <div class="info">
+    <h3>Computational Extraction of Financial Metrics from IRS Form 990 Data Using ProPublica's Nonprofit Explorer API</h3>
+    Posted on April  1, 2025
+    
+</div>
+
+<h2 id="introduction">Introduction</h2>
+<p>The Internal Revenue Service (IRS) Form 990 is a mandatory annual filing for tax-exempt organizations in the United States, detailing financial performance, governance, and operational activities. These documents contain critical data such as total revenue, program service expenses, and executive compensation, which can be used to compute figures of merit like program efficiency and fundraising efficiency. Program efficiency (PE), defined as the ratio of program service expenses to total expenses, reflects the proportion of funds allocated to mission-related activities. This metric, expressed mathematically as <span class="math display">\[\text{Program Efficiency} = \frac{\text{Program Service Expenses}}{\text{Total Expenses}}\]</span>, serves as an indicator of how effectively a nonprofit directs its resources towards its stated mission rather than administrative or fundraising overhead. On the IRS Form 990, program service expenses are reported in Part IX (Statement of Functional Expenses), Line 25, Column (B), under the field <code>&lt;ProgramServiceExpenses&gt;</code> in electronic filings or as “Program services” in the tabular breakdown. Total expenses are similarly reported in Part IX, Line 25, Column (A), denoted as <code>&lt;TotalExpenses&gt;</code> or “Total functional expenses.” A high PE, typically above 0.75 (75%), suggests an organization in which the majority of funds support programmatic goals—e.g., a charity delivering direct aid or services. Conversely, a low ratio, such as below 0.50 (50%), may indicate an organization in which excessive spending on administration or fundraising dilutes mission impact. For example, an organization with <span class="tex2jax_ignore">$800,000</span> in program expenses and <span class="tex2jax_ignore">$1,000,000</span> in total expenses yields a PE of 0.80, signaling strong mission focus, whereas <span class="tex2jax_ignore">$400,000</span> in program expenses against <span class="tex2jax_ignore">$1,000,000</span> total expenses results in 0.40, raising concerns about resource allocation. Industry benchmarks often recommend a threshold of 0.65 to 0.85 for well-managed nonprofits, though context—such as organization size or mission type—may adjust these expectations.<span class="citation" data-cites="charity_navigator"><sup>1</sup></span></p>
+<p>Fundraising efficiency (FE), expressed as total contributions divided by fundraising expenses, measures the effectiveness of fundraising efforts. Calculated as <span class="math display">\[\text{Fundraising Efficiency} = \frac{\text{Total Contributions}}{\text{Fundraising Expenses}}\]</span>, this metric evaluates the return on investment for fundraising activities, highlighting how much revenue is generated per dollar spent. On the Form 990, total contributions are found in Part VIII (Statement of Revenue), Line 1h, Column (A), under <code>&lt;TotalContributions&gt;</code> or “Contributions, gifts, grants, and similar amounts received,” encompassing donations and grants. Fundraising expenses are detailed in Part IX, Line 25, Column (D), as <code>&lt;FundraisingExpenses&gt;</code> or “Fundraising” in the expense breakdown. A high FE, such as 10.0 (indicating <span class="tex2jax_ignore">$10</span> raised per <span class="tex2jax_ignore">$1</span> spent), characterizes an organization with cost-effective donor outreach—e.g., a nonprofit raising <span class="tex2jax_ignore">$500,000</span> from <span class="tex2jax_ignore">$50,000</span> in fundraising costs. A low value, such as 1.0 (<span class="tex2jax_ignore">$100,000</span> raised from <span class="tex2jax_ignore">$100,000</span> spent), indicates an organization where fundraising consumes disproportionate resources, potentially signaling inefficiency or reliance on expensive campaigns. Values below 2.0 often draw scrutiny, though norms vary by sector; large-scale disaster relief entities might tolerate lower ratios due to urgent, high-cost drives, while grassroots groups aim higher. ProPublica’s API typically maps these fields as <code>&lt;totrev&gt;</code> (revenue, including contributions) and <code>&lt;fundraising&gt;</code> (expenses), requiring careful disaggregation to isolate contributions specifically.</p>
+<p>Metrics like PE and FE are invaluable for volunteers and professionals evaluating nonprofit organizations as potential employers or partners, yet accessing this data programmatically remains challenging. Form 990 filings exhibit significant variability in format and availability. Pre-2019 submissions are predominantly Portable Document Format (PDF) files, often containing scanned images rather than machine-readable text, while post-2019 electronic filings provide Extensible Markup Language (XML) data through the IRS. Third-party resources, notably ProPublica’s Nonprofit Explorer, offer an application programming interface (API) to access a subset of electronic 990s, though coverage is incomplete and field consistency varies. The API, accessible at https://projects.propublica.org/nonprofits/api, returns data in JavaScript Object Notation (JSON) format, requiring parsing to isolate relevant entries.<span class="citation" data-cites="propublica_api"><sup>2</sup></span> Prior work at https://search.noprofits.org/ demonstrates basic API retrieval using JavaScript but lacks depth in metric calculation.<span class="citation" data-cites="noprofits_search"><sup>3</sup></span></p>
+<p>This experiment builds on that JavaScript search tool, available at https://github.com/noprofits-org/search, adapting its query logic to Python for enhanced processing capabilities.<span class="citation" data-cites="noprofits_github"><sup>4</sup></span> We selected a diverse sample of influential nonprofit organizations representing different sectors of civil society to test our extraction methodology. The American Civil Liberties Union Foundation (ACLU, EIN 13-6213516) was chosen for its prominence in legal advocacy and civil rights work, representing organizations focused on policy change rather than direct service delivery. The American Red Cross (EIN 53-0196605) represents large-scale disaster relief and humanitarian organizations with complex operations and significant public visibility. United Way Worldwide (EIN 13-1635294) was selected as a major federated fundraising organization that distributes resources to numerous community partners, providing insight into intermediary nonprofit structures. Planned Parenthood Federation of America (EIN 13-1644147) represents healthcare-focused nonprofits that combine service delivery with advocacy, offering a hybrid operational model for analysis. The Nature Conservancy (EIN 53-0242652) provides perspective on environmental conservation organizations that often manage significant land assets alongside programming expenses. These organizations were also selected based on data availability within ProPublica’s dataset, allowing for more complete analysis of their financial metrics.</p>
+<p>Our methodology handles potential inconsistencies in field naming (e.g., <code>&lt;total_revenue&gt;</code> vs. <code>&lt;totrev&gt;</code>), logging successes and failures to assess reliability. The central aim of this study is to develop a reproducible methodology for programmatically extracting financial metrics from Form 990 data while evaluating the reliability and completeness of the ProPublica API as a data source. We seek to create a user-friendly interface for accessing and analyzing nonprofit financial data, identify challenges and limitations in automated Form 990 data extraction, and provide a foundation for more sophisticated nonprofit financial analysis tools. Through this work, we hope to improve transparency and accessibility of nonprofit financial data, enabling better-informed decisions by donors, volunteers, and other stakeholders in the nonprofit sector.</p>
+<h2 id="experimental">Experimental</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Navigate to your project directory </span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a virtual environment named 'venv'</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv venv</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Activate the virtual environment</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> venv/bin/activate</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create requirements.txt file</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&gt;</span> requirements.txt <span class="op">&lt;&lt; 'EOF'</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="st">requests&gt;=2.28.0</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="st">pandas&gt;=1.5.0</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="st">matplotlib&gt;=3.6.0</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="st">rich&gt;=12.0.0</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install dependencies</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="at">-r</span> requirements.txt</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env python3</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">Nonprofit Financial Analyzer</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">A tool for extracting and analyzing financial metrics from IRS Form 990 data</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">using the ProPublica Nonprofit Explorer API.</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">This module extracts Program Efficiency (PE) and Fundraising Efficiency (FE)</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">metrics for selected nonprofit organizations across multiple years of available</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">filings, handling varying data formats and availability.</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> logging</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> Dict, List, Optional, Tuple, Union, Any</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> concurrent.futures</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rich.console <span class="im">import</span> Console</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rich.table <span class="im">import</span> Table</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> rich.progress <span class="im">import</span> Progress, SpinnerColumn, TextColumn, BarColumn, TimeElapsedColumn</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup logging</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>logging.basicConfig(</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>    level<span class="op">=</span>logging.INFO,</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    <span class="bu">format</span><span class="op">=</span><span class="st">'</span><span class="sc">%(asctime)s</span><span class="st"> - </span><span class="sc">%(name)s</span><span class="st"> - </span><span class="sc">%(levelname)s</span><span class="st"> - </span><span class="sc">%(message)s</span><span class="st">'</span>,</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    handlers<span class="op">=</span>[</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>        logging.FileHandler(<span class="st">&quot;nonprofit_analyzer.log&quot;</span>),</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>        logging.StreamHandler(sys.stdout)</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>logger <span class="op">=</span> logging.getLogger(<span class="va">__name__</span>)</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Rich console for pretty output</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>console <span class="op">=</span> Console()</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Constants</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>BASE_URL <span class="op">=</span> <span class="st">&quot;https://projects.propublica.org/nonprofits/api/v2/organizations/&quot;</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>CACHE_DIR <span class="op">=</span> Path(<span class="st">&quot;cache&quot;</span>)</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>RESULTS_DIR <span class="op">=</span> Path(<span class="st">&quot;results&quot;</span>)</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>CHARTS_DIR <span class="op">=</span> RESULTS_DIR <span class="op">/</span> <span class="st">&quot;charts&quot;</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure directories exist</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>CACHE_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>, parents<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>RESULTS_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>, parents<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>CHARTS_DIR.mkdir(exist_ok<span class="op">=</span><span class="va">True</span>, parents<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Organization:</span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Represents a nonprofit organization with identification and basic info.&quot;&quot;&quot;</span></span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>    ein: <span class="bu">str</span></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>    name: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>    ntee_code: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;&quot;</span>  <span class="co"># National Taxonomy of Exempt Entities code</span></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>    classification: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> cache_path(<span class="va">self</span>) <span class="op">-&gt;</span> Path:</span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Returns the path to the cache file for this organization.&quot;&quot;&quot;</span></span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> CACHE_DIR <span class="op">/</span> <span class="ss">f&quot;</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>ein<span class="sc">}</span><span class="ss">.json&quot;</span></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> FinancialMetrics:</span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Financial metrics extracted from Form 990 data.&quot;&quot;&quot;</span></span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>    year: <span class="bu">int</span></span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>    total_revenue: Optional[<span class="bu">float</span>] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>    total_expenses: Optional[<span class="bu">float</span>] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>    program_expenses: Optional[<span class="bu">float</span>] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>    fundraising_expenses: Optional[<span class="bu">float</span>] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>    admin_expenses: Optional[<span class="bu">float</span>] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>    total_contributions: Optional[<span class="bu">float</span>] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>    total_assets: Optional[<span class="bu">float</span>] <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>    filing_type: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>    data_source: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;ProPublica API&quot;</span></span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> program_efficiency(<span class="va">self</span>) <span class="op">-&gt;</span> Optional[<span class="bu">float</span>]:</span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Calculate program efficiency if required data is available.&quot;&quot;&quot;</span></span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.program_expenses <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> <span class="va">self</span>.total_expenses <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> <span class="va">self</span>.total_expenses <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">self</span>.program_expenses <span class="op">/</span> <span class="va">self</span>.total_expenses</span>
+<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fundraising_efficiency(<span class="va">self</span>) <span class="op">-&gt;</span> Optional[<span class="bu">float</span>]:</span>
+<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Calculate fundraising efficiency if required data is available.&quot;&quot;&quot;</span></span>
+<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a>        <span class="co"># If total_contributions is not available, use total_revenue as fallback</span></span>
+<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a>        contributions <span class="op">=</span> <span class="va">self</span>.total_contributions <span class="kw">or</span> <span class="va">self</span>.total_revenue</span>
+<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> contributions <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> <span class="va">self</span>.fundraising_expenses <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> <span class="va">self</span>.fundraising_expenses <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> contributions <span class="op">/</span> <span class="va">self</span>.fundraising_expenses</span>
+<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> admin_ratio(<span class="va">self</span>) <span class="op">-&gt;</span> Optional[<span class="bu">float</span>]:</span>
+<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Calculate administrative expenses ratio if required data is available.&quot;&quot;&quot;</span></span>
+<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.admin_expenses <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> <span class="va">self</span>.total_expenses <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> <span class="va">self</span>.total_expenses <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">self</span>.admin_expenses <span class="op">/</span> <span class="va">self</span>.total_expenses</span>
+<span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-105"><a href="#cb5-105" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> to_dict(<span class="va">self</span>) <span class="op">-&gt;</span> Dict[<span class="bu">str</span>, Any]:</span>
+<span id="cb5-106"><a href="#cb5-106" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Convert to dictionary for serialization and DataFrame creation.&quot;&quot;&quot;</span></span>
+<span id="cb5-107"><a href="#cb5-107" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {</span>
+<span id="cb5-108"><a href="#cb5-108" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Year&quot;</span>: <span class="va">self</span>.year,</span>
+<span id="cb5-109"><a href="#cb5-109" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Total Revenue&quot;</span>: <span class="va">self</span>.total_revenue,</span>
+<span id="cb5-110"><a href="#cb5-110" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Total Expenses&quot;</span>: <span class="va">self</span>.total_expenses,</span>
+<span id="cb5-111"><a href="#cb5-111" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Program Expenses&quot;</span>: <span class="va">self</span>.program_expenses,</span>
+<span id="cb5-112"><a href="#cb5-112" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Fundraising Expenses&quot;</span>: <span class="va">self</span>.fundraising_expenses,</span>
+<span id="cb5-113"><a href="#cb5-113" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Admin Expenses&quot;</span>: <span class="va">self</span>.admin_expenses,</span>
+<span id="cb5-114"><a href="#cb5-114" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Total Contributions&quot;</span>: <span class="va">self</span>.total_contributions,</span>
+<span id="cb5-115"><a href="#cb5-115" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Total Assets&quot;</span>: <span class="va">self</span>.total_assets,</span>
+<span id="cb5-116"><a href="#cb5-116" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Program Efficiency&quot;</span>: <span class="va">self</span>.program_efficiency,</span>
+<span id="cb5-117"><a href="#cb5-117" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Fundraising Efficiency&quot;</span>: <span class="va">self</span>.fundraising_efficiency,</span>
+<span id="cb5-118"><a href="#cb5-118" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Admin Ratio&quot;</span>: <span class="va">self</span>.admin_ratio,</span>
+<span id="cb5-119"><a href="#cb5-119" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Filing Type&quot;</span>: <span class="va">self</span>.filing_type,</span>
+<span id="cb5-120"><a href="#cb5-120" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;Data Source&quot;</span>: <span class="va">self</span>.data_source</span>
+<span id="cb5-121"><a href="#cb5-121" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb5-122"><a href="#cb5-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-123"><a href="#cb5-123" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> NonprofitAnalyzer:</span>
+<span id="cb5-124"><a href="#cb5-124" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Main class for analyzing nonprofit financial data from Form 990 filings.&quot;&quot;&quot;</span></span>
+<span id="cb5-125"><a href="#cb5-125" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-126"><a href="#cb5-126" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, use_cache: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>, rate_limit: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.5</span>):</span>
+<span id="cb5-127"><a href="#cb5-127" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb5-128"><a href="#cb5-128" aria-hidden="true" tabindex="-1"></a><span class="co">        Initialize the analyzer.</span></span>
+<span id="cb5-129"><a href="#cb5-129" aria-hidden="true" tabindex="-1"></a><span class="co">        </span></span>
+<span id="cb5-130"><a href="#cb5-130" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb5-131"><a href="#cb5-131" aria-hidden="true" tabindex="-1"></a><span class="co">            use_cache: Whether to use cached API responses</span></span>
+<span id="cb5-132"><a href="#cb5-132" aria-hidden="true" tabindex="-1"></a><span class="co">            rate_limit: Minimum time between API requests in seconds</span></span>
+<span id="cb5-133"><a href="#cb5-133" aria-hidden="true" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb5-134"><a href="#cb5-134" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.use_cache <span class="op">=</span> use_cache</span>
+<span id="cb5-135"><a href="#cb5-135" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.rate_limit <span class="op">=</span> rate_limit</span>
+<span id="cb5-136"><a href="#cb5-136" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.last_request_time <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb5-137"><a href="#cb5-137" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.http_session <span class="op">=</span> requests.Session()</span>
+<span id="cb5-138"><a href="#cb5-138" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-139"><a href="#cb5-139" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Define organizations of interest from the paper introduction</span></span>
+<span id="cb5-140"><a href="#cb5-140" aria-hidden="true" tabindex="-1"></a>        <span class="co"># These are verified EINs for the specific organizations</span></span>
+<span id="cb5-141"><a href="#cb5-141" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.organizations <span class="op">=</span> [</span>
+<span id="cb5-142"><a href="#cb5-142" aria-hidden="true" tabindex="-1"></a>            Organization(ein<span class="op">=</span><span class="st">&quot;13-6213516&quot;</span>, name<span class="op">=</span><span class="st">&quot;American Civil Liberties Union Foundation&quot;</span>),</span>
+<span id="cb5-143"><a href="#cb5-143" aria-hidden="true" tabindex="-1"></a>            Organization(ein<span class="op">=</span><span class="st">&quot;53-0196605&quot;</span>, name<span class="op">=</span><span class="st">&quot;American National Red Cross&quot;</span>),</span>
+<span id="cb5-144"><a href="#cb5-144" aria-hidden="true" tabindex="-1"></a>            Organization(ein<span class="op">=</span><span class="st">&quot;13-1635294&quot;</span>, name<span class="op">=</span><span class="st">&quot;United Way Worldwide&quot;</span>),</span>
+<span id="cb5-145"><a href="#cb5-145" aria-hidden="true" tabindex="-1"></a>            Organization(ein<span class="op">=</span><span class="st">&quot;13-1644147&quot;</span>, name<span class="op">=</span><span class="st">&quot;Planned Parenthood Federation of America&quot;</span>),</span>
+<span id="cb5-146"><a href="#cb5-146" aria-hidden="true" tabindex="-1"></a>            Organization(ein<span class="op">=</span><span class="st">&quot;53-0242652&quot;</span>, name<span class="op">=</span><span class="st">&quot;Nature Conservancy&quot;</span>)</span>
+<span id="cb5-147"><a href="#cb5-147" aria-hidden="true" tabindex="-1"></a>        ]</span>
+<span id="cb5-148"><a href="#cb5-148" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-149"><a href="#cb5-149" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _respect_rate_limit(<span class="va">self</span>):</span>
+<span id="cb5-150"><a href="#cb5-150" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Ensure we don't exceed the API rate limit.&quot;&quot;&quot;</span></span>
+<span id="cb5-151"><a href="#cb5-151" aria-hidden="true" tabindex="-1"></a>        elapsed <span class="op">=</span> time.time() <span class="op">-</span> <span class="va">self</span>.last_request_time</span>
+<span id="cb5-152"><a href="#cb5-152" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> elapsed <span class="op">&lt;</span> <span class="va">self</span>.rate_limit:</span>
+<span id="cb5-153"><a href="#cb5-153" aria-hidden="true" tabindex="-1"></a>            time.sleep(<span class="va">self</span>.rate_limit <span class="op">-</span> elapsed)</span>
+<span id="cb5-154"><a href="#cb5-154" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.last_request_time <span class="op">=</span> time.time()</span>
+<span id="cb5-155"><a href="#cb5-155" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-156"><a href="#cb5-156" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> fetch_organization_data(<span class="va">self</span>, org: Organization) <span class="op">-&gt;</span> Dict[<span class="bu">str</span>, Any]:</span>
+<span id="cb5-157"><a href="#cb5-157" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb5-158"><a href="#cb5-158" aria-hidden="true" tabindex="-1"></a><span class="co">        Fetch data for an organization from the ProPublica API or cache.</span></span>
+<span id="cb5-159"><a href="#cb5-159" aria-hidden="true" tabindex="-1"></a><span class="co">        </span></span>
+<span id="cb5-160"><a href="#cb5-160" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb5-161"><a href="#cb5-161" aria-hidden="true" tabindex="-1"></a><span class="co">            org: The organization to fetch data for</span></span>
+<span id="cb5-162"><a href="#cb5-162" aria-hidden="true" tabindex="-1"></a><span class="co">            </span></span>
+<span id="cb5-163"><a href="#cb5-163" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="cb5-164"><a href="#cb5-164" aria-hidden="true" tabindex="-1"></a><span class="co">            Dictionary containing the organization data</span></span>
+<span id="cb5-165"><a href="#cb5-165" aria-hidden="true" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb5-166"><a href="#cb5-166" aria-hidden="true" tabindex="-1"></a>        cache_path <span class="op">=</span> org.cache_path()</span>
+<span id="cb5-167"><a href="#cb5-167" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-168"><a href="#cb5-168" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Check cache first if enabled</span></span>
+<span id="cb5-169"><a href="#cb5-169" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.use_cache <span class="kw">and</span> cache_path.exists():</span>
+<span id="cb5-170"><a href="#cb5-170" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span>:</span>
+<span id="cb5-171"><a href="#cb5-171" aria-hidden="true" tabindex="-1"></a>                <span class="cf">with</span> <span class="bu">open</span>(cache_path, <span class="st">'r'</span>) <span class="im">as</span> f:</span>
+<span id="cb5-172"><a href="#cb5-172" aria-hidden="true" tabindex="-1"></a>                    logger.info(<span class="ss">f&quot;Loading cached data for </span><span class="sc">{</span>org<span class="sc">.</span>ein<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-173"><a href="#cb5-173" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">return</span> json.load(f)</span>
+<span id="cb5-174"><a href="#cb5-174" aria-hidden="true" tabindex="-1"></a>            <span class="cf">except</span> (json.JSONDecodeError, <span class="pp">IOError</span>) <span class="im">as</span> e:</span>
+<span id="cb5-175"><a href="#cb5-175" aria-hidden="true" tabindex="-1"></a>                logger.warning(<span class="ss">f&quot;Error reading cache for </span><span class="sc">{</span>org<span class="sc">.</span>ein<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-176"><a href="#cb5-176" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Continue to fetch from API if cache read fails</span></span>
+<span id="cb5-177"><a href="#cb5-177" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-178"><a href="#cb5-178" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Fetch from API with rate limiting</span></span>
+<span id="cb5-179"><a href="#cb5-179" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._respect_rate_limit()</span>
+<span id="cb5-180"><a href="#cb5-180" aria-hidden="true" tabindex="-1"></a>        url <span class="op">=</span> <span class="ss">f&quot;</span><span class="sc">{</span>BASE_URL<span class="sc">}{</span>org<span class="sc">.</span>ein<span class="sc">}</span><span class="ss">.json&quot;</span></span>
+<span id="cb5-181"><a href="#cb5-181" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-182"><a href="#cb5-182" aria-hidden="true" tabindex="-1"></a>        <span class="cf">try</span>:</span>
+<span id="cb5-183"><a href="#cb5-183" aria-hidden="true" tabindex="-1"></a>            logger.info(<span class="ss">f&quot;Fetching data for </span><span class="sc">{</span>org<span class="sc">.</span>ein<span class="sc">}</span><span class="ss"> from ProPublica API&quot;</span>)</span>
+<span id="cb5-184"><a href="#cb5-184" aria-hidden="true" tabindex="-1"></a>            response <span class="op">=</span> <span class="va">self</span>.http_session.get(url)</span>
+<span id="cb5-185"><a href="#cb5-185" aria-hidden="true" tabindex="-1"></a>            response.raise_for_status()</span>
+<span id="cb5-186"><a href="#cb5-186" aria-hidden="true" tabindex="-1"></a>            data <span class="op">=</span> response.json()</span>
+<span id="cb5-187"><a href="#cb5-187" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-188"><a href="#cb5-188" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Update organization name if available</span></span>
+<span id="cb5-189"><a href="#cb5-189" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="st">&quot;organization&quot;</span> <span class="kw">in</span> data <span class="kw">and</span> <span class="st">&quot;name&quot;</span> <span class="kw">in</span> data[<span class="st">&quot;organization&quot;</span>]:</span>
+<span id="cb5-190"><a href="#cb5-190" aria-hidden="true" tabindex="-1"></a>                org.name <span class="op">=</span> data[<span class="st">&quot;organization&quot;</span>][<span class="st">&quot;name&quot;</span>]</span>
+<span id="cb5-191"><a href="#cb5-191" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="st">&quot;ntee_code&quot;</span> <span class="kw">in</span> data[<span class="st">&quot;organization&quot;</span>]:</span>
+<span id="cb5-192"><a href="#cb5-192" aria-hidden="true" tabindex="-1"></a>                    org.ntee_code <span class="op">=</span> data[<span class="st">&quot;organization&quot;</span>][<span class="st">&quot;ntee_code&quot;</span>]</span>
+<span id="cb5-193"><a href="#cb5-193" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="st">&quot;subsection&quot;</span> <span class="kw">in</span> data[<span class="st">&quot;organization&quot;</span>]:</span>
+<span id="cb5-194"><a href="#cb5-194" aria-hidden="true" tabindex="-1"></a>                    org.classification <span class="op">=</span> data[<span class="st">&quot;organization&quot;</span>][<span class="st">&quot;subsection&quot;</span>]</span>
+<span id="cb5-195"><a href="#cb5-195" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-196"><a href="#cb5-196" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Cache the response</span></span>
+<span id="cb5-197"><a href="#cb5-197" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="va">self</span>.use_cache:</span>
+<span id="cb5-198"><a href="#cb5-198" aria-hidden="true" tabindex="-1"></a>                <span class="cf">with</span> <span class="bu">open</span>(cache_path, <span class="st">'w'</span>) <span class="im">as</span> f:</span>
+<span id="cb5-199"><a href="#cb5-199" aria-hidden="true" tabindex="-1"></a>                    json.dump(data, f, indent<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb5-200"><a href="#cb5-200" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-201"><a href="#cb5-201" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> data</span>
+<span id="cb5-202"><a href="#cb5-202" aria-hidden="true" tabindex="-1"></a>        <span class="cf">except</span> requests.RequestException <span class="im">as</span> e:</span>
+<span id="cb5-203"><a href="#cb5-203" aria-hidden="true" tabindex="-1"></a>            logger.error(<span class="ss">f&quot;Error fetching data for </span><span class="sc">{</span>org<span class="sc">.</span>ein<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-204"><a href="#cb5-204" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> {}</span>
+<span id="cb5-205"><a href="#cb5-205" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-206"><a href="#cb5-206" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> extract_financial_metrics(<span class="va">self</span>, org_data: Dict[<span class="bu">str</span>, Any]) <span class="op">-&gt;</span> Dict[<span class="bu">int</span>, FinancialMetrics]:</span>
+<span id="cb5-207"><a href="#cb5-207" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb5-208"><a href="#cb5-208" aria-hidden="true" tabindex="-1"></a><span class="co">        Extract financial metrics from organization data.</span></span>
+<span id="cb5-209"><a href="#cb5-209" aria-hidden="true" tabindex="-1"></a><span class="co">        </span></span>
+<span id="cb5-210"><a href="#cb5-210" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb5-211"><a href="#cb5-211" aria-hidden="true" tabindex="-1"></a><span class="co">            org_data: Organization data from ProPublica API</span></span>
+<span id="cb5-212"><a href="#cb5-212" aria-hidden="true" tabindex="-1"></a><span class="co">            </span></span>
+<span id="cb5-213"><a href="#cb5-213" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="cb5-214"><a href="#cb5-214" aria-hidden="true" tabindex="-1"></a><span class="co">            Dictionary of financial metrics by year</span></span>
+<span id="cb5-215"><a href="#cb5-215" aria-hidden="true" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb5-216"><a href="#cb5-216" aria-hidden="true" tabindex="-1"></a>        metrics_by_year <span class="op">=</span> {}</span>
+<span id="cb5-217"><a href="#cb5-217" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-218"><a href="#cb5-218" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> org_data <span class="kw">or</span> <span class="st">&quot;filings_with_data&quot;</span> <span class="kw">not</span> <span class="kw">in</span> org_data:</span>
+<span id="cb5-219"><a href="#cb5-219" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> metrics_by_year</span>
+<span id="cb5-220"><a href="#cb5-220" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-221"><a href="#cb5-221" aria-hidden="true" tabindex="-1"></a>        filings <span class="op">=</span> org_data.get(<span class="st">&quot;filings_with_data&quot;</span>, [])</span>
+<span id="cb5-222"><a href="#cb5-222" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> filing <span class="kw">in</span> filings:</span>
+<span id="cb5-223"><a href="#cb5-223" aria-hidden="true" tabindex="-1"></a>            <span class="cf">try</span>:</span>
+<span id="cb5-224"><a href="#cb5-224" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Extract year - Handle the tax_prd_yr field specifically</span></span>
+<span id="cb5-225"><a href="#cb5-225" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> <span class="st">&quot;tax_prd_yr&quot;</span> <span class="kw">in</span> filing:</span>
+<span id="cb5-226"><a href="#cb5-226" aria-hidden="true" tabindex="-1"></a>                    year <span class="op">=</span> <span class="bu">int</span>(filing[<span class="st">&quot;tax_prd_yr&quot;</span>])</span>
+<span id="cb5-227"><a href="#cb5-227" aria-hidden="true" tabindex="-1"></a>                    logger.info(<span class="ss">f&quot;Successfully parsed year: </span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-228"><a href="#cb5-228" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span>:</span>
+<span id="cb5-229"><a href="#cb5-229" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># Try fallback methods if tax_prd_yr is missing</span></span>
+<span id="cb5-230"><a href="#cb5-230" aria-hidden="true" tabindex="-1"></a>                    year_str <span class="op">=</span> filing.get(<span class="st">&quot;tax_prd&quot;</span>, filing.get(<span class="st">&quot;tax_period&quot;</span>, <span class="st">&quot;&quot;</span>))</span>
+<span id="cb5-231"><a href="#cb5-231" aria-hidden="true" tabindex="-1"></a>                    logger.debug(<span class="ss">f&quot;Trying to parse year from alternative field: </span><span class="sc">{</span>year_str<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-232"><a href="#cb5-232" aria-hidden="true" tabindex="-1"></a>                    </span>
+<span id="cb5-233"><a href="#cb5-233" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">try</span>:</span>
+<span id="cb5-234"><a href="#cb5-234" aria-hidden="true" tabindex="-1"></a>                        <span class="co"># Try to parse year from different formats</span></span>
+<span id="cb5-235"><a href="#cb5-235" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">if</span> <span class="bu">len</span>(year_str) <span class="op">==</span> <span class="dv">4</span>:  <span class="co"># Just the year</span></span>
+<span id="cb5-236"><a href="#cb5-236" aria-hidden="true" tabindex="-1"></a>                            year <span class="op">=</span> <span class="bu">int</span>(year_str)</span>
+<span id="cb5-237"><a href="#cb5-237" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">elif</span> <span class="bu">len</span>(year_str) <span class="op">==</span> <span class="dv">6</span>:  <span class="co"># YYYYMM format</span></span>
+<span id="cb5-238"><a href="#cb5-238" aria-hidden="true" tabindex="-1"></a>                            year <span class="op">=</span> <span class="bu">int</span>(year_str[:<span class="dv">4</span>])</span>
+<span id="cb5-239"><a href="#cb5-239" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">elif</span> <span class="st">&quot;-&quot;</span> <span class="kw">in</span> year_str:  <span class="co"># YYYY-MM-DD format</span></span>
+<span id="cb5-240"><a href="#cb5-240" aria-hidden="true" tabindex="-1"></a>                            year <span class="op">=</span> <span class="bu">int</span>(year_str.split(<span class="st">&quot;-&quot;</span>)[<span class="dv">0</span>])</span>
+<span id="cb5-241"><a href="#cb5-241" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">else</span>:</span>
+<span id="cb5-242"><a href="#cb5-242" aria-hidden="true" tabindex="-1"></a>                            logger.warning(<span class="ss">f&quot;Unrecognized year format: </span><span class="sc">{</span>year_str<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-243"><a href="#cb5-243" aria-hidden="true" tabindex="-1"></a>                            <span class="cf">continue</span></span>
+<span id="cb5-244"><a href="#cb5-244" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">except</span> (<span class="pp">ValueError</span>, <span class="pp">TypeError</span>):</span>
+<span id="cb5-245"><a href="#cb5-245" aria-hidden="true" tabindex="-1"></a>                        logger.warning(<span class="ss">f&quot;Could not parse year from: </span><span class="sc">{</span>year_str<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-246"><a href="#cb5-246" aria-hidden="true" tabindex="-1"></a>                        <span class="cf">continue</span></span>
+<span id="cb5-247"><a href="#cb5-247" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-248"><a href="#cb5-248" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Extract filing type</span></span>
+<span id="cb5-249"><a href="#cb5-249" aria-hidden="true" tabindex="-1"></a>                filing_type <span class="op">=</span> filing.get(<span class="st">&quot;FormType&quot;</span>, filing.get(<span class="st">&quot;formtype_str&quot;</span>, filing.get(<span class="st">&quot;formtype&quot;</span>, <span class="st">&quot;Unknown&quot;</span>)))</span>
+<span id="cb5-250"><a href="#cb5-250" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> filing_type <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb5-251"><a href="#cb5-251" aria-hidden="true" tabindex="-1"></a>                    filing_type <span class="op">=</span> <span class="st">&quot;990&quot;</span>  <span class="co"># Convert numeric code to string representation</span></span>
+<span id="cb5-252"><a href="#cb5-252" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-253"><a href="#cb5-253" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Extract program service expenses - try multiple possible field names</span></span>
+<span id="cb5-254"><a href="#cb5-254" aria-hidden="true" tabindex="-1"></a>                program_expenses <span class="op">=</span> <span class="va">self</span>._extract_float(filing, [</span>
+<span id="cb5-255"><a href="#cb5-255" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;progsrvcexpns&quot;</span>, <span class="st">&quot;progservexp&quot;</span>, <span class="st">&quot;program_expenses&quot;</span>,</span>
+<span id="cb5-256"><a href="#cb5-256" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;programserviceexpenses&quot;</span>, <span class="st">&quot;program_service_expenses&quot;</span></span>
+<span id="cb5-257"><a href="#cb5-257" aria-hidden="true" tabindex="-1"></a>                ])</span>
+<span id="cb5-258"><a href="#cb5-258" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-259"><a href="#cb5-259" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Extract total expenses</span></span>
+<span id="cb5-260"><a href="#cb5-260" aria-hidden="true" tabindex="-1"></a>                total_expenses <span class="op">=</span> <span class="va">self</span>._extract_float(filing, [</span>
+<span id="cb5-261"><a href="#cb5-261" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;totfuncexpns&quot;</span>, <span class="st">&quot;totfuncexp&quot;</span>, <span class="st">&quot;total_expenses&quot;</span>,</span>
+<span id="cb5-262"><a href="#cb5-262" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;totalfunctionalexpenses&quot;</span>, <span class="st">&quot;total_functional_expenses&quot;</span></span>
+<span id="cb5-263"><a href="#cb5-263" aria-hidden="true" tabindex="-1"></a>                ])</span>
+<span id="cb5-264"><a href="#cb5-264" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-265"><a href="#cb5-265" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Extract fundraising expenses</span></span>
+<span id="cb5-266"><a href="#cb5-266" aria-hidden="true" tabindex="-1"></a>                fundraising_expenses <span class="op">=</span> <span class="va">self</span>._extract_float(filing, [</span>
+<span id="cb5-267"><a href="#cb5-267" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;fundraisingexpns&quot;</span>, <span class="st">&quot;fundraising&quot;</span>, <span class="st">&quot;fundraising_expenses&quot;</span>,</span>
+<span id="cb5-268"><a href="#cb5-268" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;profndraising&quot;</span>  <span class="co"># Some filings use this for professional fundraising fees</span></span>
+<span id="cb5-269"><a href="#cb5-269" aria-hidden="true" tabindex="-1"></a>                ])</span>
+<span id="cb5-270"><a href="#cb5-270" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-271"><a href="#cb5-271" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Extract total contributions</span></span>
+<span id="cb5-272"><a href="#cb5-272" aria-hidden="true" tabindex="-1"></a>                total_contributions <span class="op">=</span> <span class="va">self</span>._extract_float(filing, [</span>
+<span id="cb5-273"><a href="#cb5-273" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;totcntrbgfts&quot;</span>, <span class="st">&quot;contributions&quot;</span>, <span class="st">&quot;total_contributions&quot;</span>,</span>
+<span id="cb5-274"><a href="#cb5-274" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;contributionsgrantsetc&quot;</span></span>
+<span id="cb5-275"><a href="#cb5-275" aria-hidden="true" tabindex="-1"></a>                ])</span>
+<span id="cb5-276"><a href="#cb5-276" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-277"><a href="#cb5-277" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Extract total revenue</span></span>
+<span id="cb5-278"><a href="#cb5-278" aria-hidden="true" tabindex="-1"></a>                total_revenue <span class="op">=</span> <span class="va">self</span>._extract_float(filing, [</span>
+<span id="cb5-279"><a href="#cb5-279" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;totrevenue&quot;</span>, <span class="st">&quot;totrev&quot;</span>, <span class="st">&quot;total_revenue&quot;</span></span>
+<span id="cb5-280"><a href="#cb5-280" aria-hidden="true" tabindex="-1"></a>                ])</span>
+<span id="cb5-281"><a href="#cb5-281" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-282"><a href="#cb5-282" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Calculate administrative expenses if not directly provided</span></span>
+<span id="cb5-283"><a href="#cb5-283" aria-hidden="true" tabindex="-1"></a>                admin_expenses <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb5-284"><a href="#cb5-284" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> total_expenses <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> program_expenses <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb5-285"><a href="#cb5-285" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> fundraising_expenses <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb5-286"><a href="#cb5-286" aria-hidden="true" tabindex="-1"></a>                        admin_expenses <span class="op">=</span> total_expenses <span class="op">-</span> program_expenses <span class="op">-</span> fundraising_expenses</span>
+<span id="cb5-287"><a href="#cb5-287" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">else</span>:</span>
+<span id="cb5-288"><a href="#cb5-288" aria-hidden="true" tabindex="-1"></a>                        <span class="co"># If fundraising expenses are missing, we can only calculate admin+fundraising combined</span></span>
+<span id="cb5-289"><a href="#cb5-289" aria-hidden="true" tabindex="-1"></a>                        admin_expenses <span class="op">=</span> total_expenses <span class="op">-</span> program_expenses</span>
+<span id="cb5-290"><a href="#cb5-290" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-291"><a href="#cb5-291" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Create metrics object</span></span>
+<span id="cb5-292"><a href="#cb5-292" aria-hidden="true" tabindex="-1"></a>                metrics <span class="op">=</span> FinancialMetrics(</span>
+<span id="cb5-293"><a href="#cb5-293" aria-hidden="true" tabindex="-1"></a>                    year<span class="op">=</span>year,</span>
+<span id="cb5-294"><a href="#cb5-294" aria-hidden="true" tabindex="-1"></a>                    filing_type<span class="op">=</span>filing_type,</span>
+<span id="cb5-295"><a href="#cb5-295" aria-hidden="true" tabindex="-1"></a>                    total_revenue<span class="op">=</span>total_revenue,</span>
+<span id="cb5-296"><a href="#cb5-296" aria-hidden="true" tabindex="-1"></a>                    total_expenses<span class="op">=</span>total_expenses,</span>
+<span id="cb5-297"><a href="#cb5-297" aria-hidden="true" tabindex="-1"></a>                    program_expenses<span class="op">=</span>program_expenses,</span>
+<span id="cb5-298"><a href="#cb5-298" aria-hidden="true" tabindex="-1"></a>                    fundraising_expenses<span class="op">=</span>fundraising_expenses,</span>
+<span id="cb5-299"><a href="#cb5-299" aria-hidden="true" tabindex="-1"></a>                    admin_expenses<span class="op">=</span>admin_expenses,</span>
+<span id="cb5-300"><a href="#cb5-300" aria-hidden="true" tabindex="-1"></a>                    total_contributions<span class="op">=</span>total_contributions,</span>
+<span id="cb5-301"><a href="#cb5-301" aria-hidden="true" tabindex="-1"></a>                    total_assets<span class="op">=</span><span class="va">self</span>._extract_float(filing, [<span class="st">&quot;totassetsend&quot;</span>, <span class="st">&quot;total_assets&quot;</span>, <span class="st">&quot;totassets&quot;</span>])</span>
+<span id="cb5-302"><a href="#cb5-302" aria-hidden="true" tabindex="-1"></a>                )</span>
+<span id="cb5-303"><a href="#cb5-303" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-304"><a href="#cb5-304" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Check if required fields for efficiency calculations exist</span></span>
+<span id="cb5-305"><a href="#cb5-305" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> metrics.program_efficiency <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb5-306"><a href="#cb5-306" aria-hidden="true" tabindex="-1"></a>                    logger.warning(</span>
+<span id="cb5-307"><a href="#cb5-307" aria-hidden="true" tabindex="-1"></a>                        <span class="ss">f&quot;Cannot calculate Program Efficiency for </span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">: &quot;</span></span>
+<span id="cb5-308"><a href="#cb5-308" aria-hidden="true" tabindex="-1"></a>                        <span class="ss">f&quot;program_expenses=</span><span class="sc">{</span>program_expenses<span class="sc">}</span><span class="ss">, total_expenses=</span><span class="sc">{</span>total_expenses<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb5-309"><a href="#cb5-309" aria-hidden="true" tabindex="-1"></a>                    )</span>
+<span id="cb5-310"><a href="#cb5-310" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-311"><a href="#cb5-311" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> metrics.fundraising_efficiency <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb5-312"><a href="#cb5-312" aria-hidden="true" tabindex="-1"></a>                    contributions <span class="op">=</span> total_contributions <span class="kw">or</span> total_revenue</span>
+<span id="cb5-313"><a href="#cb5-313" aria-hidden="true" tabindex="-1"></a>                    logger.warning(</span>
+<span id="cb5-314"><a href="#cb5-314" aria-hidden="true" tabindex="-1"></a>                        <span class="ss">f&quot;Cannot calculate Fundraising Efficiency for </span><span class="sc">{</span>year<span class="sc">}</span><span class="ss">: &quot;</span></span>
+<span id="cb5-315"><a href="#cb5-315" aria-hidden="true" tabindex="-1"></a>                        <span class="ss">f&quot;contributions=</span><span class="sc">{</span>contributions<span class="sc">}</span><span class="ss">, fundraising_expenses=</span><span class="sc">{</span>fundraising_expenses<span class="sc">}</span><span class="ss">&quot;</span></span>
+<span id="cb5-316"><a href="#cb5-316" aria-hidden="true" tabindex="-1"></a>                    )</span>
+<span id="cb5-317"><a href="#cb5-317" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-318"><a href="#cb5-318" aria-hidden="true" tabindex="-1"></a>                metrics_by_year[year] <span class="op">=</span> metrics</span>
+<span id="cb5-319"><a href="#cb5-319" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-320"><a href="#cb5-320" aria-hidden="true" tabindex="-1"></a>            <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb5-321"><a href="#cb5-321" aria-hidden="true" tabindex="-1"></a>                logger.error(<span class="ss">f&quot;Error processing filing: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-322"><a href="#cb5-322" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb5-323"><a href="#cb5-323" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-324"><a href="#cb5-324" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> metrics_by_year</span>
+<span id="cb5-325"><a href="#cb5-325" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-326"><a href="#cb5-326" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _extract_float(<span class="va">self</span>, data: Dict[<span class="bu">str</span>, Any], possible_keys: List[<span class="bu">str</span>]) <span class="op">-&gt;</span> Optional[<span class="bu">float</span>]:</span>
+<span id="cb5-327"><a href="#cb5-327" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb5-328"><a href="#cb5-328" aria-hidden="true" tabindex="-1"></a><span class="co">        Extract a float value from a dictionary trying multiple potential keys.</span></span>
+<span id="cb5-329"><a href="#cb5-329" aria-hidden="true" tabindex="-1"></a><span class="co">        </span></span>
+<span id="cb5-330"><a href="#cb5-330" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb5-331"><a href="#cb5-331" aria-hidden="true" tabindex="-1"></a><span class="co">            data: Dictionary to extract from</span></span>
+<span id="cb5-332"><a href="#cb5-332" aria-hidden="true" tabindex="-1"></a><span class="co">            possible_keys: List of potential keys to try</span></span>
+<span id="cb5-333"><a href="#cb5-333" aria-hidden="true" tabindex="-1"></a><span class="co">            </span></span>
+<span id="cb5-334"><a href="#cb5-334" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="cb5-335"><a href="#cb5-335" aria-hidden="true" tabindex="-1"></a><span class="co">            Float value if found, None otherwise</span></span>
+<span id="cb5-336"><a href="#cb5-336" aria-hidden="true" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb5-337"><a href="#cb5-337" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> key <span class="kw">in</span> possible_keys:</span>
+<span id="cb5-338"><a href="#cb5-338" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> key <span class="kw">in</span> data <span class="kw">and</span> data[key] <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb5-339"><a href="#cb5-339" aria-hidden="true" tabindex="-1"></a>                <span class="cf">try</span>:</span>
+<span id="cb5-340"><a href="#cb5-340" aria-hidden="true" tabindex="-1"></a>                    <span class="co"># Handle the case where the value might be a string with commas</span></span>
+<span id="cb5-341"><a href="#cb5-341" aria-hidden="true" tabindex="-1"></a>                    value <span class="op">=</span> data[key]</span>
+<span id="cb5-342"><a href="#cb5-342" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span> <span class="bu">isinstance</span>(value, <span class="bu">str</span>):</span>
+<span id="cb5-343"><a href="#cb5-343" aria-hidden="true" tabindex="-1"></a>                        value <span class="op">=</span> value.replace(<span class="st">','</span>, <span class="st">''</span>)</span>
+<span id="cb5-344"><a href="#cb5-344" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">return</span> <span class="bu">float</span>(value)</span>
+<span id="cb5-345"><a href="#cb5-345" aria-hidden="true" tabindex="-1"></a>                <span class="cf">except</span> (<span class="pp">ValueError</span>, <span class="pp">TypeError</span>) <span class="im">as</span> e:</span>
+<span id="cb5-346"><a href="#cb5-346" aria-hidden="true" tabindex="-1"></a>                    logger.debug(<span class="ss">f&quot;Could not convert </span><span class="sc">{</span>key<span class="sc">}</span><span class="ss">=</span><span class="sc">{</span>data[key]<span class="sc">}</span><span class="ss"> to float: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-347"><a href="#cb5-347" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">pass</span></span>
+<span id="cb5-348"><a href="#cb5-348" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb5-349"><a href="#cb5-349" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-350"><a href="#cb5-350" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> analyze_all_organizations(<span class="va">self</span>) <span class="op">-&gt;</span> Dict[<span class="bu">str</span>, Dict[<span class="bu">int</span>, FinancialMetrics]]:</span>
+<span id="cb5-351"><a href="#cb5-351" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb5-352"><a href="#cb5-352" aria-hidden="true" tabindex="-1"></a><span class="co">        Analyze all predefined organizations.</span></span>
+<span id="cb5-353"><a href="#cb5-353" aria-hidden="true" tabindex="-1"></a><span class="co">        </span></span>
+<span id="cb5-354"><a href="#cb5-354" aria-hidden="true" tabindex="-1"></a><span class="co">        Returns:</span></span>
+<span id="cb5-355"><a href="#cb5-355" aria-hidden="true" tabindex="-1"></a><span class="co">            Dictionary mapping EINs to dictionaries of metrics by year</span></span>
+<span id="cb5-356"><a href="#cb5-356" aria-hidden="true" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb5-357"><a href="#cb5-357" aria-hidden="true" tabindex="-1"></a>        results <span class="op">=</span> {}</span>
+<span id="cb5-358"><a href="#cb5-358" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-359"><a href="#cb5-359" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> Progress(</span>
+<span id="cb5-360"><a href="#cb5-360" aria-hidden="true" tabindex="-1"></a>            SpinnerColumn(),</span>
+<span id="cb5-361"><a href="#cb5-361" aria-hidden="true" tabindex="-1"></a>            TextColumn(<span class="st">&quot;[progress.description]</span><span class="sc">{task.description}</span><span class="st">&quot;</span>),</span>
+<span id="cb5-362"><a href="#cb5-362" aria-hidden="true" tabindex="-1"></a>            BarColumn(),</span>
+<span id="cb5-363"><a href="#cb5-363" aria-hidden="true" tabindex="-1"></a>            TimeElapsedColumn()</span>
+<span id="cb5-364"><a href="#cb5-364" aria-hidden="true" tabindex="-1"></a>        ) <span class="im">as</span> progress:</span>
+<span id="cb5-365"><a href="#cb5-365" aria-hidden="true" tabindex="-1"></a>            task <span class="op">=</span> progress.add_task(<span class="st">&quot;[green]Analyzing organizations...&quot;</span>, total<span class="op">=</span><span class="bu">len</span>(<span class="va">self</span>.organizations))</span>
+<span id="cb5-366"><a href="#cb5-366" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-367"><a href="#cb5-367" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> org <span class="kw">in</span> <span class="va">self</span>.organizations:</span>
+<span id="cb5-368"><a href="#cb5-368" aria-hidden="true" tabindex="-1"></a>                org_data <span class="op">=</span> <span class="va">self</span>.fetch_organization_data(org)</span>
+<span id="cb5-369"><a href="#cb5-369" aria-hidden="true" tabindex="-1"></a>                metrics <span class="op">=</span> <span class="va">self</span>.extract_financial_metrics(org_data)</span>
+<span id="cb5-370"><a href="#cb5-370" aria-hidden="true" tabindex="-1"></a>                results[org.ein] <span class="op">=</span> metrics</span>
+<span id="cb5-371"><a href="#cb5-371" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-372"><a href="#cb5-372" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Log successful extraction</span></span>
+<span id="cb5-373"><a href="#cb5-373" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> metrics:</span>
+<span id="cb5-374"><a href="#cb5-374" aria-hidden="true" tabindex="-1"></a>                    years <span class="op">=</span> <span class="bu">sorted</span>(metrics.keys())</span>
+<span id="cb5-375"><a href="#cb5-375" aria-hidden="true" tabindex="-1"></a>                    logger.info(<span class="ss">f&quot;Successfully extracted metrics for </span><span class="sc">{</span>org<span class="sc">.</span>name<span class="sc">}</span><span class="ss"> for years: </span><span class="sc">{</span>years<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-376"><a href="#cb5-376" aria-hidden="true" tabindex="-1"></a>                <span class="cf">else</span>:</span>
+<span id="cb5-377"><a href="#cb5-377" aria-hidden="true" tabindex="-1"></a>                    logger.warning(<span class="ss">f&quot;No financial metrics could be extracted for </span><span class="sc">{</span>org<span class="sc">.</span>name<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-378"><a href="#cb5-378" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-379"><a href="#cb5-379" aria-hidden="true" tabindex="-1"></a>                progress.update(task, advance<span class="op">=</span><span class="dv">1</span>, description<span class="op">=</span><span class="ss">f&quot;[green]Analyzed </span><span class="sc">{</span>org<span class="sc">.</span>name<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-380"><a href="#cb5-380" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-381"><a href="#cb5-381" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> results</span>
+<span id="cb5-382"><a href="#cb5-382" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-383"><a href="#cb5-383" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> generate_reports(<span class="va">self</span>, results: Dict[<span class="bu">str</span>, Dict[<span class="bu">int</span>, FinancialMetrics]]):</span>
+<span id="cb5-384"><a href="#cb5-384" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb5-385"><a href="#cb5-385" aria-hidden="true" tabindex="-1"></a><span class="co">        Generate reports from analysis results.</span></span>
+<span id="cb5-386"><a href="#cb5-386" aria-hidden="true" tabindex="-1"></a><span class="co">        </span></span>
+<span id="cb5-387"><a href="#cb5-387" aria-hidden="true" tabindex="-1"></a><span class="co">        Args:</span></span>
+<span id="cb5-388"><a href="#cb5-388" aria-hidden="true" tabindex="-1"></a><span class="co">            results: Analysis results by organization and year</span></span>
+<span id="cb5-389"><a href="#cb5-389" aria-hidden="true" tabindex="-1"></a><span class="co">        &quot;&quot;&quot;</span></span>
+<span id="cb5-390"><a href="#cb5-390" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._generate_csv_reports(results)</span>
+<span id="cb5-391"><a href="#cb5-391" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._generate_summary_table(results)</span>
+<span id="cb5-392"><a href="#cb5-392" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._generate_charts(results)</span>
+<span id="cb5-393"><a href="#cb5-393" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-394"><a href="#cb5-394" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _generate_csv_reports(<span class="va">self</span>, results: Dict[<span class="bu">str</span>, Dict[<span class="bu">int</span>, FinancialMetrics]]):</span>
+<span id="cb5-395"><a href="#cb5-395" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Generate CSV reports for each organization.&quot;&quot;&quot;</span></span>
+<span id="cb5-396"><a href="#cb5-396" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> ein, metrics_by_year <span class="kw">in</span> results.items():</span>
+<span id="cb5-397"><a href="#cb5-397" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> metrics_by_year:</span>
+<span id="cb5-398"><a href="#cb5-398" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb5-399"><a href="#cb5-399" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-400"><a href="#cb5-400" aria-hidden="true" tabindex="-1"></a>            org <span class="op">=</span> <span class="bu">next</span>((o <span class="cf">for</span> o <span class="kw">in</span> <span class="va">self</span>.organizations <span class="cf">if</span> o.ein <span class="op">==</span> ein), <span class="va">None</span>)</span>
+<span id="cb5-401"><a href="#cb5-401" aria-hidden="true" tabindex="-1"></a>            org_name <span class="op">=</span> org.name <span class="cf">if</span> org <span class="cf">else</span> ein</span>
+<span id="cb5-402"><a href="#cb5-402" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-403"><a href="#cb5-403" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Convert metrics to DataFrame</span></span>
+<span id="cb5-404"><a href="#cb5-404" aria-hidden="true" tabindex="-1"></a>            data <span class="op">=</span> [metrics.to_dict() <span class="cf">for</span> metrics <span class="kw">in</span> metrics_by_year.values()]</span>
+<span id="cb5-405"><a href="#cb5-405" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> data:</span>
+<span id="cb5-406"><a href="#cb5-406" aria-hidden="true" tabindex="-1"></a>                logger.warning(<span class="ss">f&quot;No data to create CSV report for </span><span class="sc">{</span>org_name<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-407"><a href="#cb5-407" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb5-408"><a href="#cb5-408" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-409"><a href="#cb5-409" aria-hidden="true" tabindex="-1"></a>            df <span class="op">=</span> pd.DataFrame(data)</span>
+<span id="cb5-410"><a href="#cb5-410" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-411"><a href="#cb5-411" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Sort by year</span></span>
+<span id="cb5-412"><a href="#cb5-412" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> df.empty:</span>
+<span id="cb5-413"><a href="#cb5-413" aria-hidden="true" tabindex="-1"></a>                df <span class="op">=</span> df.sort_values(by<span class="op">=</span><span class="st">&quot;Year&quot;</span>)</span>
+<span id="cb5-414"><a href="#cb5-414" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-415"><a href="#cb5-415" aria-hidden="true" tabindex="-1"></a>                <span class="co"># Save to CSV</span></span>
+<span id="cb5-416"><a href="#cb5-416" aria-hidden="true" tabindex="-1"></a>                safe_name <span class="op">=</span> <span class="st">&quot;&quot;</span>.join(c <span class="cf">if</span> c.isalnum() <span class="cf">else</span> <span class="st">&quot;_&quot;</span> <span class="cf">for</span> c <span class="kw">in</span> org_name)</span>
+<span id="cb5-417"><a href="#cb5-417" aria-hidden="true" tabindex="-1"></a>                csv_path <span class="op">=</span> RESULTS_DIR <span class="op">/</span> <span class="ss">f&quot;</span><span class="sc">{</span>ein<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>safe_name<span class="sc">}</span><span class="ss">.csv&quot;</span></span>
+<span id="cb5-418"><a href="#cb5-418" aria-hidden="true" tabindex="-1"></a>                df.to_csv(csv_path, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-419"><a href="#cb5-419" aria-hidden="true" tabindex="-1"></a>                logger.info(<span class="ss">f&quot;Saved CSV report to </span><span class="sc">{</span>csv_path<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-420"><a href="#cb5-420" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-421"><a href="#cb5-421" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _generate_summary_table(<span class="va">self</span>, results: Dict[<span class="bu">str</span>, Dict[<span class="bu">int</span>, FinancialMetrics]]):</span>
+<span id="cb5-422"><a href="#cb5-422" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Generate a summary table of the most recent metrics for each organization.&quot;&quot;&quot;</span></span>
+<span id="cb5-423"><a href="#cb5-423" aria-hidden="true" tabindex="-1"></a>        table <span class="op">=</span> Table(title<span class="op">=</span><span class="st">&quot;Nonprofit Financial Metrics - Most Recent Year&quot;</span>)</span>
+<span id="cb5-424"><a href="#cb5-424" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-425"><a href="#cb5-425" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Add columns</span></span>
+<span id="cb5-426"><a href="#cb5-426" aria-hidden="true" tabindex="-1"></a>        table.add_column(<span class="st">&quot;Organization&quot;</span>, style<span class="op">=</span><span class="st">&quot;cyan&quot;</span>)</span>
+<span id="cb5-427"><a href="#cb5-427" aria-hidden="true" tabindex="-1"></a>        table.add_column(<span class="st">&quot;Year&quot;</span>, style<span class="op">=</span><span class="st">&quot;green&quot;</span>)</span>
+<span id="cb5-428"><a href="#cb5-428" aria-hidden="true" tabindex="-1"></a>        table.add_column(<span class="st">&quot;Program Efficiency&quot;</span>, style<span class="op">=</span><span class="st">&quot;magenta&quot;</span>)</span>
+<span id="cb5-429"><a href="#cb5-429" aria-hidden="true" tabindex="-1"></a>        table.add_column(<span class="st">&quot;Fundraising Efficiency&quot;</span>, style<span class="op">=</span><span class="st">&quot;yellow&quot;</span>)</span>
+<span id="cb5-430"><a href="#cb5-430" aria-hidden="true" tabindex="-1"></a>        table.add_column(<span class="st">&quot;Form Type&quot;</span>, style<span class="op">=</span><span class="st">&quot;blue&quot;</span>)</span>
+<span id="cb5-431"><a href="#cb5-431" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-432"><a href="#cb5-432" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Add rows for each organization's most recent data</span></span>
+<span id="cb5-433"><a href="#cb5-433" aria-hidden="true" tabindex="-1"></a>        summary_data <span class="op">=</span> []</span>
+<span id="cb5-434"><a href="#cb5-434" aria-hidden="true" tabindex="-1"></a>        has_data <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb5-435"><a href="#cb5-435" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-436"><a href="#cb5-436" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> ein, metrics_by_year <span class="kw">in</span> results.items():</span>
+<span id="cb5-437"><a href="#cb5-437" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> metrics_by_year:</span>
+<span id="cb5-438"><a href="#cb5-438" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb5-439"><a href="#cb5-439" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-440"><a href="#cb5-440" aria-hidden="true" tabindex="-1"></a>            org <span class="op">=</span> <span class="bu">next</span>((o <span class="cf">for</span> o <span class="kw">in</span> <span class="va">self</span>.organizations <span class="cf">if</span> o.ein <span class="op">==</span> ein), <span class="va">None</span>)</span>
+<span id="cb5-441"><a href="#cb5-441" aria-hidden="true" tabindex="-1"></a>            org_name <span class="op">=</span> org.name <span class="cf">if</span> org <span class="cf">else</span> ein</span>
+<span id="cb5-442"><a href="#cb5-442" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-443"><a href="#cb5-443" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Find the most recent year with data</span></span>
+<span id="cb5-444"><a href="#cb5-444" aria-hidden="true" tabindex="-1"></a>            most_recent_year <span class="op">=</span> <span class="bu">max</span>(metrics_by_year.keys()) <span class="cf">if</span> metrics_by_year <span class="cf">else</span> <span class="va">None</span></span>
+<span id="cb5-445"><a href="#cb5-445" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> most_recent_year <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb5-446"><a href="#cb5-446" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb5-447"><a href="#cb5-447" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-448"><a href="#cb5-448" aria-hidden="true" tabindex="-1"></a>            metrics <span class="op">=</span> metrics_by_year[most_recent_year]</span>
+<span id="cb5-449"><a href="#cb5-449" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-450"><a href="#cb5-450" aria-hidden="true" tabindex="-1"></a>            pe <span class="op">=</span> <span class="ss">f&quot;</span><span class="sc">{</span>metrics<span class="sc">.</span>program_efficiency<span class="sc">:.2%}</span><span class="ss">&quot;</span> <span class="cf">if</span> metrics.program_efficiency <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="st">&quot;N/A&quot;</span></span>
+<span id="cb5-451"><a href="#cb5-451" aria-hidden="true" tabindex="-1"></a>            fe <span class="op">=</span> <span class="ss">f&quot;</span><span class="sc">{</span>metrics<span class="sc">.</span>fundraising_efficiency<span class="sc">:.2f}</span><span class="ss">&quot;</span> <span class="cf">if</span> metrics.fundraising_efficiency <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="st">&quot;N/A&quot;</span></span>
+<span id="cb5-452"><a href="#cb5-452" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-453"><a href="#cb5-453" aria-hidden="true" tabindex="-1"></a>            table.add_row(</span>
+<span id="cb5-454"><a href="#cb5-454" aria-hidden="true" tabindex="-1"></a>                org_name,</span>
+<span id="cb5-455"><a href="#cb5-455" aria-hidden="true" tabindex="-1"></a>                <span class="bu">str</span>(most_recent_year),</span>
+<span id="cb5-456"><a href="#cb5-456" aria-hidden="true" tabindex="-1"></a>                pe,</span>
+<span id="cb5-457"><a href="#cb5-457" aria-hidden="true" tabindex="-1"></a>                fe,</span>
+<span id="cb5-458"><a href="#cb5-458" aria-hidden="true" tabindex="-1"></a>                metrics.filing_type</span>
+<span id="cb5-459"><a href="#cb5-459" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb5-460"><a href="#cb5-460" aria-hidden="true" tabindex="-1"></a>            has_data <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb5-461"><a href="#cb5-461" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-462"><a href="#cb5-462" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Build summary data for CSV export</span></span>
+<span id="cb5-463"><a href="#cb5-463" aria-hidden="true" tabindex="-1"></a>            summary_data.append({</span>
+<span id="cb5-464"><a href="#cb5-464" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Organization&quot;</span>: org_name,</span>
+<span id="cb5-465"><a href="#cb5-465" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;EIN&quot;</span>: ein,</span>
+<span id="cb5-466"><a href="#cb5-466" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Year&quot;</span>: most_recent_year,</span>
+<span id="cb5-467"><a href="#cb5-467" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Program Efficiency&quot;</span>: metrics.program_efficiency,</span>
+<span id="cb5-468"><a href="#cb5-468" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Fundraising Efficiency&quot;</span>: metrics.fundraising_efficiency,</span>
+<span id="cb5-469"><a href="#cb5-469" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Total Revenue&quot;</span>: metrics.total_revenue,</span>
+<span id="cb5-470"><a href="#cb5-470" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Total Expenses&quot;</span>: metrics.total_expenses,</span>
+<span id="cb5-471"><a href="#cb5-471" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;Form Type&quot;</span>: metrics.filing_type</span>
+<span id="cb5-472"><a href="#cb5-472" aria-hidden="true" tabindex="-1"></a>            })</span>
+<span id="cb5-473"><a href="#cb5-473" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-474"><a href="#cb5-474" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Print the table if we have data</span></span>
+<span id="cb5-475"><a href="#cb5-475" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> has_data:</span>
+<span id="cb5-476"><a href="#cb5-476" aria-hidden="true" tabindex="-1"></a>            console.<span class="bu">print</span>(table)</span>
+<span id="cb5-477"><a href="#cb5-477" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb5-478"><a href="#cb5-478" aria-hidden="true" tabindex="-1"></a>            console.<span class="bu">print</span>(<span class="st">&quot;[yellow]No recent financial metrics available to display.[/yellow]&quot;</span>)</span>
+<span id="cb5-479"><a href="#cb5-479" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-480"><a href="#cb5-480" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Save summary data as CSV for later use</span></span>
+<span id="cb5-481"><a href="#cb5-481" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> summary_data:</span>
+<span id="cb5-482"><a href="#cb5-482" aria-hidden="true" tabindex="-1"></a>            df <span class="op">=</span> pd.DataFrame(summary_data)</span>
+<span id="cb5-483"><a href="#cb5-483" aria-hidden="true" tabindex="-1"></a>            df.to_csv(RESULTS_DIR <span class="op">/</span> <span class="st">&quot;summary.csv&quot;</span>, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-484"><a href="#cb5-484" aria-hidden="true" tabindex="-1"></a>            logger.info(<span class="st">&quot;Summary data saved to results/summary.csv&quot;</span>)</span>
+<span id="cb5-485"><a href="#cb5-485" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-486"><a href="#cb5-486" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _generate_charts(<span class="va">self</span>, results: Dict[<span class="bu">str</span>, Dict[<span class="bu">int</span>, FinancialMetrics]]):</span>
+<span id="cb5-487"><a href="#cb5-487" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Generate charts visualizing metrics over time.&quot;&quot;&quot;</span></span>
+<span id="cb5-488"><a href="#cb5-488" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Check if we have any data to chart</span></span>
+<span id="cb5-489"><a href="#cb5-489" aria-hidden="true" tabindex="-1"></a>        has_data <span class="op">=</span> <span class="bu">any</span>(<span class="bu">bool</span>(metrics) <span class="cf">for</span> metrics <span class="kw">in</span> results.values())</span>
+<span id="cb5-490"><a href="#cb5-490" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> has_data:</span>
+<span id="cb5-491"><a href="#cb5-491" aria-hidden="true" tabindex="-1"></a>            logger.warning(<span class="st">&quot;No data available to generate charts.&quot;</span>)</span>
+<span id="cb5-492"><a href="#cb5-492" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
+<span id="cb5-493"><a href="#cb5-493" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-494"><a href="#cb5-494" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 1. Program Efficiency Over Time (All Organizations)</span></span>
+<span id="cb5-495"><a href="#cb5-495" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._create_efficiency_chart(results, <span class="st">&quot;program_efficiency&quot;</span>, <span class="st">&quot;Program Efficiency Over Time&quot;</span>, </span>
+<span id="cb5-496"><a href="#cb5-496" aria-hidden="true" tabindex="-1"></a>                                     <span class="st">&quot;Program Efficiency (Program Expenses / Total Expenses)&quot;</span>, </span>
+<span id="cb5-497"><a href="#cb5-497" aria-hidden="true" tabindex="-1"></a>                                     <span class="st">&quot;program_efficiency_chart.png&quot;</span>)</span>
+<span id="cb5-498"><a href="#cb5-498" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-499"><a href="#cb5-499" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 2. Fundraising Efficiency Over Time (All Organizations)</span></span>
+<span id="cb5-500"><a href="#cb5-500" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._create_efficiency_chart(results, <span class="st">&quot;fundraising_efficiency&quot;</span>, <span class="st">&quot;Fundraising Efficiency Over Time&quot;</span>, </span>
+<span id="cb5-501"><a href="#cb5-501" aria-hidden="true" tabindex="-1"></a>                                     <span class="st">&quot;Fundraising Efficiency (Contributions / Fundraising Expenses)&quot;</span>, </span>
+<span id="cb5-502"><a href="#cb5-502" aria-hidden="true" tabindex="-1"></a>                                     <span class="st">&quot;fundraising_efficiency_chart.png&quot;</span>)</span>
+<span id="cb5-503"><a href="#cb5-503" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-504"><a href="#cb5-504" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 3. Individual organization charts</span></span>
+<span id="cb5-505"><a href="#cb5-505" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> ein, metrics_by_year <span class="kw">in</span> results.items():</span>
+<span id="cb5-506"><a href="#cb5-506" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> metrics_by_year <span class="kw">or</span> <span class="bu">len</span>(metrics_by_year) <span class="op">&lt;</span> <span class="dv">2</span>:  <span class="co"># Need at least 2 years for a meaningful chart</span></span>
+<span id="cb5-507"><a href="#cb5-507" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb5-508"><a href="#cb5-508" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-509"><a href="#cb5-509" aria-hidden="true" tabindex="-1"></a>            org <span class="op">=</span> <span class="bu">next</span>((o <span class="cf">for</span> o <span class="kw">in</span> <span class="va">self</span>.organizations <span class="cf">if</span> o.ein <span class="op">==</span> ein), <span class="va">None</span>)</span>
+<span id="cb5-510"><a href="#cb5-510" aria-hidden="true" tabindex="-1"></a>            org_name <span class="op">=</span> org.name <span class="cf">if</span> org <span class="cf">else</span> ein</span>
+<span id="cb5-511"><a href="#cb5-511" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-512"><a href="#cb5-512" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>._create_organization_chart(ein, org_name, metrics_by_year)</span>
+<span id="cb5-513"><a href="#cb5-513" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-514"><a href="#cb5-514" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _create_efficiency_chart(<span class="va">self</span>, results: Dict[<span class="bu">str</span>, Dict[<span class="bu">int</span>, FinancialMetrics]], </span>
+<span id="cb5-515"><a href="#cb5-515" aria-hidden="true" tabindex="-1"></a>                                metric_name: <span class="bu">str</span>, title: <span class="bu">str</span>, ylabel: <span class="bu">str</span>, filename: <span class="bu">str</span>):</span>
+<span id="cb5-516"><a href="#cb5-516" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Create a chart showing an efficiency metric over time for all organizations.&quot;&quot;&quot;</span></span>
+<span id="cb5-517"><a href="#cb5-517" aria-hidden="true" tabindex="-1"></a>        plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>))</span>
+<span id="cb5-518"><a href="#cb5-518" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-519"><a href="#cb5-519" aria-hidden="true" tabindex="-1"></a>        has_data <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb5-520"><a href="#cb5-520" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-521"><a href="#cb5-521" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> ein, metrics_by_year <span class="kw">in</span> results.items():</span>
+<span id="cb5-522"><a href="#cb5-522" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="kw">not</span> metrics_by_year:</span>
+<span id="cb5-523"><a href="#cb5-523" aria-hidden="true" tabindex="-1"></a>                <span class="cf">continue</span></span>
+<span id="cb5-524"><a href="#cb5-524" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb5-525"><a href="#cb5-525" aria-hidden="true" tabindex="-1"></a>            org <span class="op">=</span> <span class="bu">next</span>((o <span class="cf">for</span> o <span class="kw">in</span> <span class="va">self</span>.organizations <span class="cf">if</span> o.ein <span class="op">==</span> ein), <span class="va">None</span>)</span>
+<span id="cb5-526"><a href="#cb5-526" aria-hidden="true" tabindex="-1"></a>            org_name <span class="op">=</span> org.name <span class="cf">if</span> org <span class="cf">else</span> ein</span>
+<span id="cb5-527"><a href="#cb5-527" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-528"><a href="#cb5-528" aria-hidden="true" tabindex="-1"></a>            years <span class="op">=</span> []</span>
+<span id="cb5-529"><a href="#cb5-529" aria-hidden="true" tabindex="-1"></a>            values <span class="op">=</span> []</span>
+<span id="cb5-530"><a href="#cb5-530" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-531"><a href="#cb5-531" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> year, metrics <span class="kw">in</span> <span class="bu">sorted</span>(metrics_by_year.items()):</span>
+<span id="cb5-532"><a href="#cb5-532" aria-hidden="true" tabindex="-1"></a>                metric_value <span class="op">=</span> <span class="bu">getattr</span>(metrics, metric_name)</span>
+<span id="cb5-533"><a href="#cb5-533" aria-hidden="true" tabindex="-1"></a>                <span class="cf">if</span> metric_value <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb5-534"><a href="#cb5-534" aria-hidden="true" tabindex="-1"></a>                    years.append(year)</span>
+<span id="cb5-535"><a href="#cb5-535" aria-hidden="true" tabindex="-1"></a>                    values.append(metric_value)</span>
+<span id="cb5-536"><a href="#cb5-536" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-537"><a href="#cb5-537" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> years:  <span class="co"># Only plot if we have data</span></span>
+<span id="cb5-538"><a href="#cb5-538" aria-hidden="true" tabindex="-1"></a>                plt.plot(years, values, marker<span class="op">=</span><span class="st">'o'</span>, label<span class="op">=</span>org_name)</span>
+<span id="cb5-539"><a href="#cb5-539" aria-hidden="true" tabindex="-1"></a>                has_data <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb5-540"><a href="#cb5-540" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-541"><a href="#cb5-541" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Only create chart if we have data</span></span>
+<span id="cb5-542"><a href="#cb5-542" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> has_data:</span>
+<span id="cb5-543"><a href="#cb5-543" aria-hidden="true" tabindex="-1"></a>            plt.title(title)</span>
+<span id="cb5-544"><a href="#cb5-544" aria-hidden="true" tabindex="-1"></a>            plt.xlabel(<span class="st">&quot;Year&quot;</span>)</span>
+<span id="cb5-545"><a href="#cb5-545" aria-hidden="true" tabindex="-1"></a>            plt.ylabel(ylabel)</span>
+<span id="cb5-546"><a href="#cb5-546" aria-hidden="true" tabindex="-1"></a>            plt.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb5-547"><a href="#cb5-547" aria-hidden="true" tabindex="-1"></a>            plt.legend()</span>
+<span id="cb5-548"><a href="#cb5-548" aria-hidden="true" tabindex="-1"></a>            plt.tight_layout()</span>
+<span id="cb5-549"><a href="#cb5-549" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-550"><a href="#cb5-550" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Save the chart</span></span>
+<span id="cb5-551"><a href="#cb5-551" aria-hidden="true" tabindex="-1"></a>            plt.savefig(CHARTS_DIR <span class="op">/</span> filename, dpi<span class="op">=</span><span class="dv">300</span>)</span>
+<span id="cb5-552"><a href="#cb5-552" aria-hidden="true" tabindex="-1"></a>            logger.info(<span class="ss">f&quot;Generated chart: </span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-553"><a href="#cb5-553" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb5-554"><a href="#cb5-554" aria-hidden="true" tabindex="-1"></a>            logger.warning(<span class="ss">f&quot;No data available to create </span><span class="sc">{</span>title<span class="sc">}</span><span class="ss"> chart&quot;</span>)</span>
+<span id="cb5-555"><a href="#cb5-555" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-556"><a href="#cb5-556" aria-hidden="true" tabindex="-1"></a>        plt.close()</span>
+<span id="cb5-557"><a href="#cb5-557" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-558"><a href="#cb5-558" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _create_organization_chart(<span class="va">self</span>, ein: <span class="bu">str</span>, org_name: <span class="bu">str</span>, metrics_by_year: Dict[<span class="bu">int</span>, FinancialMetrics]):</span>
+<span id="cb5-559"><a href="#cb5-559" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Create a chart showing multiple metrics for a single organization.&quot;&quot;&quot;</span></span>
+<span id="cb5-560"><a href="#cb5-560" aria-hidden="true" tabindex="-1"></a>        years <span class="op">=</span> <span class="bu">sorted</span>(metrics_by_year.keys())</span>
+<span id="cb5-561"><a href="#cb5-561" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-562"><a href="#cb5-562" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Extract metrics</span></span>
+<span id="cb5-563"><a href="#cb5-563" aria-hidden="true" tabindex="-1"></a>        pe_values <span class="op">=</span> [metrics_by_year[year].program_efficiency <span class="cf">if</span> metrics_by_year[year].program_efficiency <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="va">None</span> <span class="cf">for</span> year <span class="kw">in</span> years]</span>
+<span id="cb5-564"><a href="#cb5-564" aria-hidden="true" tabindex="-1"></a>        fe_values <span class="op">=</span> [metrics_by_year[year].fundraising_efficiency <span class="cf">if</span> metrics_by_year[year].fundraising_efficiency <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="va">None</span> <span class="cf">for</span> year <span class="kw">in</span> years]</span>
+<span id="cb5-565"><a href="#cb5-565" aria-hidden="true" tabindex="-1"></a>        admin_values <span class="op">=</span> [metrics_by_year[year].admin_ratio <span class="cf">if</span> metrics_by_year[year].admin_ratio <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="va">None</span> <span class="cf">for</span> year <span class="kw">in</span> years]</span>
+<span id="cb5-566"><a href="#cb5-566" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-567"><a href="#cb5-567" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Skip if we don't have enough data</span></span>
+<span id="cb5-568"><a href="#cb5-568" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="kw">not</span> <span class="bu">any</span>(pe_values) <span class="kw">and</span> <span class="kw">not</span> <span class="bu">any</span>(fe_values) <span class="kw">and</span> <span class="kw">not</span> <span class="bu">any</span>(admin_values):</span>
+<span id="cb5-569"><a href="#cb5-569" aria-hidden="true" tabindex="-1"></a>            logger.warning(<span class="ss">f&quot;No efficiency metrics available for </span><span class="sc">{</span>org_name<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-570"><a href="#cb5-570" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span></span>
+<span id="cb5-571"><a href="#cb5-571" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-572"><a href="#cb5-572" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create the chart</span></span>
+<span id="cb5-573"><a href="#cb5-573" aria-hidden="true" tabindex="-1"></a>        plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">6</span>))</span>
+<span id="cb5-574"><a href="#cb5-574" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-575"><a href="#cb5-575" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create the primary axis for Program Efficiency and Admin Ratio (0-1 scale)</span></span>
+<span id="cb5-576"><a href="#cb5-576" aria-hidden="true" tabindex="-1"></a>        ax1 <span class="op">=</span> plt.gca()</span>
+<span id="cb5-577"><a href="#cb5-577" aria-hidden="true" tabindex="-1"></a>        ax1.set_xlabel(<span class="st">&quot;Year&quot;</span>)</span>
+<span id="cb5-578"><a href="#cb5-578" aria-hidden="true" tabindex="-1"></a>        ax1.set_ylabel(<span class="st">&quot;Ratio (0-1 scale)&quot;</span>)</span>
+<span id="cb5-579"><a href="#cb5-579" aria-hidden="true" tabindex="-1"></a>        ax1.set_ylim(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb5-580"><a href="#cb5-580" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-581"><a href="#cb5-581" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Plot Program Efficiency and Admin Ratio on primary axis</span></span>
+<span id="cb5-582"><a href="#cb5-582" aria-hidden="true" tabindex="-1"></a>        has_data <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb5-583"><a href="#cb5-583" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-584"><a href="#cb5-584" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">any</span>(pe_values):</span>
+<span id="cb5-585"><a href="#cb5-585" aria-hidden="true" tabindex="-1"></a>            ax1.plot(years, [v <span class="cf">if</span> v <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="bu">float</span>(<span class="st">'nan'</span>) <span class="cf">for</span> v <span class="kw">in</span> pe_values], </span>
+<span id="cb5-586"><a href="#cb5-586" aria-hidden="true" tabindex="-1"></a>                    marker<span class="op">=</span><span class="st">'o'</span>, color<span class="op">=</span><span class="st">'blue'</span>, label<span class="op">=</span><span class="st">&quot;Program Efficiency&quot;</span>)</span>
+<span id="cb5-587"><a href="#cb5-587" aria-hidden="true" tabindex="-1"></a>            has_data <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb5-588"><a href="#cb5-588" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-589"><a href="#cb5-589" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">any</span>(admin_values):</span>
+<span id="cb5-590"><a href="#cb5-590" aria-hidden="true" tabindex="-1"></a>            ax1.plot(years, [v <span class="cf">if</span> v <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="bu">float</span>(<span class="st">'nan'</span>) <span class="cf">for</span> v <span class="kw">in</span> admin_values], </span>
+<span id="cb5-591"><a href="#cb5-591" aria-hidden="true" tabindex="-1"></a>                    marker<span class="op">=</span><span class="st">'s'</span>, color<span class="op">=</span><span class="st">'red'</span>, label<span class="op">=</span><span class="st">&quot;Admin Ratio&quot;</span>)</span>
+<span id="cb5-592"><a href="#cb5-592" aria-hidden="true" tabindex="-1"></a>            has_data <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb5-593"><a href="#cb5-593" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-594"><a href="#cb5-594" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create secondary axis for Fundraising Efficiency (potentially larger scale)</span></span>
+<span id="cb5-595"><a href="#cb5-595" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">any</span>(fe_values):</span>
+<span id="cb5-596"><a href="#cb5-596" aria-hidden="true" tabindex="-1"></a>            ax2 <span class="op">=</span> ax1.twinx()</span>
+<span id="cb5-597"><a href="#cb5-597" aria-hidden="true" tabindex="-1"></a>            ax2.set_ylabel(<span class="st">&quot;Fundraising Efficiency&quot;</span>, color<span class="op">=</span><span class="st">'green'</span>)</span>
+<span id="cb5-598"><a href="#cb5-598" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Filter out None values for max calculation</span></span>
+<span id="cb5-599"><a href="#cb5-599" aria-hidden="true" tabindex="-1"></a>            valid_fe <span class="op">=</span> [v <span class="cf">for</span> v <span class="kw">in</span> fe_values <span class="cf">if</span> v <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>]</span>
+<span id="cb5-600"><a href="#cb5-600" aria-hidden="true" tabindex="-1"></a>            max_fe <span class="op">=</span> <span class="bu">max</span>(valid_fe) <span class="cf">if</span> valid_fe <span class="cf">else</span> <span class="dv">10</span></span>
+<span id="cb5-601"><a href="#cb5-601" aria-hidden="true" tabindex="-1"></a>            ax2.set_ylim(<span class="dv">0</span>, <span class="bu">max</span>(<span class="dv">20</span>, max_fe <span class="op">*</span> <span class="fl">1.2</span>))  <span class="co"># Set upper limit to at least 20</span></span>
+<span id="cb5-602"><a href="#cb5-602" aria-hidden="true" tabindex="-1"></a>            ax2.plot(years, [v <span class="cf">if</span> v <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> <span class="bu">float</span>(<span class="st">'nan'</span>) <span class="cf">for</span> v <span class="kw">in</span> fe_values], </span>
+<span id="cb5-603"><a href="#cb5-603" aria-hidden="true" tabindex="-1"></a>                    marker<span class="op">=</span><span class="st">'^'</span>, color<span class="op">=</span><span class="st">'green'</span>, label<span class="op">=</span><span class="st">&quot;Fundraising Efficiency&quot;</span>)</span>
+<span id="cb5-604"><a href="#cb5-604" aria-hidden="true" tabindex="-1"></a>            ax2.tick_params(axis<span class="op">=</span><span class="st">'y'</span>, labelcolor<span class="op">=</span><span class="st">'green'</span>)</span>
+<span id="cb5-605"><a href="#cb5-605" aria-hidden="true" tabindex="-1"></a>            has_data <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb5-606"><a href="#cb5-606" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-607"><a href="#cb5-607" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Add Fundraising Efficiency to legend on primary axis</span></span>
+<span id="cb5-608"><a href="#cb5-608" aria-hidden="true" tabindex="-1"></a>            <span class="im">from</span> matplotlib.lines <span class="im">import</span> Line2D</span>
+<span id="cb5-609"><a href="#cb5-609" aria-hidden="true" tabindex="-1"></a>            fe_line <span class="op">=</span> Line2D([<span class="dv">0</span>], [<span class="dv">0</span>], color<span class="op">=</span><span class="st">'green'</span>, marker<span class="op">=</span><span class="st">'^'</span>, label<span class="op">=</span><span class="st">&quot;Fundraising Efficiency&quot;</span>)</span>
+<span id="cb5-610"><a href="#cb5-610" aria-hidden="true" tabindex="-1"></a>            ax1_handles, ax1_labels <span class="op">=</span> ax1.get_legend_handles_labels()</span>
+<span id="cb5-611"><a href="#cb5-611" aria-hidden="true" tabindex="-1"></a>            ax1.legend(handles<span class="op">=</span>ax1_handles <span class="op">+</span> [fe_line], labels<span class="op">=</span>ax1_labels <span class="op">+</span> [<span class="st">&quot;Fundraising Efficiency&quot;</span>])</span>
+<span id="cb5-612"><a href="#cb5-612" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb5-613"><a href="#cb5-613" aria-hidden="true" tabindex="-1"></a>            ax1.legend()</span>
+<span id="cb5-614"><a href="#cb5-614" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-615"><a href="#cb5-615" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Only create chart if we have data</span></span>
+<span id="cb5-616"><a href="#cb5-616" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> has_data:</span>
+<span id="cb5-617"><a href="#cb5-617" aria-hidden="true" tabindex="-1"></a>            plt.title(<span class="ss">f&quot;Financial Metrics Over Time: </span><span class="sc">{</span>org_name<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-618"><a href="#cb5-618" aria-hidden="true" tabindex="-1"></a>            plt.grid(<span class="va">True</span>, linestyle<span class="op">=</span><span class="st">'--'</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
+<span id="cb5-619"><a href="#cb5-619" aria-hidden="true" tabindex="-1"></a>            plt.tight_layout()</span>
+<span id="cb5-620"><a href="#cb5-620" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-621"><a href="#cb5-621" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Create a safe filename</span></span>
+<span id="cb5-622"><a href="#cb5-622" aria-hidden="true" tabindex="-1"></a>            safe_name <span class="op">=</span> <span class="st">&quot;&quot;</span>.join(c <span class="cf">if</span> c.isalnum() <span class="cf">else</span> <span class="st">&quot;_&quot;</span> <span class="cf">for</span> c <span class="kw">in</span> org_name)</span>
+<span id="cb5-623"><a href="#cb5-623" aria-hidden="true" tabindex="-1"></a>            filename <span class="op">=</span> <span class="ss">f&quot;</span><span class="sc">{</span>ein<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>safe_name<span class="sc">}</span><span class="ss">_metrics.png&quot;</span></span>
+<span id="cb5-624"><a href="#cb5-624" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-625"><a href="#cb5-625" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Save the chart</span></span>
+<span id="cb5-626"><a href="#cb5-626" aria-hidden="true" tabindex="-1"></a>            plt.savefig(CHARTS_DIR <span class="op">/</span> filename, dpi<span class="op">=</span><span class="dv">300</span>)</span>
+<span id="cb5-627"><a href="#cb5-627" aria-hidden="true" tabindex="-1"></a>            logger.info(<span class="ss">f&quot;Generated organization chart: </span><span class="sc">{</span>filename<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-628"><a href="#cb5-628" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb5-629"><a href="#cb5-629" aria-hidden="true" tabindex="-1"></a>            logger.warning(<span class="ss">f&quot;No metrics data available to create chart for </span><span class="sc">{</span>org_name<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-630"><a href="#cb5-630" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-631"><a href="#cb5-631" aria-hidden="true" tabindex="-1"></a>        plt.close()</span>
+<span id="cb5-632"><a href="#cb5-632" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-633"><a href="#cb5-633" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-634"><a href="#cb5-634" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb5-635"><a href="#cb5-635" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Main function to run the nonprofit analyzer.&quot;&quot;&quot;</span></span>
+<span id="cb5-636"><a href="#cb5-636" aria-hidden="true" tabindex="-1"></a>    console.<span class="bu">print</span>(<span class="st">&quot;[bold green]Nonprofit Financial Analyzer[/bold green]&quot;</span>)</span>
+<span id="cb5-637"><a href="#cb5-637" aria-hidden="true" tabindex="-1"></a>    console.<span class="bu">print</span>(<span class="st">&quot;Extracting and analyzing Form 990 data from ProPublica API&quot;</span>)</span>
+<span id="cb5-638"><a href="#cb5-638" aria-hidden="true" tabindex="-1"></a>    console.<span class="bu">print</span>()</span>
+<span id="cb5-639"><a href="#cb5-639" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-640"><a href="#cb5-640" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb5-641"><a href="#cb5-641" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Initialize and run the analyzer</span></span>
+<span id="cb5-642"><a href="#cb5-642" aria-hidden="true" tabindex="-1"></a>        analyzer <span class="op">=</span> NonprofitAnalyzer(use_cache<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-643"><a href="#cb5-643" aria-hidden="true" tabindex="-1"></a>        results <span class="op">=</span> analyzer.analyze_all_organizations()</span>
+<span id="cb5-644"><a href="#cb5-644" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-645"><a href="#cb5-645" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Check if we have any valid results</span></span>
+<span id="cb5-646"><a href="#cb5-646" aria-hidden="true" tabindex="-1"></a>        valid_results <span class="op">=</span> <span class="bu">any</span>(metrics <span class="cf">for</span> metrics <span class="kw">in</span> results.values() <span class="cf">if</span> metrics)</span>
+<span id="cb5-647"><a href="#cb5-647" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-648"><a href="#cb5-648" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> valid_results:</span>
+<span id="cb5-649"><a href="#cb5-649" aria-hidden="true" tabindex="-1"></a>            analyzer.generate_reports(results)</span>
+<span id="cb5-650"><a href="#cb5-650" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb5-651"><a href="#cb5-651" aria-hidden="true" tabindex="-1"></a>            console.<span class="bu">print</span>()</span>
+<span id="cb5-652"><a href="#cb5-652" aria-hidden="true" tabindex="-1"></a>            console.<span class="bu">print</span>(<span class="st">&quot;[bold green]Analysis complete![/bold green]&quot;</span>)</span>
+<span id="cb5-653"><a href="#cb5-653" aria-hidden="true" tabindex="-1"></a>            console.<span class="bu">print</span>(<span class="ss">f&quot;Results saved to the '</span><span class="sc">{</span>RESULTS_DIR<span class="sc">}</span><span class="ss">' directory&quot;</span>)</span>
+<span id="cb5-654"><a href="#cb5-654" aria-hidden="true" tabindex="-1"></a>            console.<span class="bu">print</span>(<span class="ss">f&quot;Charts saved to the '</span><span class="sc">{</span>CHARTS_DIR<span class="sc">}</span><span class="ss">' directory&quot;</span>)</span>
+<span id="cb5-655"><a href="#cb5-655" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb5-656"><a href="#cb5-656" aria-hidden="true" tabindex="-1"></a>            console.<span class="bu">print</span>(<span class="st">&quot;[bold yellow]Warning:[/bold yellow] No valid financial metrics could be extracted.&quot;</span>)</span>
+<span id="cb5-657"><a href="#cb5-657" aria-hidden="true" tabindex="-1"></a>            console.<span class="bu">print</span>(<span class="st">&quot;Please check the log file for more details.&quot;</span>)</span>
+<span id="cb5-658"><a href="#cb5-658" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb5-659"><a href="#cb5-659" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb5-660"><a href="#cb5-660" aria-hidden="true" tabindex="-1"></a>        logger.exception(<span class="st">&quot;An error occurred during analysis&quot;</span>)</span>
+<span id="cb5-661"><a href="#cb5-661" aria-hidden="true" tabindex="-1"></a>        console.<span class="bu">print</span>(<span class="ss">f&quot;[bold red]Error:[/bold red] </span><span class="sc">{</span><span class="bu">str</span>(e)<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb5-662"><a href="#cb5-662" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">1</span></span>
+<span id="cb5-663"><a href="#cb5-663" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-664"><a href="#cb5-664" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb5-665"><a href="#cb5-665" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-666"><a href="#cb5-666" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-667"><a href="#cb5-667" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb5-668"><a href="#cb5-668" aria-hidden="true" tabindex="-1"></a>    sys.exit(main())</span></code></pre></div>
+<h2 id="results">Results</h2>
+<strong>Table 1: Nonprofit Financial Metrics - Most Recent Year Available</strong>
+<details>
+<summary>
+Click to expand table
+</summary>
+<table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 8%" />
+<col style="width: 25%" />
+<col style="width: 32%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>Organization</th>
+<th>Year</th>
+<th>Program Efficiency</th>
+<th>Fundraising Efficiency</th>
+<th>Form Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>American Civil Liberties Union Foundation Inc</td>
+<td>2023</td>
+<td>N/A</td>
+<td>512.15</td>
+<td>990</td>
+</tr>
+<tr>
+<td>American National Red Cross</td>
+<td>2022</td>
+<td>N/A</td>
+<td>3520.96</td>
+<td>990</td>
+</tr>
+<tr>
+<td>United Way Worldwide</td>
+<td>2022</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>990</td>
+</tr>
+<tr>
+<td>Planned Parenthood Federation Of America</td>
+<td>2022</td>
+<td>N/A</td>
+<td>94.12</td>
+<td>990</td>
+</tr>
+<tr>
+<td>Nature Conservancy</td>
+<td>2022</td>
+<td>N/A</td>
+<td>60.70</td>
+<td>990</td>
+</tr>
+</tbody>
+</table>
+</details>
+<strong>Table 2: American Civil Liberties Union Foundation Financial Metrics (2012-2023)</strong>
+<details>
+<summary>
+Click to expand table
+</summary>
+<table>
+<colgroup>
+<col style="width: 4%" />
+<col style="width: 11%" />
+<col style="width: 12%" />
+<col style="width: 13%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+<col style="width: 18%" />
+<col style="width: 8%" />
+</colgroup>
+<thead>
+<tr>
+<th>Year</th>
+<th>Total Revenue</th>
+<th>Total Expenses</th>
+<th>Program Expenses</th>
+<th>Fundraising Expenses</th>
+<th>Program Efficiency</th>
+<th>Fundraising Efficiency</th>
+<th>Form Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2012</td>
+<td>98753127</td>
+<td>71535506</td>
+<td>None</td>
+<td>175372.0</td>
+<td>None</td>
+<td>562.54</td>
+<td>990</td>
+</tr>
+<tr>
+<td>2013</td>
+<td>84066048</td>
+<td>74213958</td>
+<td>None</td>
+<td>190358.0</td>
+<td>None</td>
+<td>441.62</td>
+<td>990</td>
+</tr>
+<tr>
+<td>2014</td>
+<td>125179853</td>
+<td>89345364</td>
+<td>None</td>
+<td>237632.0</td>
+<td>None</td>
+<td>526.77</td>
+<td>990</td>
+</tr>
+<tr>
+<td>2015</td>
+<td>137424285</td>
+<td>85678343</td>
+<td>None</td>
+<td>364723.0</td>
+<td>None</td>
+<td>376.79</td>
+<td>990</td>
+</tr>
+<tr>
+<td>2016</td>
+<td>133455463</td>
+<td>84257642</td>
+<td>None</td>
+<td>241057.0</td>
+<td>None</td>
+<td>553.61</td>
+<td>990</td>
+</tr>
+<tr>
+<td>2017</td>
+<td>117889035</td>
+<td>120961465</td>
+<td>None</td>
+<td>394851.0</td>
+<td>None</td>
+<td>298.57</td>
+<td>990</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>233763414</td>
+<td>115464165</td>
+<td>None</td>
+<td>380152.0</td>
+<td>None</td>
+<td>615.00</td>
+<td>990</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>173159458</td>
+<td>140703350</td>
+<td>None</td>
+<td>425183.0</td>
+<td>None</td>
+<td>407.26</td>
+<td>990</td>
+</tr>
+<tr>
+<td>2020</td>
+<td>386615193</td>
+<td>141347817</td>
+<td>None</td>
+<td>552895.0</td>
+<td>None</td>
+<td>699.26</td>
+<td>990</td>
+</tr>
+<tr>
+<td>2021</td>
+<td>228229069</td>
+<td>173082558</td>
+<td>None</td>
+<td>450232.0</td>
+<td>None</td>
+<td>506.90</td>
+<td>990</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>226129775</td>
+<td>172665114</td>
+<td>None</td>
+<td>423347.0</td>
+<td>None</td>
+<td>534.14</td>
+<td>990</td>
+</tr>
+<tr>
+<td>2023</td>
+<td>189774584</td>
+<td>186344190</td>
+<td>None</td>
+<td>370746.0</td>
+<td>None</td>
+<td>512.15</td>
+<td>990</td>
+</tr>
+</tbody>
+</table>
+</details>
+<figure>
+<img src="../images/fundraising_efficiency_chart.png" alt="Fundraising Efficiency Over Time">
+<figcaption>
+<strong>Figure 1.</strong> The Fundraising Efficiency (Contributions/Fundraising Expenses) values for all five nonprofit organizations from 2011-2023. The chart demonstrates variations in fundraising effectiveness across organizations and fluctuations within individual organizations over time.
+</figcaption>
+</figure>
+<figure>
+<img src="../images/13-6213516_American_Civil_Liberties_Union_Foundation_Inc_metrics.png" alt="ACLU Financial Metrics">
+<figcaption>
+<strong>Figure 2.</strong> The Fundraising Efficiency for the American Civil Liberties Union Foundation from 2012-2023, showing the organization’s effectiveness in converting fundraising expenses into contributions over a twelve-year period.
+</figcaption>
+</figure>
+<figure>
+<img src="../images/53-0196605_American_National_Red_Cross_metrics.png" alt="Red Cross Financial Metrics">
+<figcaption>
+<strong>Figure 3.</strong> The Fundraising Efficiency for the American Red Cross from 2011-2022, illustrating the ratio of contributions received to expenses incurred for fundraising activities over an eleven-year timeframe.
+</figcaption>
+</figure>
+<figure>
+<img src="../images/13-1635294_United_Way_Worldwide_metrics.png" alt="United Way Financial Metrics">
+<figcaption>
+<strong>Figure 4.</strong> The Fundraising Efficiency for United Way Worldwide from 2011-2022, showing the relationship between fundraising expenses and total contributions collected over eleven years of operations.
+</figcaption>
+</figure>
+<figure>
+<img src="../images/13-1644147_Planned_Parenthood_Federation_Of_America_metrics.png" alt="Planned Parenthood Financial Metrics">
+<figcaption>
+<strong>Figure 5.</strong> The Fundraising Efficiency for Planned Parenthood Federation of America from 2011-2022, tracking how effectively the organization has converted fundraising expenditures into contribution revenue throughout this period.
+</figcaption>
+</figure>
+<figure>
+<img src="../images/53-0242652_Nature_Conservancy_metrics.png" alt="Nature Conservancy Financial Metrics">
+<figcaption>
+<strong>Figure 6.</strong> The Fundraising Efficiency for the Nature Conservancy from 2011-2022, displaying the historical performance of the organization’s fundraising activities in terms of returns generated per dollar spent.
+</figcaption>
+</figure>
+<h2 id="discussion">Discussion</h2>
+<p>Our experiment reveals significant limitations in programmatic access to detailed nonprofit financial data through third-party APIs. Despite successful extraction of basic financial information like total revenue and total expenses, we encountered consistent inability to access program service expenses data necessary for calculating Program Efficiency (PE). This limitation substantially impacts the utility of computational approaches for comprehensive nonprofit financial analysis.</p>
+<p>The results presented in Table 1 highlight a critical gap in data accessibility: while the ProPublica API provides overall financial totals, it does not expose the detailed expense breakdowns required for nuanced analysis. This explains why Program Efficiency values are universally unavailable across all five major nonprofits studied. The constraint appears systematic rather than organization-specific, suggesting an API design limitation rather than data availability issues with particular nonprofits.</p>
+<p>Fundraising Efficiency (FE) calculations yielded more success, as shown in both Table 1 and Figure 1, with four of the five organizations providing sufficient data for this metric. The extreme variation observed—from the Red Cross’s remarkably high FE of 3,520.96 to The Nature Conservancy’s more modest 60.70—warrants deeper examination. The Red Cross’s exceptionally high ratio suggests either extraordinary fundraising effectiveness or potential data anomalies that merit verification against primary source documents. The FE values for the ACLU (512.15) and Planned Parenthood (94.12) fall within more typical ranges for their sectors, though still represent highly effective fundraising operations.</p>
+<p>The time-series data revealed in Table 2 and visualized in Figure 1 through Figure 6 demonstrates relatively stable fundraising efficiency for most organizations across the 2011-2023 period, with some notable fluctuations. The ACLU’s FE trend (Figure 2) shows several peaks and valleys, potentially corresponding to periods of heightened public interest in civil liberties issues. The consistent absence of program expense data across all years and organizations, however, prevents temporal analysis of mission focus and program effectiveness that would be particularly valuable for longitudinal nonprofit evaluation.</p>
+<p>Our extraction process successfully retrieved financial data for all five nonprofit organizations for multiple years, spanning from 2011 to 2023 depending on availability, as shown in Table 2 for the ACLU and referenced in Figures 2-6 for the other organizations. While we were able to retrieve the basic financial data from the ProPublica API, the program service expenses data was not available through the basic API response for any of the organizations, preventing the calculation of Program Efficiency (PE). However, we were able to calculate Fundraising Efficiency (FE) for four of the five organizations, with values ranging from approximately 60 to over 3,500 as displayed in Table 1 and Figure 1.</p>
+<p>Our methodology successfully navigated several technical challenges inherent to Form 990 data extraction. The year-parsing functionality correctly identified filing periods despite variations in date formatting across different submissions. The field-mapping approach successfully handled inconsistencies in API response structures, as evidenced by our ability to extract multiple financial metrics despite varying field names. These technical achievements form a foundation for future work, even as they highlight the current limitations of API-based approaches.</p>
+<p>The computational approach also revealed substantial organizational complexity within the nonprofit sector. Many large nonprofit entities, particularly the ACLU, maintain multiple legal entities with separate EINs and Form 990 filings. This fragmentation complicates comprehensive analysis, as financial activities are dispersed across multiple returns rather than consolidated into a single report. Future automated analysis systems will need to account for these organizational structures to provide accurate assessments of overall nonprofit performance.</p>
+<p>While our immediate goal of calculating comprehensive efficiency metrics was partially constrained by data accessibility limitations, the experiment successfully demonstrates both the potential and challenges of computational approaches to nonprofit transparency. The successful extraction of FE metrics across multiple years provides valuable insights into fundraising effectiveness, as shown in Figure 1, even as the PE analysis remains elusive without direct access to underlying form data.</p>
+<p>Alternative approaches that might yield more comprehensive data include direct processing of Form 990 PDF or XML files from the IRS, which would contain the detailed breakdowns absent from the API responses. However, this approach introduces significant additional complexity, particularly for handling the diverse formats of PDF-based returns. The technical infrastructure developed in this experiment provides a foundation for such extensions, with the field mapping and metric calculation components readily adaptable to more detailed data sources.</p>
+<p>The results of our experiment, particularly the patterns visible in Table 1 and Figures 1-6, suggest that while current API-based approaches offer valuable but limited insights into nonprofit financial behavior, significant opportunities remain for enhanced computational transparency. Direct PDF processing, expanded API capabilities, or combination approaches may eventually unlock the comprehensive program efficiency metrics that remain inaccessible through current third-party APIs.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This study explored the programmatic extraction of financial metrics from IRS Form 990 data through the ProPublica Nonprofit Explorer API, with a focus on calculating Program Efficiency (PE) and Fundraising Efficiency (FE) for five major nonprofit organizations. Our findings reveal a significant gap between the theoretical availability of nonprofit financial data and its practical accessibility through current API infrastructures.</p>
+<p>While we successfully retrieved basic financial information and calculated Fundraising Efficiency metrics for four of the five organizations studied, as shown in Table 1 and Figures 1-6, the systematic absence of program service expense data prevented calculation of Program Efficiency metrics across all organizations. This limitation highlights a critical challenge for computational approaches to nonprofit transparency and accountability.</p>
+<p>The technical framework developed in this experiment provides a foundation for future work, demonstrating successful approaches to year parsing, field mapping, and metric calculation that can be extended to more comprehensive data sources. The multi-year financial metrics visualizations shown in Figures 1-6 offer valuable insights into fundraising effectiveness trends even as they illustrate the current constraints on programmatic analysis.</p>
+<p>Future work should explore direct processing of Form 990 PDF or XML documents from primary sources, which would likely provide the detailed expense breakdowns needed for comprehensive efficiency analysis. Additionally, enhanced API capabilities or hybrid approaches combining multiple data sources could significantly advance the automation of nonprofit financial analysis.</p>
+<p>Despite its limitations, this experiment demonstrates both the potential and challenges of computational approaches to nonprofit financial data analysis, providing a practical foundation for more comprehensive nonprofit transparency tools in the future.</p>
+<h1 class="unnumbered" id="references">References</h1>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-charity_navigator" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Navigator, C. Charity Navigator Financial Metrics.</div>
+</div>
+<div id="ref-propublica_api" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">ProPublica Nonprofit Explorer API Documentation.</div>
+</div>
+<div id="ref-noprofits_search" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">NoProfit.org. <em>NoProfit search tool</em>. <a href="https://search.noprofits.org/">https://search.noprofits.org/</a>.</div>
+</div>
+<div id="ref-noprofits_github" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">NoProfit Search GitHub Repository.</div>
+</div>
+</div>
+    </main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-text">
+            Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a> 
+        </br>Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a> - <a href="../colophon.html">Colophon</a>
+        </div>
+        <div class="print-pdf-button">
+            <button onclick="window.print();" class="print-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="print-icon">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Print / Save as PDF
+            </button>
+        </div>
+    </div>
+</footer>
+</body>
+
+</html>
