@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="./css/default.css" />
+    <script defer src="./js/mathjax-config.js"></script>
+    <script defer src="./js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="./images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="./">NoProfits Blog</a>
+        </div>
+        <nav>
+            <a href="./">Home</a>
+            <a href="./about.html">About</a>
+            <a href="./archive.html">Archive</a>
+            <a href="./contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <h1 id="who-am-i">Who Am I?</h1>
+<p>I’m a curious tinkerer who likes to play with:</p>
+<ul>
+<li>🔧 <strong>Technology</strong> - Because who doesn’t love when things <em>actually</em> work?</li>
+<li>🧪 <strong>Chemistry</strong> - It’s like cooking, but with more safety goggles, and don’t lick the spoon.</li>
+<li>🌱 <strong>Bonsai</strong> (hopefully soon!) - Tiny trees are just regular trees that got ctrl-minus’d.</li>
+</ul>
+<h2 id="my-current-status">My Current Status</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BonsaiGardener:</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.trees <span class="op">=</span> []</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.patience_level <span class="op">=</span> <span class="bu">float</span>(<span class="st">'inf'</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.coffee_level <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add_tree(<span class="va">self</span>, species: <span class="bu">str</span>, age_years: <span class="bu">int</span>):</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Add a new tiny tree to our collection&quot;&quot;&quot;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.coffee_level <span class="op">&lt;</span> <span class="dv">1</span>:</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="st">&quot;Too tired to garden... ☕&quot;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.trees.append({</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>            <span class="st">'species'</span>: species,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>            <span class="st">'age'</span>: age_years,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>            <span class="st">'size'</span>: <span class="st">'smol'</span>,  <span class="co"># All bonsai are smol</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>            <span class="st">'last_watered'</span>: <span class="st">'recently'</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f&quot;Yay! Added a </span><span class="sc">{</span>species<span class="sc">}</span><span class="ss"> to the collection!&quot;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> practice_patience(<span class="va">self</span>):</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>        <span class="co">&quot;&quot;&quot;Key skill for bonsai gardening&quot;&quot;&quot;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        meditation_hours <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> meditation_hours <span class="op">&lt;</span> <span class="dv">1000</span>:</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> <span class="va">self</span>.is_tree_growing_too_fast():</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>                <span class="bu">print</span>(<span class="st">&quot;Remember: Trees are like code - no rushing!&quot;</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>            meditation_hours <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> garden_status(<span class="va">self</span>):</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f&quot;Currently tending </span><span class="sc">{</span><span class="bu">len</span>(<span class="va">self</span>.trees)<span class="sc">}</span><span class="ss"> tiny trees with </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>patience_level<span class="sc">}</span><span class="ss"> units of patience&quot;</span></span></code></pre></div>
+<h2 id="fun-facts-about-me">Fun Facts About Me</h2>
+<blockquote>
+<p>“I never met a programming language I didn’t want to
+poke with a stick just to see what happens.”</p>
+</blockquote>
+<h2 id="things-i-want-to-learn">Things I Want To Learn:</h2>
+<table style="width:62%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 20%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr>
+<th>Today</th>
+<th>Tomorrow</th>
+<th>Someday Maybe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RST Syntax</td>
+<td>Bonsai Care</td>
+<td>Quantum Computing</td>
+</tr>
+<tr>
+<td>Hakyll</td>
+<td>More Chem</td>
+<td>Time Travel</td>
+</tr>
+</tbody>
+</table>
+<h2 id="alternative-table-format-of-things-i-want-to-learn">Alternative Table Format of Things I Want To Learn:</h2>
+<table>
+<thead>
+<tr>
+<th>Today</th>
+<th>Tomorrow</th>
+<th>Someday Maybe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RST</td>
+<td>Bonsai</td>
+<td>Quantum Computing</td>
+</tr>
+<tr>
+<td>Hakyll</td>
+<td>Chemistry</td>
+<td>Time Travel</td>
+</tr>
+<tr>
+<td>LaTeX</td>
+<td>TikZ</td>
+<td>Chemical Synthesis</td>
+</tr>
+</tbody>
+</table>
+<div class="note">
+<div class="title">
+<p>Note</p>
+</div>
+<p>If you’re reading this, congratulations! You’ve found someone who enjoys
+writing documentation for fun. We are a rare species!</p>
+</div>
+<div class="warning">
+<div class="title">
+<p>Warning</p>
+</div>
+<p>May occasionally make terrible puns. Proceed with caution.</p>
+</div>
+<p>Want to chat? Feel free to <a href="../contact.html">reach out</a>!</p>
+<p>## Site Credits
+This blog was developed with assistance from Claude (Anthropic). While all content and final decisions are my own, Claude helped with design, coding, and brainstorming throughout the development process.</p>
+    </main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-text">
+            Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a> 
+        </br>Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a> - <a href="./colophon.html">Colophon</a>
+        </div>
+        <div class="print-pdf-button">
+            <button onclick="window.print();" class="print-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="print-icon">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Print / Save as PDF
+            </button>
+        </div>
+    </div>
+</footer>
+</body>
+
+</html>

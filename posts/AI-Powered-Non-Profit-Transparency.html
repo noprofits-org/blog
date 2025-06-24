@@ -1,0 +1,975 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">NoProfits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <div class="info">
+    <h3>AI-Powered Non-Profit Transparency - Comparing Modern Tools for Financial Analysis</h3>
+    Posted on March 19, 2025
+    
+</div>
+
+<div class="tex2jax_ignore" data-markdown="1">
+<h2 id="abstract">Abstract</h2>
+<p>This study examines the effectiveness of modern AI search tools in analyzing non-profit financial transparency. We compare the outputs of two leading AI systems—Deepseek and Grok—in extracting and interpreting Form 990 data for major non-profit organizations. Through systematic prompting focused on executive compensation, program expense ratios, fundraising efficiency, and revenue sources, we demonstrate significant variations in data presentation, analysis depth, and insight generation between these AI tools. The experiment, conducted in March 2025, highlights both the potential and limitations of AI-assisted financial analysis for promoting accountability in the non-profit sector, establishing a foundation for more informed donor decision-making.<span class="citation" data-cites="propublica2024"><sup>1</sup></span></p>
+<h2 id="introduction">Introduction</h2>
+<p>Non-profit financial transparency represents a cornerstone of organizational accountability, enabling donors, regulators, and the public to make informed decisions about charitable giving and oversight. The Form 990—an annual information return required by the Internal Revenue Service (IRS)—serves as the primary public record of a non-profit’s financial activities, governance, and operational metrics.<span class="citation" data-cites="irs2023"><sup>2</sup></span> However, extracting meaningful insights from these complex documents often requires specialized knowledge and significant time investment.</p>
+<p>The emergence of sophisticated AI search and analysis tools presents a potential solution to this challenge, offering the ability to rapidly process and interpret financial disclosures across multiple organizations. As these tools evolve, understanding their capabilities and limitations becomes increasingly important for stakeholders seeking reliable information about non-profit performance.</p>
+<p>This study explores the application of two prominent AI search tools—Deepseek and Grok—to the task of analyzing financial transparency among major non-profit organizations: United Way Worldwide, Girl Scouts of the USA, and American Red Cross. Our investigation focuses on several key financial metrics that are critical for evaluating non-profit performance:</p>
+<p><strong>Executive compensation</strong> (particularly CEO salary): This metric indicates how organizations compensate leadership relative to their size, budget, and sector norms. High executive compensation may signal potential resource allocation concerns but must be evaluated in context of organizational complexity and scope.</p>
+<p><strong>Program expense ratio</strong> (percentage of funds going to mission): Generally considered one of the most important indicators of non-profit efficiency, this ratio reveals what percentage of expenses directly supports the organization’s stated mission versus administrative or fundraising costs. Industry standards typically suggest 70-80% as a benchmark for strong mission focus.</p>
+<p><strong>Fundraising efficiency</strong> (cost to raise $1): This metric demonstrates how effectively an organization converts fundraising investments into contributions. Lower values indicate more efficient fundraising operations, though methodologies for calculating this metric can vary significantly.</p>
+<p><strong>Major revenue sources</strong>: Understanding revenue diversification helps evaluate an organization’s financial stability and potential vulnerabilities to specific economic shifts or donor trends.</p>
+<p>Our experimental approach involves prompting both AI tools with identical queries targeting Form 990 data for these three major non-profits. We examine variations in their responses, assessing comprehensiveness, analytical depth, and practical utility for diverse stakeholders.</p>
+<p>The findings from this investigation aim to provide donors, regulators, journalists, and transparency advocates with practical insights into the evolving landscape of AI-assisted financial analysis, supporting more effective oversight and informed decision-making in the non-profit sector.</p>
+<h2 id="experimental">Experimental</h2>
+<p>The experiment was conducted using two AI search tools—Deepseek and Grok—in March 2025 using their publicly accessible versions. The following identical prompt was submitted to both AI systems:</p>
+<pre><code>I'm researching financial transparency in major non-profits. Please search specifically through ProPublica's Non-Profit Explorer and the IRS.gov Tax Exempt Organization Search to provide me with:
+
+1. The most recent Form 990 data for [United Way Worldwide/Girl Scouts of America/American Red Cross].
+
+2. Analysis of their:
+   - Executive compensation (particularly CEO salary)
+   - Program expense ratio (% of funds going to mission)
+   - Fundraising efficiency (cost to raise $1)
+   - Major revenue sources
+
+3. Any red flags or notable points about their financial management compared to industry standards.
+
+4. Direct links to where I can find their complete Form 990s on both ProPublica and IRS.gov.
+
+Please compare what information is available through each source and note any differences or advantages between ProPublica's interface versus the IRS database.</code></pre>
+<h2 id="results">Results</h2>
+<details>
+<summary>
+<strong>Deepseek’s Reasoning Process.<span class="citation" data-cites="deepseek2025"><sup>3</sup></span> </strong>(Click to expand)
+</summary>
+<div data-markdown="1">
+<p>Okay, the user wants information on financial transparency for major non-profits like United Way, Girl Scouts, and American Red Cross. They specifically mentioned using ProPublica’s Non-Profit Explorer and the IRS.gov Tax Exempt Organization Search. Let me break down the query step by step.</p>
+<p>First, they need the most recent Form 990 data for each organization. I should check both ProPublica and IRS.gov to find the latest filings. I know ProPublica is user-friendly and often has recent forms, but the IRS database might have the most official ones. I need to note the differences between the two sources.</p>
+<p>Next, the analysis part: executive compensation (especially CEO salary), program expense ratio, fundraising efficiency, and major revenue sources. For each of these, I’ll have to locate the relevant sections in Form 990. CEO compensation is usually in Part VII, program expenses in Part III and IX, fundraising costs in Part IX, and revenue sources in Part VIII.</p>
+<p>Then, red flags compared to industry standards. The BBB Wise Giving Alliance recommends a program expense ratio of at least 65%, fundraising efficiency under 35% (cost to raise $1 should be less than $0.35), and CEO compensation should be reasonable compared to similar organizations. I should check if any of the non-profits fall outside these benchmarks.</p>
+<p>Providing direct links to their Form 990s on both platforms. ProPublica links are straightforward, but the IRS site might require using their search tool. I should explain how to navigate both.</p>
+<p>Comparing ProPublica and IRS.gov: ProPublica is easier to search and has bulk access, while IRS.gov is the official source but might be slower. ProPublica might process the data more, making it easier to read, whereas IRS has raw PDFs.</p>
+<p>Wait, I need to verify each organization’s data individually. Let me start with United Way Worldwide. Check their EIN: 131760305. On ProPublica, search that EIN, find the latest 990 (2022 maybe). CEO salary would be in Part VII, Section A. Program expenses are Part IX, line 25. Total expenses minus management and fundraising gives program ratio. Fundraising efficiency is total fundraising expenses divided by contributions. Revenue sources are Part VIII.</p>
+<p>Same process for Girl Scouts (EIN 13-1624015) and American Red Cross (EIN 530196605). I should note that American Red Cross might have higher compensation due to its size. Program ratios are usually good for these big names, but need to check exact numbers.</p>
+<p>Red flags: If any have a program ratio below 65%, high fundraising costs, or excessive CEO pay. Also, check for any audits or sanctions mentioned in Form 990.</p>
+<p>Links: For each org, provide ProPublica link via their Nonprofit Explorer and the IRS TEOS link. Explain that IRS links might not be direct but require searching via EIN.</p>
+<p>Differences between sources: ProPublica has a better interface, but IRS is authoritative. ProPublica might have processed data, while IRS is original. Sometimes ProPublica might be missing the latest if not updated yet.</p>
+<p>I should structure each section per organization, present the data, analysis, red flags, links, and then the comparison of sources. Make sure to mention that the user should verify the latest data as filings can be updated.</p>
+</div>
+</details>
+<details>
+<summary>
+<strong>Grok’s Reasoning Process.<span class="citation" data-cites="grok2025"><sup>4</sup></span></strong> (Click to expand)
+</summary>
+<div data-markdown="1">
+<p>Thinking
+Researching non-profit finances
+The request is about financial transparency for major non-profits like United Way, Girl Scouts of America, and American Red Cross. They need recent Form 990 data, including executive compensation and program expense ratios.
+Searching for “ProPublica Non-Profit Explorer United Way”
+10 results found</p>
+<p>Nonprofit Explorer - ProPublica
+projects.propublica.org</p>
+<p>ProPublica Nonprofit Explorer (Independent Publisher) - Connectors | Microsoft Learn
+learn.microsoft.com</p>
+<p>Nonprofit Explorer Adds Powerful Tools to Help You Research Organizations’ Financials
+propublica.org</p>
+<p>A Guide to Using ProPublica’s Nonprofit Explorer – LU Career Center – Resource Hub
+blogs.lawrence.edu</p>
+<p>United Way Worldwide - Nonprofit Explorer - ProPublica
+projects.propublica.org
+See more (5)
+Browsing results
+ProPublica’s Non-Profit Explorer has pages for various United Way organizations, such as United Way Worldwide and United Way of New York City. I believe the user means United Way Worldwide, given the national scope.
+The URL for United Way Worldwide is ProPublica, and it’s likely their EIN, so let’s proceed with that.
+Searching for “ProPublica Non-Profit Explorer Girl Scouts of America”
+10 results found</p>
+<p>Girl Scouts Of The United States Of America - Nonprofit Explorer - ProPublica
+projects.propublica.org</p>
+<p>Girl Scouts of the USA - Wikipedia
+en.wikipedia.org</p>
+<p>Girl Scouts Of The United States Of America - Full Filing - Nonprofit Explorer - ProPublica
+projects.propublica.org</p>
+<p>Girl Scouts Of The United States Of America - Form 990 - Nonprofit Explorer - ProPublica
+projects.propublica.org</p>
+<p>Girl Scouts Of Greater Los Angeles - Nonprofit Explorer - ProPublica
+projects.propublica.org
+See more (5)
+Browsing results
+I just found the Girl Scouts of the United States of America page on ProPublica. The URL is ProPublica, and it should have the financial details we need.
+Searching for “ProPublica Non-Profit Explorer American Red Cross”
+10 results found</p>
+<p>American National Red Cross - Nonprofit Explorer - ProPublica
+projects.propublica.org</p>
+<p>10 Disturbing Things ProPublica Learned Investigating the Red Cross’ Sandy Relief Efforts
+propublica.org</p>
+<p>Red Cross — ProPublica
+propublica.org</p>
+<p>International Committee Of The Red Cross - Nonprofit Explorer - ProPublica
+projects.propublica.org</p>
+<p>American Red Cross - Wikipedia
+en.wikipedia.org
+See more (5)
+Browsing results
+Now, I’ve got the American National Red Cross page on ProPublica too. The URL is ProPublica, and it’ll help with their financials.
+Searching for “IRS Tax Exempt Organization Search United Way”
+10 results found</p>
+<p>Search for tax exempt organizations | Internal Revenue Service
+irs.gov</p>
+<p>Tax Exempt Organization Search | Internal Revenue Service
+irs.gov</p>
+<p>Tax Exempt Organization Search | Internal Revenue Service
+apps.irs.gov</p>
+<p>Tax Exempt Organization Search bulk data downloads | Internal Revenue Service
+irs.gov</p>
+<p>Tax Exempt Organization Search Details | Internal Revenue Service
+apps.irs.gov
+See more (5)
+Browsing results
+There is a lot here about IRS tools for tax-exempt organizations. The IRS Tax Exempt Organization Search is at IRS, but it’s just the search tool itself.
+Searching for “United Way IRS Form 990”
+10 results found</p>
+<p>Public Reporting | United Way Worldwide
+unitedway.org</p>
+<p>Charity Ratings and Donor Resources | Charity Navigator
+charitynavigator.org</p>
+<p>United Way Worldwide - Nonprofit Explorer - ProPublica
+projects.propublica.org</p>
+<p>United Way Worldwide - GuideStar Profile
+guidestar.org</p>
+<p>IRS Form 990 | United Way of the Coastal Bend
+uwcb.org
+See more (5)
+Browsing results
+United Way Worldwide’s 2023 IRS Form 990 is available on their site. You can find it at Public Reporting, and it’s part of their transparency efforts.
+Searching for “Girl Scouts of the United States of America IRS Form 990”
+10 results found</p>
+<p>Girl Scouts Of The United States Of America - Form 990 - Nonprofit Explorer - ProPublica
+projects.propublica.org</p>
+<p>Details about Girl scouts of the usa
+apps.irs.gov</p>
+<p>Girl Scouts Of The United States Of America - Nonprofit Explorer - ProPublica
+projects.propublica.org</p>
+<p>Girlscouts
+girlscouts.org</p>
+<p>Girlscouts
+girlscouts.org
+See more (5)
+Browsing results
+Girl Scouts of the United States of America’s 2023 IRS Form 990 is on their website. You can access it at Girl Scouts, and it’s helpful for financial insights.
+Searching for “American Red Cross IRS Form 990”
+10 results found</p>
+<p>Redcross
+redcross.org</p>
+<p>Redcross
+redcross.org</p>
+<p>Redcross
+redcross.org</p>
+<p>Details about American red cross
+apps.irs.gov</p>
+<p>Redcross
+redcross.org
+See more (5)
+Browsing results
+American Red Cross’s FY 2023 IRS Form 990 is on their site. You can check it out at Red Cross, and it’s got the financial details we need.
+Locating IRS.gov links
+I’m trying to find IRS.gov links for each non-profit’s Form 990. The IRS Tax Exempt Organization Search seems key, and I’ve got the EINs for each.
+For United Way Worldwide, the EIN is 131635294. The URL should look like IRS Search, based on the pattern.
+Exploring topics around how to confirm these links. It’s important to ensure they’re accurate for the user’s needs.
+From ProPublica, United Way Worldwide is in Alexandria, VA, and Girl Scouts in New York, NY. American Red Cross is based in Washington, DC, which helps build the URLs.
+I’ve constructed potential IRS search URLs for each, like for United Way at IRS Search. Now, I need to verify they work for the latest Form 990s.
+Browsing projects.propublica.org for “most recent Form 990 filing year and link to download”
+The most recent Form 990 filing year is 2023. The download link isn’t directly provided, but Form 990 data is available for download, like at IRS.
+Browsing projects.propublica.org for “link to 2023 Form 990 PDF”
+For United Way Worldwide, there’s a link like ProPublica for the 2023 full filing. It seems to follow a pattern with year-specific URLs.
+The webpage doesn’t give a direct link to United Way Worldwide’s 2023 Form 990 PDF. It mentions Form 990 data is accessible, with PDFs updated regularly from IRS releases (NBC News).
+Browsing projects.propublica.org for “2023 Form 990”
+United Way Worldwide reported $51,568,253 in revenue and $65,723,143 in expenses for 2023. Their net income was negative at -$14,154,890, showing financial challenges (Form 990).
+From the pattern, it’s likely https://projects.propublica.org/nonprofits/organizations/131635294/202331319349303695/full. Let’s try to browse that URL.
+Browsing projects.propublica.org for “executive compensation, program expense ratio, fundraising efficiency, major revenue sources”
+No relevant info was found, so the URL might be wrong or the page lacks details. I’ll double-check the ProPublica link for United Way.
+The search for
+Browsing apps.irs.gov for “most recent Form 990 filing year and link to download”
+That URL led to a 404 error, so it’s incorrect. I’ll look for the right format now.
+I’m trying a web search for “IRS Form 990 United Way Worldwide 2023.” It
+Searching for “IRS Form 990 United Way Worldwide 2023”
+10 results found</p>
+<p>Public Reporting | United Way Worldwide
+unitedway.org</p>
+<p>About Form 990, Return of Organization Exempt from Income Tax | Internal Revenue Service
+irs.gov</p>
+<p>United Way Worldwide - Nonprofit Explorer - ProPublica
+projects.propublica.org</p>
+<p>Instructions for Schedule F (Form 990) (12/2024) | Internal Revenue Service
+irs.gov</p>
+<p>United Way Worldwide - GuideStar Profile
+guidestar.org
+See more (5)
+Browsing results
+United Way Worldwide provides its 2023 IRS Form 990 on their site. You can access it at Public Reporting, and it’s direct from the source.
+Browsing projects.propublica.org for “executive compensation, program expense ratio, fundraising efficiency, major revenue sources”
+Still not working. Perhaps the URL is different. Let’s try to find the correct URL format.
+Adjusting URL search
+Browsing projects.propublica.org for “download 2023 Form 990”
+The download link for Form 990 isn’t directly in the text. There might be a button on the actual page to get the PDF.
+IRS.gov for United Way Worldwide is at IRS Search. I’m confirming if this leads to the right Form 990.
+IRS Form 990s can be searched and downloaded using the EIN at IRS Search. For United Way Worldwide, use EIN 131635294 to find their forms.
+For American National Red Cross, the EIN is 530196605. You can search their Form 990s at the same IRS site using this number.
+Browsing projects.propublica.org for “Form 990 PDF”
+I’ll provide links to ProPublica pages and IRS search URLs with EINs for the final answer. It’ll help the user access Form 990s for United Way, Girl Scouts, and Red Cross.
+For United Way Worldwide, ProPublica is at ProPublica. IRS search uses EIN 131635294 on IRS.
+Compiling organization links
+Browsing unitedway.org for “2023 Form 990 executive compensation”
+The 2023 Form 990 for United Way Worldwide is at Form 990. I’m browsing it to get executive compensation details.
+Browsing unitedway.org for “executive compensation, particularly CEO salary”
+For United Way Worldwide, CEO Angela Williams earned $991,200 in reportable compensation in 2023. She also received $54,216 in other compensation, totaling her pay.
+In Part VII, Angela Williams’ total compensation is $1,045,416, matching Schedule J’s breakdown. It includes base salary, bonuses, and other reportable amounts.
+Verifying compensation details
+Reportable compensation for Angela Williams is $991,200, covering wages and bonuses. Other compensation adds $54,216, making the total $1,045,416, as seen in Schedule J.
+Column D on Form 990, Part VII, is reportable compensation from the organization. It includes wages, salaries, and bonuses, reported on W-2 or 1099-MISC.
+Browsing unitedway.org for “program expenses, administrative expenses, fundraising expenses”
+It’s a 404 error, so the URL is incorrect.
+Browsing projects.propublica.org for “program expenses, administrative expenses, fundraising expenses for 2023”
+United Way Worldwide reported $0 in fundraising expenses for 2023, which seems odd. “Net Fundraising” might mean something else, so let’s check the Form 990 PDF.
+I’m browsing Girl Scouts’ 2023 Form 990 now. It’ll help find executive compensation and program expense ratios for them too.
+Browsing girlscouts.org for “executive compensation, particularly CEO salary, program expense ratio, fundraising efficiency, major revenue sources”
+For Girl Scouts, Sofia Chang’s 2023 CEO salary was $805,541, with $785,058 reportable and $20,483 other. Bonnie Barczykowski, new in 2023, earned $0 as she was newly appointed.
+For Girl Scouts, program expenses were $110,872,990, with total expenses at $124,042,410. Their program expense ratio is 89.37%, showing strong program focus.
+Browsing redcross.org for “executive compensation, particularly CEO salary, program expense ratio, fundraising efficiency, major revenue sources”
+For American Red Cross, CEO Gail McGovern’s total compensation was $873,211 in 2023. Their program expense ratio is 90.6%, with program expenses at $2,691,201,823 and total expenses at $2,971,106,889.
+American Red Cross had major revenue from contributions at $919,126,379 and program services at $2,167,924,872, including biomedical products/services at $2,011,917,984. Investment income was $76,827,242, showing diverse funding sources.
+Browsing unitedway.org for “program service expenses, management and general expenses, fundraising expenses”
+For United Way Worldwide, program service expenses are $55,134,600, management $8,663,478, and fundraising $1,925,065, totaling $65,723,143. Their program expense ratio is about 83.88%, calculated from these figures.
+Calculating expense ratios
+Fundraising expenses for United Way Worldwide were $1,925,065 in 2023. Total contributions were $21,525,082, so the cost per dollar raised is about $0.0894.
+Major revenue sources for United Way include contributions at $21,525,082 and program services at $28,289,710. They also have investment income like $898,620, royalties, and rental property income.
+CEO salaries for these non-profits range from $805,541 to $991,200, which seems typical for large organizations. Girl Scouts have the lowest fundraising cost at $0.01356 per dollar raised, while Red Cross is higher at $0.1957.
+United Way Worldwide’s CEO salary is $991,200, with a program expense ratio of 83.88%. Their fundraising efficiency is $0.0894 per dollar raised, and major revenues are contributions and program services.
+For Girl Scouts, major revenue sources include membership dues at $38,717,535 and sales of inventory at $21,737,242. Contributions were $25,024,680, adding to their funding mix.
+American Red Cross’s CEO salary is $873,211, with a high program expense ratio of 90.6%. Their fundraising cost is $0.1957 per dollar raised, and revenues include contributions and program services.
+American Red Cross’s major revenue sources are contributions at $919,126,379 and program services at $2,167,924,872. Biomedical services, like blood products, make up most of their program revenue at $2,011,917,984.
+Comparing data sources
+ProPublica’s Non-Profit Explorer offers a user-friendly interface with summarized financial data and direct Form 990 PDF downloads. IRS.gov’s Tax Exempt Organization Search lets you find filings by name or EIN, but it’s less convenient for downloads.
+ProPublica also provides tools like comparing organizations and searching by people, which IRS.gov lacks. IRS.gov is the official source, while ProPublica is more researcher-friendly.
+For United Way Worldwide, their 2023 Form 990 shows program expenses at $55,134,600 and total expenses at $65,723,143. This gives us the 83.88% program expense ratio, which is solid for non-profits.
+I’m compiling all this data for the final answer. It’ll help the user see financial transparency across these non-profits, with links to both ProPublica and IRS.gov for further exploration.
+Girl Scouts’ 2023 Form 990 shows CEO Sofia Chang earned $805,541 total, with a program expense ratio of 89.37%. Their fundraising efficiency is $0.01356 per dollar raised, which is impressive.
+American Red Cross’s 2023 data shows CEO Gail McGovern at $873,211, with a 90.6% program expense ratio. Their fundraising cost is higher at $0.1957 per dollar raised, reflecting their scale.
+For United Way Worldwide, contributions were $21,525,082, and program services brought in $28,289,710. Their total revenue was $51,568,253, with expenses exceeding income by $14,154,890.
+American Red Cross reported total revenue of $3,217,077,611 in 2023. Their financial scale is massive, with diverse revenue streams like contributions and program services.
+I’m evaluating CEO salaries against industry norms for large non-profits. Salaries from $800,000 to $1,000,000 seem standard, but they’re often debated for mission alignment.
+Program expense ratios for all three are above 80%, which is great. Girl Scouts stand out with low fundraising costs, while Red Cross has higher costs, likely due to their size.
+United Way’s fundraising efficiency at $0.0894 per dollar is reasonable, fitting industry norms. Red Cross’s higher cost might prompt questions about their fundraising strategy, given their scale.
+United Way Worldwide’s CEO salary of $991,200 is high but fits large non-profits. Girl Scouts show strong financial management with a 89.37% program ratio and low fundraising costs.
+Assessing financial health
+American Red Cross’s higher fundraising costs at $0.1957 per dollar raised warrant monitoring. Their 90.6% program expense ratio is strong, though, showing mission focus.
+I’m comparing these metrics to industry standards to highlight any red flags. It’ll help the user understand each organization’s financial health.
+ProPublica’s Non-Profit Explorer is great for quick access to summarized data. IRS.gov’s search is official but less user-friendly for downloads.
+IRS.gov lets you find all Form 990 filings by EIN, like for United Way at 131635294. It’s comprehensive, though navigating can be tricky.
+Key difference is ProPublica’s convenience for research versus IRS.gov’s official status. This’ll help the user choose the right tool for their needs.</p>
+</div>
+</details>
+<details>
+<summary>
+<strong>Deepseek’s Response.<span class="citation" data-cites="deepseek2025"><sup>3</sup></span></strong> (Click to expand) | <a href="images/DeepSeekThinkingAndResponse.zip" target="_blank">Download Screenshots as a .zip file</a>
+</summary>
+<div data-markdown="1">
+<p>(Due to technical issues, the search service is temporarily unavailable.)</p>
+<p>Here’s a structured breakdown of the requested information for <strong>United Way Worldwide</strong>, <strong>Girl Scouts of the USA</strong>, and <strong>American Red Cross</strong>, based on publicly available Form 990 data and comparisons between ProPublica and IRS.gov. Note that specifics may vary slightly depending on the most recent filings (typically 2022 or 2023, pending updates).</p>
+<hr />
+<h3 id="most-recent-form-990-data"><strong>1. Most Recent Form 990 Data</strong></h3>
+<ul>
+<li><strong>United Way Worldwide (EIN 13-1760305)</strong>: FY 2022 (ProPublica)<br />
+</li>
+<li><strong>Girl Scouts of the USA (EIN 13-1624015)</strong>: FY 2022 (ProPublica)<br />
+</li>
+<li><strong>American Red Cross (EIN 53-0196605)</strong>: FY 2022 (ProPublica)</li>
+</ul>
+<hr />
+<h3 id="financial-analysis"><strong>2. Financial Analysis</strong></h3>
+<h4 id="executive-compensation"><strong>Executive Compensation</strong></h4>
+<ul>
+<li><strong>United Way</strong>: CEO Angela Williams earned <strong>$743,173</strong> (FY 2022).<br />
+</li>
+<li><strong>Girl Scouts</strong>: CEO Judith Batty earned <strong>$738,090</strong> (FY 2022).<br />
+</li>
+<li><strong>American Red Cross</strong>: CEO Gail McGovern earned <strong>$1,037,895</strong> (FY 2022).
+<ul>
+<li><em>Comparison</em>: Red Cross CEO pay is higher due to its larger operational scale (common for disaster-relief orgs).</li>
+</ul></li>
+</ul>
+<h4 id="program-expense-ratio"><strong>Program Expense Ratio</strong></h4>
+<ul>
+<li><strong>United Way</strong>: <strong>88%</strong> (of $3.7B total expenses went to programs).<br />
+</li>
+<li><strong>Girl Scouts</strong>: <strong>81%</strong> (of $233M total expenses).<br />
+</li>
+<li><strong>American Red Cross</strong>: <strong>90%</strong> (of $2.9B total expenses).
+<ul>
+<li><em>Industry Standard</em>: ≥65% (BBB Wise Giving Alliance). All meet/exceed benchmarks.</li>
+</ul></li>
+</ul>
+<h4 id="fundraising-efficiency"><strong>Fundraising Efficiency</strong></h4>
+<ul>
+<li><strong>United Way</strong>: <strong>$0.10</strong> to raise $1 (Total fundraising expenses: $143M / Contributions: $1.4B).<br />
+</li>
+<li><strong>Girl Scouts</strong>: <strong>$0.14</strong> to raise $1 ($20M / $142M).<br />
+</li>
+<li><strong>American Red Cross</strong>: <strong>$0.06</strong> to raise $1 ($166M / $2.8B).
+<ul>
+<li><em>Industry Standard</em>: ≤$0.35 per $1 raised. All perform well.</li>
+</ul></li>
+</ul>
+<h4 id="major-revenue-sources"><strong>Major Revenue Sources</strong></h4>
+<ul>
+<li><strong>United Way</strong>: Corporate partnerships (e.g., workplace campaigns), grants, investment income.<br />
+</li>
+<li><strong>Girl Scouts</strong>: Membership dues (~28%), product sales (e.g., cookies), contributions.<br />
+</li>
+<li><strong>American Red Cross</strong>: Disaster-relief donations (public and corporate), biomedical services (blood donations), grants.</li>
+</ul>
+<hr />
+<h3 id="red-flagsnotable-points"><strong>3. Red Flags/Notable Points</strong></h3>
+<ul>
+<li><strong>United Way</strong>: High reliance on workplace campaigns (vulnerable to economic downturns). No major red flags.<br />
+</li>
+<li><strong>Girl Scouts</strong>: Declining membership (revenue dropped 15% from 2020–2022). Program ratio slightly dipped but remains strong.<br />
+</li>
+<li><strong>American Red Cross</strong>: Criticized in past audits for disaster-response inefficiencies, but FY 2022 shows improved metrics.</li>
+</ul>
+<hr />
+<h3 id="direct-links-to-form-990s"><strong>4. Direct Links to Form 990s</strong></h3>
+<h4 id="propublica-nonprofit-explorer"><strong>ProPublica Nonprofit Explorer</strong></h4>
+<ul>
+<li><a href="https://projects.propublica.org/nonprofits/organizations/131760305">United Way Worldwide</a><br />
+</li>
+<li><a href="https://projects.propublica.org/nonprofits/organizations/131624015">Girl Scouts of the USA</a><br />
+</li>
+<li><a href="https://projects.propublica.org/nonprofits/organizations/530196605">American Red Cross</a></li>
+</ul>
+<h4 id="irs-tax-exempt-organization-search"><strong>IRS Tax Exempt Organization Search</strong></h4>
+<ul>
+<li>IRS.gov links require manual searches via EIN:
+<ol type="1">
+<li>Go to <a href="https://www.irs.gov/charities-non-profits/tax-exempt-organization-search">IRS TEOS</a>.<br />
+</li>
+<li>Enter EIN (e.g., 13-1760305 for United Way).<br />
+</li>
+<li>Select “990 Filings” tab for PDFs.</li>
+</ol></li>
+</ul>
+<hr />
+<h3 id="propublica-vs.-irs.gov-comparison"><strong>ProPublica vs. IRS.gov Comparison</strong></h3>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 40%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr>
+<th><strong>Feature</strong></th>
+<th><strong>ProPublica</strong></th>
+<th><strong>IRS.gov</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ease of Access</strong></td>
+<td>Instant PDFs; no login required.</td>
+<td>Requires manual search; slower interface.</td>
+</tr>
+<tr>
+<td><strong>Data Completeness</strong></td>
+<td>Hosts 990s from 2001–present.</td>
+<td>Official source, but older filings may lag.</td>
+</tr>
+<tr>
+<td><strong>Searchability</strong></td>
+<td>Advanced filters (e.g., revenue, compensation).</td>
+<td>Basic keyword/EIN search.</td>
+</tr>
+<tr>
+<td><strong>Machine-Readable Data</strong></td>
+<td>Extracted financials in tables.</td>
+<td>Raw PDFs only.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key Advantage of ProPublica</strong>: User-friendly interface with pre-processed data.<br />
+<strong>Key Advantage of IRS.gov</strong>: Authoritative source for legal/audit purposes.</p>
+<hr />
+<h3 id="final-notes"><strong>Final Notes</strong></h3>
+<ul>
+<li>All three organizations meet or exceed financial health benchmarks.<br />
+</li>
+<li>CEO salaries are high but within norms for large nonprofits (typically 2–5% of total expenses).<br />
+</li>
+<li>For real-time updates, cross-check both ProPublica and IRS.gov, as delays occur in IRS postings.</li>
+</ul>
+</div>
+</details>
+<details>
+<summary>
+<strong>Grok’s Response.<span class="citation" data-cites="grok2025"><sup>4</sup></span></strong> (Click to expand) | <a href="https://grok.com/share/bGVnYWN5_ed99a009-284d-48c0-a038-e4e4d0dcd816" target="_blank">View original</a>
+</summary>
+<div data-markdown="1">
+<h3 id="key-points">Key Points</h3>
+<ul>
+<li>Research suggests United Way Worldwide, Girl Scouts of the USA, and American Red Cross have high program expense ratios (83.88%, 89.37%, and 90.6%, respectively), indicating strong mission focus.</li>
+<li>It seems likely that CEO salaries ($991,200, $805,541, and $873,211) are within norms for large non-profits, though they may raise scrutiny.</li>
+<li>The evidence leans toward Girl Scouts having the most efficient fundraising ($0.01356 per dollar raised), while American Red Cross has higher costs ($0.1957 per dollar raised).</li>
+<li>Major revenue sources vary, with American Red Cross relying heavily on program services and contributions, and Girl Scouts on membership dues and cookie sales.</li>
+</ul>
+<h3 id="form-990-data-and-analysis">Form 990 Data and Analysis</h3>
+<p>Below is a summary of the most recent Form 990 data (2023) for each organization, focusing on executive compensation, program expense ratios, fundraising efficiency, and major revenue sources.</p>
+<h4 id="executive-compensation-1">Executive Compensation</h4>
+<ul>
+<li><strong>United Way Worldwide</strong>: CEO Angela Williams earned $991,200 in reportable compensation, with total compensation around $1,045,416 including other benefits.</li>
+<li><strong>Girl Scouts of the USA</strong>: CEO Sofia Chang (through February 2023) had total compensation of $805,541, with Bonnie Barczykowski, the new CEO, reporting $0 for 2023 as she was newly appointed.</li>
+<li><strong>American Red Cross</strong>: CEO Gail McGovern’s total compensation was $873,211, including base salary, bonuses, and other benefits.</li>
+</ul>
+<h4 id="program-expense-ratio-1">Program Expense Ratio</h4>
+<ul>
+<li>This ratio shows the percentage of total expenses spent on mission-related programs, a key indicator of efficiency.</li>
+<li><strong>United Way Worldwide</strong>: 83.88% ($55,134,600 program expenses out of $65,723,143 total).</li>
+<li><strong>Girl Scouts of the USA</strong>: 89.37% ($110,872,990 program expenses out of $124,042,410 total).</li>
+<li><strong>American Red Cross</strong>: 90.6% ($2,691,201,823 program expenses out of $2,971,106,889 total).</li>
+</ul>
+<h4 id="fundraising-efficiency-1">Fundraising Efficiency</h4>
+<ul>
+<li>Measured as the cost to raise $1, lower is better.</li>
+<li><strong>United Way Worldwide</strong>: $0.0894 per dollar raised (fundraising expenses $1,925,065, contributions $21,525,082).</li>
+<li><strong>Girl Scouts of the USA</strong>: $0.01356 per dollar raised (fundraising expenses $339,500, contributions $25,024,680).</li>
+<li><strong>American Red Cross</strong>: $0.1957 per dollar raised (fundraising expenses $179,837,467, contributions $919,126,379).</li>
+</ul>
+<h4 id="major-revenue-sources-1">Major Revenue Sources</h4>
+<ul>
+<li><strong>United Way Worldwide</strong>: Contributions ($21,525,082, 41.7%) and program services ($28,289,710, 54.9%) dominate.</li>
+<li><strong>Girl Scouts of the USA</strong>: Membership dues ($38,717,535), sales of inventory (e.g., cookies, $21,737,242), and contributions ($25,024,680).</li>
+<li><strong>American Red Cross</strong>: Program service revenue ($2,167,924,872, mostly biomedical services $2,011,917,984) and contributions ($919,126,379).</li>
+</ul>
+<h3 id="red-flags-and-notable-points">Red Flags and Notable Points</h3>
+<ul>
+<li>All three organizations show strong program expense ratios, above industry standards (typically 70-80%), suggesting effective use of funds for mission activities.</li>
+<li>Girl Scouts stand out with exceptionally low fundraising costs, an unexpected detail given their scale, while American Red Cross’s higher fundraising cost ($0.1957 per dollar) may warrant further scrutiny.</li>
+<li>CEO salaries, while within norms for large non-profits, are notable, especially United Way’s $991,200, which could be seen as high by some stakeholders.</li>
+<li>American Red Cross has faced historical criticism for financial management (e.g., past ProPublica investigations), but 2023 data shows no immediate red flags.</li>
+</ul>
+<h3 id="access-to-form-990s">Access to Form 990s</h3>
+<p>You can find the complete Form 990s at the following links:
+- <strong>United Way Worldwide</strong>:
+- ProPublica: <a href="https://projects.propublica.org/nonprofits/organizations/131635294">organizations page</a>
+- IRS.gov: Search with EIN 13-1635294 at <a href="https://apps.irs.gov/app/eos/">Tax Exempt Search</a>
+- Organization’s Form 990: <a href="https://www.unitedway.org/sites/default/files/2024-11/2023_United_Way_Worldwide_Form_990.pdf">2023 PDF</a>
+- <strong>Girl Scouts of the USA</strong>:
+- ProPublica: <a href="https://projects.propublica.org/nonprofits/organizations/131624016">organizations page</a>
+- IRS.gov: Search with EIN 13-1624016 at <a href="https://apps.irs.gov/app/eos/">Tax Exempt Search</a>
+- Organization’s Form 990: <a href="https://www.girlscouts.org/content/dam/gsusa/forms-and-documents/footer/financials/IRS%20Form%20990%20FY%202023.pdf">2023 PDF</a>
+- <strong>American Red Cross</strong>:
+- ProPublica: <a href="https://projects.propublica.org/nonprofits/organizations/530196605">organizations page</a>
+- IRS.gov: Search with EIN 53-0196605 at <a href="https://apps.irs.gov/app/eos/">Tax Exempt Search</a>
+- Organization’s Form 990: <a href="https://www.redcross.org/content/dam/redcross/about-us/publications/2023-publications/ARC-Form-990-PIC.pdf">2023 PDF</a></p>
+<hr />
+<h3 id="comprehensive-financial-transparency-analysis-for-major-non-profits">Comprehensive Financial Transparency Analysis for Major Non-Profits</h3>
+<p>This detailed report provides an in-depth analysis of financial transparency for United Way Worldwide, Girl Scouts of the United States of America, and American National Red Cross, focusing on their most recent Form 990 data (2023), executive compensation, program expense ratios, fundraising efficiency, major revenue sources, and any red flags compared to industry standards. It also includes direct links to their Form 990s on ProPublica and IRS.gov, with a comparison of the two platforms.</p>
+<h4 id="form-990-data-and-financial-metrics">Form 990 Data and Financial Metrics</h4>
+<p>The analysis is based on the 2023 Form 990 filings for each organization, accessed through ProPublica’s Non-Profit Explorer, IRS.gov’s Tax Exempt Organization Search, and the organizations’ own websites. Below are the detailed findings for each metric.</p>
+<h5 id="executive-compensation-particularly-ceo-salary">Executive Compensation, Particularly CEO Salary</h5>
+<p>Executive compensation, especially CEO salary, is a critical indicator of financial stewardship and alignment with mission. The data was extracted from Part VII (Compensation of Officers, Directors, Trustees, Key Employees, and Highest Compensated Employees) and Schedule J (Supplemental Information on Compensation) of the Form 990.</p>
+<ul>
+<li><strong>United Way Worldwide</strong>:
+<ul>
+<li>CEO Angela Williams had reportable compensation of $991,200 and other compensation of $54,216, totaling $1,045,416 for 2023. This includes base salary ($599,409), bonus ($380,000), and other benefits, as detailed in Schedule J.</li>
+<li>The compensation process involves the Executive Compensation Committee, which uses third-party consultants for biennial market assessments, ensuring alignment with comparable organizations.</li>
+</ul></li>
+<li><strong>Girl Scouts of the United States of America</strong>:
+<ul>
+<li>CEO Sofia Chang, serving through February 2023, had reportable compensation of $785,058 and other compensation of $20,483, totaling $805,541. Bonnie Barczykowski, appointed in February 2023, reported $0 compensation for the year, reflecting her recent appointment.</li>
+<li>Compensation is determined using Willis Towers Watson for benchmarks, with National Board Chair and Executive Development and Compensation Committee approval, documented contemporaneously.</li>
+</ul></li>
+<li><strong>American National Red Cross</strong>:
+<ul>
+<li>CEO Gail McGovern’s total compensation was $873,211, broken down as base compensation ($653,192), bonus and incentive ($197,663), other reportable ($8,405), retirement and deferred ($12,200), and nontaxable benefits ($1,751).</li>
+<li>Other key executives, such as Clifford Holtz (Chief Operating Officer, $780,885 total) and Chris Hrouda (President of Biomedical Services, $728,500 total), also had significant compensation, totaling $8,030,546 for officers and key employees.</li>
+</ul></li>
+</ul>
+<h5 id="program-expense-ratio-2">Program Expense Ratio</h5>
+<p>The program expense ratio, calculated as program service expenses divided by total functional expenses, indicates the proportion of funds spent on mission-related activities. This was derived from Part IX (Statement of Functional Expenses) of the Form 990.</p>
+<ul>
+<li><strong>United Way Worldwide</strong>:
+<ul>
+<li>Total program service expenses: $55,134,600</li>
+<li>Total functional expenses: $65,723,143 (including management and general $8,663,478, fundraising $1,925,065)</li>
+<li>Program expense ratio: $55,134,600 / $65,723,143 = 83.88%</li>
+</ul></li>
+<li><strong>Girl Scouts of the United States of America</strong>:
+<ul>
+<li>Total program service expenses: $110,872,990</li>
+<li>Total functional expenses: $124,042,410</li>
+<li>Program expense ratio: $110,872,990 / $124,042,410 = 89.37%</li>
+</ul></li>
+<li><strong>American National Red Cross</strong>:
+<ul>
+<li>Total program service expenses: $2,691,201,823</li>
+<li>Total functional expenses: $2,971,106,889</li>
+<li>Program expense ratio: $2,691,201,823 / $2,971,106,889 ≈ 90.6%</li>
+</ul></li>
+</ul>
+<h5 id="fundraising-efficiency-2">Fundraising Efficiency</h5>
+<p>Fundraising efficiency, measured as the cost to raise $1 (fundraising expenses divided by total contributions), reflects the organization’s ability to raise funds cost-effectively. This was calculated using Part VIII (Statement of Revenue) and Part IX (Statement of Functional Expenses).</p>
+<ul>
+<li><strong>United Way Worldwide</strong>:
+<ul>
+<li>Total contributions, gifts, grants: $21,525,082 (from Part VIII, line 1h)</li>
+<li>Fundraising expenses: $1,925,065 (from Part IX, column D)</li>
+<li>Fundraising efficiency: $1,925,065 / $21,525,082 ≈ $0.0894 per dollar raised</li>
+</ul></li>
+<li><strong>Girl Scouts of the United States of America</strong>:
+<ul>
+<li>Total contributions, gifts, grants: $25,024,680</li>
+<li>Professional fundraising expenses: $339,500 (from Part IX, line 11e)</li>
+<li>Fundraising efficiency: $339,500 / $25,024,680 ≈ $0.01356 per dollar raised</li>
+</ul></li>
+<li><strong>American National Red Cross</strong>:
+<ul>
+<li>Total contributions, gifts, grants: $919,126,379</li>
+<li>Fundraising expenses: $179,837,467 (from Part IX, column D)</li>
+<li>Fundraising efficiency: $179,837,467 / $919,126,379 ≈ $0.1957 per dollar raised</li>
+</ul></li>
+</ul>
+<h5 id="major-revenue-sources-2">Major Revenue Sources</h5>
+<p>Major revenue sources were identified from Part VIII (Statement of Revenue), highlighting the largest contributors to total revenue.</p>
+<ul>
+<li><strong>United Way Worldwide</strong>:
+<ul>
+<li>Contributions: $21,525,082 (41.7%)</li>
+<li>Program Services: $28,289,710 (54.9%)</li>
+<li>Investment Income: $898,620 (1.7%)</li>
+<li>Royalties: $405,849 (0.8%)</li>
+<li>Rental Property Income: $284,393 (0.6%)</li>
+<li>Sales of Assets: $164,599 (0.3%)</li>
+<li>Total Revenue: $51,568,253</li>
+</ul></li>
+<li><strong>Girl Scouts of the United States of America</strong>:
+<ul>
+<li>Membership Dues: $38,717,535</li>
+<li>Sales of Inventory (e.g., cookies): $21,737,242</li>
+<li>Contributions, Gifts, Grants: $25,024,680 (includes government grants: $5,376,282)</li>
+<li>Meeting &amp; Learning Event Revenue: $9,314,110</li>
+<li>Software Maintenance Revenue: $5,386,721</li>
+<li>Investment Income: $3,569,376</li>
+<li>Total Revenue: $115,591,467</li>
+</ul></li>
+<li><strong>American National Red Cross</strong>:
+<ul>
+<li>Contributions, Gifts, Grants, etc.: $919,126,379</li>
+<li>Program Service Revenue: $2,167,924,872 (primarily Biomedical products/services: $2,011,917,984, Other products/services: $156,006,888)</li>
+<li>Investment Income: $76,827,242</li>
+<li>Net Rental Income: $25,402,149</li>
+<li>Net Gain from Sales of Assets: $5,390,917</li>
+<li>Other Miscellaneous Revenue: $23,255,681</li>
+<li>Total Revenue: $3,217,077,611</li>
+</ul></li>
+</ul>
+<h4 id="red-flags-and-notable-points-compared-to-industry-standards">Red Flags and Notable Points Compared to Industry Standards</h4>
+<p>Industry standards for non-profits suggest a program expense ratio of 70-80% is strong, fundraising efficiency below $0.25 per dollar raised is acceptable, and CEO compensation should align with organizational size and mission. Below are notable points and potential red flags:</p>
+<ul>
+<li><strong>United Way Worldwide</strong>:
+<ul>
+<li>Program expense ratio (83.88%) is above industry standards, indicating strong mission focus.</li>
+<li>Fundraising efficiency ($0.0894 per dollar raised) is reasonable, but CEO salary ($991,200) is on the higher end, which may raise scrutiny given the organization’s net income of -$14,154,890 in 2023.</li>
+<li>No major red flags identified in 2023 financials, but the high executive compensation warrants monitoring.</li>
+</ul></li>
+<li><strong>Girl Scouts of the United States of America</strong>:
+<ul>
+<li>Exceptionally high program expense ratio (89.37%) and low fundraising efficiency ($0.01356 per dollar raised) are notable strengths, indicating efficient operations.</li>
+<li>CEO compensation ($805,541 for Sofia Chang) is within norms for large non-profits, and the transition to a new CEO (Bonnie Barczykowski) with $0 reported in 2023 is an unexpected detail given the timing.</li>
+<li>No apparent red flags; financials appear robust and mission-focused.</li>
+</ul></li>
+<li><strong>American National Red Cross</strong>:
+<ul>
+<li>Program expense ratio (90.6%) is excellent, but fundraising efficiency ($0.1957 per dollar raised) is higher than average, potentially indicating inefficiencies.</li>
+<li>CEO compensation ($873,211) is within norms, but historical criticisms (e.g., past ProPublica investigations into disaster relief spending) suggest ongoing scrutiny, though 2023 data shows no immediate red flags.</li>
+<li>The scale of program service revenue ($2.17 billion, mostly biomedical) is a significant driver, which is typical for their operations but may dilute focus on contributions.</li>
+</ul></li>
+</ul>
+<h4 id="direct-links-to-form-990s-1">Direct Links to Form 990s</h4>
+<p>The following links provide access to the complete Form 990s for each organization on ProPublica and IRS.gov, as requested:</p>
+<ul>
+<li><strong>United Way Worldwide</strong>:
+<ul>
+<li>ProPublica: <a href="https://projects.propublica.org/nonprofits/organizations/131635294">organizations page</a>, where Form 990 PDFs can be downloaded for each year, including 2023.</li>
+<li>IRS.gov: Search with EIN 13-1635294 at <a href="https://apps.irs.gov/app/eos/">Tax Exempt Search</a>, where Form 990 filings are accessible.</li>
+<li>Organization’s Form 990: <a href="https://www.unitedway.org/sites/default/files/2024-11/2023_United_Way_Worldwide_Form_990.pdf">2023 PDF</a> for direct download.</li>
+</ul></li>
+<li><strong>Girl Scouts of the United States of America</strong>:
+<ul>
+<li>ProPublica: <a href="https://projects.propublica.org/nonprofits/organizations/131624016">organizations page</a>, with downloadable Form 990 PDFs for 2023.</li>
+<li>IRS.gov: Search with EIN 13-1624016 at <a href="https://apps.irs.gov/app/eos/">Tax Exempt Search</a> for Form 990 access.</li>
+<li>Organization’s Form 990: <a href="https://www.girlscouts.org/content/dam/gsusa/forms-and-documents/footer/financials/IRS%20Form%20990%20FY%202023.pdf">2023 PDF</a> for direct access.</li>
+</ul></li>
+<li><strong>American National Red Cross</strong>:
+<ul>
+<li>ProPublica: <a href="https://projects.propublica.org/nonprofits/organizations/530196605">organizations page</a>, offering Form 990 PDF downloads for 2023.</li>
+<li>IRS.gov: Search with EIN 53-0196605 at <a href="https://apps.irs.gov/app/eos/">Tax Exempt Search</a> to find Form 990 filings.</li>
+<li>Organization’s Form 990: <a href="https://www.redcross.org/content/dam/redcross/about-us/publications/2023-publications/ARC-Form-990-PIC.pdf">2023 PDF</a> for direct download.</li>
+</ul></li>
+</ul>
+<h4 id="comparison-of-propublica-and-irs.gov">Comparison of ProPublica and IRS.gov</h4>
+<p>ProPublica’s Non-Profit Explorer and IRS.gov’s Tax Exempt Organization Search serve as key resources for accessing Form 990 data, with distinct advantages and limitations:</p>
+<ul>
+<li><strong>ProPublica’s Non-Profit Explorer</strong>:
+<ul>
+<li><strong>Interface</strong>: Offers a user-friendly interface with summarized financial data (e.g., revenue, expenses, executive compensation) and direct download links to Form 990 PDFs for each year.</li>
+<li><strong>Additional Features</strong>: Includes tools for comparing organizations side by side and searching by people (e.g., board members, key employees), enhancing research capabilities.</li>
+<li><strong>Limitations</strong>: While reliant on IRS data, it is not an official government source, which may be a consideration for formal reporting.</li>
+</ul></li>
+<li><strong>IRS.gov’s Tax Exempt Organization Search</strong>:
+<ul>
+<li><strong>Interface</strong>: Less user-friendly, requiring users to navigate through search results by name or EIN to access Form 990 filings, with no summarized data provided.</li>
+<li><strong>Features</strong>: Official government source, ensuring authenticity, and provides comprehensive access to all Form 990 filings, including historical data.</li>
+<li><strong>Limitations</strong>: Lacks the convenience of summarized data and direct download links, making it more labor-intensive for researchers.</li>
+</ul></li>
+</ul>
+<p><strong>Conclusion</strong>: ProPublica is ideal for quick research and analysis due to its summarized data and ease of use, while IRS.gov is the authoritative source for official filings, best suited for users needing verified documentation and willing to navigate the search tool.</p>
+<h4 id="data-sources-and-methodology">Data Sources and Methodology</h4>
+<p>The financial data was extracted from the 2023 Form 990 filings, accessed through the following sources:
+- ProPublica’s Non-Profit Explorer for summarized data and PDF downloads.
+- IRS.gov’s Tax Exempt Organization Search for official filings, searched by EIN.
+- Organizations’ own websites for direct Form 990 PDFs, providing primary source verification.</p>
+<p>Calculations for program expense ratios and fundraising efficiency were performed using data from Part IX (Functional Expenses) and Part VIII (Revenue), respectively, ensuring accuracy. Industry standards were referenced from general non-profit benchmarks (e.g., Charity Navigator, GuideStar), suggesting program expense ratios above 70-80% and fundraising efficiency below $0.25 per dollar raised as strong indicators.</p>
+<h4 id="key-citations">Key Citations</h4>
+<ul>
+<li><a href="https://www.unitedway.org/public-reporting">Public Reporting United Way Worldwide</a></li>
+<li><a href="https://www.girlscouts.org/content/dam/gsusa/forms-and-documents/footer/financials/IRS%20Form%20990%20FY%202023.pdf">Girl Scouts IRS Form 990 FY 2023</a></li>
+<li><a href="https://www.redcross.org/content/dam/redcross/about-us/publications/2023-publications/ARC-Form-990-PIC.pdf">American Red Cross Form 990 2023</a></li>
+<li><a href="https://projects.propublica.org/nonprofits/organizations/131635294">ProPublica Nonprofit Explorer United Way</a></li>
+<li><a href="https://projects.propublica.org/nonprofits/organizations/131624016">ProPublica Nonprofit Explorer Girl Scouts</a></li>
+<li><a href="https://projects.propublica.org/nonprofits/organizations/530196605">ProPublica Nonprofit Explorer American Red Cross</a></li>
+<li><a href="https://apps.irs.gov/app/eos/">IRS Tax Exempt Organization Search</a></li>
+</ul>
+</div>
+</details>
+<p><strong>Table 1.</strong> Key Financial Metrics Reported by AI Tools for United Way Worldwide</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Deepseek</th>
+<th>Grok</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fiscal Year</td>
+<td>2022</td>
+<td>2023</td>
+</tr>
+<tr>
+<td>CEO Compensation</td>
+<td>$743,173</td>
+<td>$991,200 (+ $54,216 other compensation)</td>
+</tr>
+<tr>
+<td>Program Expense Ratio</td>
+<td>88%</td>
+<td>83.88%</td>
+</tr>
+<tr>
+<td>Fundraising Efficiency</td>
+<td>$0.10 per $1</td>
+<td>$0.0894 per $1</td>
+</tr>
+<tr>
+<td>Total Revenue</td>
+<td>$3.7B (expenses figure)*</td>
+<td>$51,568,253</td>
+</tr>
+<tr>
+<td>Net Income</td>
+<td>Not reported</td>
+<td>-$14,154,890</td>
+</tr>
+</tbody>
+</table>
+<p>*Appears to be a discrepancy in reporting worldwide federation figures vs. parent organization</p>
+<p><strong>Table 2.</strong> Key Financial Metrics Reported by AI Tools for Girl Scouts of the USA</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 41%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Deepseek</th>
+<th>Grok</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fiscal Year</td>
+<td>2022</td>
+<td>2023</td>
+</tr>
+<tr>
+<td>CEO Compensation</td>
+<td>$738,090 (Judith Batty)</td>
+<td>$805,541 (Sofia Chang through Feb 2023)</td>
+</tr>
+<tr>
+<td>Program Expense Ratio</td>
+<td>81%</td>
+<td>89.37%</td>
+</tr>
+<tr>
+<td>Fundraising Efficiency</td>
+<td>$0.14 per $1</td>
+<td>$0.01356 per $1</td>
+</tr>
+<tr>
+<td>Total Revenue</td>
+<td>Not clearly stated</td>
+<td>$115,591,467</td>
+</tr>
+<tr>
+<td>Major Revenue Sources</td>
+<td>Membership dues (~28%), product sales, contributions</td>
+<td>Membership dues ($38.7M), sales of inventory ($21.7M), contributions ($25.0M)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 3.</strong> Key Financial Metrics Reported by AI Tools for American Red Cross</p>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Deepseek</th>
+<th>Grok</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fiscal Year</td>
+<td>2022</td>
+<td>2023</td>
+</tr>
+<tr>
+<td>CEO Compensation</td>
+<td>$1,037,895 (Gail McGovern)</td>
+<td>$873,211 (Gail McGovern)</td>
+</tr>
+<tr>
+<td>Program Expense Ratio</td>
+<td>90%</td>
+<td>90.6%</td>
+</tr>
+<tr>
+<td>Fundraising Efficiency</td>
+<td>$0.06 per $1</td>
+<td>$0.1957 per $1</td>
+</tr>
+<tr>
+<td>Total Revenue</td>
+<td>$2.9B (expenses figure)*</td>
+<td>$3,217,077,611</td>
+</tr>
+<tr>
+<td>Biomedical Services Revenue</td>
+<td>Not specified</td>
+<td>$2,011,917,984</td>
+</tr>
+</tbody>
+</table>
+<p>*Appears to be reporting expenses rather than revenue</p>
+<p><strong>Table 4.</strong> Comparative Analysis Features and Limitations</p>
+<table>
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 40%" />
+<col style="width: 24%" />
+</colgroup>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Deepseek</th>
+<th>Grok</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fiscal Year Reported</td>
+<td>2022</td>
+<td>2023</td>
+</tr>
+<tr>
+<td>Data Granularity</td>
+<td>Moderate</td>
+<td>High (specific dollar amounts)</td>
+</tr>
+<tr>
+<td>Source Citations</td>
+<td>Limited</td>
+<td>Extensive with direct links</td>
+</tr>
+<tr>
+<td>Platform Comparison</td>
+<td>Brief</td>
+<td>Detailed with interface analysis</td>
+</tr>
+<tr>
+<td>Red Flag Identification</td>
+<td>Limited</td>
+<td>More comprehensive</td>
+</tr>
+<tr>
+<td>Financial Context</td>
+<td>General industry standards</td>
+<td>Organization-specific analysis</td>
+</tr>
+<tr>
+<td>Limitations Disclosed</td>
+<td>Stated inability to actively search</td>
+<td>None explicitly mentioned</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 5.</strong> ProPublica vs. IRS.gov Comparison (as reported by Grok)</p>
+<table>
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 40%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th>Feature</th>
+<th>ProPublica</th>
+<th>IRS.gov</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ease of Access</td>
+<td>Instant PDFs; no login required</td>
+<td>Requires manual search; slower interface</td>
+</tr>
+<tr>
+<td>Data Completeness</td>
+<td>Hosts 990s from 2001–present</td>
+<td>Official source, but older filings may lag</td>
+</tr>
+<tr>
+<td>Searchability</td>
+<td>Advanced filters (revenue, compensation)</td>
+<td>Basic keyword/EIN search</td>
+</tr>
+<tr>
+<td>Machine-Readable Data</td>
+<td>Extracted financials in tables</td>
+<td>Raw PDFs only</td>
+</tr>
+<tr>
+<td>Key Advantage</td>
+<td>User-friendly interface with pre-processed data</td>
+<td>Authoritative source for legal/audit purposes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="discussion">Discussion</h2>
+<p>The complete outputs from both AI systems were systematically captured using each platform’s native export functionality. We documented both the final responses and the preliminary reasoning processes displayed by each system prior to response generation. While the content presented here maintains complete fidelity to the original outputs, the visual styling has been adapted to conform to NoProfits.org’s formatting standards. For reference to the original presentation format, readers may access the unmodified versions via the links provided alongside each expandable section in the Results.</p>
+<p>The outputs from each AI tool were analyzed for data recency, comprehensiveness of financial metrics, depth of analysis, identification of potential concerns, formatting, and provision of source information. We also noted significant discrepancies in reported values between the systems.</p>
+<p>The comparative analysis of AI search tools in extracting and interpreting non-profit financial data reveals significant differences in information quality, analytical depth, and practical utility.</p>
+<h3 id="data-recency-and-accuracy">Data Recency and Accuracy</h3>
+<p>Perhaps the most striking discrepancy between the two AI tools is the fiscal year referenced in their analyses. While Deepseek consistently reported data from 2022 filings, Grok provided more recent information from 2023 forms. This one-year difference resulted in substantial variations in key metrics, most notably in executive compensation figures. For example, United Way’s CEO compensation increased from $743,173 (2022) to $991,200 (2023)—a 33% difference that significantly impacts any evaluation of compensation practices.</p>
+<p>The variation in reported fundraising efficiency metrics is particularly notable. For the Girl Scouts, Deepseek reported $0.14 per dollar raised, while Grok indicated an exceptionally efficient $0.01356—more than a tenfold difference. This discrepancy may stem from different calculation methodologies, with Grok potentially using only professional fundraising expenses rather than total fundraising costs, highlighting the importance of understanding calculation methodologies when interpreting these figures.</p>
+<h3 id="analytical-depth-and-contextual-insights">Analytical Depth and Contextual Insights</h3>
+<p>Grok consistently provided more detailed financial breakdowns, particularly for revenue sources. For the American Red Cross, Grok specified that $2.01 billion of their $2.17 billion in program service revenue came from biomedical services—a crucial insight for understanding their operational model that was absent from Deepseek’s analysis. This level of detail offers stakeholders a more nuanced understanding of organizational funding structures and potential vulnerabilities.</p>
+<p>Both tools identified similar industry benchmarks for program expense ratios (70-80% considered strong), but Grok more effectively contextualized each organization’s performance against these standards. Additionally, Grok uniquely highlighted United Way’s negative net income (-$14,154,890) while discussing their high executive compensation, raising questions about financial sustainability that weren’t captured in the more general analysis provided by Deepseek.</p>
+<h3 id="information-presentation-and-accessibility">Information Presentation and Accessibility</h3>
+<p>The formatting and organization of information differed substantially between the two systems. Grok provided a more structured presentation with clear section headings, consistent formatting, and hierarchical organization of information. This approach enhances readability and facilitates quick extraction of key insights—an important consideration for stakeholders navigating complex financial data.</p>
+<p>Both tools effectively explained the differences between ProPublica and IRS.gov interfaces, but Grok provided a more comprehensive comparison, detailing specific features like searchability, data completeness, and machine readability. This practical guidance enhances the utility of the analysis for users seeking to conduct their own research.</p>
+<h3 id="limitations-and-transparency">Limitations and Transparency</h3>
+<p>Interestingly, Deepseek explicitly acknowledged limitations in its ability to search external sources in its reasoning process, indicating it “should check” sources while not actually being able to perform this search in real-time. This transparency about capabilities contrasts with Grok’s approach, which did not explicitly acknowledge any limitations in its access to external data sources.</p>
+<p>This difference raises important considerations about how AI systems represent their capabilities and the potential for users to misinterpret the recency or comprehensiveness of information provided. As donors and stakeholders increasingly rely on AI-assisted research, understanding these limitations becomes crucial for making informed decisions.</p>
+<p>The observed differences in response quality may stem from several factors:</p>
+<ol type="1">
+<li><p><strong>Data access mechanisms</strong>: The tools likely have different methods for accessing and indexing web content, with possible variations in refresh rates and data retention policies.</p></li>
+<li><p><strong>Calculation methodologies</strong>: Different interpretations of how to calculate metrics like fundraising efficiency could account for numerical discrepancies.</p></li>
+<li><p><strong>Prompt interpretation</strong>: While receiving identical prompts, the AIs may prioritize different aspects based on their training.</p></li>
+<li><p><strong>System architecture</strong>: Fundamental differences in how the systems process and retrieve information may affect their ability to access the most current data.</p></li>
+</ol>
+<h3 id="implications-for-non-profit-transparency">Implications for Non-Profit Transparency</h3>
+<p>The variation in reported metrics between the two AI tools underscores the challenges of automated financial analysis in the non-profit sector. While both systems successfully extracted key performance indicators from Form 990 data, the differences in their outputs highlight the importance of cross-referencing information from multiple sources when making donation or oversight decisions.</p>
+<p>The analysis also reveals the evolving capabilities of AI systems in interpreting complex financial documents. Both tools demonstrated the ability to extract relevant metrics from Form 990s and contextualize them against industry standards—a function that traditionally required specialized knowledge in non-profit accounting. This democratization of financial analysis has significant implications for transparency and accountability in the sector.</p>
+<p>However, the discrepancies in reported values and the limited ability of these systems to verify data recency in real-time suggest that AI tools should complement rather than replace traditional due diligence processes. The most effective approach likely involves using AI systems to rapidly identify areas of interest or concern, followed by targeted verification of critical metrics through authoritative sources.</p>
+<p>For NoProfits.org’s mission of promoting transparency and accountability, these findings suggest an opportunity to develop standardized prompting techniques and verification protocols that maximize the utility of AI tools while mitigating their limitations. By establishing best practices for AI-assisted non-profit research, we can enhance the value these tools provide to donors, regulators, and the public.</p>
+</div>
+<h2 class="unnumbered" id="references">References</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-propublica2024" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">ProPublica. <em>Nonprofit explorer</em>. <a href="https://projects.propublica.org/nonprofits/">https://projects.propublica.org/nonprofits/</a> (accessed 2025-03-19).</div>
+</div>
+<div id="ref-irs2023" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">Internal Revenue Service. <em>Tax exempt organization search</em>. <a href="https://apps.irs.gov/app/eos/">https://apps.irs.gov/app/eos/</a> (accessed 2025-03-19).</div>
+</div>
+<div id="ref-deepseek2025" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">DeepSeek. <em>DeepSeek chat</em>. <a href="https://chat.deepseek.com/">https://chat.deepseek.com/</a> (accessed 2025-03-19).</div>
+</div>
+<div id="ref-grok2025" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">xAI. <em>Grok</em>. <a href="https://grok.x.ai/">https://grok.x.ai/</a> (accessed 2025-03-19).</div>
+</div>
+</div>
+    </main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-text">
+            Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a> 
+        </br>Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a> - <a href="../colophon.html">Colophon</a>
+        </div>
+        <div class="print-pdf-button">
+            <button onclick="window.print();" class="print-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="print-icon">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Print / Save as PDF
+            </button>
+        </div>
+    </div>
+</footer>
+</body>
+
+</html>
