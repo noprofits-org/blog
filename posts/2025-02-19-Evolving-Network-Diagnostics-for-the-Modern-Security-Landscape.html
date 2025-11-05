@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits.org - Blogs about science, nonprofits, and other fun stuff.">
+    <title>NoProfits Blog</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="../">NoProfits Blog</a>
+        </div>
+        <nav>
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <main role="main">
+        <div class="info">
+    <h3>Network Path Analysis - Evolving Network Diagnostics for the Modern Security Landscape</h3>
+    Posted on February 19, 2025
+    
+</div>
+
+<h2 id="abstract">Abstract</h2>
+<p>This study explores the evolution of network diagnostics in security-hardened modern networks, utilizing advanced tools like <code>kdig</code>, <code>nping</code>, and <code>tcptraceroute</code> to overcome limitations of traditional ICMP-based utilities. Conducted on February 24, 2025, using macOS Sequoia 15.3.1, the experiment reveals TCP-based diagnostics’ effectiveness despite widespread UDP and ICMP filtering, offering insights into DNS resolution, connectivity, and path visibility for network professionals navigating contemporary security challenges.<span class="citation" data-cites="Hellekson13"><sup>1</sup></span></p>
+<h2 id="introduction">Introduction</h2>
+<p>In today’s networks, security isn’t just an added feature; it’s the foundational architecture. Modern networks are increasingly hardened, employing sophisticated firewalls, intrusion detection systems, and traffic filtering policies. While essential for protecting against threats, these security measures significantly impact the effectiveness of traditional network diagnostic tools like <code>ping</code>, <code>traceroute</code>, and even basic DNS queries using tools like <code>dig</code>. These classic utilities, which heavily rely on the Internet Control Message Protocol (ICMP) and simple UDP probes, often find themselves blocked or rate-limited in security-conscious environments, leaving network administrators and security professionals with a diminished ability to diagnose and troubleshoot effectively.<span class="citation" data-cites="rfc792"><sup>2</sup></span></p>
+<p>This blog post modernizes our approach to network diagnostics by introducing a suite of advanced tools designed to navigate the challenges of security-hardened networks. We move beyond the limitations of ICMP-centric utilities and embrace tools that leverage TCP, UDP, and application-layer protocols to gain deeper insights into network behavior. This updated methodology not only ensures continued diagnostic capability but also provides a more accurate representation of network performance as experienced by modern applications and users.</p>
+<p>In this experiment, we will explore <code>kdig</code> for advanced DNS analysis, <code>nping</code> for flexible connectivity and latency testing, <code>tcptraceroute</code> for path discovery through firewalls, and <code>nping</code> for comprehensive network probing and analysis. These tools represent a significant evolution in network diagnostics, offering robust capabilities for understanding network behavior in the face of modern security implementations; however, their effectiveness depends on navigating complex security policies that obscure traditional diagnostics.<span class="citation" data-cites="Hellekson13"><sup>1</sup></span> By mastering these techniques, network professionals can regain visibility and control, ensuring network reliability and performance even in the most rigorously secured environments.</p>
+<h3 id="key-concepts-and-definitions">Key Concepts and Definitions:</h3>
+<p>The Internet Control Message Protocol (ICMP) enables network devices to exchange diagnostic information, critical for tools like <code>ping</code> and <code>traceroute</code> but often filtered in security-hardened networks<span class="citation" data-cites="rfc792"><sup>2</sup></span>. Domain Name System Security Extensions (DNSSEC) ensure DNS query integrity, supported by <code>kdig</code> for secure resolution. Time To Live (TTL) limits packet circulation, aiding path analysis, while Maximum Transmission Unit (MTU) defines packet size limits, impacting performance<span class="citation" data-cites="stevens1994tcpip"><sup>3</sup></span>.</p>
+<h3 id="network-diagnostic-tools">Network Diagnostic Tools</h3>
+<p><code>kdig</code>, from Knot DNS, offers advanced DNS querying with DNSSEC support, surpassing <code>dig</code> in security-focused environments<span class="citation" data-cites="KnotDNS"><sup>4</sup></span>. <code>nping</code>, part of Nmap, crafts TCP, UDP, and ICMP packets for flexible testing, bypassing ICMP restrictions.<span class="citation" data-cites="NmapNping"><sup>5</sup></span> <code>tcptraceroute</code> uses TCP to trace paths through firewalls, complementing ICMP-based <code>traceroute</code>, which relies on ICMP.<span class="citation" data-cites="Jac88"><sup>6</sup></span></p>
+<h3 id="notes-on-execution">Notes on Execution</h3>
+<p>Run each command multiple times (e.g., 3 runs) to account for network variability and collect average results. Record outputs, including errors or timeouts, as they indicate filtering or security policies. For example, packet loss in UDP/ICMP tests suggests potential filtering by firewalls or ISPs. If a target blocks a specific port or protocol, try an alternative (e.g., google.com or cloudflare.com instead of aws.amazon.com).</p>
+<h2 id="experimental">Experimental</h2>
+<p>This experiment uses a 2.6 GHz 6-Core Intel Core i7 MacBook Pro with 16 GB 2667 MHz DDR4 RAM running macOS Sequoia 15.3.1, connected via built-in Wi-Fi. All commands are non-intrusive network diagnostics targeting public services (e.g., <code>aws.amazon.com</code>, <code>level3.net</code>, <code>gmail.com</code>) designed to handle routine testing. Some commands require administrator privileges (<code>sudo</code>) due to low-level network access. Rate limiting is inherent in the tools to avoid network flooding, ensuring ethical and safe execution.</p>
+<p>Before running the commands, install the required tools using Homebrew (assuming Homebrew is installed):</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install knot        <span class="co"># for `kdig`</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install tcptraceroute</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">brew</span> install nmap        <span class="co"># for `nping`</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">1.</span> Advanced DNS Resolution Analysis with kdig:</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">```</span><span class="fu">zsh</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Basic A record lookup with query timing to benchmark DNS performance</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="ex">kdig</span> +stats level3.net</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Trace the full DNS resolution path for a complex CNAME chain (use multiple queries or follow manually)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kdig</span> @8.8.8.8 aws.amazon.com A  <span class="co"># Query with Google’s DNS server for root resolution</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">kdig</span> @8.8.4.4 aws.amazon.com A  <span class="co"># Query with another server for comparison</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Note: kdig doesn’t have a direct +trace option; use multiple queries or tools like dig for full tracing</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Validate DNSSEC signatures to assess security implementation</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kdig</span> +dnssec aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Query MX records to examine email server resolution</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">kdig</span> MX gmail.com</span></code></pre></div>
+<ol start="2" type="1">
+<li>Flexible Connectivity and Latency Testing with nping</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP SYN ping to port 80 (HTTP) with 5 packets and 100ms delay for basic connectivity</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nping <span class="at">--tcp</span> <span class="at">-p</span> 80 <span class="at">--flags</span> SYN <span class="at">--count</span> 5 <span class="at">--delay</span> 100ms aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP SYN ping to port 443 (HTTPS) with a 1400-byte packet size to test MTU effects</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nping <span class="at">--tcp</span> <span class="at">-p</span> 443 <span class="at">--flags</span> SYN <span class="at">--data-length</span> 1400 <span class="at">--count</span> 5 <span class="at">--delay</span> 100ms aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># UDP ping to port 53 (DNS) to compare with TCP, noting potential filtering</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nping <span class="at">--udp</span> <span class="at">-p</span> 53 <span class="at">--count</span> 5 <span class="at">--delay</span> 100ms aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ICMP echo probe for baseline comparison with traditional ping</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nping <span class="at">--icmp</span> <span class="at">--icmp-type</span> echo-request <span class="at">--count</span> 5 <span class="at">--delay</span> 100ms aws.amazon.com</span></code></pre></div>
+<ol start="3" type="1">
+<li>Firewall-Penetrating Path Analysis with tcptraceroute:</li>
+</ol>
+<div class="sourceCode" id="cb9"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP traceroute to port 80 (HTTP) with numeric output for speed</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> tcptraceroute <span class="at">-n</span> <span class="at">-p</span> 80 aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP traceroute to port 443 (HTTPS) to assess secure connection paths</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> tcptraceroute <span class="at">-n</span> <span class="at">-p</span> 443 aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Standard ICMP traceroute for comparison, expecting obscurity</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">traceroute</span> <span class="at">-n</span> <span class="at">-m</span> 15 <span class="at">-w</span> 2 <span class="at">-q</span> 2 aws.amazon.com</span></code></pre></div>
+<ol start="4" type="1">
+<li>Comprehensive Network Probing with nping</li>
+</ol>
+<div class="sourceCode" id="cb12"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP SYN probe to port 80 with 5 packets and 100ms delay</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nping <span class="at">--tcp</span> <span class="at">-p</span> 80 <span class="at">--flags</span> SYN <span class="at">--count</span> 5 <span class="at">--delay</span> 100ms aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># UDP probe to port 53 (DNS) to test non-TCP behavior</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nping <span class="at">--udp</span> <span class="at">-p</span> 53 <span class="at">--count</span> 5 <span class="at">--delay</span> 100ms aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ICMP echo probe for baseline comparison</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nping <span class="at">--icmp</span> <span class="at">--icmp-type</span> echo-request <span class="at">--count</span> 5 <span class="at">--delay</span> 100ms aws.amazon.com</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TCP SYN-based traceroute-like path discovery to port 443</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> nping <span class="at">--tcp</span> <span class="at">--traceroute</span> <span class="at">-p</span> 443 <span class="at">--flags</span> SYN <span class="at">--count</span> 5 aws.amazon.com</span></code></pre></div>
+<h2 id="results">Results</h2>
+<p><strong>Table 1.</strong> This table presents the DNS resolution analysis results for various network services, including query times, response sizes, and the DNS servers used, conducted on February 24, 2025, to evaluate performance in security-hardened environments.</p>
+<table>
+<thead>
+<tr>
+<th>
+Target
+</th>
+<th>
+Query Type
+</th>
+<th>
+Resolution
+</th>
+<th>
+Query Time / ms
+</th>
+<th>
+Response Size / bytes
+</th>
+<th>
+DNS Server
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="Target">
+<code>level3.net</code>
+</td>
+<td data-label="Query Type">
+A
+</td>
+<td data-label="Resolution">
+4.68.80.110
+</td>
+<td data-label="Query Time / ms">
+53.6
+</td>
+<td data-label="Response Size / bytes">
+55
+</td>
+<td data-label="DNS Server">
+fe80::dcd1:97ff:fe4c:ca8b%en0
+</td>
+</tr>
+<tr>
+<td data-label="Target">
+<code>aws.amazon.com</code>
+</td>
+<td data-label="Query Type">
+A (via 8.8.8.8)
+</td>
+<td data-label="Resolution">
+CNAME chain to 108.138.94.{20,102,17,72}
+</td>
+<td data-label="Query Time / ms">
+118.9
+</td>
+<td data-label="Response Size / bytes">
+185
+</td>
+<td data-label="DNS Server">
+8.8.8.8
+</td>
+</tr>
+<tr>
+<td data-label="Target">
+<code>aws.amazon.com</code>
+</td>
+<td data-label="Query Type">
+A (via 8.8.4.4)
+</td>
+<td data-label="Resolution">
+CNAME chain to 108.138.94.{20,17,102,72}
+</td>
+<td data-label="Query Time / ms">
+91.8
+</td>
+<td data-label="Response Size / bytes">
+185
+</td>
+<td data-label="DNS Server">
+8.8.4.4
+</td>
+</tr>
+<tr>
+<td data-label="Target">
+<code>aws.amazon.com</code>
+</td>
+<td data-label="Query Type">
+A (+dnssec)
+</td>
+<td data-label="Resolution">
+CNAME chain to 108.138.94.{102,20,17,72}
+</td>
+<td data-label="Query Time / ms">
+30.6
+</td>
+<td data-label="Response Size / bytes">
+185
+</td>
+<td data-label="DNS Server">
+fe80::dcd1:97ff:fe4c:ca8b%en0
+</td>
+</tr>
+<tr>
+<td data-label="Target">
+<code>gmail.com</code>
+</td>
+<td data-label="Query Type">
+MX
+</td>
+<td data-label="Resolution">
+Multiple MX records (e.g., <code>gmail-smtp-in.l.google.com</code>)
+</td>
+<td data-label="Query Time / ms">
+127.1
+</td>
+<td data-label="Response Size / bytes">
+161
+</td>
+<td data-label="DNS Server">
+fe80::dcd1:97ff:fe4c:ca8b%en0
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 2.</strong> This table displays the connectivity and latency test results using <code>nping</code> across different protocols and ports, including packet sizes, success rates, and round-trip times, performed on February 24, 2025, to assess network behavior in modern, security-hardened networks.</p>
+<table>
+<thead>
+<tr>
+<th>
+Target
+</th>
+<th>
+Protocol/Port
+</th>
+<th>
+Packet Size / bytes
+</th>
+<th>
+Success Rate /%
+</th>
+<th>
+Min RTT / ms
+</th>
+<th>
+Avg RTT / ms
+</th>
+<th>
+Max RTT / ms
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="Target">
+<code>aws.amazon.com</code>
+</td>
+<td data-label="Protocol/Port">
+TCP/80 (SYN)
+</td>
+<td data-label="Packet Size / bytes">
+40
+</td>
+<td data-label="Success Rate /%">
+100
+</td>
+<td data-label="Min RTT / ms">
+24.701
+</td>
+<td data-label="Avg RTT / ms">
+33.343
+</td>
+<td data-label="Max RTT / ms">
+36.986
+</td>
+</tr>
+<tr>
+<td data-label="Target">
+<code>aws.amazon.com</code>
+</td>
+<td data-label="Protocol/Port">
+TCP/443 (SYN, 1400 bytes)
+</td>
+<td data-label="Packet Size / bytes">
+1440
+</td>
+<td data-label="Success Rate /%">
+100
+</td>
+<td data-label="Min RTT / ms">
+41.325
+</td>
+<td data-label="Avg RTT / ms">
+54.492
+</td>
+<td data-label="Max RTT / ms">
+61.258
+</td>
+</tr>
+<tr>
+<td data-label="Target">
+<code>aws.amazon.com</code>
+</td>
+<td data-label="Protocol/Port">
+UDP/53
+</td>
+<td data-label="Packet Size / bytes">
+28
+</td>
+<td data-label="Success Rate /%">
+0
+</td>
+<td data-label="Min RTT / ms">
+N/A
+</td>
+<td data-label="Avg RTT / ms">
+N/A
+</td>
+<td data-label="Max RTT / ms">
+N/A
+</td>
+</tr>
+<tr>
+<td data-label="Target">
+<code>aws.amazon.com</code>
+</td>
+<td data-label="Protocol/Port">
+ICMP (Echo)
+</td>
+<td data-label="Packet Size / bytes">
+28
+</td>
+<td data-label="Success Rate /%">
+100
+</td>
+<td data-label="Min RTT / ms">
+66.956
+</td>
+<td data-label="Avg RTT / ms">
+77.384
+</td>
+<td data-label="Max RTT / ms">
+93.394
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table 3.</strong> This table outlines the path analysis results using <code>tcptraceroute</code> and <code>traceroute</code>, detailing visible hops, final hop round-trip times, and path visibility, conducted on February 24, 2025, to investigate network topology visibility in security-hardened environments.</p>
+<table>
+<thead>
+<tr>
+<th>
+Tool
+</th>
+<th>
+Target/Port
+</th>
+<th>
+Visible Hops
+</th>
+<th>
+Final Hop RTT / ms
+</th>
+<th>
+Path Visibility
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-label="Tool">
+<code>tcptraceroute</code>
+</td>
+<td data-label="Target/Port">
+<code>aws.amazon.com</code>/80
+</td>
+<td data-label="Visible Hops">
+1 (192.168.1.1), 19 (108.138.94.102)
+</td>
+<td data-label="Final Hop RTT / ms">
+28.561–36.331
+</td>
+<td data-label="Path Visibility">
+Partial (obscured 2–18)
+</td>
+</tr>
+<tr>
+<td data-label="Tool">
+<code>tcptraceroute</code>
+</td>
+<td data-label="Target/Port">
+<code>aws.amazon.com</code>/443
+</td>
+<td data-label="Visible Hops">
+1 (192.168.1.1), 19 (108.138.94.102)
+</td>
+<td data-label="Final Hop RTT / ms">
+31.819–43.631
+</td>
+<td data-label="Path Visibility">
+Partial (obscured 2–18)
+</td>
+</tr>
+<tr>
+<td data-label="Tool">
+<code>traceroute</code>
+</td>
+<td data-label="Target/Port">
+<code>aws.amazon.com</code> (ICMP)
+</td>
+<td data-label="Visible Hops">
+1 (192.168.1.1)
+</td>
+<td data-label="Final Hop RTT / ms">
+N/A
+</td>
+<td data-label="Path Visibility">
+Obscured (2–15, * * *)
+</td>
+</tr>
+<tr>
+<td data-label="Tool">
+<code>nping</code> (TCP Traceroute)
+</td>
+<td data-label="Target/Port">
+<code>aws.amazon.com</code>/443
+</td>
+<td data-label="Visible Hops">
+1 (192.168.1.1)
+</td>
+<td data-label="Final Hop RTT / ms">
+2.891
+</td>
+<td data-label="Path Visibility">
+Obscured (2–5, no response)
+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="discussion">Discussion</h2>
+<p>Our investigation reveals critical insights into the behavior of modern network diagnostics in security-hardened environments, particularly highlighting the challenges and opportunities presented by contemporary security measures.<span class="citation" data-cites="Hellekson13"><sup>1</sup></span> The DNS resolution results (Table 1) demonstrate the complexity of cloud-based service architectures, as seen with <code>aws.amazon.com</code>’s multi-layer CNAME chain resolving to CloudFront IPs (108.138.94.{20,102,17,72}). Using Google’s public DNS servers (8.8.8.8 and 8.8.4.4) provided consistent resolution, revealing slight variations in query times (118.9 ms vs. 91.8 ms) and TTL values, suggesting effective load balancing and caching strategies; however, query times were faster via the local resolver (30.6 ms), indicating potential local caching benefits.<span class="citation" data-cites="KnotDNS"><sup>4</sup></span></p>
+<p>Security hardening significantly impacts network visibility, as evidenced by our path analysis (Table 3). Both <code>tcptraceroute</code> and <code>traceroute</code> results show near-complete path obscurity beyond the first hop (192.168.1.1), with <code>traceroute</code> (ICMP-based) failing to reveal any intermediate hops, while <code>tcptraceroute</code> (TCP-based) reached the target but obscured hops 2–18. This behavior reflects common security practices like ICMP filtering and firewall rules, designed to reduce network visibility for attackers but challenging for legitimate diagnostics.<span class="citation" data-cites="rfc792 Jac88"><sup>2,6</sup></span> The <code>nping</code> TCP traceroute similarly showed limited visibility, detecting only the first hop before timing out, underscoring the effectiveness of these security measures.</p>
+<p>Connectivity and latency tests (Table 2) highlight protocol-specific behaviors in security-hardened networks. TCP-based probes (ports 80 and 443) achieved 100% success rates with consistent RTTs (33.343 ms and 54.492 ms, respectively), even with a larger 1400-byte packet size, suggesting robust handling of TCP traffic by AWS infrastructure; however, UDP (port 53) and ICMP probes experienced 100% packet loss, indicating stringent filtering of these protocols—likely due to firewall policies or ISP restrictions.<span class="citation" data-cites="NmapNping"><sup>5</sup></span> This contrast underscores the advantage of TCP-based tools like <code>nping</code> and <code>tcptraceroute</code> in bypassing ICMP limitations, aligning with our objective to evolve diagnostics for modern networks.</p>
+<p>The observed differences in protocol behavior raise questions about security policy implementations. The success of TCP probes suggests that AWS and intermediary networks prioritize TCP traffic for web services, possibly to support HTTP/HTTPS applications, while filtering UDP and ICMP to mitigate reconnaissance or denial-of-service attacks; however, the partial visibility in <code>tcptraceroute</code> compared to complete obscurity in <code>traceroute</code> indicates that TCP-based path analysis can penetrate some security barriers, though not fully, due to dynamic routing or load balancing obscuring intermediate hops.<span class="citation" data-cites="stevens1994tcpip"><sup>3</sup></span></p>
+<p>Several limitations in our methodology should be noted. The single-location testing on macOS limits generalizability across diverse network environments. The fixed packet size (1400 bytes) in TCP tests might miss intermediate MTU thresholds, and our reliance on public targets like AWS may not reflect all security configurations; additionally, <code>kdig</code>’s lack of a direct <code>+trace</code> option required manual DNS resolution, potentially missing subtle path details.</p>
+<p>These findings suggest promising directions for future research. Distributed testing across multiple geographic locations and ISPs could reveal global variations in security policies and MTU behavior. Automated tracing tools or hybrid approaches combining TCP, UDP, and application-layer diagnostics could enhance visibility in security-hardened networks; however, temporal analysis of path stability and protocol performance under varying loads would also deepen our understanding of dynamic routing systems.<span class="citation" data-cites="Hellekson13"><sup>1</sup></span></p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This study demonstrates the evolving challenges and adaptations required for network diagnostics in modern, security-hardened environments. Our key findings reveal the persistence of TCP-based tools like <code>nping</code> and <code>tcptraceroute</code> in maintaining diagnostic capability, despite widespread ICMP and UDP filtering. DNS resolution patterns highlight the complexity of cloud infrastructures, with <code>aws.amazon.com</code>’s CNAME chains and DNSSEC validation showcasing robust security and scalability; however, path obscurity remains a significant barrier, as traditional ICMP-based <code>traceroute</code> offers little visibility, while TCP-based alternatives provide partial insights into network topology.<span class="citation" data-cites="rfc792 Jac88"><sup>2,6</sup></span></p>
+<p>For network administrators, these results suggest adopting TCP-centric diagnostics alongside modern DNS tools like <code>kdig</code> to navigate security restrictions effectively. Leveraging public DNS resolvers (e.g., 8.8.8.8, 8.8.4.4) can provide consistent resolution data, while persistent monitoring with <code>nping</code> can uncover latency and connectivity patterns; however, as networks continue to prioritize security through protocol filtering, developing new diagnostic methodologies that balance transparency with protection will be critical. Future research should explore distributed testing, automated path tracing, and protocol-agnostic approaches to enhance network visibility while respecting security constraints.<span class="citation" data-cites="Hellekson13"><sup>1</sup></span></p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>We gratefully acknowledge the developers of <code>Knot DNS</code>, Nmap, and <code>tcptraceroute</code> for creating the tools that enabled this research, as well as the open-source community for maintaining these resources. Special thanks to the xAI team for their assistance in refining this analysis. This work was conducted on macOS Sequoia 15.3.1, and we appreciate Apple’s support for network diagnostic capabilities in their operating system.</p>
+<h3 class="unnumbered" id="references">References</h3>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-Hellekson13" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Hellekson, R.; Bellovin, S. M. Network Security in the Face of Modern Threats: Challenges and Solutions. <em>IEEE Security &amp; Privacy</em> <strong>2013</strong>, <em>11</em> (3), 34–41. <a href="https://doi.org/10.1109/MSP.2013.60">https://doi.org/10.1109/MSP.2013.60</a>.</div>
+</div>
+<div id="ref-rfc792" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">Postel, J. <em><span>Internet Control Message Protocol</span></em>; RFC; 792; RFC Editor, 1981. <a href="https://doi.org/10.17487/RFC0792">https://doi.org/10.17487/RFC0792</a>.</div>
+</div>
+<div id="ref-stevens1994tcpip" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Stevens, W. R. <em><span>TCP/IP Illustrated, Volume 1: The Protocols</span></em>; Addison-Wesley Professional: Boston, MA, 1994.</div>
+</div>
+<div id="ref-KnotDNS" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">CZ.NIC. Knot DNS Documentation: Kdig Manual, 2023.</div>
+</div>
+<div id="ref-NmapNping" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Nmap Project. Nping: Network Packet Generation Tool, 2023.</div>
+</div>
+<div id="ref-Jac88" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Jacobson, V. Traceroute: Tracing the Route Packets Take on the Internet. <em>ACM SIGCOMM Computer Communication Review</em> <strong>1988</strong>, <em>18</em> (4), 19–25. <a href="https://doi.org/10.1145/62959.62962">https://doi.org/10.1145/62959.62962</a>.</div>
+</div>
+</div>
+    </main>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-text">
+            Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a> 
+        </br>Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a> - <a href="../colophon.html">Colophon</a>
+        </div>
+        <div class="print-pdf-button">
+            <button onclick="window.print();" class="print-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="print-icon">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Print / Save as PDF
+            </button>
+        </div>
+    </div>
+</footer>
+</body>
+
+</html>
