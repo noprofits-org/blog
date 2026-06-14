@@ -56,9 +56,9 @@ jobs:
           texlive-plain-generic texlive-fonts-recommended
         sudo chmod -R a+r /tmp/apt-cache
 
-    - name: Build Hakyll site
+    - name: Build and test
       run: |
-        stack build
+        stack test
         stack exec blog build
 
     - name: Create CNAME file
