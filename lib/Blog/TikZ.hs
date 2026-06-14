@@ -16,9 +16,11 @@ module Blog.TikZ
   ( tikzFilter
   , renderTikz
   , inlineSvg
+  , namespaceIds
   ) where
 
-import Data.List (isInfixOf)
+import Data.Char (ord)
+import Data.List (foldl', isInfixOf)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Hakyll (Compiler, unsafeCompiler)
@@ -49,6 +51,27 @@ inlineSvg svg =
   let (_, rest) = T.breakOn "<svg" (T.pack svg)
   in if T.null rest then svg else T.unpack rest
 
+-- | dvisvgm reuses glyph paths via @id@/@\<use\>@ with names like @g3-66@, and
+-- restarts that numbering for every file. Inlining several such SVGs in one HTML
+-- page makes those ids collide, so a later diagram's glyphs get drawn with an
+-- earlier diagram's paths (an "R" comes out as a "C"). Prefixing every id and
+-- every internal reference with a per-diagram token makes them page-unique.
+-- Pure, so it is unit-testable.
+namespaceIds :: T.Text -> T.Text -> T.Text
+namespaceIds prefix =
+    rep "id=\""    ("id=\"" <> prefix)
+  . rep "id='"     ("id='" <> prefix)
+  . rep "href=\"#" ("href=\"#" <> prefix)
+  . rep "href='#"  ("href='#" <> prefix)
+  . rep "url(#"    ("url(#" <> prefix)
+  where rep = T.replace
+
+-- | A deterministic, page-unique, valid-identifier prefix derived from the
+-- diagram source (djb2). Stable across builds so output stays reproducible.
+idPrefix :: String -> T.Text
+idPrefix s = T.pack ('n' : show (foldl' step (5381 :: Integer) s))
+  where step acc c = (acc * 33 + fromIntegral (ord c)) `mod` 1000000007
+
 -- | Minimal HTML escaping for the error box.
 escapeHtml :: String -> String
 escapeHtml = concatMap esc
@@ -66,6 +89,10 @@ tikzPreamble = unlines
   , "\\usepackage{pgfplots}"
   , "\\usepackage{amsmath}"
   , "\\usepackage[version=4]{mhchem}"
+  , "\\usepackage[american]{circuitikz}"
+  -- @standalone@'s auto-crop only knows @tikzpicture@; register @circuitikz@ too
+  -- so schematics crop to the drawing instead of a full page.
+  , "\\standaloneenv{circuitikz}"
   , "\\pgfplotsset{compat=1.18}"
   , "\\usepgfplotslibrary{units}"
   , "\\usetikzlibrary{arrows.meta}"
@@ -86,12 +113,14 @@ renderTikz tikzCode = withSystemTempDirectory "blog-tikz" $ \dir -> do
       pdfFile = dir ++ "/tikz.pdf"
       svgFile = dir ++ "/tikz.svg"
 
-  -- Blocks that already open their own @tikzpicture@ (so they can pass picture
-  -- options like a 3D basis) are used verbatim; otherwise the block is the
-  -- picture body and we wrap it (the established convention — e.g. a bare
-  -- pgfplots @axis@).
-  let body
-        | "\\begin{tikzpicture}" `isInfixOf` tikzCode = tikzCode
+  -- Blocks that already open their own picture environment (@tikzpicture@, so
+  -- they can pass options like a 3D basis, or @circuitikz@ for schematics) are
+  -- used verbatim; otherwise the block is the picture body and we wrap it (the
+  -- established convention — e.g. a bare pgfplots @axis@).
+  let opensOwnPicture =
+        any (`isInfixOf` tikzCode) ["\\begin{tikzpicture}", "\\begin{circuitikz}"]
+      body
+        | opensOwnPicture = tikzCode
         | otherwise = "\\begin{tikzpicture}\n" ++ tikzCode ++ "\n\\end{tikzpicture}"
   writeFile texFile $ tikzPreamble ++ body ++ "\n\\end{document}\n"
 
@@ -108,7 +137,7 @@ renderTikz tikzCode = withSystemTempDirectory "blog-tikz" $ \dir -> do
         ExitFailure _ -> bail "dvisvgm" (svgOut ++ svgErr)
         ExitSuccess -> do
           svg <- TIO.readFile svgFile          -- strict read before temp dir is cleaned
-          return $! Right (T.unpack svg)
+          return $! Right (T.unpack (namespaceIds (idPrefix tikzCode) svg))
   where
     bail tool msg = do
       hPutStrLn stderr $ "[tikz] " ++ tool ++ " failed:\n" ++ msg
