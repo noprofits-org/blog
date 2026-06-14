@@ -43,7 +43,7 @@ This combination of technology and art appreciation exemplifies how development 
 
 Visit the [Met Random Art Generator](https://noprofits.org/random-art-generator/) to experience the application firsthand. Experiment with different filters to discover artworks that match your interests, or simply click the button repeatedly to take a randomized tour through the Met's collection.
 
-For developers interested in the technical aspects, read about [how the serverless CORS proxy was built](https://hyperpolarizability.com/posts/cors-proxy.html) or explore implementing similar solutions in your own projects.
+For developers interested in the technical aspects, read about [how the serverless CORS proxy was built](/posts/cors-proxy.html) or explore implementing similar solutions in your own projects.
 
 The combination of a powerful API, a flexible CORS proxy, and thoughtful frontend development creates an experience that's both technically sound and genuinely delightful to use - a small but meaningful contribution to making art more accessible in the digital age.
 

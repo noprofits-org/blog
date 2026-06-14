@@ -1,6 +1,6 @@
 ---
 title: Deriving the Inverse of a 2x2 Matrix
-date: 2024-1-22
+date: 2025-01-22
 tags: mathematics, linear algebra, matrices, matrix inverse
 ---
 

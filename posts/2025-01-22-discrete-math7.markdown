@@ -1,6 +1,6 @@
 ---
 title: Big-O Analysis of an Algorithm Segment
-date: 2024-1-22
+date: 2025-01-22
 tags: mathematics, computer science, algorithms, big-O notation, time complexity
 ---
 
