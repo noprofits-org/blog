@@ -38,10 +38,23 @@ jobs:
         stack setup
         stack update
 
+    - name: Cache APT package downloads
+      uses: actions/cache@v4
+      with:
+        path: /tmp/apt-cache
+        # Bump the trailing version (v1) to invalidate when the package list changes.
+        key: ${{ runner.os }}-apt-texlive-v1
+
     - name: Install LaTeX and pdf2svg
       run: |
+        mkdir -p /tmp/apt-cache/partial
         sudo apt-get update
-        sudo apt-get install -y texlive-latex-extra texlive-pictures texlive-science pdf2svg texlive-plain-generic texlive-fonts-recommended
+        # Download .debs into the cached dir and still run dpkg configure so
+        # TeX Live format/map generation happens normally on every run.
+        sudo apt-get -o Dir::Cache::archives="/tmp/apt-cache" install -y \
+          texlive-latex-extra texlive-pictures texlive-science pdf2svg \
+          texlive-plain-generic texlive-fonts-recommended
+        sudo chmod -R a+r /tmp/apt-cache
 
     - name: Build Hakyll site
       run: |
