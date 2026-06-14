@@ -1,7 +1,12 @@
-<ul>
+<div class="post-list">
     $for(posts)$
-        <li>
-            <a href="$url$">$title$</a> - $date$
-        </li>
+    <a class="post-row" href="$url$">
+        <span class="post-row-date">$date$</span>
+        <span class="post-row-main">
+            <span class="post-row-title">$title$</span>
+            $if(description)$<span class="post-row-excerpt">$description$</span>$endif$
+        </span>
+        $if(tags)$<span class="post-row-topic">$tags$</span>$endif$
+    </a>
     $endfor$
-</ul>
+</div>
