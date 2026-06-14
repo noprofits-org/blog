@@ -387,18 +387,18 @@ def create_visualizations(df):
 
 **Table 1.** Financial Overview for United Way Worldwide (EIN: 131635294)
 
-| Tax Year | Schema Version | Total Revenue ($) | Total Expenses ($) | Program Expenses ($) | Fundraising Expenses ($) |
+| Tax Year | Schema Version | Total Revenue (\$) | Total Expenses (\$) | Program Expenses (\$) | Fundraising Expenses (\$) |
 |----------|----------------|-----------------|-------------------|---------------------|------------------------|
-| 2013 | 2013v3.1 | $98,264,703.00 | $96,504,876.00 | $82,651,294.00 | $4,471,850.00 |
-| 2014 | 2014v5.0 | $107,786,064.00 | $105,686,848.00 | $87,698,158.00 | $5,245,518.00 |
-| 2015 | 2015v2.1 | $95,195,642.00 | $98,767,324.00 | $83,264,788.00 | $5,161,066.00 |
-| 2016 | 2016v3.0 | $99,974,561.00 | $99,543,551.00 | $82,789,499.00 | $5,383,539.00 |
-| 2017 | 2017v2.2 | $99,126,013.00 | $99,270,991.00 | $81,726,258.00 | $6,067,764.00 |
-| 2018 | 2018v3.1 | $98,911,972.00 | $97,822,532.00 | $80,079,302.00 | $6,083,865.00 |
-| 2019 | 2019v5.1 | $99,843,305.00 | $97,982,873.00 | $79,925,069.00 | $6,120,752.00 |
-| 2020 | 2020v4.1 | $85,487,954.00 | $88,057,474.00 | $70,874,536.00 | $5,543,401.00 |
-| 2021 | 2021v4.2 | $76,823,222.00 | $76,784,602.00 | $62,235,726.00 | $4,696,326.00 |
-| 2022 | 2022v5.0 | $72,293,151.00 | $74,198,795.00 | $63,017,983.00 | $3,818,452.00 |
+| 2013 | 2013v3.1 | \$98,264,703.00 | \$96,504,876.00 | \$82,651,294.00 | \$4,471,850.00 |
+| 2014 | 2014v5.0 | \$107,786,064.00 | \$105,686,848.00 | \$87,698,158.00 | \$5,245,518.00 |
+| 2015 | 2015v2.1 | \$95,195,642.00 | \$98,767,324.00 | \$83,264,788.00 | \$5,161,066.00 |
+| 2016 | 2016v3.0 | \$99,974,561.00 | \$99,543,551.00 | \$82,789,499.00 | \$5,383,539.00 |
+| 2017 | 2017v2.2 | \$99,126,013.00 | \$99,270,991.00 | \$81,726,258.00 | \$6,067,764.00 |
+| 2018 | 2018v3.1 | \$98,911,972.00 | \$97,822,532.00 | \$80,079,302.00 | \$6,083,865.00 |
+| 2019 | 2019v5.1 | \$99,843,305.00 | \$97,982,873.00 | \$79,925,069.00 | \$6,120,752.00 |
+| 2020 | 2020v4.1 | \$85,487,954.00 | \$88,057,474.00 | \$70,874,536.00 | \$5,543,401.00 |
+| 2021 | 2021v4.2 | \$76,823,222.00 | \$76,784,602.00 | \$62,235,726.00 | \$4,696,326.00 |
+| 2022 | 2022v5.0 | \$72,293,151.00 | \$74,198,795.00 | \$63,017,983.00 | \$3,818,452.00 |
 
 **Table 2.** Efficiency Metrics for United Way Worldwide (EIN: 131635294)
 
@@ -443,7 +443,7 @@ The element extraction strategy employed multiple path alternatives for each fin
 
 The financial data presented in Table 1 reveals the financial trajectory of United Way Worldwide over a ten-year period. The organization maintained relatively stable revenue and expenses from 2013 through 2019, with annual revenues averaging approximately <span class="tex2jax_ignore">$100 million.</span> However, a notable decline occurred in 2020-2022, with revenues decreasing to approximately <span class="tex2jax_ignore">$72</span> million by 2022, representing a roughly 28% reduction from peak years. This decline coincides with the global COVID-19 pandemic, which significantly impacted the nonprofit sector.[@Mahmoudi2021]
 
-Program service expenses, which represent funds allocated directly to charitable activities, followed a similar pattern, remaining relatively stable through 2019 and then declining in subsequent years. This parallel movement suggests that United Way Worldwide adjusted its program spending in proportion to its revenue changes, a practice consistent with responsible financial management in the nonprofit sector.[@Mitchell2021]
+Program service expenses, which represent funds allocated directly to charitable activities, followed a similar pattern, remaining relatively stable through 2019 and then declining in subsequent years. This parallel movement suggests that United Way Worldwide adjusted its program spending in proportion to its revenue changes, a practice consistent with responsible financial management in the nonprofit sector.[@mitchell2021]
 
 Figure 1 visually represents these financial trends, clearly illustrating the organization's financial trajectory over the decade. The visualization confirms that while total revenue and expenses fluctuated, they generally moved in tandem, reflecting the organization's ability to adjust expenses in response to revenue changes.
 
