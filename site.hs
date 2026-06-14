@@ -17,7 +17,6 @@ import Hakyll
 import Text.Pandoc.Definition
 import Text.Pandoc.Options
 import Text.Pandoc.Walk (walk, walkM)
-import Debug.Trace
 import Text.Pandoc.Extensions (pandocExtensions)
 import System.Process (readProcessWithExitCode)
 import Data.Hashable (hash)
@@ -30,13 +29,8 @@ import Text.Pandoc.Highlighting (pygments)
 main :: IO ()
 main = hakyll $ do
     -- Citations
-    match "bib/style.csl" $ do
-        trace "Compiling CSL..." $ return ()
-        compile cslCompiler
-
-    match "bib/bibliography.bib" $ do
-        trace "Compiling bibliography..." $ return ()
-        compile biblioCompiler
+    match "bib/style.csl"        $ compile cslCompiler
+    match "bib/bibliography.bib" $ compile biblioCompiler
 
     match "images/*" $ do
         route   idRoute
@@ -60,6 +54,7 @@ main = hakyll $ do
         route $ setExtension "html"
         compile $ bibtexMathCompiler "bib/style.csl" "bib/bibliography.bib"
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
+            >>= saveSnapshot "content"
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
 
@@ -91,7 +86,43 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/default.html" indexCtx
                 >>= relativizeUrls
 
+    create ["atom.xml"] $ do
+        route idRoute
+        compile $ do
+            posts <- fmap (take 20) . recentFirst
+                =<< loadAllSnapshots "posts/*" "content"
+            renderAtom feedConfiguration feedCtx posts
+
+    create ["rss.xml"] $ do
+        route idRoute
+        compile $ do
+            posts <- fmap (take 20) . recentFirst
+                =<< loadAllSnapshots "posts/*" "content"
+            renderRss feedConfiguration feedCtx posts
+
+    match "404.html" $ do
+        route idRoute
+        compile copyFileCompiler
+
+    match "robots.txt" $ do
+        route idRoute
+        compile copyFileCompiler
+
     match "templates/*" $ compile templateCompiler
+
+-------------------------------------------------------------------------------
+-- | Feed configuration and context shared by the Atom and RSS feeds
+feedConfiguration :: FeedConfiguration
+feedConfiguration = FeedConfiguration
+    { feedTitle       = "noprofits.org"
+    , feedDescription = "Blogs about science, nonprofits, and other fun stuff."
+    , feedAuthorName  = "Peter Johnston"
+    , feedAuthorEmail = "peter@noprofits.org"
+    , feedRoot        = "https://blog.noprofits.org"
+    }
+
+feedCtx :: Context String
+feedCtx = postCtx `mappend` bodyField "description"
 
 -------------------------------------------------------------------------------
 -- | Process TikZ code blocks
@@ -135,24 +166,17 @@ tikzToSvg tikzCode = withSystemTempDirectory "hakyll-tikz" $ \tmpDir -> do
         , "\\end{document}"
         ]
 
-    putStrLn $ "Compiling TeX file at: " ++ texFile
-    putStrLn "TeX content:"
-    putStrLn =<< readFile texFile
-
     (exitCode, stdout, stderr) <- readProcessWithExitCode "pdflatex"
         ["-halt-on-error", "-file-line-error", "-output-directory=" ++ tmpDir, texFile]
         ""
 
     case exitCode of
         ExitSuccess -> do
-            putStrLn "pdflatex succeeded"
             (exitCode2, stdout2, stderr2) <- readProcessWithExitCode "pdf2svg"
                 [pdfFile, svgFile]
                 ""
             case exitCode2 of
-                ExitSuccess -> do
-                    putStrLn "pdf2svg succeeded"
-                    readFile svgFile
+                ExitSuccess -> readFile svgFile
                 ExitFailure _ -> error $ "pdf2svg failed:\nStdout: " ++ stdout2 ++ "\nStderr: " ++ stderr2
         ExitFailure _ -> do
             putStrLn "pdflatex output:"
