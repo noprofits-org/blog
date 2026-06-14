@@ -5,7 +5,9 @@
     document.documentElement.setAttribute('data-theme', theme);
     var buttons = document.querySelectorAll('.theme-toggle button');
     for (var i = 0; i < buttons.length; i++) {
-      buttons[i].classList.toggle('active', buttons[i].getAttribute('data-theme') === theme);
+      var isActive = buttons[i].getAttribute('data-theme') === theme;
+      buttons[i].classList.toggle('active', isActive);
+      buttons[i].setAttribute('aria-pressed', isActive ? 'true' : 'false');
     }
   }
 
