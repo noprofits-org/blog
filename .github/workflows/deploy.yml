@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -13,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup Haskell Stack
       uses: haskell-actions/setup@v2
@@ -21,7 +24,7 @@ jobs:
         ghc-version: '9.4.8'
 
     - name: Cache Stack dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ~/.stack
@@ -46,12 +49,14 @@ jobs:
         stack exec blog build
 
     - name: Create CNAME file
+      if: github.event_name != 'pull_request'
       run: |
         echo "blog.noprofits.org" > _site/CNAME
         touch _site/.nojekyll
 
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+      if: github.event_name != 'pull_request'
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./_site
