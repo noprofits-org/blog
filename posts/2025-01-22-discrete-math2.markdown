@@ -1,6 +1,6 @@
 ---
 title: No Small Perfect Cubes as Sums of Two Cubes
-date: 2024-1-22
+date: 2025-01-22
 tags: mathematics, number theory, perfect cubes, Fermat's Last Theorem
 ---
 
