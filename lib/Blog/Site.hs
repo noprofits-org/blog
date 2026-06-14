@@ -6,11 +6,26 @@ module Blog.Site
   ( siteRules
   ) where
 
+import Control.Monad (filterM)
 import Hakyll
 
 import Blog.Compilers (bibtexMathCompiler)
 import Blog.Context   (postCtx)
 import Blog.Feed      (feedConfiguration, feedCtx)
+
+-- | True unless the item's frontmatter sets @draft: true@.
+isPublished :: Item a -> Compiler Bool
+isPublished item = do
+    draft <- getMetadataField (itemIdentifier item) "draft"
+    return (draft /= Just "true")
+
+-- | Like 'loadAll', but drops posts marked @draft: true@ from the result.
+loadAllPublished :: Pattern -> Compiler [Item String]
+loadAllPublished pat = loadAll pat >>= filterM isPublished
+
+-- | Like 'loadAllSnapshots', but drops @draft: true@ posts (used by the feeds).
+loadAllPublishedSnapshots :: Pattern -> Snapshot -> Compiler [Item String]
+loadAllPublishedSnapshots pat snap = loadAllSnapshots pat snap >>= filterM isPublished
 
 siteRules :: Rules ()
 siteRules = do
@@ -47,7 +62,7 @@ siteRules = do
     create ["archive.html"] $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
+            posts <- recentFirst =<< loadAllPublished "posts/*"
             let archiveCtx =
                     listField "posts" postCtx (return posts) `mappend`
                     constField "title" "Archives"            `mappend`
@@ -61,7 +76,7 @@ siteRules = do
     match "index.html" $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
+            posts <- recentFirst =<< loadAllPublished "posts/*"
             let indexCtx =
                     listField "posts" postCtx (return posts) `mappend`
                     constField "title" "Home"                `mappend`
@@ -76,14 +91,14 @@ siteRules = do
         route idRoute
         compile $ do
             posts <- fmap (take 20) . recentFirst
-                =<< loadAllSnapshots "posts/*" "content"
+                =<< loadAllPublishedSnapshots "posts/*" "content"
             renderAtom feedConfiguration feedCtx posts
 
     create ["rss.xml"] $ do
         route idRoute
         compile $ do
             posts <- fmap (take 20) . recentFirst
-                =<< loadAllSnapshots "posts/*" "content"
+                =<< loadAllPublishedSnapshots "posts/*" "content"
             renderRss feedConfiguration feedCtx posts
 
     match "404.html" $ do

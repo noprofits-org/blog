@@ -36,7 +36,12 @@ body {
 [data-theme] *, [data-theme] { transition: background-color .28s ease, border-color .28s ease, color .18s ease; }
 a { color:inherit; text-decoration:none; }
 img { max-width:100%; height:auto; }
-::selection { background:#362C17; color:#F6F2EA; }
+::selection { background:var(--accent); color:var(--bg-soft); }
+
+/* Visible keyboard focus (UA default is low-contrast against the dark masthead
+   and terminal code blocks). Brightened on the always-black masthead. */
+:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.site-header :focus-visible { outline-color:#F6F2EA; }
 
 /* ----- Masthead ----- */
 .site-header {
