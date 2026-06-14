@@ -38,8 +38,10 @@ Before running the commands, install the required tools using Homebrew (assuming
 brew install knot        # for `kdig`
 brew install tcptraceroute
 brew install nmap        # for `nping`
+```
 
 1. Advanced DNS Resolution Analysis with kdig:
+
 ```zsh
 # Basic A record lookup with query timing to benchmark DNS performance
 kdig +stats level3.net

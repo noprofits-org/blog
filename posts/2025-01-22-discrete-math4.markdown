@@ -1,6 +1,6 @@
 ---
 title: Proving the Irrationality of ∛2
-date: 2024-1-22
+date: 2025-01-22
 tags: mathematics, proof by contradiction, irrational numbers, number theory
 ---
 

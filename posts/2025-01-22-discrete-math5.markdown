@@ -1,6 +1,6 @@
 ---
 title: No Integer Solutions for 2x² + 5y² = 14
-date: 2024-1-22
+date: 2025-01-22
 tags: mathematics, number theory, Diophantine equations, proof by cases
 ---
 

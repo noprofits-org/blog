@@ -1,6 +1,6 @@
 ---
 title: Tiling a 10x10 Checkerboard with Straight Tetrominoes - An Impossibility Proof
-date: 2024-1-22
+date: 2025-01-22
 tags: mathematics, tiling, tetrominoes, combinatorics, proof by coloring
 ---
 

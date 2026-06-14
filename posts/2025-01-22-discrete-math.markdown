@@ -1,6 +1,6 @@
 ---
 title: Proving the Inequality n² + 1 ≥ 2ⁿ for n = 1, 2, 3, and 4
-date: 2024-1-22
+date: 2025-01-22
 tags: mathematics, inequalities, proof
 ---
 
