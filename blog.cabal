@@ -41,7 +41,6 @@ library
                      , text
                      , process
                      , temporary
-                     , uri-encode
 
 executable blog
   import:              warnings

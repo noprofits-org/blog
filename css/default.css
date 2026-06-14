@@ -187,6 +187,19 @@ img { max-width:100%; height:auto; }
 }
 .post-body img { display:block; margin:18px auto; }
 
+/* TikZ figures: rendered inline SVG on a constant light "plate" so the
+   black-ink diagrams stay legible in dark mode too. */
+.tikz-figure {
+  background:#FCFAF5; border:1px solid var(--line2); padding:20px 18px;
+  margin:0 0 28px; overflow-x:auto; text-align:center;
+}
+.tikz-figure svg { max-width:100%; height:auto; display:inline-block; }
+.tikz-error {
+  background:#FBEAEA; border:1px solid #E0B4B4; color:#7A2B2B;
+  padding:14px 16px; margin:0 0 28px; font-size:14px;
+}
+.tikz-error pre { background:none; color:inherit; border:none; padding:6px 0 0; font-size:12px; overflow-x:auto; }
+
 .post-body table { width:100%; border-collapse:collapse; margin:0 0 24px; font-size:14.5px; }
 .post-body th, .post-body td { border:1px solid var(--line); padding:8px 11px; text-align:left; }
 .post-body th { background:var(--bg-soft); font-family:var(--label); font-weight:800; text-transform:uppercase; letter-spacing:0.04em; font-size:12px; }
@@ -290,6 +303,7 @@ main > ul, main > ol { line-height:1.7; margin:0 auto 20px; }
   .post-body blockquote { background:#F6F2EA !important; border-left:3px solid #362C17 !important; padding:12px 18px; break-inside:avoid; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   .post-body blockquote p { color:#333; }
   .post-body figure { background:#FBF9F4 !important; border:1px solid #D7D1C5 !important; break-inside:avoid; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .tikz-figure { background:#FCFAF5 !important; border:1px solid #D7D1C5 !important; break-inside:avoid; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   .post-body table, .post-body pre, .post-body figure, .post-body blockquote { break-inside:avoid; }
   .post-body img { max-width:100%; }
   .csl-entry { color:#333; }

@@ -1,89 +1,115 @@
 {-# LANGUAGE OverloadedStrings #-}
 
--- | Render fenced @tikzpicture@ code blocks to SVG at build time.
+-- | Render fenced @tikzpicture@ code blocks to inline SVG at build time.
 --
--- A Markdown code block tagged @.tikzpicture@ is compiled with @pdflatex@
--- and converted to SVG with @pdf2svg@, then embedded as a data-URI @\<img\>@.
+-- A Markdown code block tagged @.tikzpicture@ is compiled with @lualatex@
+-- (dynamic memory, handles data-heavy diagrams) and converted to SVG with
+-- @dvisvgm@ (which preserves transparency, gradients, and PostScript specials
+-- that the old @pdf2svg@ path dropped). The SVG is embedded inline so it scales
+-- responsively and stays crisp.
+--
+-- Failure is graceful: a diagram that won't compile is logged to the build and
+-- replaced with a visible error box, instead of aborting the whole site build.
 -- Posts without any @tikzpicture@ blocks never shell out, so the site builds
 -- fine on a machine with no TeX toolchain installed.
 module Blog.TikZ
   ( tikzFilter
-  , tikzToSvg
-  , svgToDataUri
+  , renderTikz
+  , inlineSvg
   ) where
 
+import Data.List (isInfixOf)
 import qualified Data.Text as T
+import qualified Data.Text.IO as TIO
 import Hakyll (Compiler, unsafeCompiler)
 import Text.Pandoc.Definition (Block (..), Format (..))
-import qualified Network.URI.Encode as URI
 import System.Exit (ExitCode (..))
+import System.IO (hPutStrLn, stderr)
 import System.IO.Temp (withSystemTempDirectory)
 import System.Process (readProcessWithExitCode)
 
--- | Pandoc filter: replace @.tikzpicture@ code blocks with rendered SVG,
+-- | Pandoc filter: replace @.tikzpicture@ code blocks with rendered inline SVG,
 -- leaving every other block untouched.
 tikzFilter :: Block -> Compiler Block
-tikzFilter (CodeBlock (ident, classes, namevals) contents)
+tikzFilter (CodeBlock (_, classes, _) contents)
   | "tikzpicture" `elem` classes = do
-      svg <- unsafeCompiler $ tikzToSvg (T.unpack contents)
-      let divAttrs   = (ident, "tikzpicture" : classes, namevals)
-          imgElement = RawBlock (Format "html") $ T.pack $
-            "<img src=\"" <> svgToDataUri svg
-              <> "\" alt=\"TikZ Plot\" style=\"width: 100%; height: auto;\">"
-      return $ Div divAttrs [imgElement]
+      result <- unsafeCompiler $ renderTikz (T.unpack contents)
+      let html = case result of
+            Right svg -> "<div class=\"tikz-figure\">" ++ inlineSvg svg ++ "</div>"
+            Left err  -> "<div class=\"tikz-error\"><strong>Diagram failed to render.</strong>"
+                          ++ "<pre>" ++ escapeHtml err ++ "</pre></div>"
+      return $ RawBlock (Format "html") (T.pack html)
 tikzFilter block = return block
 
--- | Pack a raw SVG string into an inline @data:@ URI (newlines stripped so it
--- is safe to embed in an attribute). Pure, so it is unit-testable.
-svgToDataUri :: String -> String
-svgToDataUri svg =
-  "data:image/svg+xml;utf8," ++ URI.encode (filter (/= '\n') svg)
+-- | Drop the XML prolog / DOCTYPE that @dvisvgm@ emits, returning the markup
+-- from the opening @\<svg@ tag onward so it is safe to inline in HTML. Pure,
+-- so it is unit-testable.
+inlineSvg :: String -> String
+inlineSvg svg =
+  let (_, rest) = T.breakOn "<svg" (T.pack svg)
+  in if T.null rest then svg else T.unpack rest
 
--- | Compile a TikZ snippet to SVG via @pdflatex@ + @pdf2svg@ in a temp dir.
--- On failure the LaTeX log is printed and the build is aborted.
-tikzToSvg :: String -> IO String
-tikzToSvg tikzCode = withSystemTempDirectory "hakyll-tikz" $ \tmpDir -> do
-  let texFile = tmpDir ++ "/tikz.tex"
-      pdfFile = tmpDir ++ "/tikz.pdf"
-      svgFile = tmpDir ++ "/tikz.svg"
+-- | Minimal HTML escaping for the error box.
+escapeHtml :: String -> String
+escapeHtml = concatMap esc
+  where
+    esc '&' = "&amp;"
+    esc '<' = "&lt;"
+    esc '>' = "&gt;"
+    esc c   = [c]
 
-  writeFile texFile $ unlines
-    [ "\\documentclass[crop,tikz]{standalone}"
-    , "\\usepackage{tikz}"
-    , "\\usepackage{pgfplots}"
-    , "\\usepackage{amsmath}"
-    , "\\usepackage[version=4]{mhchem}"
-    , "\\pgfplotsset{compat=1.18}"
-    , "\\usepgfplotslibrary{units}"
-    , "\\usetikzlibrary{arrows.meta}"
-    , "\\usetikzlibrary{patterns,patterns.meta}"
-    , "\\usetikzlibrary{backgrounds}"
-    , "\\usetikzlibrary{calc}"
-    , "\\usetikzlibrary{decorations.pathmorphing}"
-    , "\\usetikzlibrary{decorations.markings}"
-    , "\\usetikzlibrary{matrix,arrows}"
-    , "\\begin{document}"
-    , "\\begin{tikzpicture}"
-    , tikzCode
-    , "\\end{tikzpicture}"
-    , "\\end{document}"
-    ]
+-- | LaTeX preamble wrapped around each @tikzpicture@ snippet.
+tikzPreamble :: String
+tikzPreamble = unlines
+  [ "\\documentclass[crop,tikz,border=4pt]{standalone}"
+  , "\\usepackage{tikz}"
+  , "\\usepackage{pgfplots}"
+  , "\\usepackage{amsmath}"
+  , "\\usepackage[version=4]{mhchem}"
+  , "\\pgfplotsset{compat=1.18}"
+  , "\\usepgfplotslibrary{units}"
+  , "\\usetikzlibrary{arrows.meta}"
+  , "\\usetikzlibrary{patterns,patterns.meta}"
+  , "\\usetikzlibrary{backgrounds}"
+  , "\\usetikzlibrary{calc}"
+  , "\\usetikzlibrary{decorations.pathmorphing}"
+  , "\\usetikzlibrary{decorations.markings}"
+  , "\\usetikzlibrary{matrix,arrows}"
+  , "\\begin{document}"
+  ]
 
-  (exitCode, stdout, stderr) <- readProcessWithExitCode "pdflatex"
-    ["-halt-on-error", "-file-line-error", "-output-directory=" ++ tmpDir, texFile]
+-- | Compile a @tikzpicture@ body to SVG via @lualatex@ + @dvisvgm@ in a temp
+-- dir. Returns @Left@ with a diagnostic on failure (build continues).
+renderTikz :: String -> IO (Either String String)
+renderTikz tikzCode = withSystemTempDirectory "blog-tikz" $ \dir -> do
+  let texFile = dir ++ "/tikz.tex"
+      pdfFile = dir ++ "/tikz.pdf"
+      svgFile = dir ++ "/tikz.svg"
+
+  -- Blocks that already open their own @tikzpicture@ (so they can pass picture
+  -- options like a 3D basis) are used verbatim; otherwise the block is the
+  -- picture body and we wrap it (the established convention — e.g. a bare
+  -- pgfplots @axis@).
+  let body
+        | "\\begin{tikzpicture}" `isInfixOf` tikzCode = tikzCode
+        | otherwise = "\\begin{tikzpicture}\n" ++ tikzCode ++ "\n\\end{tikzpicture}"
+  writeFile texFile $ tikzPreamble ++ body ++ "\n\\end{document}\n"
+
+  (texCode, texOut, texErr) <- readProcessWithExitCode "lualatex"
+    ["-halt-on-error", "-interaction=nonstopmode", "-output-directory=" ++ dir, texFile]
     ""
-
-  case exitCode of
+  case texCode of
+    ExitFailure _ -> bail "lualatex" (texOut ++ texErr)
     ExitSuccess -> do
-      (exitCode2, stdout2, stderr2) <- readProcessWithExitCode "pdf2svg"
-        [pdfFile, svgFile]
+      (svgCode, svgOut, svgErr) <- readProcessWithExitCode "dvisvgm"
+        ["--pdf", "--no-fonts", "--output=" ++ svgFile, pdfFile]
         ""
-      case exitCode2 of
-        ExitSuccess   -> readFile svgFile
-        ExitFailure _ -> error $ "pdf2svg failed:\nStdout: " ++ stdout2 ++ "\nStderr: " ++ stderr2
-    ExitFailure _ -> do
-      putStrLn "pdflatex output:"
-      putStrLn stdout
-      putStrLn "pdflatex error:"
-      putStrLn stderr
-      error $ "pdflatex failed with output:\n" ++ stdout ++ "\nError:\n" ++ stderr
+      case svgCode of
+        ExitFailure _ -> bail "dvisvgm" (svgOut ++ svgErr)
+        ExitSuccess -> do
+          svg <- TIO.readFile svgFile          -- strict read before temp dir is cleaned
+          return $! Right (T.unpack svg)
+  where
+    bail tool msg = do
+      hPutStrLn stderr $ "[tikz] " ++ tool ++ " failed:\n" ++ msg
+      return $ Left (tool ++ " failed (see build log)")
