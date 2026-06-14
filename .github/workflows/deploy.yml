@@ -43,17 +43,19 @@ jobs:
       with:
         path: /tmp/apt-cache
         # Bump the trailing version (v1) to invalidate when the package list changes.
-        key: ${{ runner.os }}-apt-texlive-v1
+        key: ${{ runner.os }}-apt-texlive-v2
 
-    - name: Install LaTeX and pdf2svg
+    - name: Install LaTeX, dvisvgm and mutool
       run: |
         mkdir -p /tmp/apt-cache/partial
         sudo apt-get update
         # Download .debs into the cached dir and still run dpkg configure so
         # TeX Live format/map generation happens normally on every run.
+        # lualatex (texlive-luatex) renders the diagrams; dvisvgm converts them
+        # to SVG; mutool (mupdf-tools) is dvisvgm's PDF backend.
         sudo apt-get -o Dir::Cache::archives="/tmp/apt-cache" install -y \
-          texlive-latex-extra texlive-pictures texlive-science pdf2svg \
-          texlive-plain-generic texlive-fonts-recommended
+          texlive-latex-extra texlive-pictures texlive-science texlive-luatex \
+          texlive-plain-generic texlive-fonts-recommended dvisvgm mupdf-tools
         sudo chmod -R a+r /tmp/apt-cache
 
     - name: Build and test

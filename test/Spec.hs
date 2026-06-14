@@ -3,22 +3,21 @@
 -- runs fast in CI.
 module Main (main) where
 
-import Blog.TikZ (svgToDataUri)
+import Blog.TikZ (inlineSvg)
 import Control.Monad (forM_, unless)
-import Data.List (isInfixOf, isPrefixOf)
 import System.Exit (exitFailure)
 
 -- | (name, condition) — each must hold.
 checks :: [(String, Bool)]
 checks =
-  [ ( "svgToDataUri adds the data-URI prefix"
-    , "data:image/svg+xml;utf8," `isPrefixOf` svgToDataUri "<svg></svg>"
+  [ ( "inlineSvg strips the XML prolog"
+    , inlineSvg "<?xml version=\"1.0\"?>\n<svg>x</svg>" == "<svg>x</svg>"
     )
-  , ( "svgToDataUri strips newlines from the payload"
-    , not ("\n" `isInfixOf` svgToDataUri "<svg>\n<rect/>\n</svg>")
+  , ( "inlineSvg leaves prolog-free markup unchanged"
+    , inlineSvg "<svg>y</svg>" == "<svg>y</svg>"
     )
-  , ( "svgToDataUri percent-encodes angle brackets"
-    , "%3C" `isInfixOf` svgToDataUri "<svg/>"
+  , ( "inlineSvg passes through input with no <svg> tag"
+    , inlineSvg "not an svg" == "not an svg"
     )
   ]
 
