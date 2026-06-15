@@ -1,6 +1,6 @@
 ---
 title: Calculating Atomic Polarizabilities of Group 14 Elements Using Psi4 - A Finite Field Approach 
-date: 2025-02-25 
+date: 2025-02-25
 tags: quantum chemistry, hyperpolarizability, computational chemistry, psi4 
 description: An experimental study calculating polarizabilities of Group 14 elements using Psi4's finite field method, with results for C, Si, and Ge, and insights into limitations for heavier elements.
 ---

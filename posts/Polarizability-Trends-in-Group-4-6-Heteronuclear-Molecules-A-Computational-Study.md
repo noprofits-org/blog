@@ -1,6 +1,6 @@
 ---
 title: Polarizability Trends in Group 14-16 Heteronuclear Molecules - A Computational Study
-date: 2025-02-27 
+date: 2025-02-27
 tags: quantum chemistry, polarizability, computational chemistry, psi4, heteronuclear molecules
 description: A systematic computational investigation of polarizability trends in diatomic molecules formed between Group 14 (C, Si, Ge, Sn, Pb) and Group 16 (O, S, Se, Te) elements, showcasing the power of automation and open-source computational chemistry tools.
 ---
