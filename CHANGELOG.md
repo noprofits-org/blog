@@ -20,6 +20,12 @@ and this project adheres to the
   `main`; GitHub Actions bumped to `checkout@v4`, `cache@v4`, and
   `actions-gh-pages@v4`.
 
+### Fixed
+- Mobile horizontal overflow: the post tag list (rendered as a single `.chip`
+  on posts and `.post-row-topic` on listings) used `white-space:nowrap`, so a
+  long comma-separated tag string ran off-screen and widened the page, clipping
+  the title. Tags now wrap; `.post-body` also breaks long words/URLs.
+
 ### Removed
 - `Debug.Trace` instrumentation and verbose success-path logging from
   `site.hs` (failure diagnostics for the TikZ pipeline retained).
