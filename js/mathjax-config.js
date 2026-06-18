@@ -1,7 +1,10 @@
 window.MathJax = {
     tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']],
-        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        // Pandoc emits real math as \(…\) / \[…\], never bare $…$ — so the
+        // dollar delimiters add nothing but cause currency ("$300K … $559K")
+        // to be paired into math at render time. Use only the brace forms.
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']],
         processEscapes: true,
         packages: {'[+]': ['base', 'ams', 'noerrors', 'noundefined', '[tex]/mhchem']},
         tags: 'ams'
