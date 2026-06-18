@@ -120,7 +120,7 @@ img { max-width:100%; height:auto; }
 .archive-link a { color:var(--accent-text); border-bottom:1px solid var(--line2); }
 
 /* ----- Article (post reading view) ----- */
-.post { max-width:var(--maxw-read); margin:0 auto; padding:60px 28px 20px; }
+.post { max-width:var(--maxw); margin:0 auto; padding:60px 28px 20px; }
 .back-link {
   display:inline-flex; align-items:center; gap:7px; font-family:var(--label);
   font-weight:800; text-transform:uppercase; font-size:11.5px; letter-spacing:0.13em;
