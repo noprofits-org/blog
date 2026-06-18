@@ -54,8 +54,8 @@ siteRules = do
     match "posts/*" $ do
         route $ setExtension "html"
         compile $ bibtexMathCompiler "bib/style.csl" "bib/bibliography.bib"
-            >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= saveSnapshot "content"
+            >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
 
