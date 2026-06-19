@@ -22,12 +22,12 @@ a resistor between the previous coordinate and the next one and labels it $R$.
 Relative moves use `++(dx,dy)`; the `|-` and `-|` operators route an orthogonal
 path between two points; `o-o` and `-*` decorate the ends of a segment with open
 or filled terminals. That is very nearly all four circuits need. The TikZ manual's
-native circuit library covers the same ground with different syntax [@TikzDevCircuits].
+native circuit library covers the same ground with different syntax.[@TikzDevCircuits]
 
 ## 1 · An RC low-pass filter
 
 A resistor in series, a capacitor to ground, output taken across the capacitor
-[@NilssonRiedel2019].
+.[@NilssonRiedel2019]
 
 ```tikzpicture
 \begin{circuitikz}[scale=1.1, transform shape]
@@ -63,7 +63,7 @@ $$H(j\omega) = \frac{1}{1 + j\omega RC}, \qquad f_c = \frac{1}{2\pi RC}.$$
 ## 2 · A series RLC circuit
 
 The whole loop is a single path, which is why this one is the shortest source of
-the four [@NilssonRiedel2019].
+the four.[@NilssonRiedel2019]
 
 ```tikzpicture
 \begin{circuitikz}[scale=1.2, transform shape]
@@ -92,7 +92,7 @@ $$\omega_0 = \frac{1}{\sqrt{LC}}, \qquad Q = \frac{1}{R}\sqrt{\frac{L}{C}}.$$
 
 The active example, and the first to use a multi-terminal node — the `op amp`
 shape exposes named anchors (`.+`, `.-`, `.out`) you draw to and from
-[@HorowitzHill2015].
+.[@HorowitzHill2015]
 
 ```tikzpicture
 \begin{circuitikz}[scale=1.2, transform shape]
@@ -133,7 +133,7 @@ $$\frac{V_\text{out}}{V_\text{in}} = -\frac{R_f}{R_\text{in}}.$$
 
 The showcase — four diodes in a diamond. Here named coordinates pay off, because
 every diode and wire is expressed relative to the four corners
-[@HorowitzHill2015].
+.[@HorowitzHill2015]
 
 ```tikzpicture
 \begin{circuitikz}[scale=1.25, transform shape]

@@ -20,8 +20,8 @@ adds them, and shows them off.
 Drawing schematics by hand in raw TikZ — battery symbols, resistor zig-zags,
 op-amp triangles — is miserable. [`circuitikz`](https://github.com/circuitikz/circuitikz)
 is the package that does it properly: components become path operations, so a
-resistor between two points is just `to[R=$R$]` [@CircuiTikZ]. (TikZ also ships a
-native circuit library, documented in the manual [@TikzDevCircuits].) Teaching the
+resistor between two points is just `to[R=$R$]`.[@CircuiTikZ] (TikZ also ships a
+native circuit library, documented in the manual.[@TikzDevCircuits]) Teaching the
 pipeline to use it took two small edits to the `Blog.TikZ` module:
 
 ```haskell
@@ -44,7 +44,7 @@ on every build from the `circuitikz` source shown beneath them.
 The canonical first filter: a resistor in series, a capacitor to ground, output
 across the capacitor. At low frequencies the capacitor is a high impedance and
 the output follows the input; at high frequencies it shorts the signal to
-ground [@NilssonRiedel2019].
+ground.[@NilssonRiedel2019]
 
 ```tikzpicture
 \begin{circuitikz}[scale=1.1, transform shape]
@@ -63,7 +63,7 @@ $$H(j\omega) = \frac{1}{1 + j\omega RC}, \qquad f_c = \frac{1}{2\pi RC}.$$
 
 Add an inductor and the circuit gains a resonance: inductive and capacitive
 reactances cancel at one frequency, leaving only $R$. It is the textbook
-second-order system [@NilssonRiedel2019].
+second-order system.[@NilssonRiedel2019]
 
 ```tikzpicture
 \begin{circuitikz}[scale=1.2, transform shape]
@@ -80,7 +80,7 @@ $$\omega_0 = \frac{1}{\sqrt{LC}}, \qquad Q = \frac{1}{R}\sqrt{\frac{L}{C}}.$$
 The active example. The op-amp drives its inverting input to match the grounded
 non-inverting input — the **virtual ground** — so the current through $R_\text{in}$
 must flow on through $R_f$, fixing the gain by a ratio of two resistors
-[@HorowitzHill2015].
+.[@HorowitzHill2015]
 
 ```tikzpicture
 \begin{circuitikz}[scale=1.2, transform shape]
@@ -100,7 +100,7 @@ $$\frac{V_\text{out}}{V_\text{in}} = -\frac{R_f}{R_\text{in}}.$$
 The showcase. Four diodes in a diamond steer either polarity of the AC input the
 same way through the load: whichever way $v_\text{ac}$ swings, two diodes
 conduct and the load always sees current top-to-bottom, so the output never
-reverses [@HorowitzHill2015].
+reverses.[@HorowitzHill2015]
 
 ```tikzpicture
 \begin{circuitikz}[scale=1.25, transform shape]

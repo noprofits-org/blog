@@ -11,7 +11,7 @@ This study documents the methodology for setting up computational environments t
 
 ## Introduction
 
-Nonlinear optical properties of atoms and molecules, particularly hyperpolarizabilities, are essential for understanding and developing materials for applications in photonics, optoelectronics, and optical data processing [@Kanis1994; @Nalwa1997]. The hyperpolarizability tensor represents the second-order response of a system's dipole moment to an external electric field and is crucial for predicting second-harmonic generation and electro-optic effects.[@Boyd2008]
+Nonlinear optical properties of atoms and molecules, particularly hyperpolarizabilities, are essential for understanding and developing materials for applications in photonics, optoelectronics, and optical data processing.[@Kanis1994; @Nalwa1997] The hyperpolarizability tensor represents the second-order response of a system's dipole moment to an external electric field and is crucial for predicting second-harmonic generation and electro-optic effects.[@Boyd2008]
 
 Group 4A elements (carbon family) present an interesting case study for examining trends in nonlinear optical properties across the periodic table. From carbon to flerovium, these elements span a wide range of atomic sizes and electronic structures, allowing us to investigate how relativistic effects and outer electron configurations influence hyperpolarizability.[@Schwerdtfeger2002]
 

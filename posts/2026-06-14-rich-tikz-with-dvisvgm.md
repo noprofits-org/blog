@@ -18,7 +18,7 @@ repository.
 ## The wave hiding in Maxwell's equations
 
 In a source-free region of vacuum, Maxwell's four equations reduce to a
-strikingly symmetric set [@Maxwell; @Griffiths2018]:
+strikingly symmetric set:[@Maxwell; @Griffiths2018]
 
 $$\nabla \cdot \vec{E} = 0, \qquad \nabla \cdot \vec{B} = 0,$$
 
@@ -36,7 +36,7 @@ $$\nabla^2 \vec{E} = \mu_0 \varepsilon_0 \frac{\partial^2 \vec{E}}{\partial t^2}
 That is the wave equation. Reading off the coefficient, the disturbance
 propagates at $c = 1/\sqrt{\mu_0 \varepsilon_0}$ — a speed assembled entirely
 from electric and magnetic constants, which is how Maxwell recognized that light
-*is* an electromagnetic phenomenon [@Jackson1999]. A plane-wave solution travelling
+*is* an electromagnetic phenomenon.[@Jackson1999] A plane-wave solution travelling
 along $\hat{v}$ is
 
 $$\vec{E} = E_0 \,\hat{z}\,\sin(kx - \omega t), \qquad
@@ -82,13 +82,13 @@ toolchain rebuild, because the *old* pipeline threw the transparency away.
 
 TikZ is the right tool for this because it is a *programmatic* drawing language —
 the two field sheets are `\foreach` loops over $\sin(kx)$, not hand-placed
-vertices, so the geometry is the physics [@Tantau2023]. The cost is that TikZ runs
+vertices, so the geometry is the physics.[@Tantau2023] The cost is that TikZ runs
 inside TeX, which means the blog has to run TeX during its build.
 
 ## The pipeline, and why it had to change
 
 The blog is a Hakyll site: a Haskell program compiles Markdown into the static
-HTML you are reading [@Hakyll]. A custom Pandoc filter walks the document, finds
+HTML you are reading.[@Hakyll] A custom Pandoc filter walks the document, finds
 every code block tagged `tikzpicture`, shells out to render it, and splices the
 result back into the page. The original filter did this:
 
@@ -110,7 +110,7 @@ The fix was two substitutions in the renderer:
   overflowing.
 - **`dvisvgm`** (with `mutool` as its PDF backend) instead of `pdf2svg` — it
   preserves transparency and vector detail, and `--no-fonts` converts text to
-  paths so the SVG is self-contained [@Gieseking2023].
+  paths so the SVG is self-contained.[@Gieseking2023]
 
 The SVG is now embedded **inline** rather than as a data-URI image, so it scales
 crisply and inherits page styling. And the filter degrades gracefully: a diagram
