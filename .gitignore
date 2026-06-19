@@ -19,3 +19,5 @@ cabal.sandbox.config
 .stack-work/
 _cache/
 _site/
+# Local scratch — saved Scholar page, not for publishing
+temp_vitae/
