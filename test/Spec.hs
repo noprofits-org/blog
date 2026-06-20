@@ -1,12 +1,21 @@
 -- | Minimal test-suite for the pure helpers in the @blog@ library.
--- Kept dependency-light (base only) so it adds no snapshot packages and
--- runs fast in CI.
+-- Depends only on the library and its own deps (pandoc-types, text) so it
+-- adds no extra snapshot packages and runs fast in CI.
 module Main (main) where
 
+import Blog.Compilers (wrapTables)
 import Blog.TikZ (inlineSvg, namespaceIds)
 import Control.Monad (forM_, unless)
 import qualified Data.Text as T
 import System.Exit (exitFailure)
+import Text.Pandoc.Definition
+  ( Block (..), Caption (..), TableFoot (..), TableHead (..), nullAttr )
+
+-- | A minimal, content-free table for exercising 'wrapTables'.
+emptyTable :: Block
+emptyTable =
+  Table nullAttr (Caption Nothing []) []
+        (TableHead nullAttr []) [] (TableFoot nullAttr [])
 
 -- | (name, condition) — each must hold.
 checks :: [(String, Bool)]
@@ -27,6 +36,12 @@ checks =
   , ( "namespaceIds prefixes clip-path id and its url() reference"
     , namespaceIds (T.pack "n7") (T.pack "<clipPath id=\"c1\"><g clip-path=\"url(#c1)\">")
         == T.pack "<clipPath id=\"n7c1\"><g clip-path=\"url(#n7c1)\">"
+    )
+  , ( "wrapTables wraps a table in div.table-scroll"
+    , wrapTables emptyTable == Div ("", ["table-scroll"], []) [emptyTable]
+    )
+  , ( "wrapTables leaves non-table blocks unchanged"
+    , wrapTables (Para []) == Para []
     )
   ]
 
