@@ -206,6 +206,16 @@ img { max-width:100%; height:auto; }
 }
 .tikz-error pre { background:none; color:inherit; border:none; padding:6px 0 0; font-size:12px; overflow-x:auto; }
 
+/* Tables are wrapped in div.table-scroll at build time: wide tables scroll
+   horizontally within their own frame instead of overflowing the page. The
+   scrollbar is hidden (scroll still works via touch/trackpad/shift-wheel). */
+.table-scroll {
+  overflow-x:auto; -webkit-overflow-scrolling:touch; margin:0 0 24px;
+  scrollbar-width:none;       /* Firefox */
+  -ms-overflow-style:none;    /* old Edge/IE */
+}
+.table-scroll::-webkit-scrollbar { display:none; }  /* WebKit/Blink */
+.table-scroll table { margin:0; }
 .post-body table { width:100%; border-collapse:collapse; margin:0 0 24px; font-size:14.5px; }
 .post-body th, .post-body td { border:1px solid var(--line); padding:8px 11px; text-align:left; }
 .post-body th { background:var(--bg-soft); font-family:var(--label); font-weight:800; text-transform:uppercase; letter-spacing:0.04em; font-size:12px; }

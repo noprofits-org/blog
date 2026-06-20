@@ -4,15 +4,25 @@
 -- citations, and the TikZ filter ("Blog.TikZ").
 module Blog.Compilers
   ( bibtexMathCompiler
+  , wrapTables
   ) where
 
 import Hakyll
+import Text.Pandoc.Definition (Block (..))
 import Text.Pandoc.Extensions (pandocExtensions)
 import Text.Pandoc.Highlighting (pygments)
 import Text.Pandoc.Options
-import Text.Pandoc.Walk (walkM)
+import Text.Pandoc.Walk (walk, walkM)
 
 import Blog.TikZ (tikzFilter)
+
+-- | Wrap every table in a @div.table-scroll@ so wide tables scroll within
+-- their own frame on narrow viewports instead of overflowing the page. The
+-- table keeps its normal full-width layout on desktop; the matching CSS hides
+-- the scrollbar.
+wrapTables :: Block -> Block
+wrapTables t@Table{} = Div ("", ["table-scroll"], []) [t]
+wrapTables b         = b
 
 -- | Read a post with citation support, enable the math/raw extensions we rely
 -- on, run the TikZ filter, and render with MathJax + pygments highlighting.
@@ -46,4 +56,6 @@ bibtexMathCompiler cslFileName bibFileName = do
 
   getResourceBody
     >>= readPandocBiblio readerOptions csl bib
-    >>= \pandoc -> writePandocWith writerOptions <$> walkM tikzFilter pandoc
+    >>= \pandoc -> do
+          transformed <- walkM tikzFilter pandoc
+          return $ writePandocWith writerOptions (walk wrapTables transformed)
