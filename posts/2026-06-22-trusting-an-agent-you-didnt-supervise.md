@@ -278,8 +278,22 @@ says to catch it.
 
 Here's the full story. Before publishing, I did to this post precisely what it
 describes: I handed the draft to a second Claude session — cold, no memory of writing
-it — and told it to assume the argument was broken and try to break it. Refute, don't
-confirm. Its verdict opened, word for word, "this post has problems," and its sharpest
+it — and told it to assume the argument was broken and try to break it. Here, verbatim,
+is the instrument — the prompt I gave it, since a post about not hand-waving the
+checklist shouldn't hand-wave this one either:
+
+```text
+Read the post from PR #53. Ignore build/CI/links/feeds — all verified, don't
+re-check them. Attack the content. Assume the argument is flawed until you fail
+to break it. Specifically: Where does it overstate — e.g. is "reverse-engineered
+from what I do by hand" actually load-bearing or just a flattering frame? Where
+is it padded or redundant? Which claims are unsupported or don't survive a
+skeptical practitioner who disagrees? Is anything self-congratulatory or glib?
+Give me your 3–5 sharpest findings, ranked, each 1–3 sentences, written to a .md
+file. Don't soften. Default verdict: this post has problems.
+```
+
+Its verdict opened, word for word, "this post has problems," and its sharpest
 hit was that the post *asserts* the process works and never *shows* it. Fair. So here
 are the other two edits its review forced — the machinery catching something, shown
 instead of claimed.
@@ -313,7 +327,7 @@ so I added the caveat instead of letting the claim stand.
 ```
 
 And then the part the loop exists for: I am *not* fixing everything it found. The post
-argues the author shouldn't get the last rebuttal, so its three standing objections
+argues the author shouldn't get the last rebuttal, so its four standing objections
 run here in its own words, lightly trimmed, unanswered:
 
 > 1. The trust claim still has no evidence under it — no failure rate, no story of
@@ -325,8 +339,24 @@ run here in its own words, lightly trimmed, unanswered:
 > 3. The tone keeps resolving into polished slogans, and "walk away from the output
 >    without reading it" lands glib right after you've admitted that taste, ambiguity,
 >    and live behavior all still need a human.
+> 4. The "reverse-engineered from what I do by hand" frame does more flattering than
+>    work. The manual-loop section *illustrates* the doctrine; it doesn't *prove* it,
+>    and an origin story presented as evidence is its own small sleight of hand.
 
-It's right on all three, and I'm publishing anyway. That's the admission the whole
+That fourth one I almost got away with softening. In the first version of this
+postscript I quietly folded it into the redundancy fix two blocks up — recasting "your
+origin story isn't evidence" as the far easier "you said it twice." So I ran the loop
+one more turn: I sent this revised post back to the *same* session — the warm delta
+re-review the post describes — and asked whether the fixes held and whether the P.S.
+represented it fairly. It confirmed the fixes and caught the swap, in its words, that
+the postscript "narrows one criticism in its own favor." It was right. Objection four
+is restored above in its unsoftened form, because the alternative was to publish a
+demonstration of honest review that had itself cheated. Its bottom line on the whole
+exercise: the revisions improve the post and turn its remaining flaws into
+*acknowledged tradeoffs, not solved problems* — which is exactly as far as this should
+claim to go.
+
+So it's right on all four, and I'm publishing anyway. That's the admission the whole
 post circles toward without quite landing: at the end of every process that "earns the
 trust," a human decides the leftover flaws are tolerable enough to ship. That decision
 is the one part none of this removes.

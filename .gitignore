@@ -23,5 +23,4 @@ _site/
 temp_vitae/
 
 # Adversarial-review hand-off scratch files (kept local, never committed)
-PR_*_REVIEW.md
-PR_*_FINDINGS.md
+PR_*.md
