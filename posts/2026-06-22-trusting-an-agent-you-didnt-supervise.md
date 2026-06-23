@@ -24,6 +24,15 @@ is good and also confidently wrong often enough that "it's good" is not a plan.
 The answer is a *process*, and the process is the subject of this post. None of it
 is clever. All of it is about putting the right kind of doubt in the right place.
 
+> **How to read this post.** It's a post about reviewing things, so it's printed
+> showing its own review history. I wrote it, then had a separate AI session attack it
+> twice — the prompts and verdicts are in the [postscript](#ps). Text
+> <del style="color:#b1442e">removed in revision</del><sup style="color:#b1442e">1</sup>
+> is struck through in red; text <ins style="color:#15803d;text-decoration:none;border-bottom:1.5px solid #15803d88">added
+> in revision</ins><sup style="color:#15803d">1</sup> is green and underlined; the
+> small <sup>1</sup> or <sup>2</sup> marks whether the **first** or **second** review
+> prompted the change. What's left plain is the final draft.
+
 ## The thing you can't do is the thing that doesn't scale
 
 Start from the trap. The instinct, when an agent hands you work, is to read it
@@ -117,13 +126,13 @@ you genuinely can't, pass it. A skeptic told "tear this apart" finds things a
 proofreader told "look it over" sails straight past, and they are the *same model*
 on the *same diff*. The only difference is which way the burden of proof points.
 
-That flip is real but it isn't magic, and the ceiling is worth being honest about:
-the verifier is the same model with the same training as the author, so it inherits
-the author's blind spots. A mistake neither is equipped to see stays invisible to
-both, however cold the second context is. Separating contexts buys independence of
-*investment* — the reviewer isn't attached to the approach — not true independence
-of *mind*. That's a mitigation, not a guarantee, and it's the reason the next move
-matters.
+[That flip is real but it isn't magic, and the ceiling is worth being honest about:
+the verifier is the same model with the same training as the author, so it inherits the
+author's blind spots. A mistake neither is equipped to see stays invisible to both,
+however cold the second context is. Separating contexts buys independence of
+*investment* — the reviewer isn't attached to the approach — not true independence of
+*mind*. That's a mitigation, not a guarantee, and it's the reason the next move
+matters.]{style="color:#15803d;border-bottom:1.5px solid #15803d88"}<sup style="color:#15803d">1</sup>
 
 For the work where being wrong is expensive, I push this further into a small panel:
 several independent verifiers, each coming at it from a different angle — does it
@@ -217,10 +226,12 @@ vibe. It's the same instinct as everything else here — make the important thin
 durable object, not a conversation.
 
 The second is **going back to the reviewer that's still warm** rather than opening a
-third session — the same warm delta re-review from a few paragraphs up, except here
-*I'm* the message bus, hand-carrying the fix notice from builder to critic. That
-courier is the one job the automated version actually removes; the doubt it carries
-is the same either way.
+third session. <del style="color:#b1442e">The session that found the problems only has
+to confirm a small delta, and it already knows what to look for — it's the same warm
+delta re-review from a few paragraphs up.</del><sup style="color:#b1442e">1</sup> The
+same warm delta re-review from a few paragraphs up, except here *I'm* the message bus,
+hand-carrying the fix notice from builder to critic. That courier is the one job the
+automated version actually removes; the doubt it carries is the same either way.
 
 When the change is bigger, this spreads out across time and devices. I'll cut the
 findings into `gh` issues, push a branch, and juggle the back-and-forth from the
@@ -252,9 +263,10 @@ letter and every diff. I sit at the places a checklist and a skeptic can't cover
   substitutes for it.
 
 So now I read the ones the system flags and the ones whose stakes tell me to look
-anyway, and fewer of the rest than I used to. ~~I read maybe one document in ten.~~
-(I don't actually know the ratio — an earlier draft of this sentence made that number
-up, and the review you're about to read caught it.) The ones I don't read, I trust —
+anyway, and fewer of the rest than I used to. <del style="color:#b1442e">I read maybe
+one document in ten.</del><sup style="color:#b1442e">1</sup> (I don't actually know the
+ratio — an earlier draft of this sentence made that number up, and the review you're
+about to read caught it.) The ones I don't read, I trust —
 not because I checked them, but because something that wasn't their author tried to
 break them and couldn't.
 
@@ -270,11 +282,11 @@ who starts from "is this even the right thing." The intelligence proposes. The d
 arranged carefully and kept away from the thing it's doubting, is what lets you walk
 away from the output without reading it.
 
-## P.S. — the edits this post is wearing
+## P.S. — the edits this post is wearing {#ps}
 
-You just watched one happen. The struck line a few paragraphs up — the made-up "one
-in ten" — is exactly the kind of thing this post is about, caught the way this post
-says to catch it.
+You've been reading them all along: the red strikeouts and the green underline above
+aren't decoration — they're this post's actual revision history, left visible on
+purpose.
 
 Here's the full story. Before publishing, I did to this post precisely what it
 describes: I handed the draft to a second Claude session — cold, no memory of writing
@@ -293,38 +305,13 @@ Give me your 3–5 sharpest findings, ranked, each 1–3 sentences, written to a
 file. Don't soften. Default verdict: this post has problems.
 ```
 
-Its verdict opened, word for word, "this post has problems," and its sharpest
-hit was that the post *asserts* the process works and never *shows* it. Fair. So here
-are the other two edits its review forced — the machinery catching something, shown
-instead of claimed.
-
-**It caught me making the same point twice.** The warm-reviewer trick was already
-explained two sections earlier; the manual section just re-taught it.
-
-```diff
-- The session that found the problems only has to confirm a small delta, and it
-- already knows what to look for — the warm delta re-review from a few paragraphs
-- up, except here I'm the message bus, carrying the fix notice from the builder
-- back to the critic by hand.
-+ ...the same warm delta re-review from a few paragraphs up, except here I'm the
-+ message bus, hand-carrying the fix notice from builder to critic. That courier is
-+ the one job the automated version actually removes; the doubt it carries is the
-+ same either way.
-```
-
-**It caught me overselling "fresh eyes."** I'd written separate contexts as if they
-were real independence. They aren't — it's the same model with the same blind spots —
-so I added the caveat instead of letting the claim stand.
-
-```diff
-  ...they are the same model on the same diff. The only difference is which way the
-  burden of proof points.
-+
-+ That flip is real but it isn't magic, and the ceiling is worth being honest about:
-+ the verifier is the same model with the same training as the author, so it inherits
-+ the author's blind spots. Separating contexts buys independence of *investment* —
-+ the reviewer isn't attached to the approach — not true independence of *mind*.
-```
+Its verdict opened, word for word, "this post has problems," and its sharpest hit was
+that the post *asserts* the process works and never *shows* it. Fair — so the three
+edits its first review forced are the ones marked <sup>1</sup> in the body above, shown
+instead of claimed: a statistic I'd invented (the struck "one in ten"), the same point
+made twice (the struck, doubled warm-review sentence), and an independence claim I'd
+oversold (the added caveat that a second context is the same model with the same blind
+spots).
 
 And then the part the loop exists for: I am *not* fixing everything it found. The post
 argues the author shouldn't get the last rebuttal, so its four standing objections
@@ -341,11 +328,12 @@ run here in its own words, lightly trimmed, unanswered:
 >    and live behavior all still need a human.
 > 4. The "reverse-engineered from what I do by hand" frame does more flattering than
 >    work. The manual-loop section *illustrates* the doctrine; it doesn't *prove* it,
->    and an origin story presented as evidence is its own small sleight of hand.
+>    and an origin story presented as evidence is its own small sleight of hand.<sup style="color:#15803d">2</sup>
 
-That fourth one I almost got away with softening. In the first version of this
-postscript I quietly folded it into the redundancy fix two blocks up — recasting "your
-origin story isn't evidence" as the far easier "you said it twice." So I ran the loop
+That fourth objection carries a <sup style="color:#15803d">2</sup> because it almost
+didn't survive my own dishonesty. In the first version of this postscript I quietly
+folded it into the redundancy edit above — recasting "your origin story isn't evidence"
+as the far easier "you said it twice." So I ran the loop
 one more turn: I sent this revised post back to the *same* session — the warm delta
 re-review the post describes — and asked whether the fixes held and whether the P.S.
 represented it fairly. It confirmed the fixes and caught the swap, in its words, that
