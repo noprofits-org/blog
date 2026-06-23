@@ -12,8 +12,8 @@ how it gets written, how the work splits across agents. That post ended on a lin
 believe: the agents are the cleverest part of the setup and the least important.
 The scaffolding is what makes it trustworthy.
 
-But "trustworthy" was doing a lot of quiet work in that sentence, and a few people
-called me on it. Here is the uncomfortable version of the question. An agent writes
+But "trustworthy" was doing a lot of quiet work in that sentence. Here is the
+uncomfortable version of the question. An agent writes
 a letter that goes to a customer. Another writes a code change that lands on the
 website behind the whole operation. If the point of the system is that I'm *not*
 reading every letter and every diff line by line — and if I were, I'd have saved no
@@ -348,3 +348,6 @@ So it's right on all four, and I'm publishing anyway. That's the admission the w
 post circles toward without quite landing: at the end of every process that "earns the
 trust," a human decides the leftover flaws are tolerable enough to ship. That decision
 is the one part none of this removes.
+
+When it's really important, nothing beats a pair of human eyes carefully checking to
+see if everything is correct, accurate, precise, and worth handing to another human.
