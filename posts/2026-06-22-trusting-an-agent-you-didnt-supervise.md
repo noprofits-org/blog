@@ -117,6 +117,14 @@ you genuinely can't, pass it. A skeptic told "tear this apart" finds things a
 proofreader told "look it over" sails straight past, and they are the *same model*
 on the *same diff*. The only difference is which way the burden of proof points.
 
+That flip is real but it isn't magic, and the ceiling is worth being honest about:
+the verifier is the same model with the same training as the author, so it inherits
+the author's blind spots. A mistake neither is equipped to see stays invisible to
+both, however cold the second context is. Separating contexts buys independence of
+*investment* — the reviewer isn't attached to the approach — not true independence
+of *mind*. That's a mitigation, not a guarantee, and it's the reason the next move
+matters.
+
 For the work where being wrong is expensive, I push this further into a small panel:
 several independent verifiers, each coming at it from a different angle — does it
 reproduce, is it correct, does it hold up under the domain's hard rules — and the
@@ -208,11 +216,11 @@ survives, I can read it myself, and the fixer works against a fixed list instead
 vibe. It's the same instinct as everything else here — make the important thing a
 durable object, not a conversation.
 
-The second is **going back to the reviewer that's still warm** instead of opening a
-third session to re-check. The session that found the problems only has to confirm a
-small delta, and it already knows what to look for — the warm delta re-review from a
-few paragraphs up, except here *I'm* the message bus, carrying the fix notice from the
-builder back to the critic by hand.
+The second is **going back to the reviewer that's still warm** rather than opening a
+third session — the same warm delta re-review from a few paragraphs up, except here
+*I'm* the message bus, hand-carrying the fix notice from builder to critic. That
+courier is the one job the automated version actually removes; the doubt it carries
+is the same either way.
 
 When the change is bigger, this spreads out across time and devices. I'll cut the
 findings into `gh` issues, push a branch, and juggle the back-and-forth from the
@@ -243,8 +251,10 @@ letter and every diff. I sit at the places a checklist and a skeptic can't cover
   on paper; live testing is the only one that touches the running thing, and nothing
   substitutes for it.
 
-So I read maybe one document in ten now, and they're the ten percent the system
-flagged or the ones where the stakes told me to look anyway. The other nine I trust —
+So now I read the ones the system flags and the ones whose stakes tell me to look
+anyway, and fewer of the rest than I used to. ~~I read maybe one document in ten.~~
+(I don't actually know the ratio — an earlier draft of this sentence made that number
+up, and the review you're about to read caught it.) The ones I don't read, I trust —
 not because I checked them, but because something that wasn't their author tried to
 break them and couldn't.
 
@@ -259,3 +269,64 @@ starts from "this is wrong," a gate that starts from "this will break prod," a h
 who starts from "is this even the right thing." The intelligence proposes. The doubt,
 arranged carefully and kept away from the thing it's doubting, is what lets you walk
 away from the output without reading it.
+
+## P.S. — the edits this post is wearing
+
+You just watched one happen. The struck line a few paragraphs up — the made-up "one
+in ten" — is exactly the kind of thing this post is about, caught the way this post
+says to catch it.
+
+Here's the full story. Before publishing, I did to this post precisely what it
+describes: I handed the draft to a second Claude session — cold, no memory of writing
+it — and told it to assume the argument was broken and try to break it. Refute, don't
+confirm. Its verdict opened, word for word, "this post has problems," and its sharpest
+hit was that the post *asserts* the process works and never *shows* it. Fair. So here
+are the other two edits its review forced — the machinery catching something, shown
+instead of claimed.
+
+**It caught me making the same point twice.** The warm-reviewer trick was already
+explained two sections earlier; the manual section just re-taught it.
+
+```diff
+- The session that found the problems only has to confirm a small delta, and it
+- already knows what to look for — the warm delta re-review from a few paragraphs
+- up, except here I'm the message bus, carrying the fix notice from the builder
+- back to the critic by hand.
++ ...the same warm delta re-review from a few paragraphs up, except here I'm the
++ message bus, hand-carrying the fix notice from builder to critic. That courier is
++ the one job the automated version actually removes; the doubt it carries is the
++ same either way.
+```
+
+**It caught me overselling "fresh eyes."** I'd written separate contexts as if they
+were real independence. They aren't — it's the same model with the same blind spots —
+so I added the caveat instead of letting the claim stand.
+
+```diff
+  ...they are the same model on the same diff. The only difference is which way the
+  burden of proof points.
++
++ That flip is real but it isn't magic, and the ceiling is worth being honest about:
++ the verifier is the same model with the same training as the author, so it inherits
++ the author's blind spots. Separating contexts buys independence of *investment* —
++ the reviewer isn't attached to the approach — not true independence of *mind*.
+```
+
+And then the part the loop exists for: I am *not* fixing everything it found. The post
+argues the author shouldn't get the last rebuttal, so its three standing objections
+run here in its own words, lightly trimmed, unanswered:
+
+> 1. The trust claim still has no evidence under it — no failure rate, no story of
+>    something that slipped through, no threshold for when the right to stop reading
+>    is actually earned. You assert the process works; you mostly don't show it.
+> 2. The gate sounds more rigorous than it is. It invokes a checklist and a list of
+>    landmines but never names the actual list, who keeps it current, or what it has
+>    caught — the same hand-waving the post claims to stand against.
+> 3. The tone keeps resolving into polished slogans, and "walk away from the output
+>    without reading it" lands glib right after you've admitted that taste, ambiguity,
+>    and live behavior all still need a human.
+
+It's right on all three, and I'm publishing anyway. That's the admission the whole
+post circles toward without quite landing: at the end of every process that "earns the
+trust," a human decides the leftover flaws are tolerable enough to ship. That decision
+is the one part none of this removes.
