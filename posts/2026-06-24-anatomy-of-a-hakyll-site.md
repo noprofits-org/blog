@@ -77,7 +77,7 @@ middle, the generated site on the right.
   >={Stealth[length=2.4mm]},
   src/.style={draw, rounded corners=2pt, align=center, fill=black!6,
               draw=black!55, minimum height=9mm, minimum width=28mm, thick},
-  out/.style={draw, rounded corners=2pt, align=center, fill=green!10,
+  dst/.style={draw, rounded corners=2pt, align=center, fill=green!10,
               draw=green!55!black, minimum height=9mm, minimum width=30mm, thick},
   flow/.style={->, thick, black!70},
 ]
@@ -95,11 +95,11 @@ middle, the generated site on the right.
                           \scriptsize route\\[1pt]\scriptsize compile};
 
   % outputs
-  \node[out] (ph)  at (11,3)    {\texttt{posts/*.html}};
-  \node[out] (ih)  at (11,1.5)  {\texttt{index.html}};
-  \node[out] (ar)  at (11,0)    {\texttt{archive.html}};
-  \node[out] (fe)  at (11,-1.5) {\texttt{atom.xml / rss.xml}};
-  \node[out] (st)  at (11,-3)   {static assets};
+  \node[dst] (ph)  at (11,3)    {\texttt{posts/*.html}};
+  \node[dst] (ih)  at (11,1.5)  {\texttt{index.html}};
+  \node[dst] (ar)  at (11,0)    {\texttt{archive.html}};
+  \node[dst] (fe)  at (11,-1.5) {\texttt{atom.xml / rss.xml}};
+  \node[dst] (st)  at (11,-3)   {static assets};
 
   \draw[flow] (posts) -- (eng);
   \draw[flow] (idx)   -- (eng);
@@ -555,7 +555,7 @@ the templates, and is reloaded by the feeds.
   stage/.style={box, fill=blue!8, draw=blue!55!black},
   io/.style={box, fill=black!7, draw=black!55},
   snap/.style={box, fill=orange!15, draw=orange!65!black},
-  out/.style={box, fill=green!10, draw=green!55!black},
+  dst/.style={box, fill=green!10, draw=green!55!black},
   flow/.style={->, thick, black!70},
 ]
   \node[io]    (md)  at (0,0)    {Markdown\\source};
@@ -563,11 +563,11 @@ the templates, and is reloaded by the feeds.
   \node[stage] (tk)  at (6.6,0)  {walkM\\tikzFilter};
   \node[stage] (wt)  at (9.9,0)  {walk\\wrapTables};
   \node[stage] (wr)  at (13.2,0) {writePandoc\\With};
-  \node[out]   (pg)  at (17.2,0) {HTML\\page};
+  \node[dst]   (pg)  at (17.2,0) {HTML\\page};
 
   \node[io]   (csl) at (3.3,2.3)  {CSL +\\BibTeX};
   \node[snap] (sn)  at (13.2,-2.4){\texttt{"content"}\\snapshot};
-  \node[out]  (fd)  at (17.2,-2.4){atom.xml\\rss.xml};
+  \node[dst]  (fd)  at (17.2,-2.4){atom.xml\\rss.xml};
 
   \draw[flow] (md) -- (rd);
   \draw[flow] (csl) -- (rd);
