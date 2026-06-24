@@ -2,7 +2,7 @@
 title: The anatomy of a Hakyll site, line by line
 date: 2026-06-24
 author: Peter Johnston
-tags: haskell, hakyll, static site generator, pandoc, functional programming, build systems
+tags: haskell, hakyll, static site generator, pandoc, functional programming, build systems, tikz
 description: A complete walkthrough of the Haskell that builds this blog — the Hakyll rule set, contexts, feeds, the Pandoc compiler with citations and math, and the build-time TikZ filter — explaining what every part of the configuration does and why it's there.
 ---
 
@@ -39,7 +39,54 @@ The core vocabulary is small:
   that loading the bibliography inside a post compiler automatically makes that
   post depend on the bibliography.
 
-That's enough to read everything below.
+That's enough to read everything below. Here is the whole build in one picture —
+source files on the left, the rule set in the middle, the generated site on the
+right. (Every diagram in this post is itself compiled by the TikZ filter
+described at the end, so these boxes are the pipeline drawing itself.)
+
+```tikzpicture
+\begin{tikzpicture}[
+  font=\small,
+  >={Stealth[length=2.4mm]},
+  src/.style={draw, rounded corners=2pt, align=center, fill=black!6,
+              draw=black!55, minimum height=9mm, minimum width=28mm, thick},
+  out/.style={draw, rounded corners=2pt, align=center, fill=green!10,
+              draw=green!55!black, minimum height=9mm, minimum width=30mm, thick},
+  flow/.style={->, thick, black!70},
+]
+  % sources
+  \node[src] (posts) at (0,3)    {\texttt{posts/*.md}};
+  \node[src] (idx)   at (0,1.5)  {\texttt{index.html}};
+  \node[src] (bib)   at (0,0)    {\texttt{bib/*.bib, *.csl}};
+  \node[src] (asset) at (0,-1.5) {\texttt{css/ js/ images/}};
+  \node[src] (tpl)   at (0,-3)   {\texttt{templates/*}};
+
+  % engine
+  \node[draw, rounded corners=3pt, align=center, thick, fill=blue!7,
+        draw=blue!55!black, minimum height=58mm, minimum width=30mm]
+        (eng) at (5.4,0) {\textbf{siteRules}\\[3pt]\scriptsize match / create\\[1pt]
+                          \scriptsize route\\[1pt]\scriptsize compile};
+
+  % outputs
+  \node[out] (ph)  at (11,3)    {\texttt{posts/*.html}};
+  \node[out] (ih)  at (11,1.5)  {\texttt{index.html}};
+  \node[out] (ar)  at (11,0)    {\texttt{archive.html}};
+  \node[out] (fe)  at (11,-1.5) {\texttt{atom.xml / rss.xml}};
+  \node[out] (st)  at (11,-3)   {static assets};
+
+  \draw[flow] (posts) -- (eng);
+  \draw[flow] (idx)   -- (eng);
+  \draw[flow] (bib)   -- (eng);
+  \draw[flow] (asset) -- (eng);
+  \draw[flow] (tpl)   -- (eng);
+
+  \draw[flow] (eng) -- (ph);
+  \draw[flow] (eng) -- (ih);
+  \draw[flow] (eng) -- (ar);
+  \draw[flow] (eng) -- (fe);
+  \draw[flow] (eng) -- (st);
+\end{tikzpicture}
+```
 
 ## The entry point
 
@@ -440,6 +487,46 @@ The actual pipeline:
 
 5. `writePandocWith writerOptions` renders the transformed AST to HTML.
 
+Drawn out, the post pipeline is a straight line with two side-channels: the CSL +
+BibTeX items feeding into the parse, and the `"content"` snapshot tapped off
+*after* rendering but *before* the templates, which is exactly what the feeds
+reload:
+
+```tikzpicture
+\begin{tikzpicture}[
+  font=\small,
+  >={Stealth[length=2.4mm]},
+  box/.style={draw, rounded corners=2pt, align=center, thick,
+              minimum height=11mm, minimum width=23mm},
+  stage/.style={box, fill=blue!8, draw=blue!55!black},
+  io/.style={box, fill=black!7, draw=black!55},
+  snap/.style={box, fill=orange!15, draw=orange!65!black},
+  out/.style={box, fill=green!10, draw=green!55!black},
+  flow/.style={->, thick, black!70},
+]
+  \node[io]    (md)  at (0,0)    {Markdown\\source};
+  \node[stage] (rd)  at (3.3,0)  {readPandoc\\Biblio};
+  \node[stage] (tk)  at (6.6,0)  {walkM\\tikzFilter};
+  \node[stage] (wt)  at (9.9,0)  {walk\\wrapTables};
+  \node[stage] (wr)  at (13.2,0) {writePandoc\\With};
+  \node[out]   (pg)  at (17.2,0) {HTML\\page};
+
+  \node[io]   (csl) at (3.3,2.3)  {CSL +\\BibTeX};
+  \node[snap] (sn)  at (13.2,-2.4){\texttt{"content"}\\snapshot};
+  \node[out]  (fd)  at (17.2,-2.4){atom.xml\\rss.xml};
+
+  \draw[flow] (md) -- (rd);
+  \draw[flow] (csl) -- (rd);
+  \draw[flow] (rd) -- (tk);
+  \draw[flow] (tk) -- (wt);
+  \draw[flow] (wt) -- (wr);
+  \draw[flow] (wr) -- node[above, align=center, font=\scriptsize]
+                       {post.html\\default.html} (pg);
+  \draw[flow] (wr) -- node[right, font=\scriptsize] {saveSnapshot} (sn);
+  \draw[flow] (sn) -- node[above, font=\scriptsize] {reload} (fd);
+\end{tikzpicture}
+```
+
 ## The TikZ filter: LaTeX diagrams at build time
 
 The last and most unusual piece. I want to write a diagram as TikZ/LaTeX source
@@ -472,7 +559,42 @@ no TeX installed.
 `renderTikz` itself wraps the snippet in a `standalone` LaTeX preamble (TikZ,
 pgfplots, circuitikz, mhchem, a stack of TikZ libraries), runs it through
 `lualatex` in a temp directory, converts the PDF to SVG with `dvisvgm`, and reads
-the result back. I've written about
+the result back. The whole filter — which is what rendered every figure above —
+looks like this, including the graceful-failure branch that turns a broken
+diagram into an error box instead of killing the build:
+
+```tikzpicture
+\begin{tikzpicture}[
+  font=\small,
+  >={Stealth[length=2.4mm]},
+  box/.style={draw, rounded corners=2pt, align=center, thick,
+              minimum height=10mm, minimum width=21mm},
+  stage/.style={box, fill=blue!8, draw=blue!55!black},
+  io/.style={box, fill=black!7, draw=black!55},
+  ok/.style={box, fill=green!10, draw=green!55!black},
+  bad/.style={box, fill=red!10, draw=red!60!black},
+  flow/.style={->, thick, black!70},
+  ret/.style={->, thick, green!55!black},
+  rej/.style={->, thick, red!65!black, dashed},
+]
+  \node[io]    (cb) at (0,0)     {\texttt{.tikzpicture}\\block};
+  \node[stage] (lx) at (3.4,0)   {lualatex};
+  \node[stage] (dv) at (6.8,0)   {dvisvgm};
+  \node[stage] (ns) at (10.2,0)  {namespace\\Ids};
+  \node[ok]    (fig)at (14.2,1.2){\texttt{div.tikz-figure}\\inline SVG};
+  \node[bad]   (err)at (14.2,-1.7){\texttt{div.tikz-error}\\error box};
+
+  \draw[flow] (cb) -- node[above, font=\scriptsize] {\texttt{.tex}} (lx);
+  \draw[flow] (lx) -- node[above, font=\scriptsize] {PDF} (dv);
+  \draw[flow] (dv) -- node[above, font=\scriptsize] {SVG} (ns);
+  \draw[ret]  (ns) -- (fig);
+  \draw[rej]  (lx) to[out=-65, in=178] node[below, pos=0.35, font=\scriptsize]
+                                       {fails} (err);
+  \draw[rej]  (dv) to[out=-70, in=165] (err);
+\end{tikzpicture}
+```
+
+I've written about
 [that pipeline](/posts/2026-06-14-rich-tikz-with-dvisvgm.html) and
 [reading the circuitikz source](/posts/2026-06-15-reading-the-circuitikz-source.html)
 before, so I'll point at one subtle bit instead — id collisions:
