@@ -1,5 +1,5 @@
 ---
-title: Astro, Apps Script, and Firebase: how site.noprofits.org is built
+title: "Astro, Apps Script, and Firebase: how site.noprofits.org is built"
 date: 2026-06-25
 author: Peter Johnston
 tags: astro, apps script, firebase, hosting, github actions, static site, workload identity federation, serverless
