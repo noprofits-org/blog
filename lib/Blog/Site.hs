@@ -101,6 +101,19 @@ siteRules = do
                 =<< loadAllPublishedSnapshots "posts/*" "content"
             renderRss feedConfiguration feedCtx posts
 
+    create ["sitemap.xml"] $ do
+        route idRoute
+        compile $ do
+            posts <- recentFirst =<< loadAllPublished "posts/*"
+            let sitemapCtx =
+                    listField "posts"
+                        (dateField "date" "%Y-%m-%d" `mappend` defaultContext)
+                        (return posts)                       `mappend`
+                    defaultContext
+
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/sitemap.xml" sitemapCtx
+
     match "404.html" $ do
         route idRoute
         compile copyFileCompiler
