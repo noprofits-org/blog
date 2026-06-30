@@ -49,12 +49,12 @@ nuclear–nuclear repulsion becomes a constant we can add at the end. What remai
 is the **electronic Hamiltonian** (in atomic units, $\hbar = m_e = e =
 4\pi\varepsilon_0 = 1$):
 
-\[
+$$
 \hat{H}_{\mathrm{elec}}
 = \underbrace{-\frac{1}{2}\sum_{i} \nabla_i^2}_{\text{kinetic}}
 \;\underbrace{-\sum_{i}\sum_{A} \frac{Z_A}{r_{iA}}}_{\text{electron–nuclear attraction}}
 \;+\;\underbrace{\sum_{i<j} \frac{1}{r_{ij}}}_{\text{electron–electron repulsion}} .
-\]
+$$
 
 The first two sums are *one-electron* operators: each term involves a single
 electron $i$ moving in the fixed external field of the nuclei. If those were the
@@ -80,10 +80,10 @@ Electrons are fermions, and the wavefunction of a many-fermion system must be
 **antisymmetric**: swap the full coordinates (space *and* spin) of any two
 electrons and $\Psi$ must change sign,
 
-\[
+$$
 \Psi(\mathbf{x}_1,\dots,\mathbf{x}_i,\dots,\mathbf{x}_j,\dots,\mathbf{x}_N)
 = -\,\Psi(\mathbf{x}_1,\dots,\mathbf{x}_j,\dots,\mathbf{x}_i,\dots,\mathbf{x}_N),
-\]
+$$
 
 where $\mathbf{x} = (\mathbf{r}, \omega)$ bundles position and spin. This is the
 Pauli principle in its deepest form, and it has an immediate consequence: set
@@ -95,7 +95,7 @@ The simplest wavefunction that builds in antisymmetry automatically is a
 determinant. Take $N$ one-electron **spin-orbitals** $\chi_1,\dots,\chi_N$ (each a
 spatial orbital times a spin function) and assemble the **Slater determinant**
 
-\[
+$$
 \Psi_{\mathrm{HF}}(\mathbf{x}_1,\dots,\mathbf{x}_N)
 = \frac{1}{\sqrt{N!}}
 \begin{vmatrix}
@@ -104,7 +104,7 @@ spatial orbital times a spin function) and assemble the **Slater determinant**
 \vdots & \vdots & \ddots & \vdots \\
 \chi_1(\mathbf{x}_N) & \chi_2(\mathbf{x}_N) & \cdots & \chi_N(\mathbf{x}_N)
 \end{vmatrix}.
-\]
+$$
 
 A determinant changes sign when two rows are swapped — that is exchanging two
 electrons, so antisymmetry is automatic — and it vanishes when two columns are
@@ -122,10 +122,10 @@ columns. Hartree–Fock theory is what you get when you insist the wavefunction 
 yardstick. For any normalized trial wavefunction $\Psi$, the expectation value of
 the Hamiltonian is an upper bound on the true ground-state energy $E_0$:
 
-\[
+$$
 E[\Psi] = \frac{\langle \Psi | \hat{H} | \Psi \rangle}{\langle \Psi | \Psi \rangle}
 \;\geq\; E_0 .
-\]
+$$
 
 The proof is one line: expand $\Psi$ in the exact (unknown) eigenstates
 $\hat{H}|\Psi_n\rangle = E_n|\Psi_n\rangle$, and since every $E_n \geq E_0$, the
@@ -150,18 +150,18 @@ Minimizing $E[\Psi_{\mathrm{HF}}]$ with respect to the spin-orbitals, subject to
 keeping them orthonormal, yields a set of coupled one-electron eigenvalue
 equations [@SzaboOstlund1996]:
 
-\[
+$$
 \hat{f}\,\chi_i = \varepsilon_i\,\chi_i .
-\]
+$$
 
 This looks like an ordinary single-particle Schrödinger equation, and that
 resemblance is the whole achievement: the intractable many-electron problem has
 been recast as a one-electron problem in an effective potential. The operator
 $\hat{f}$ is the **Fock operator**,
 
-\[
+$$
 \hat{f} = \hat{h} + \sum_{j}^{\text{occ}} \big( \hat{J}_j - \hat{K}_j \big),
-\]
+$$
 
 where $\hat{h} = -\tfrac{1}{2}\nabla^2 - \sum_A Z_A/r_A$ is the bare one-electron
 core Hamiltonian — kinetic energy plus attraction to the nuclei — and the sum runs
@@ -171,11 +171,11 @@ classical and the other is not.
 
 The **Coulomb operator** $\hat{J}_j$ acts on $\chi_i$ as
 
-\[
+$$
 \hat{J}_j(\mathbf{x}_1)\,\chi_i(\mathbf{x}_1)
 = \left[ \int \frac{|\chi_j(\mathbf{x}_2)|^2}{r_{12}}\, d\mathbf{x}_2 \right]
   \chi_i(\mathbf{x}_1) ,
-\]
+$$
 
 and it is exactly what intuition expects: electron $i$ feels the smeared-out
 electrostatic repulsion of the charge cloud $|\chi_j|^2$ of every other electron.
@@ -187,11 +187,11 @@ capture a dodge.
 
 The **exchange operator** $\hat{K}_j$ has no classical analogue at all:
 
-\[
+$$
 \hat{K}_j(\mathbf{x}_1)\,\chi_i(\mathbf{x}_1)
 = \left[ \int \frac{\chi_j^*(\mathbf{x}_2)\,\chi_i(\mathbf{x}_2)}{r_{12}}\, d\mathbf{x}_2 \right]
   \chi_j(\mathbf{x}_1) .
-\]
+$$
 
 Notice that $\chi_i$ and $\chi_j$ have traded places between the integrand and the
 result — the operator is *nonlocal*, mixing the value of the orbital at one point
@@ -219,18 +219,18 @@ Hall, is to expand each molecular orbital as a **linear combination of atomic
 orbitals** (LCAO) — a fixed set of $K$ basis functions $\{\phi_\mu\}$ centered on
 the atoms:
 
-\[
+$$
 \psi_i = \sum_{\mu=1}^{K} C_{\mu i}\,\phi_\mu .
-\]
+$$
 
 Solving for the *orbitals* now means solving for the *coefficients* $C_{\mu i}$ —
 finitely many numbers. Substituting this expansion into the Fock equation and
 projecting onto each basis function turns the differential equation into a matrix
 equation, the **Roothaan–Hall equation** [@Roothaan1951]:
 
-\[
+$$
 \mathbf{F}\,\mathbf{C} = \mathbf{S}\,\mathbf{C}\,\boldsymbol{\varepsilon} .
-\]
+$$
 
 Four objects appear, each with a clean meaning. The **overlap matrix**
 $S_{\mu\nu} = \int \phi_\mu^* \phi_\nu \, d\mathbf{r}$ records how non-orthogonal
@@ -243,13 +243,13 @@ $\boldsymbol{\varepsilon}$ holds the orbital energies. The Fock matrix splits in
 the one-electron core integrals plus a two-electron part built from the
 **density matrix**
 
-\[
+$$
 P_{\mu\nu} = \sum_{i}^{\text{occ}} n_i\, C_{\mu i}\, C_{\nu i}^{*}
 \qquad\Longrightarrow\qquad
 F_{\mu\nu} = H^{\text{core}}_{\mu\nu}
   + \sum_{\lambda\sigma} P_{\lambda\sigma}
     \left[ (\mu\nu\,|\,\lambda\sigma) - \tfrac{1}{2}(\mu\lambda\,|\,\nu\sigma) \right],
-\]
+$$
 
 where $(\mu\nu\,|\,\lambda\sigma)$ are the **two-electron repulsion integrals**
 over the basis. (The two bracketed terms are the matrix incarnations of $\hat{J}$
@@ -355,13 +355,13 @@ $2s$, the oxygen $2p_z$ along the symmetry axis, and the symmetric hydrogen
 combination $\phi_{\mathrm{H}^+} = (1s_A + 1s_B)/\sqrt{2}$. The orbital energies in
 this symmetry are the roots $\varepsilon$ of the $3\times 3$ secular determinant
 
-\[
+$$
 \begin{vmatrix}
 F_{ss} - \varepsilon S_{ss} & F_{sz} - \varepsilon S_{sz} & F_{sh} - \varepsilon S_{sh} \\
 F_{zs} - \varepsilon S_{zs} & F_{zz} - \varepsilon S_{zz} & F_{zh} - \varepsilon S_{zh} \\
 F_{hs} - \varepsilon S_{hs} & F_{hz} - \varepsilon S_{hz} & F_{hh} - \varepsilon S_{hh}
 \end{vmatrix} = 0 ,
-\]
+$$
 
 whose three roots are precisely the bonding $2a_1$, the roughly nonbonding $3a_1$,
 and the empty antibonding $4a_1^{*}$ of the diagram. The $b_2$ block is a $2\times
@@ -379,9 +379,9 @@ We now have orbital energies $\varepsilon_i$. The water post compared them to
 same thing. **Koopmans' theorem** is the bridge, and it is almost suspiciously
 simple [@Koopmans1934]:
 
-\[
+$$
 \mathrm{IE}_i \approx -\varepsilon_i .
-\]
+$$
 
 The ionization energy of the electron in orbital $i$ is minus its orbital energy.
 This is why the photoelectron spectrum can be read straight off an MO diagram, and
@@ -433,9 +433,9 @@ pay for it. The exact nonrelativistic energy of the molecule, at fixed nuclei an
 in a given basis, is lower than the Hartree–Fock energy. The difference *defines*
 the **correlation energy**:
 
-\[
+$$
 E_{\mathrm{corr}} = E_{\mathrm{exact}} - E_{\mathrm{HF}} \;<\; 0 .
-\]
+$$
 
 By construction it is the part of the energy that the mean field cannot reach. The
 variational principle of §3 guarantees its sign: since the Hartree–Fock
@@ -485,11 +485,11 @@ determinant as a reference and adds others on top. **Møller–Plesset perturbat
 theory** treats the fluctuation potential as a perturbation; its second-order
 correction, the workhorse MP2, is
 
-\[
+$$
 E^{(2)} = \sum_{i<j}^{\text{occ}} \sum_{a<b}^{\text{virt}}
   \frac{\big| \langle ij \,\|\, ab \rangle \big|^2}
        {\varepsilon_i + \varepsilon_j - \varepsilon_a - \varepsilon_b},
-\]
+$$
 
 a sum over excitations of electron pairs from occupied orbitals $i,j$ into virtual
 orbitals $a,b$ — note that it is built entirely from the same $\varepsilon$'s and
