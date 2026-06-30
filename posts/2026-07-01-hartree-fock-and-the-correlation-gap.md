@@ -266,7 +266,8 @@ The escape is iteration: guess a density, build $\mathbf{F}$, solve the
 eigenproblem for a new $\mathbf{C}$, build a new density, and repeat until the
 density that comes out matches the one that went in. This is the
 **self-consistent field** (SCF) procedure, and "self-consistent" is literal — the
-field and the orbitals it produces must agree.
+field and the orbitals it produces must agree. Figure 1 traces one turn of the
+cycle.
 
 ```tikzpicture
 \begin{tikzpicture}[>=Stealth,
@@ -297,6 +298,10 @@ field and the orbitals it produces must agree.
 \end{tikzpicture}
 ```
 
+*Figure 1.* The self-consistent-field loop: from a trial density build the Fock
+matrix, solve the Roothaan–Hall eigenproblem, form a new density from the occupied
+orbitals, and repeat until the density that comes out matches the one that went in.
+
 ### Symmetry block-diagonalizes the problem
 
 This is where the water post and this one fuse. The secular problem $\mathbf{F}
@@ -308,7 +313,7 @@ $\mathbf{F}$ (and $\mathbf{S}$) cannot connect basis functions of *different*
 irreducible representations — those matrix elements are exactly zero. If we first
 combine the raw atomic orbitals into the **symmetry-adapted** combinations of
 §2 of the water post — the $a_1$, $b_2$, and $b_1$ sets — the Fock matrix becomes
-**block-diagonal**:
+**block-diagonal** (Figure 2):
 
 ```tikzpicture
 \begin{tikzpicture}[>=Stealth, line width=0.8pt]
@@ -339,6 +344,11 @@ combine the raw atomic orbitals into the **symmetry-adapted** combinations of
   \node[font=\small] at (\n*\s/2,-0.55) {Fock matrix $\mathbf{F}$ in symmetry-adapted AOs};
 \end{tikzpicture}
 ```
+
+*Figure 2.* In a symmetry-adapted basis the Fock matrix is block-diagonal: the
+$a_1$ ($3\times3$), $b_2$ ($2\times2$), and $b_1$ ($1\times1$) blocks carry no
+matrix elements between them, so the secular problem splits into one independent
+eigenproblem per irrep.
 
 The big eigenproblem factors into independent small ones — one per irrep — and the
 labels on those blocks are *exactly* the $a_1$, $b_2$, $b_1$ labels from the water
@@ -408,7 +418,7 @@ and, for outer-valence orbitals, they substantially cancel. For deep orbitals th
 cancellation fails, because ejecting a tightly bound electron triggers a large
 relaxation that the frozen-orbital picture cannot see. Water shows the pattern
 cleanly. Lining up representative near-Hartree–Fock orbital energies against the
-experimental ionization energies from the water post:
+experimental ionization energies from the water post (Table 1):
 
 | Orbital | Character | $-\varepsilon_i$ (Koopmans) | Experiment | Error |
 |:-------:|:----------|:---------------------------:|:----------:|:-----:|
@@ -416,6 +426,11 @@ experimental ionization energies from the water post:
 | $3a_1$  | in-plane lone pair / bonding | $\approx 15.9$ eV | 14.7 eV | $+1.2$ |
 | $1b_2$  | O–H bonding | $\approx 19.8$ eV | 18.5 eV | $+1.3$ |
 | $2a_1$  | O $2s$, deep bonding | $\approx 36.4$ eV | $\approx 32$ eV | $+4.4$ |
+
+*Table 1.* Koopmans estimates $-\varepsilon_i$, from representative
+near-Hartree–Fock orbital energies, against the experimental vertical ionization
+energies of water. The overestimate runs a little over an electron-volt across the
+outer valence and widens to several eV for the deep $2a_1$.
 
 (The exact $-\varepsilon$ values shift by a few tenths of an eV with the basis set;
 these are representative near-HF-limit numbers, and the point is the *pattern*, not
@@ -466,13 +481,18 @@ limit and the exact energy in a complete basis.)
 \end{tikzpicture}
 ```
 
-The gap is small in absolute terms — typically under 1% of the total electronic
-energy — but it is decisive in chemistry, because the quantities we care about are
-energy *differences* of the same order: bond energies, reaction barriers,
-excitation energies. A method that recovers 99% of the energy can still be useless
-for a barrier height if the missing 1% varies between reactant and product. So the
-correlation energy is not a rounding error to wave away; it is frequently the whole
-answer.
+*Figure 3.* The correlation gap. $E_{\mathrm{HF}}$ sits above the exact
+nonrelativistic energy; enlarging the basis lowers $E_{\mathrm{HF}}$ only as far as
+the Hartree–Fock limit, and the residual distance down to $E_{\mathrm{exact}}$ is
+the correlation energy $E_{\mathrm{corr}}$.
+
+The gap drawn in Figure 3 is small in absolute terms — typically under 1% of the
+total electronic energy — but it is decisive in chemistry, because the quantities
+we care about are energy *differences* of the same order: bond energies, reaction
+barriers, excitation energies. A method that recovers 99% of the energy can still
+be useless for a barrier height if the missing 1% varies between reactant and
+product. So the correlation energy is not a rounding error to wave away; it is
+frequently the whole answer.
 
 It helps to split it in two. **Dynamic correlation** is the instantaneous dodging
 the mean field smears over: each electron carves out a "Coulomb hole" around itself
