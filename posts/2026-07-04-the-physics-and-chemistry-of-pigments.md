@@ -215,8 +215,13 @@ chosen ion in a chosen coordination to dial in hue, opacity, and durability. The
 cleanest recent example is **YInMn blue**, discovered in 2009: Mn³⁺ trapped in an
 unusual *trigonal-bipyramidal* oxygen coordination inside a YInO₃-type lattice,
 which splits its $d$ levels so as to absorb red and green strongly and reflect a
-vivid, durable blue — the first genuinely new inorganic blue chromophore in two
-centuries, and a textbook case of getting a new color by engineering the ligand
+vivid, durable blue. And here is the payoff that ties back to the start of this
+section: the trigonal-bipyramidal site has no center of inversion, so the Laporte
+rule that makes octahedral cobalt and chromium $d$–$d$ transitions weak is relaxed
+— the transition becomes symmetry-allowed, which is exactly why YInMn is an intense,
+strong-tinting blue rather than a pale one. The same selection rule that explains the
+weakness above explains this strength. It is the first genuinely new inorganic blue
+chromophore in two centuries, and a textbook case of getting a new color by engineering the ligand
 field around an old ion rather than inventing a new molecule.[@SmithSubramanian2009; @nassau2001physics]
 
 ## 5. Charge-transfer transitions
@@ -253,7 +258,7 @@ energy.[@ItayaUchida1986] **Ultramarine** is the other great teacher, and it
 carries a correction that is easy to get wrong: the chromophore is **not** the
 beautiful aluminosilicate **sodalite cage** that hosts it. The cage is colorless.
 The color comes from **polysulfide radical anions trapped inside it** — chiefly the
-yellow-blue-absorbing **S₃⁻** radical anion, with some **S₂⁻** contributing — whose
+**S₃⁻** radical anion, with some **S₂⁻** contributing — whose
 electronic transitions (a charge-transfer-like excitation within the trapped
 radical) absorb in the orange and yield ultramarine's pure blue. The cage's role
 is to isolate and stabilize these otherwise-reactive radicals; destroy the cage
