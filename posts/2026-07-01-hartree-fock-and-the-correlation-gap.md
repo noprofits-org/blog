@@ -253,7 +253,11 @@ $$
 
 where $(\mu\nu\,|\,\lambda\sigma)$ are the **two-electron repulsion integrals**
 over the basis. (The two bracketed terms are the matrix incarnations of $\hat{J}$
-and $\hat{K}$ from §4.)
+and $\hat{K}$ from §4.) Here we have specialized to the closed-shell (restricted)
+case: water's electrons are paired, so each occupied spatial orbital holds two
+electrons ($n_i = 2$). That factor of two lives in $\mathbf{P}$, which is why
+exchange enters with a one-half — the spin-orbital Fock operator of §4 collapses to
+this spatial form once every orbital is doubly occupied.
 
 Here is the knot at the center of the whole method. The Fock matrix $\mathbf{F}$
 depends, through $\mathbf{P}$, on the very coefficients $\mathbf{C}$ we are trying
@@ -411,7 +415,7 @@ experimental ionization energies from the water post:
 | $1b_1$  | O lone pair ($\perp$ plane) | $\approx 13.8$ eV | 12.6 eV | $+1.2$ |
 | $3a_1$  | in-plane lone pair / bonding | $\approx 15.9$ eV | 14.7 eV | $+1.2$ |
 | $1b_2$  | O–H bonding | $\approx 19.8$ eV | 18.5 eV | $+1.3$ |
-| $2a_1$  | O $2s$, deep bonding | $\approx 36.4$ eV | $\approx 32$ eV | $+4.5$ |
+| $2a_1$  | O $2s$, deep bonding | $\approx 36.4$ eV | $\approx 32$ eV | $+4.4$ |
 
 (The exact $-\varepsilon$ values shift by a few tenths of an eV with the basis set;
 these are representative near-HF-limit numbers, and the point is the *pattern*, not
@@ -473,8 +477,8 @@ answer.
 It helps to split it in two. **Dynamic correlation** is the instantaneous dodging
 the mean field smears over: each electron carves out a "Coulomb hole" around itself
 that the average potential of §4 ignores. It is the small, ubiquitous, additive
-correlation present in every system, and it is what the table in §6 was quietly
-about. **Static** (or **near-degeneracy**) **correlation** is different in kind: it
+correlation present in every system, and it is the correlation contribution
+lurking inside the Koopmans errors of §6. **Static** (or **near-degeneracy**) **correlation** is different in kind: it
 appears when a single determinant is qualitatively wrong because two or more
 configurations are close in energy and contribute comparably — stretched bonds,
 diradicals, transition-metal centers. There, no amount of patching one determinant
