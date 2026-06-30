@@ -117,12 +117,12 @@ configuration $(2a_1)^2(1b_2)^2(3a_1)^2(1b_1)^2$:
   \node[gray,rotate=90,anchor=south,font=\small] at (-5.65,-0.7) {energy};
   % --- correlation lines (drawn first, behind) ---
   \draw[dashed,gray!60] (-3.6,-3.0) -- (-0.4,-3.4);
-  \draw[dashed,gray!60] (3.6,-0.8) -- (0.4,-3.4);
+  \draw[dashed,gray!60] (3.6,0.55) -- (0.4,-3.4);
   \draw[dashed,gray!60] (-3.6,-0.25) -- (-0.4,-1.4);
-  \draw[dashed,gray!60] (3.6,-1.2) -- (0.4,-1.4);
-  \draw[dashed,gray!60] (-3.6,0.0) -- (-0.4,-0.3);
-  \draw[dashed,gray!60] (3.6,-0.8) -- (0.4,-0.3);
-  \draw[dashed,gray!60] (-3.6,0.25) -- (-0.4,0.4);
+  \draw[dashed,gray!60] (3.6,0.40) -- (0.4,-1.4);
+  \draw[dashed,gray!60] (-3.6,0.0) -- (-0.4,0.30);
+  \draw[dashed,gray!60] (3.6,0.55) -- (0.4,0.30);
+  \draw[dashed,gray!60] (-3.6,0.25) -- (-0.4,0.75);
   % --- oxygen atomic orbitals (left) ---
   \node[font=\bfseries] at (-4,2.35) {O};
   \draw[lev] (-4.4,-3.0) -- (-3.6,-3.0); \node[left,font=\small] at (-4.45,-3.0) {$2s$};
@@ -132,18 +132,18 @@ configuration $(2a_1)^2(1b_2)^2(3a_1)^2(1b_1)^2$:
   \node[left,font=\small] at (-4.45,0.0) {$2p$};
   % --- hydrogen SALCs (right) ---
   \node[font=\bfseries] at (4,2.35) {2\,H};
-  \draw[lev] (3.6,-0.8) -- (4.4,-0.8); \node[right,font=\small] at (4.45,-0.8) {$a_1$};
-  \draw[lev] (3.6,-1.2) -- (4.4,-1.2); \node[right,font=\small] at (4.45,-1.2) {$b_2$};
+  \draw[lev] (3.6,0.55) -- (4.4,0.55); \node[right,font=\small] at (4.45,0.55) {$a_1$};
+  \draw[lev] (3.6,0.40) -- (4.4,0.40); \node[right,font=\small] at (4.45,0.40) {$b_2$};
   % --- molecular orbitals (center) ---
   \node[font=\bfseries] at (0,2.45) {H$_2$O};
   \draw[lev] (-0.4,-3.4) -- (0.4,-3.4); \node[below,font=\small] at (0,-3.5) {$2a_1$};
   \pair{0}{-3.4}
   \draw[lev] (-0.4,-1.4) -- (0.4,-1.4); \node[left,font=\small] at (-0.45,-1.4) {$1b_2$};
   \pair{0}{-1.4}
-  \draw[lev] (-0.4,-0.3) -- (0.4,-0.3); \node[left,font=\small] at (-0.45,-0.3) {$3a_1$};
-  \pair{0}{-0.3}
-  \draw[lev] (-0.4,0.4) -- (0.4,0.4); \node[right,font=\small] at (0.45,0.4) {$1b_1$ (HOMO)};
-  \pair{0}{0.4}
+  \draw[lev] (-0.4,0.30) -- (0.4,0.30); \node[left,font=\small] at (-0.45,0.30) {$3a_1$};
+  \pair{0}{0.30}
+  \draw[lev] (-0.4,0.75) -- (0.4,0.75); \node[right,font=\small] at (0.45,0.75) {$1b_1$ (HOMO)};
+  \pair{0}{0.75}
   \draw[lev] (-0.4,1.5) -- (0.4,1.5); \node[right,font=\small] at (0.45,1.5) {$4a_1^{*}$};
   \draw[lev] (-0.4,2.0) -- (0.4,2.0); \node[right,font=\small] at (0.45,2.0) {$2b_2^{*}$};
 \end{tikzpicture}
@@ -310,7 +310,7 @@ bend from Section 1 is doing the absorbing.
 Now climb up in energy to visible and ultraviolet light, where transitions move
 *electrons* rather than nuclei. Water's first electronic absorption promotes a
 lone-pair electron (out of that $1b_1$ orbital) and does not switch on until
-about 7 eV — roughly 165 nm, deep in the vacuum ultraviolet.[@EisenbergKauzmann1969]
+about 7 eV — roughly 175 nm, deep in the vacuum ultraviolet.[@EisenbergKauzmann1969]
 There is simply no electronic transition anywhere in the 400–700 nm visible band.
 That is why water is colorless: a glassful has nothing to absorb.
 
