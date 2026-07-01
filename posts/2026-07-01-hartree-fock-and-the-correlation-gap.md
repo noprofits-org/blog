@@ -432,6 +432,40 @@ near-Hartree–Fock orbital energies, against the experimental vertical ionizati
 energies of water. The overestimate runs a little over an electron-volt across the
 outer valence and widens to several eV for the deep $2a_1$.
 
+```tikzpicture
+\begin{axis}[
+    width=12cm, height=8cm,
+    ybar,
+    bar width=14pt,
+    ylabel={ionization energy (eV)},
+    title={Koopmans estimates vs.\ experiment: water valence ionization},
+    symbolic x coords={1b1,3a1,1b2,2a1},
+    xtick=data,
+    xticklabels={$1b_1$,$3a_1$,$1b_2$,$2a_1$},
+    ymin=0, ymax=40,
+    enlarge x limits=0.2,
+    grid=major,
+    grid style={line width=.2pt, draw=gray!40},
+    axis lines=left,
+    legend pos=north west,
+    legend style={draw=none, fill=white, fill opacity=0.85},
+    every axis label/.style={font=\large},
+    every tick label/.style={font=\large},
+    title style={font=\large\bfseries},
+    nodes near coords,
+    every node near coord/.append style={font=\scriptsize, /pgf/number format/.cd, fixed, precision=1}
+]
+\addplot[fill=blue!55] coordinates {(1b1,13.8) (3a1,15.9) (1b2,19.8) (2a1,36.4)};
+\addplot[fill=red!55] coordinates {(1b1,12.6) (3a1,14.7) (1b2,18.5) (2a1,32)};
+\legend{$-\varepsilon_i$ (Koopmans), Experiment}
+\end{axis}
+```
+
+*Figure 4.* The same comparison as Table 1, read as a chart: the Koopmans bar sits
+a little above experiment for the three outer-valence orbitals, by a nearly
+constant margin, then jumps well clear of it for the deep $2a_1$ — the frozen-orbital
+approximation surviving well for shallow holes and failing visibly for a deep one.
+
 (The exact $-\varepsilon$ values shift by a few tenths of an eV with the basis set;
 these are representative near-HF-limit numbers, and the point is the *pattern*, not
 the third digit.) For the three outer orbitals Koopmans lands a little over an
