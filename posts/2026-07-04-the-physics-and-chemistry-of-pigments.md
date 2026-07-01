@@ -112,9 +112,9 @@ absorb only ultraviolet light (colorless), gaps below 1.8 eV absorb infrared and
 if broad, most of the visible range too (black, gray, or metallic). Two example
 gaps inside the window are marked with the color each produces.
 
-So "what molecular structures produce color" reduces to "what physical
-mechanisms put an electronic energy gap in the 1.8–3.1 eV window, and let an
-electron cross it when a photon arrives." Four mechanisms matter for pigments,
+So the question of what produces color becomes a question of mechanism: what
+physical structures place an electronic energy gap in the 1.8–3.1 eV window.
+Four mechanisms matter for pigments,
 and they are genuinely different physics, not variations on one idea. Each of
 the next four sections covers one mechanism, gives a modern pigment that uses
 it, and compares it with a historic pigment that uses the same mechanism but
