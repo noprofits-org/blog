@@ -101,9 +101,9 @@ limits.
 \node[align=center,font=\scriptsize] at (1.3,-1.7) {gap $>3.1$ eV\\UV only\\\textbf{colorless}};
 \node[align=center,font=\scriptsize] at (9.6,-1.7) {gap $<1.8$ eV\\IR $+$ all visible\\\textbf{black / metallic}};
 \draw[->,thick,orange!80!black] (4.3,-0.6) -- (4.3,0.6);
-\node[align=center,below,font=\scriptsize] at (4.3,-0.65) {$\Delta E\approx2.6$ eV\\violet absorbed\\\textbf{yellow}};
+\node[align=center,below,font=\scriptsize] at (4.3,-1.05) {$\Delta E\approx2.6$ eV\\violet absorbed\\\textbf{yellow}};
 \draw[->,thick,red!70!black] (6.8,-0.6) -- (6.8,0.6);
-\node[align=center,below,font=\scriptsize] at (6.8,-0.65) {$\Delta E\approx2.0$ eV\\blue--green absorbed\\\textbf{red}};
+\node[align=center,below,font=\scriptsize] at (6.8,-1.05) {$\Delta E\approx2.0$ eV\\blue--green absorbed\\\textbf{red}};
 ```
 
 *Figure 1.* The visible window, 1.8–3.1 eV. A material is colored only if it has
@@ -161,7 +161,7 @@ strong organic colorant is a large, flat, conjugated molecule.[@Christie2014;
 
 ```tikzpicture
 \begin{scope}[xshift=0cm]
-  \node[font=\small\bfseries] at (1,6.4) {short conjugated chain};
+  \node[font=\small\bfseries] at (1,6.9) {short conjugated chain};
   \draw[->] (-0.3,0) -- (-0.3,6.1) node[above,font=\scriptsize] {$E$};
   \draw[thick] (0.2,0.65) -- (1.6,0.65);
   \draw[thick] (0.2,2.6) -- (1.6,2.6) node[right] {HOMO};
@@ -170,7 +170,7 @@ strong organic colorant is a large, flat, conjugated molecule.[@Christie2014;
   \node[right,align=left,font=\scriptsize] at (2.2,4.2) {$\Delta E$ large\\(UV, colorless)};
 \end{scope}
 \begin{scope}[xshift=7cm]
-  \node[font=\small\bfseries] at (1,6.4) {long conjugated chain};
+  \node[font=\small\bfseries] at (1,6.9) {long conjugated chain};
   \draw[->] (-0.3,0) -- (-0.3,6.1) node[above,font=\scriptsize] {$E$};
   \draw[thick] (0.2,0.16) -- (1.6,0.16);
   \draw[thick] (0.2,0.65) -- (1.6,0.65);
@@ -284,7 +284,7 @@ an existing ion rather than inventing a new molecule.[@SmithSubramanian2009;
   \draw[thick] (1.8,3.0) -- (3.0,3.0) node[right] {$e_g$};
   \draw[dashed,gray] (0.4,3.9) -- (1.8,3.0);
   \draw[dashed,gray] (0.4,3.9) -- (1.8,1.1);
-  \draw[<->] (3.5,1.1) -- (3.5,3.0) node[midway,right] {$\Delta_{\mathrm{oct}}$};
+  \draw[<->] (3.7,1.1) -- (3.7,3.0) node[midway,right] {$\Delta_{\mathrm{oct}}$};
   \draw[->,dashed,thick,gray] (2.4,1.3) -- (2.4,2.8);
   \node[align=center] at (2.4,0.4) {inversion center present\\\textbf{Laporte-forbidden}\\weak, pale color};
 \end{scope}
@@ -295,7 +295,7 @@ an existing ion rather than inventing a new molecule.[@SmithSubramanian2009;
   \draw[thick] (1.8,3.0) -- (3.0,3.0) node[right] {upper $d$ set};
   \draw[dashed,gray] (0.4,3.9) -- (1.8,3.0);
   \draw[dashed,gray] (0.4,3.9) -- (1.8,1.1);
-  \draw[<->] (3.9,1.1) -- (3.9,3.0) node[midway,right] {$\Delta$};
+  \draw[<->] (4.9,1.1) -- (4.9,3.0) node[midway,right] {$\Delta$};
   \draw[->,thick,red] (2.4,1.3) -- (2.4,2.8);
   \node[align=center] at (2.4,0.4) {no inversion center\\\textbf{Laporte-allowed}\\strong, intense color};
 \end{scope}
@@ -395,7 +395,7 @@ whole sequence yellow→orange→red (Figure 4).
   \draw[->,thick,gray] (2.0,1.05) -- (2.0,1.75);
   \node[right,align=left,font=\scriptsize] at (2.9,1.05) {$h\nu<E_g$\\transmitted};
 \end{scope}
-\begin{scope}[xshift=8cm,yshift=1.4cm]
+\begin{scope}[xshift=6.4cm,yshift=1.4cm]
   \node[font=\small\bfseries] at (2,3.7) {\ce{CdS_{1-x}Se_x}: tuning $E_g$};
   \shade[left color=yellow!80!white,right color=red!70!black] (0,0) rectangle (4,0.8);
   \draw[thick] (0,0) rectangle (4,0.8);
@@ -513,19 +513,17 @@ inverts into the relation colorist software is built
 on:[@KubelkaMunk1931; @Berns2019]
 
 ```tikzpicture
-\node[align=center,font=\scriptsize] at (2,4.7) {\textbf{viewer}};
-\draw[thick] (0,4.2) -- (4,4.2);
-\node[align=center,font=\scriptsize] at (2,3.9) {air};
+\node[align=center,font=\small\bfseries] at (2,4.75) {viewer};
+\node[align=center,font=\scriptsize] at (2,4.3) {air};
 \fill[blue!7] (0,1.2) rectangle (4,4.0);
 \draw[thick] (0,1.2) rectangle (4,4.0);
-\node[align=center] at (2,2.6) {film\\$K$ (absorption), $S$ (scattering)\\per unit thickness};
-\draw[thick] (0,1.2) -- (4,1.2);
-\node[below,font=\scriptsize] at (2,1.0) {substrate};
-\draw[->,thick,red] (1.0,1.4) -- (1.0,3.9);
-\node[left,font=\scriptsize] at (1.0,1.6) {$I$ (up)};
-\draw[->,thick,blue] (3.0,3.9) -- (3.0,1.4);
-\node[right,font=\scriptsize] at (3.0,3.7) {$J$ (down)};
-\node[below,align=center,font=\scriptsize] at (2,0.4) {two coupled diffuse fluxes, $I$ toward the viewer and $J$ into the film};
+\node[align=center,font=\small] at (2,2.6) {film\\$K$ absorption\\$S$ scattering\\per unit thickness};
+\node[below,font=\scriptsize] at (2,1.1) {substrate};
+\draw[->,thick,red] (0.7,1.4) -- (0.7,3.8);
+\node[right,font=\scriptsize] at (0.7,1.65) {$I$ (up)};
+\draw[->,thick,blue] (3.3,3.8) -- (3.3,1.4);
+\node[left,font=\scriptsize] at (3.3,3.55) {$J$ (down)};
+\node[below,align=center,font=\scriptsize] at (2,0.5) {two coupled diffuse fluxes, $I$ toward the viewer and $J$ into the film};
 ```
 
 *Figure 5.* Kubelka–Munk's two-flux model: an upward diffuse flux $I$ carries
