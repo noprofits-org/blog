@@ -22,7 +22,7 @@ A static blog built with [Hakyll](https://jaspervdj.be/hakyll/), featuring:
 * [LaTeX](https://www.latex-project.org/) & [MathJax](https://www.mathjax.org/) (Mathematical Typesetting)
 * [TikZ](https://tikz.dev/) & [PGF/TikZ](https://pgf-tikz.github.io/) (Diagram Creation)
 * [BibTeX](https://www.bibtex.org/) & CSL (Citation Management)
-* `pdflatex`, `pdf2svg` (Backend tools for TikZ rendering)
+* `lualatex`, `dvisvgm` (Backend tools for TikZ rendering)
 
 **Live Demo:**
 
@@ -52,7 +52,9 @@ description: One-sentence summary for the listing and feed.
 ```
 
 `title`, `date`, `author`, `tags`, and `description` are the standard fields. Add
-`draft: true` to exclude a post from the home page, archive, and feed.
+`draft: true` to exclude a post from the build entirely — no page is generated,
+and it appears in no listing, feed, or the sitemap. To preview drafts locally,
+set `PREVIEW_DRAFTS` (to anything): `PREVIEW_DRAFTS=1 stack exec blog watch`.
 
 **Frontmatter gotchas** — the block is parsed as YAML, so a few characters in
 values bite:

@@ -9,6 +9,11 @@ and this project adheres to the
 ## Unreleased
 
 ### Added
+- `sitemap.xml` generation (posts plus the static pages) — `robots.txt` was
+  already advertising it, but the file was never built.
+- On-disk cache for rendered TikZ diagrams (`_cache/tikz`, keyed by a hash of
+  the preamble and diagram source), persisted across CI runs, so editing prose
+  in a diagram-heavy post no longer re-runs LaTeX for every diagram.
 - Combined Atom and RSS feeds (`/atom.xml`, `/rss.xml`) with autodiscovery
   `<link>` tags in the site head.
 - Custom `404.html` page and `robots.txt`.
@@ -16,6 +21,12 @@ and this project adheres to the
   script, pinned to `mathjax@3.2.2`.
 
 ### Changed
+- Draft posts (`draft: true`) are now excluded from the build entirely instead
+  of getting an unlisted-but-public page; set `PREVIEW_DRAFTS=1` to build and
+  list them locally.
+- CI no longer installs an unused GHC (the snapshot's GHC comes from Stack and
+  is cached), drops the redundant `stack setup`/`stack update` step, and
+  deploys from a separate job so only that job holds `contents: write`.
 - CI now builds on pull requests (verification only) and deploys solely from
   `main`; GitHub Actions bumped to `checkout@v4`, `cache@v4`, and
   `actions-gh-pages@v4`.

@@ -12,6 +12,11 @@
 -- replaced with a visible error box, instead of aborting the whole site build.
 -- Posts without any @tikzpicture@ blocks never shell out, so the site builds
 -- fine on a machine with no TeX toolchain installed.
+--
+-- Rendered SVGs are cached on disk under @_cache/tikz@, keyed by a hash of the
+-- preamble and diagram source, so editing the prose of a diagram-heavy post
+-- does not re-run LaTeX for every unchanged diagram. @site clean@ clears the
+-- cache along with the rest of Hakyll's @_cache@.
 module Blog.TikZ
   ( tikzFilter
   , renderTikz
@@ -25,6 +30,7 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import Hakyll (Compiler, unsafeCompiler)
 import Text.Pandoc.Definition (Block (..), Format (..))
+import System.Directory (createDirectoryIfMissing, doesFileExist)
 import System.Exit (ExitCode (..))
 import System.IO (hPutStrLn, stderr)
 import System.IO.Temp (withSystemTempDirectory)
@@ -105,10 +111,35 @@ tikzPreamble = unlines
   , "\\begin{document}"
   ]
 
+-- | Where successfully rendered diagrams are cached between builds. Lives
+-- inside Hakyll's cache directory so @site clean@ wipes it too.
+tikzCacheDir :: FilePath
+tikzCacheDir = "_cache/tikz"
+
+-- | Render a @tikzpicture@ body to SVG, going to the on-disk cache first.
+-- The key hashes the preamble as well as the diagram source, so changing
+-- 'tikzPreamble' invalidates every cached diagram. Only successful renders
+-- are cached; failures re-run so a fixed toolchain is picked up.
+renderTikz :: String -> IO (Either String String)
+renderTikz tikzCode = do
+  let cacheFile = tikzCacheDir ++ "/"
+        ++ T.unpack (idPrefix (tikzPreamble ++ tikzCode)) ++ ".svg"
+  cached <- doesFileExist cacheFile
+  if cached
+    then Right . T.unpack <$> TIO.readFile cacheFile
+    else do
+      result <- compileTikz tikzCode
+      case result of
+        Right svg -> do
+          createDirectoryIfMissing True tikzCacheDir
+          TIO.writeFile cacheFile (T.pack svg)
+        Left _ -> return ()
+      return result
+
 -- | Compile a @tikzpicture@ body to SVG via @lualatex@ + @dvisvgm@ in a temp
 -- dir. Returns @Left@ with a diagnostic on failure (build continues).
-renderTikz :: String -> IO (Either String String)
-renderTikz tikzCode = withSystemTempDirectory "blog-tikz" $ \dir -> do
+compileTikz :: String -> IO (Either String String)
+compileTikz tikzCode = withSystemTempDirectory "blog-tikz" $ \dir -> do
   let texFile = dir ++ "/tikz.tex"
       pdfFile = dir ++ "/tikz.pdf"
       svgFile = dir ++ "/tikz.svg"

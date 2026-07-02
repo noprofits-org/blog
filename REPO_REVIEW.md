@@ -78,7 +78,7 @@ remaining work is enhancement-grade.
 | 11 | Large binary in git | `images/DeepSeekThinkingAndResponse.zip` (2.4 MB) still tracked. |
 | 12 | `photonic_radar/` (540 KB) | Unrelated research data still in repo. |
 | 13 | No sitemap.xml | Still missing (SEO). |
-| 14 | Stack snapshot | Still `lts/23/8` (GHC 9.4.8) — periodic bump advisable. |
+| 14 | Stack snapshot | Still `lts/23/8` (GHC 9.8.4) — periodic bump advisable. |
 | 16 | SVG-only favicon | No PNG/ICO fallback (`templates/default.html:39`). |
 | 20 | Accessibility | Skip link still missing → **#39**; broader a11y audit in **#39**. |
 | 21 | Image optimization | PNGs unoptimized; SVG/`svgo` work → **#40**. |
@@ -140,7 +140,7 @@ blog/
 ```
 
 ### Technology Stack
-- **Language / build:** Haskell (GHC 9.4.8), Stack (LTS 23.8)
+- **Language / build:** Haskell (GHC 9.8.4), Stack (LTS 23.8)
 - **Framework:** Hakyll
 - **Content:** Markdown + a little reStructuredText
 - **Math:** MathJax 3 (with SRI), LaTeX, mhchem

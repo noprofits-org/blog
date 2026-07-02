@@ -39,6 +39,7 @@ library
                      , pandoc
                      , pandoc-types >= 1.22.2.1
                      , text
+                     , directory
                      , process
                      , temporary
 

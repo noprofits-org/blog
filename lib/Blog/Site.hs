@@ -6,32 +6,34 @@ module Blog.Site
   ( siteRules
   ) where
 
-import Control.Monad (filterM)
 import Hakyll
 
 import Blog.Compilers (bibtexMathCompiler)
 import Blog.Context   (postCtx)
 import Blog.Feed      (feedConfiguration, feedCtx)
 
--- | True unless the item's frontmatter sets @draft: true@.
-isPublished :: Item a -> Compiler Bool
-isPublished item = do
-    draft <- getMetadataField (itemIdentifier item) "draft"
-    return (draft /= Just "true")
+-- | Bibliography inputs for the post compiler.
+cslFile, bibFile :: String
+cslFile = "bib/style.csl"
+bibFile = "bib/bibliography.bib"
 
--- | Like 'loadAll', but drops posts marked @draft: true@ from the result.
-loadAllPublished :: Pattern -> Compiler [Item String]
-loadAllPublished pat = loadAll pat >>= filterM isPublished
+-- | The static content pages (everything routed except posts and listings).
+staticPages :: [Identifier]
+staticPages = ["about.rst", "contact.markdown", "colophon.markdown"]
 
--- | Like 'loadAllSnapshots', but drops @draft: true@ posts (used by the feeds).
-loadAllPublishedSnapshots :: Pattern -> Snapshot -> Compiler [Item String]
-loadAllPublishedSnapshots pat snap = loadAllSnapshots pat snap >>= filterM isPublished
+-- | True when the frontmatter sets @draft: true@.
+isDraft :: Metadata -> Bool
+isDraft md = lookupString "draft" md == Just "true"
 
-siteRules :: Rules ()
-siteRules = do
+-- | The site rules. When the flag is 'True' (@PREVIEW_DRAFTS@ is set, see
+-- @app/site.hs@) draft posts are built and listed like any other post so they
+-- can be previewed locally; otherwise they are skipped entirely — no page is
+-- generated, and they appear in no listing, feed, or sitemap.
+siteRules :: Bool -> Rules ()
+siteRules previewDrafts = do
     -- Citations
-    match "bib/style.csl"        $ compile cslCompiler
-    match "bib/bibliography.bib" $ compile biblioCompiler
+    match (fromGlob cslFile) $ compile cslCompiler
+    match (fromGlob bibFile) $ compile biblioCompiler
 
     match "images/*" $ do
         route   idRoute
@@ -45,15 +47,18 @@ siteRules = do
         route   idRoute
         compile compressCssCompiler
 
-    match (fromList ["about.rst", "contact.markdown", "colophon.markdown"]) $ do
+    match (fromList staticPages) $ do
         route   $ setExtension "html"
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
             >>= relativizeUrls
 
-    match "posts/*" $ do
+    -- Skipped drafts never enter the store, so the listings, feeds, and
+    -- sitemap below can use plain 'loadAll' without filtering.
+    let publishable metadata = previewDrafts || not (isDraft metadata)
+    matchMetadata "posts/*" publishable $ do
         route $ setExtension "html"
-        compile $ bibtexMathCompiler "bib/style.csl" "bib/bibliography.bib"
+        compile $ bibtexMathCompiler cslFile bibFile
             >>= saveSnapshot "content"
             >>= loadAndApplyTemplate "templates/post.html"    postCtx
             >>= loadAndApplyTemplate "templates/default.html" postCtx
@@ -62,10 +67,10 @@ siteRules = do
     create ["archive.html"] $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAllPublished "posts/*"
+            posts <- recentFirst =<< loadAll "posts/*"
             let archiveCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Archives"            `mappend`
+                    listField "posts" postCtx (return posts) <>
+                    constField "title" "Archives"            <>
                     defaultContext
 
             makeItem ""
@@ -76,10 +81,10 @@ siteRules = do
     match "index.html" $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAllPublished "posts/*"
+            posts <- recentFirst =<< loadAll "posts/*"
             let indexCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Home"                `mappend`
+                    listField "posts" postCtx (return posts) <>
+                    constField "title" "Home"                <>
                     defaultContext
 
             getResourceBody
@@ -87,19 +92,31 @@ siteRules = do
                 >>= loadAndApplyTemplate "templates/default.html" indexCtx
                 >>= relativizeUrls
 
-    create ["atom.xml"] $ do
-        route idRoute
-        compile $ do
-            posts <- fmap (take 20) . recentFirst
-                =<< loadAllPublishedSnapshots "posts/*" "content"
-            renderAtom feedConfiguration feedCtx posts
+    let feedRule name render = create [name] $ do
+            route idRoute
+            compile $ do
+                posts <- fmap (take 20) . recentFirst
+                    =<< loadAllSnapshots "posts/*" "content"
+                render feedConfiguration feedCtx posts
+    feedRule "atom.xml" renderAtom
+    feedRule "rss.xml"  renderRss
 
-    create ["rss.xml"] $ do
+    -- robots.txt points crawlers here. Absolute URLs are required, so the
+    -- entries are not relativized.
+    create ["sitemap.xml"] $ do
         route idRoute
         compile $ do
-            posts <- fmap (take 20) . recentFirst
-                =<< loadAllPublishedSnapshots "posts/*" "content"
-            renderRss feedConfiguration feedCtx posts
+            posts <- recentFirst =<< loadAll "posts/*"
+            pages <- loadAll (fromList ("index.html" : "archive.html" : staticPages))
+            let entryCtx =
+                    constField "root" (feedRoot feedConfiguration) <>
+                    dateField "lastmod" "%Y-%m-%d" <>
+                    defaultContext
+                sitemapCtx :: Context String
+                sitemapCtx =
+                    listField "entries" entryCtx (return (pages ++ posts))
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/sitemap.xml" sitemapCtx
 
     match "404.html" $ do
         route idRoute
