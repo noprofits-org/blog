@@ -22,4 +22,4 @@ feedConfiguration = FeedConfiguration
 
 -- | Feed entries need a @description@ field, mapped to the post body snapshot.
 feedCtx :: Context String
-feedCtx = postCtx `mappend` bodyField "description"
+feedCtx = postCtx <> bodyField "description"
