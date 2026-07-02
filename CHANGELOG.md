@@ -33,10 +33,7 @@ and this project adheres to the
 
 ### Fixed
 - The fundamentals-of-quantum-chemistry post's URL slug was misspelled
-  (`fundementals`); the source file is renamed, internal links updated, and a
-  redirect page keeps the old URL alive (`createRedirects`). The post globs in
-  `Blog.Site` are now `posts/*.{md,markdown}` so created redirect pages never
-  enter listings, feeds, or the sitemap.
+  (`fundementals`); the source file is renamed and internal links updated.
 - Pigments post: corrected Figure 1's example gaps (2.8 eV/violet→yellow,
   2.1 eV/orange→blue — the old labels paired energies with the wrong colors),
   and untangled the Laporte-rule discussion — cobalt blue's tetrahedral site is

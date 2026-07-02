@@ -21,20 +21,6 @@ bibFile = "bib/bibliography.bib"
 staticPages :: [Identifier]
 staticPages = ["about.rst", "contact.markdown", "colophon.markdown"]
 
--- | Post sources. Deliberately narrower than @posts/*@ so identifiers created
--- under @posts/@ that are not posts — the redirect pages below — are never
--- swept into the listings, feeds, or sitemap (they carry no date, so
--- 'recentFirst' would reject them).
-postsGlob :: Pattern
-postsGlob = "posts/*.md" .||. "posts/*.markdown"
-
--- | Old post URLs kept alive after a rename, mapped to their new homes.
-renamedPosts :: [(Identifier, String)]
-renamedPosts =
-  [ ( "posts/fundementals_of_quantum_chemistry.html"
-    , "/posts/fundamentals_of_quantum_chemistry.html" )
-  ]
-
 -- | True when the frontmatter sets @draft: true@.
 isDraft :: Metadata -> Bool
 isDraft md = lookupString "draft" md == Just "true"
@@ -70,7 +56,7 @@ siteRules previewDrafts = do
     -- Skipped drafts never enter the store, so the listings, feeds, and
     -- sitemap below can use plain 'loadAll' without filtering.
     let publishable metadata = previewDrafts || not (isDraft metadata)
-    matchMetadata postsGlob publishable $ do
+    matchMetadata "posts/*" publishable $ do
         route $ setExtension "html"
         compile $ bibtexMathCompiler cslFile bibFile
             >>= saveSnapshot "content"
@@ -78,12 +64,10 @@ siteRules previewDrafts = do
             >>= loadAndApplyTemplate "templates/default.html" postCtx
             >>= relativizeUrls
 
-    createRedirects renamedPosts
-
     create ["archive.html"] $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll postsGlob
+            posts <- recentFirst =<< loadAll "posts/*"
             let archiveCtx =
                     listField "posts" postCtx (return posts) <>
                     constField "title" "Archives"            <>
@@ -97,7 +81,7 @@ siteRules previewDrafts = do
     match "index.html" $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll postsGlob
+            posts <- recentFirst =<< loadAll "posts/*"
             let indexCtx =
                     listField "posts" postCtx (return posts) <>
                     constField "title" "Home"                <>
@@ -112,7 +96,7 @@ siteRules previewDrafts = do
             route idRoute
             compile $ do
                 posts <- fmap (take 20) . recentFirst
-                    =<< loadAllSnapshots postsGlob "content"
+                    =<< loadAllSnapshots "posts/*" "content"
                 render feedConfiguration feedCtx posts
     feedRule "atom.xml" renderAtom
     feedRule "rss.xml"  renderRss
@@ -122,7 +106,7 @@ siteRules previewDrafts = do
     create ["sitemap.xml"] $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll postsGlob
+            posts <- recentFirst =<< loadAll "posts/*"
             pages <- loadAll (fromList ("index.html" : "archive.html" : staticPages))
             let entryCtx =
                     constField "root" (feedRoot feedConfiguration) <>
