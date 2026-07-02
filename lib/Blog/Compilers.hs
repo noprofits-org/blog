@@ -9,7 +9,6 @@ module Blog.Compilers
 
 import Hakyll
 import Text.Pandoc.Definition (Block (..))
-import Text.Pandoc.Extensions (pandocExtensions)
 import Text.Pandoc.Highlighting (pygments)
 import Text.Pandoc.Options
 import Text.Pandoc.Walk (walk, walkM)

@@ -112,6 +112,7 @@ siteRules previewDrafts = do
                     constField "root" (feedRoot feedConfiguration) <>
                     dateField "lastmod" "%Y-%m-%d" <>
                     defaultContext
+                sitemapCtx :: Context String
                 sitemapCtx =
                     listField "entries" entryCtx (return (pages ++ posts))
             makeItem ""
