@@ -302,7 +302,10 @@ practical loop that working photophysicists rely on: measure the absorption band
 (get $\tau_{\text{rad}}$), measure the actual fluorescence decay (get
 $\tau_{\text{obs}}$), and their ratio hands you the quantum yield without ever
 needing an absolute-intensity standard. The static-looking spectrum was carrying
-kinetic information the whole time.
+kinetic information the whole time. And the *same* transition dipole runs on into
+the optical response — the refractive index and the electro-optic coefficient of a
+poled material — which is the subject of
+[the companion post on molar absorptivity and the Pockels effect](/posts/2026-07-03-one-matrix-element-absorptivity-and-the-pockels-effect.html).
 
 So the next time $\varepsilon$ appears as a lookup value — a fixed number beside a
 compound's name — it is worth remembering what it actually is. Beer's law presents
