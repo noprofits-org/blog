@@ -19,7 +19,7 @@ once.
 
 The earlier posts in this series built the machinery for the first of those
 claims without pointing it at paint. The
-[fundamentals post](/posts/fundementals_of_quantum_chemistry.html) solved the
+[fundamentals post](/posts/fundamentals_of_quantum_chemistry.html) solved the
 particle in a box and found that confining an electron quantizes its energy into
 discrete levels whose spacing shrinks as the box grows. The
 [water post](/posts/2026-06-30-reading-water-geometry-orbitals-acidity-spectra.html)
@@ -101,9 +101,9 @@ limits.
 \node[align=center,font=\scriptsize] at (1.3,-1.7) {gap $>3.1$ eV\\UV only\\\textbf{colorless}};
 \node[align=center,font=\scriptsize] at (9.6,-1.7) {gap $<1.8$ eV\\IR $+$ all visible\\\textbf{black / metallic}};
 \draw[->,thick,orange!80!black] (4.3,-0.6) -- (4.3,0.6);
-\node[align=center,below,font=\scriptsize] at (4.3,-1.05) {$\Delta E\approx2.6$ eV\\violet absorbed\\\textbf{yellow}};
-\draw[->,thick,red!70!black] (6.8,-0.6) -- (6.8,0.6);
-\node[align=center,below,font=\scriptsize] at (6.8,-1.05) {$\Delta E\approx2.0$ eV\\blue--green absorbed\\\textbf{red}};
+\node[align=center,below,font=\scriptsize] at (4.3,-1.05) {$\Delta E\approx2.8$ eV\\violet absorbed\\\textbf{yellow}};
+\draw[->,thick,blue!60!black] (6.8,-0.6) -- (6.8,0.6);
+\node[align=center,below,font=\scriptsize] at (6.8,-1.05) {$\Delta E\approx2.1$ eV\\orange absorbed\\\textbf{blue}};
 ```
 
 *Figure 1.* The visible window, 1.8–3.1 eV. A material is colored only if it has
@@ -128,7 +128,7 @@ bonds — a **conjugated** π-system. The π electrons are not confined to
 individual bonds; they delocalize over the whole conjugated framework. That is,
 to a first approximation, an electron in a box, where the box length $L$ is the
 length of the conjugated path. The
-[fundamentals post](/posts/fundementals_of_quantum_chemistry.html) gave the
+[fundamentals post](/posts/fundamentals_of_quantum_chemistry.html) gave the
 levels of that box,
 
 $$
@@ -147,8 +147,9 @@ $$
 
 Lengthening the conjugated chain does two things at once: it adds electrons
 (raising $N$) and it lengthens the box (raising $L^2$ in the denominator), with
-$L$ growing roughly in proportion to $N$. The net effect is that $\Delta E$
-shrinks as conjugation extends (Figure 2) — a longer box has a smaller gap. A
+$L$ growing roughly in proportion to $N$. The net effect is
+$\Delta E \propto (N+1)/N^2 \approx 1/N$: the gap shrinks as conjugation
+extends (Figure 2) — a longer box has a smaller gap. A
 short conjugated system absorbs in the ultraviolet and looks colorless;
 extending it moves the absorption down through violet, blue, and green, into the
 visible as yellow, then orange, then red: longer box, smaller gap, redder color.
@@ -204,7 +205,12 @@ and phthalocyanines carry the top lightfastness ratings artists' pigments are
 awarded — ASTM I, blue-wool 7–8 — because the chromophore is chemically the same
 kind of object as the fugitive pigments below, engineered into a crystal that
 resists the photochemistry that would otherwise degrade it.[@HerbstHunger2004;
-@Christie2014]
+@Christie2014] They are the premium tier, not the whole modern palette: the
+**azo** pigments — the arylide yellows and naphthol reds that dominate
+industrial color by volume, and their tougher **benzimidazolone** relatives,
+met again in §6's cadmium-free hues — run on the same conjugated-π mechanism,
+with lightfastness ranging from middling to excellent depending on how
+tightly the crystal packs.
 
 **Historic precedents.** **Indigo** and **alizarin** run on the same physics and
 fail at the point the modern pigments above were engineered to fix. Indigo is an
@@ -236,19 +242,24 @@ falls in the visible window, so promoting an electron from a lower $d$ orbital
 to an upper one — a **$d$–$d$ transition** — absorbs a visible photon and
 produces color.
 
-A selection rule governs how these pigments behave in practice: a $d$–$d$
-transition is, strictly, **forbidden**. Both the starting and ending orbitals
-are $d$ orbitals, so the transition does not change the parity (the inversion
-symmetry) of the electronic state, and the **Laporte rule** forbids
-electric-dipole transitions that fail to flip parity. The transition happens at
-all only because vibrations and slight distortions of the metal site
-momentarily break the perfect symmetry and "borrow" a little allowed character.
-The consequence is that $d$–$d$ absorptions are **weak** — low molar
-absorptivity, because each absorption event is improbable. Weak absorption per
-molecule means **low tinting strength**: cobalt blue and viridian are
-relatively transparent, easily overpowered when mixed, because their color
-comes from a forbidden transition. §5 and §6 show the opposite case — strong,
-allowed transitions producing the opposite behavior.
+A selection rule governs how these pigments behave in practice, and it reads
+directly off the symmetry of the metal site. In a site with a center of
+inversion — the oxide octahedron around Cr³⁺ in chromium oxide green and
+viridian — a $d$–$d$ transition is, strictly, **forbidden**: both the starting
+and ending orbitals are $d$ orbitals, so the transition does not change the
+parity (the inversion symmetry) of the electronic state, and the **Laporte
+rule** forbids electric-dipole transitions that fail to flip parity. The
+transition happens at all only because vibrations momentarily break the
+perfect symmetry and "borrow" a little allowed character, so the absorption is
+**weak** — low molar absorptivity, hence **low tinting strength**: viridian is
+relatively transparent, easily overpowered when mixed. Remove the inversion
+center and the rule loosens its grip. Cobalt blue's Co²⁺ sits in a
+*tetrahedral* site, which has no inversion center; mixing of $d$ and $p$
+character makes its absorption markedly stronger than octahedral chromium's,
+though still far short of fully allowed. Site symmetry is a dial running from
+forbidden toward allowed — octahedral chromium near one end, tetrahedral
+cobalt partway up — and §5 and §6 show transitions the rule does not restrict
+at all, sitting at the other end.
 
 **Examples.** **Cobalt blue** is Co²⁺ sitting in the tetrahedral holes of an
 aluminate spinel, CoAl₂O₄; the tetrahedral ligand field tunes the $d$–$d$ gap to
@@ -268,17 +279,17 @@ trapped in an unusual *trigonal-bipyramidal* oxygen coordination inside a
 YInO₃-type lattice, which splits its $d$ levels to absorb red and green
 strongly and reflect a vivid, durable blue (Figure 3). The trigonal-bipyramidal
 site has no center of inversion, so the Laporte rule that makes octahedral
-cobalt and chromium $d$–$d$ transitions weak is relaxed: the transition becomes
+chromium's $d$–$d$ transitions weak is relaxed: the transition becomes
 symmetry-allowed, which is why YInMn is an intense, strong-tinting blue rather
-than a pale one. The same selection rule that explains the weakness of cobalt
-blue explains the strength of YInMn — it is the first new inorganic blue
-chromophore in two centuries, produced by engineering the ligand field around
-an existing ion rather than inventing a new molecule.[@SmithSubramanian2009;
+than a pale one. It is the symmetry dial that mutes viridian, turned to its
+allowed end — the first new inorganic blue chromophore in two centuries,
+produced by engineering the ligand field around an existing ion rather than
+inventing a new molecule.[@SmithSubramanian2009;
 @nassau2001physics]
 
 ```tikzpicture
 \begin{scope}[xshift=0cm]
-  \node[font=\small\bfseries,align=center] at (1.6,5.3) {octahedral site\\(cobalt, chromium)};
+  \node[font=\small\bfseries,align=center] at (1.6,5.3) {octahedral site\\(chromium oxide, viridian)};
   \draw[thick] (-0.8,3.9) -- (0.4,3.9); \node[left,font=\scriptsize] at (-0.8,3.9) {free ion};
   \draw[thick] (1.8,1.1) -- (3.0,1.1) node[right] {$t_{2g}$};
   \draw[thick] (1.8,3.0) -- (3.0,3.0) node[right] {$e_g$};
@@ -301,12 +312,13 @@ an existing ion rather than inventing a new molecule.[@SmithSubramanian2009;
 \end{scope}
 ```
 
-*Figure 3.* Crystal-field splitting for an octahedral site (cobalt blue,
-viridian) versus the trigonal-bipyramidal site in YInMn blue. Both split the
-free ion's degenerate $d$ orbitals into two sets separated by $\Delta$, but only
-the octahedral site retains an inversion center: its $d$–$d$ transition is
+*Figure 3.* Crystal-field splitting for an octahedral site (chromium oxide
+green, viridian) versus the trigonal-bipyramidal site in YInMn blue. Both split
+the free ion's degenerate $d$ orbitals into two sets separated by $\Delta$, but
+only the octahedral site retains an inversion center: its $d$–$d$ transition is
 Laporte-forbidden and weak, while the noncentrosymmetric YInMn site makes the
-same kind of transition Laporte-allowed and strong.
+same kind of transition Laporte-allowed and strong. Cobalt blue's tetrahedral
+site, also noncentrosymmetric, sits between the two in intensity.
 
 ## 5. Charge-transfer transitions
 
@@ -339,16 +351,20 @@ energy.[@ItayaUchida1986]
 misidentified: it is **not** the aluminosilicate **sodalite cage** that hosts
 it. The cage is colorless. The color comes from **polysulfide radical anions
 trapped inside it** — chiefly the **S₃⁻** radical anion, with some **S₂⁻**
-contributing — whose electronic transitions (a charge-transfer-like excitation
-within the trapped radical) absorb in the orange and yield ultramarine's blue.
-The cage isolates and stabilizes these otherwise-reactive radicals; destroy the
-cage and the color is lost, but the cage is the host, not the
+contributing — whose electronic transitions absorb in the orange and yield
+ultramarine's blue. Strictly, that absorption is an internal transition of the
+radical anion rather than a jump between two separate sites, so ultramarine
+sits loosely in this section's taxonomy; it is filed here because it behaves
+like charge transfer — fully allowed and intense, nothing like a ligand-field
+band. The cage isolates and stabilizes these otherwise-reactive radicals;
+destroy the cage and the color is lost, but the cage is the host, not the
 chromophore.[@FleetLiu2010] The **iron-oxide earths** — yellow **ochre**
-(hydrated FeO(OH)), red **sienna** and red oxides (Fe₂O₃), brown **umber** (iron
-oxide with manganese) — round out this mechanism, their warm colors coming from
-a combination of O→Fe **ligand-to-metal charge transfer** and weaker $d$–$d$
-absorption on the iron; they are among the most permanent pigments humans have
-ever used.
+(goethite, hydrated FeO(OH)), the **red oxides** (hematite, Fe₂O₃), and the
+brown **siennas** and **umbers** (iron oxides with manganese; calcining
+"burns" raw sienna's yellow-brown to a red-brown) — round out this mechanism,
+their warm colors coming from a combination of O→Fe **ligand-to-metal charge
+transfer** and weaker $d$–$d$ absorption on the iron; they are among the most
+permanent pigments humans have ever used.
 
 The modern development for this mechanism is reliable manufacture, not a new
 chromophore. **Synthetic ultramarine** (made since the 1820s by firing china
@@ -378,7 +394,11 @@ blue, so it reflects everything from green up and looks **yellow**. At ~2.3 eV
 it eats blue and green and reflects orange-and-red — **orange**. At ~2.0 eV
 only red survives — **red**. The color of a band-gap pigment is set by where
 the edge sits, and a single chemical family with a tunable $E_g$ gives the
-whole sequence yellow→orange→red (Figure 4).
+whole sequence yellow→orange→red (Figure 4). The edge is also why the same gap
+energy can name two different colors in this post: the molecular chromophore
+marked at $\Delta E \approx 2.1$ eV in Figure 1 absorbs a *band* around 590 nm
+and looks blue, while a semiconductor with $E_g \approx 2.0$ eV absorbs
+*everything* above the gap and looks red.
 
 ```tikzpicture
 \begin{scope}[xshift=0cm]
@@ -419,15 +439,22 @@ cadmium sulfide (CdS) has a band gap that makes it a bright yellow, and forming
 the solid solution **CdS₁₋ₓSeₓ** — substituting larger selenium for sulfur —
 narrows the gap continuously, sweeping the edge from yellow through orange to
 deep red as $x$ increases (Figure 4). **Vermilion** (mercury(II) sulfide, HgS)
-is a band-gap red; **chrome yellow** (lead chromate, PbCrO₄) a band-gap yellow.
-All three are toxic — cadmium, mercury, lead — which is why this mechanism
-needed a modern replacement.
+is a band-gap red; **chrome yellow** (lead chromate, PbCrO₄) a band-gap yellow
+— in chromate's case an edge built from O→Cr(VI) charge transfer, since Cr⁶⁺
+has no $d$ electrons left for a $d$–$d$ band: §5's mechanism in its
+solid-state limit. All three are toxic — cadmium, mercury, lead — which is why
+this mechanism needed a modern replacement. Toxicity is not their only flaw:
+vermilion notoriously blackens in light, converting toward its dark polymorph
+metacinnabar, and chrome yellow darkens as light reduces Cr(VI) to Cr(III) —
+the slow browning of Van Gogh's sunflowers. Photochemical failure is not an
+organic monopoly (§8).
 
 **Modern replacements.** Here the modern work is reformulating away the
 toxicity while keeping the band-gap color. **Bismuth vanadate** (BiVO₄, Pigment
 Yellow 184) is a non-toxic, lightfast, high-opacity yellow whose band gap of
-about 2.4 eV puts its absorption edge near 520 nm, reflecting a clean, strong
-yellow that substitutes directly for cadmium and chrome yellows.[@Cooper2015]
+about 2.4 eV — an O→V(V) charge-transfer edge, like chromate's — puts its
+absorption edge near 520 nm, reflecting a clean, strong yellow that
+substitutes directly for cadmium and chrome yellows.[@Cooper2015]
 The cadmium-free "**hues**" sold today combine this engineering: bismuth
 vanadate, benzimidazolone and DPP organics (§3), and inorganic mixed oxides
 blended to match the cadmium colors' hue and opacity without the cadmium.
@@ -435,7 +462,7 @@ blended to match the cadmium colors' hue and opacity without the cadmium.
 | Mechanism | Physical origin | Selection rule / strength | Historic example | Modern example |
 |:----------|:-----------------|:---------------------------|:-------------------|:------------------|
 | Conjugated π-system (§3) | HOMO–LUMO gap of delocalized π electrons | Allowed; strength grows with conjugation length | Indigo, alizarin (madder) | Quinacridone, DPP, phthalocyanine |
-| Ligand-field $d$–$d$ (§4) | Crystal-field splitting of a transition-metal ion's $d$ orbitals | Laporte-forbidden; weak, low tinting strength | Cobalt blue, viridian | YInMn blue (Laporte-allowed site) |
+| Ligand-field $d$–$d$ (§4) | Crystal-field splitting of a transition-metal ion's $d$ orbitals | Laporte-forbidden in centrosymmetric sites; weak, relaxed as site symmetry drops | Cobalt blue, viridian | YInMn blue (Laporte-allowed site) |
 | Charge transfer (§5) | Electron transfer between two sites (ligand→metal or metal→metal) | Fully allowed; strong, high tinting strength | Prussian blue, ultramarine, iron oxides | Same chromophores, synthetic manufacture |
 | Semiconductor band gap (§6) | Valence-to-conduction-band promotion above $E_g$ | Absorption edge, not a band; strength set by edge position | Cadmium yellows/reds, vermilion, chrome yellow | Bismuth vanadate, cadmium-free hues |
 
@@ -591,7 +618,10 @@ as a class, still tend to trail the great **inorganic** pigments — the iron
 oxides, the cobalt and chromium oxides, the cadmiums — on outright permanence,
 because a chromophore buried in an oxide lattice or a sulfide crystal is harder
 for light to reach than one held in an organic molecule, however well packed.
-And permanence trades against **toxicity**: the most durable historic
+That advantage is not universal, though: vermilion's blackening and chrome
+yellow's browning (§6) are light-driven redox chemistry proceeding in fully
+inorganic crystals. And permanence trades against
+**toxicity**: the most durable historic
 inorganics are heavy-metal compounds — cadmium, cobalt, lead, mercury — and the
 reformulations of §6 (bismuth vanadate, the cadmium-free hues) are chasing the
 genuinely hard target of matching their color *and* their permanence *without*
@@ -604,7 +634,7 @@ compromise it represents.
 
 The abstractions from the earlier posts in this series correspond directly to
 physical pigments. The particle in a box from the [fundamentals
-post](/posts/fundementals_of_quantum_chemistry.html) is a quinacridone crystal:
+post](/posts/fundamentals_of_quantum_chemistry.html) is a quinacridone crystal:
 confining π electrons to a conjugated frame sets the box length, and the box
 length sets the gap that is the color. The molecular-orbital energy levels from
 the [water](/posts/2026-06-30-reading-water-geometry-orbitals-acidity-spectra.html)

@@ -20,7 +20,7 @@ and by knowing the answer we were aiming for.
 This post is about the machinery that actually computes them. It sits one floor up
 from the single-particle problems — particle in a box, harmonic oscillator,
 hydrogen atom — worked out in
-[the fundamentals post](/posts/fundementals_of_quantum_chemistry.html), and one
+[the fundamentals post](/posts/fundamentals_of_quantum_chemistry.html), and one
 floor down from the excited-state, linear-response methods in
 [the post on excited-state frameworks and basis sets](/posts/Maths-Framework-and-Basis-Sets.html).
 It is the ground-state self-consistent-field theory of Hartree and Fock: the set

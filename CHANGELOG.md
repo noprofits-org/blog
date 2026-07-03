@@ -32,6 +32,20 @@ and this project adheres to the
   `actions-gh-pages@v4`.
 
 ### Fixed
+- The fundamentals-of-quantum-chemistry post's URL slug was misspelled
+  (`fundementals`); the source file is renamed and internal links updated.
+- Pigments post: corrected Figure 1's example gaps (2.8 eV/violet→yellow,
+  2.1 eV/orange→blue — the old labels paired energies with the wrong colors),
+  and untangled the Laporte-rule discussion — cobalt blue's tetrahedral site is
+  noncentrosymmetric, so viridian's octahedral Cr³⁺ now carries the
+  strictly-forbidden case and site symmetry is presented as a
+  forbidden-to-allowed dial ending at YInMn. Also fixed the iron-earth naming
+  (hematite reds, sienna raw vs burnt). Enrichments: chromate's and vanadate's
+  band edges noted as O→metal charge transfer, vermilion's blackening and
+  chrome yellow's browning added as inorganic lightfastness failures (echoed
+  in §8), molecular band vs semiconductor edge contrasted at the same gap
+  energy, azo/benzimidazolone workhorses mentioned in §3, and the
+  particle-in-a-box gap scaling stated explicitly.
 - Mobile horizontal overflow: the post tag list (rendered as a single `.chip`
   on posts and `.post-row-topic` on listings) used `white-space:nowrap`, so a
   long comma-separated tag string ran off-screen and widened the page, clipping
