@@ -11,6 +11,14 @@ on:
 permissions:
   contents: read
 
+# Publish through GitHub's native Pages deployment (Settings → Pages → Source:
+# "GitHub Actions"). One controlled deploy per run instead of force-pushing a
+# gh-pages branch and relying on GitHub's separate, flaky auto "pages build and
+# deployment" pipeline. Serialize deploys and never cancel one mid-publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -73,36 +81,35 @@ jobs:
         stack test
         stack exec blog build
 
-    - name: Upload site artifact
+    # Custom domain (the file GitHub Pages reads for the CNAME record) and a
+    # marker that disables Jekyll processing of the already-rendered site.
+    - name: Add CNAME and .nojekyll
       if: github.event_name != 'pull_request'
-      uses: actions/upload-artifact@v4
+      run: |
+        echo "blog.noprofits.org" > _site/CNAME
+        touch _site/.nojekyll
+
+    # Packages _site into the single tar artifact that actions/deploy-pages
+    # expects (named "github-pages").
+    - name: Upload Pages artifact
+      if: github.event_name != 'pull_request'
+      uses: actions/upload-pages-artifact@v3
       with:
-        name: site
         path: _site
-        include-hidden-files: true
 
   deploy:
     if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
+    # Scopes required by the native Pages deployment: an OIDC token proves the
+    # run's identity to the Pages backend, and pages:write performs the deploy.
     permissions:
-      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Download site artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: site
-        path: _site
-
-    # The action writes the CNAME file from `cname:` and adds .nojekyll
-    # itself (enable_jekyll defaults to false).
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./_site
-        cname: blog.noprofits.org
-        force_orphan: true
+      id: deployment
+      uses: actions/deploy-pages@v4
