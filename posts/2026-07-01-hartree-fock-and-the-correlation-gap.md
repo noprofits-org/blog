@@ -439,11 +439,10 @@ outer valence and widens to several eV for the deep $2a_1$.
     bar width=14pt,
     ylabel={ionization energy (eV)},
     title={Koopmans estimates vs.\ experiment: water valence ionization},
-    symbolic x coords={1b1,3a1,1b2,2a1},
-    xtick=data,
+    xmin=0.4, xmax=4.6,
+    xtick={1,2,3,4},
     xticklabels={$1b_1$,$3a_1$,$1b_2$,$2a_1$},
     ymin=0, ymax=40,
-    enlarge x limits=0.2,
     grid=major,
     grid style={line width=.2pt, draw=gray!40},
     axis lines=left,
@@ -455,8 +454,8 @@ outer valence and widens to several eV for the deep $2a_1$.
     nodes near coords,
     every node near coord/.append style={font=\scriptsize, /pgf/number format/.cd, fixed, precision=1}
 ]
-\addplot[fill=blue!55] coordinates {(1b1,13.8) (3a1,15.9) (1b2,19.8) (2a1,36.4)};
-\addplot[fill=red!55] coordinates {(1b1,12.6) (3a1,14.7) (1b2,18.5) (2a1,32)};
+\addplot[fill=blue!55] coordinates {(1,13.8) (2,15.9) (3,19.8) (4,36.4)};
+\addplot[fill=red!55] coordinates {(1,12.6) (2,14.7) (3,18.5) (4,32)};
 \legend{$-\varepsilon_i$ (Koopmans), Experiment}
 \end{axis}
 ```

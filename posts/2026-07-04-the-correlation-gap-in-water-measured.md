@@ -270,16 +270,16 @@ $X^{-3}$.
 The physical reason is worth stating. Hartree–Fock only needs the basis to
 describe the *shape of the orbitals*, a smooth one-electron job that Gaussian
 basis sets do superbly. The correlation energy needs the basis to describe
-the **Coulomb hole** — the little kink in the wavefunction where two
-electrons meet, a genuine cusp at $r_{12}=0$ [@HelgakerJorgensenOlsen2000].
+the **Coulomb hole** [@HelgakerJorgensenOlsen2000] — the little kink in the
+wavefunction where two electrons meet, a genuine cusp at $r_{12}=0$.
 Building a cusp out of smooth products of one-electron Gaussians is brutally
 inefficient, and the $X^{-3}$ decay of the error is the price, which is why
 correlated calculations lean so heavily on extrapolation.
 
 One honesty note on the anchor. Our extrapolated $E_{\mathrm{corr}} =
 -0.3538\,E_h$ is itself a little short of the true correlation energy of
-water, which benchmark studies place near $-0.37\,E_h$
-[@HelgakerJorgensenOlsen2000]. Most of the shortfall is deliberate economy:
+water, which benchmark studies [@HelgakerJorgensenOlsen2000] place near
+$-0.37\,E_h$. Most of the shortfall is deliberate economy:
 we correlated all ten electrons but used valence-optimized cc-pV$X$Z sets,
 which lack the tight functions needed to describe correlation of the oxygen
 $1s$ core (that job wants the core-valence cc-pCV$X$Z sets), and CCSD(T)
@@ -302,10 +302,10 @@ next to CCSD and CCSD(T) in the same bases:
     bar width=11pt,
     ylabel={$-E_{\mathrm{corr}}$ (m$E_h$)},
     title={Correlation energy recovered: MP2 vs.\ CCSD vs.\ CCSD(T)},
-    symbolic x coords={cc-pVDZ,cc-pVTZ,cc-pVQZ},
-    xtick=data,
+    xmin=0.35, xmax=3.65,
+    xtick={1,2,3},
+    xticklabels={cc-pVDZ,cc-pVTZ,cc-pVQZ},
     ymin=0, ymax=390,
-    enlarge x limits=0.25,
     grid=major,
     grid style={line width=.2pt, draw=gray!40},
     axis lines=left,
@@ -317,9 +317,9 @@ next to CCSD and CCSD(T) in the same bases:
     nodes near coords,
     every node near coord/.append style={font=\scriptsize, /pgf/number format/.cd, fixed, precision=0}
 ]
-\addplot[fill=blue!55] coordinates {(cc-pVDZ,204.05) (cc-pVTZ,275.16) (cc-pVQZ,313.37)};
-\addplot[fill=orange!60] coordinates {(cc-pVDZ,213.37) (cc-pVTZ,280.91) (cc-pVQZ,317.08)};
-\addplot[fill=red!55] coordinates {(cc-pVDZ,216.44) (cc-pVTZ,288.69) (cc-pVQZ,326.33)};
+\addplot[fill=blue!55] coordinates {(1,204.05) (2,275.16) (3,313.37)};
+\addplot[fill=orange!60] coordinates {(1,213.37) (2,280.91) (3,317.08)};
+\addplot[fill=red!55] coordinates {(1,216.44) (2,288.69) (3,326.33)};
 \legend{MP2, CCSD, CCSD(T)}
 \end{axis}
 ```
