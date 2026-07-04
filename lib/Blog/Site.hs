@@ -9,7 +9,7 @@ module Blog.Site
 import Hakyll
 
 import Blog.Compilers (bibtexMathCompiler)
-import Blog.Context   (postCtx)
+import Blog.Context   (baseCtx, postCtx)
 import Blog.Feed      (feedConfiguration, feedCtx)
 
 -- | Bibliography inputs for the post compiler.
@@ -43,6 +43,10 @@ siteRules previewDrafts = do
         route   idRoute
         compile copyFileCompiler
 
+    match "fonts/*" $ do
+        route   idRoute
+        compile copyFileCompiler
+
     match "css/*" $ do
         route   idRoute
         compile compressCssCompiler
@@ -50,7 +54,7 @@ siteRules previewDrafts = do
     match (fromList staticPages) $ do
         route   $ setExtension "html"
         compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/default.html" defaultContext
+            >>= loadAndApplyTemplate "templates/default.html" baseCtx
             >>= relativizeUrls
 
     -- Skipped drafts never enter the store, so the listings, feeds, and
@@ -71,7 +75,7 @@ siteRules previewDrafts = do
             let archiveCtx =
                     listField "posts" postCtx (return posts) <>
                     constField "title" "Archives"            <>
-                    defaultContext
+                    baseCtx
 
             makeItem ""
                 >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
@@ -82,10 +86,14 @@ siteRules previewDrafts = do
         route idRoute
         compile $ do
             posts <- recentFirst =<< loadAll "posts/*"
-            let indexCtx =
-                    listField "posts" postCtx (return posts) <>
-                    constField "title" "Home"                <>
-                    defaultContext
+            -- Newest post fills the featured slot; the rest fills the filtered
+            -- "Latest" list so the featured note is never duplicated below.
+            let (featured, rest) = splitAt 1 posts
+                indexCtx =
+                    listField "featured" postCtx (return featured) <>
+                    listField "posts"    postCtx (return rest)     <>
+                    constField "title" "Home"                      <>
+                    baseCtx
 
             getResourceBody
                 >>= applyAsTemplate indexCtx
