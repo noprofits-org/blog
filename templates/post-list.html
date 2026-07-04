@@ -1,12 +1,15 @@
 <div class="post-list">
     $for(posts)$
-    <a class="post-row" href="$url$">
-        <span class="post-row-date">$date$</span>
-        <span class="post-row-main">
-            <span class="post-row-title">$title$</span>
-            $if(description)$<span class="post-row-excerpt">$description$</span>$endif$
-        </span>
-        $if(tags)$<span class="post-row-topic">$tags$</span>$endif$
+    <a class="post-row" href="$url$" data-topic="$topicSlug$">
+        <div class="post-row-meta">
+            <span class="post-row-date">$date$</span>
+            <span class="post-row-topic">$topic$</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">$title$</h4>
+            $if(description)$<p class="post-row-desc">$description$</p>$endif$
+            $if(hashTags)$<div class="post-row-tags">$hashTags$</div>$endif$
+        </div>
     </a>
     $endfor$
 </div>
