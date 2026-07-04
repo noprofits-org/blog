@@ -52,8 +52,9 @@ band $\to |\boldsymbol{\mu}_{ge}|^2$.** When a talk normalizes the band to unit
 height, it is discarding exactly this — keeping $\tilde\nu_{ge}$ (where the band
 sits) and erasing $|\boldsymbol{\mu}_{ge}|^2$ (how much dipole the transition
 carries). We can put a number on it and carry that number all the way to a
-modulator. Take a representative donor–acceptor chromophore of the
-nitroaniline / azo-dye family: a charge-transfer band at $\lambda_{\max}=480$ nm
+modulator. Take a representative *high-performance* donor–acceptor dye — a
+Disperse Red / DANS-type push–pull azo chromophore of the sort actually poled into
+electro-optic films: a charge-transfer band at $\lambda_{\max}=480$ nm
 ($\tilde\nu_{ge}\approx20{,}800\ \mathrm{cm^{-1}}$, $E_{ge}=2.58$ eV), peak molar
 absorptivity $\varepsilon_{\max}\approx4\times10^{4}\ \mathrm{L\,mol^{-1}\,cm^{-1}}$,
 band width $\approx5000\ \mathrm{cm^{-1}}$. Integrating gives $f\approx0.92$ and
@@ -141,9 +142,19 @@ a typical push–pull dipole change $\Delta\mu_{ge}\approx6$ D, and $E_{ge}=2.58
 $$\beta_0 = \frac{3\,(6\,\text{D})(9.7\,\text{D})^2}{(2.58\,\text{eV})^2}
 \approx 1.0\times10^{-28}\ \text{esu} = 99\times10^{-30}\ \text{esu},$$
 
-squarely in the range of a good organic chromophore. Every factor that went into
-that number except $\Delta\mu_{ge}$ came straight off the absorption spectrum — and
-the dominant, squared factor is precisely the peak height a normalized plot erases.
+a strong value, characteristic of an *engineered* electro-optic dye. It is worth
+being honest about the scale, because the molecule the two-level model was actually
+built on — **para-nitroaniline (PNA)**, the simplest donor–π–acceptor there is, a
+single benzene ring with one amino donor and one nitro acceptor[@OudarChemla1977] —
+is nothing like this good. PNA is a deliberately weak benchmark: its band is
+higher-energy and less intense, and its static $\beta_0$ is only of order
+$10\times10^{-30}$ esu, roughly a tenth of the value above. That tenfold gap is not
+incidental — it is precisely what decades of chromophore engineering *bought*, and
+it was bought by turning the two knobs the formula exposes: pushing
+$|\boldsymbol{\mu}_{ge}|^2$ up (a stronger, more intense band) and $E_{ge}$ down (a
+redder one). Every factor that went into the number above except $\Delta\mu_{ge}$
+came straight off the absorption spectrum — and the dominant, squared factor is
+precisely the peak height a normalized plot erases.
 
 ## 4. From $\beta$ to the Pockels effect
 
