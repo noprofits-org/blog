@@ -2,9 +2,6 @@
 title: "The colors on the palette are energy-level gaps: engineering pigments for permanence"
 date: 2026-07-04
 author: Peter Johnston
-figlabel: A chromophore's absorption band
-figcaption: Idealized visible-band absorption vs. wavelength
-figure: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200' role='img' aria-label='Idealized pigment absorption band across the visible spectrum'><style>.a{stroke:var(--accent)}</style><g fill='none' stroke='currentColor'><line x1='30' y1='20' x2='30' y2='166' stroke-width='1.4' opacity='0.4'/><line x1='30' y1='166' x2='302' y2='166' stroke-width='1.4' opacity='0.4'/></g><g fill='currentColor' opacity='0.14'><rect x='44' y='150' width='16' height='16'/><rect x='70' y='120' width='16' height='46'/><rect x='96' y='78' width='16' height='88'/><rect x='122' y='54' width='16' height='112'/><rect x='148' y='70' width='16' height='96'/><rect x='174' y='104' width='16' height='62'/><rect x='200' y='132' width='16' height='34'/><rect x='226' y='150' width='16' height='16'/><rect x='252' y='156' width='16' height='10'/><rect x='278' y='158' width='16' height='8'/></g><path d='M44 158 C 90 150, 108 60, 138 58 C 168 56, 190 150, 302 160' fill='none' class='a' stroke-width='2.8'/></svg>"
 tags: pigments, color, chromophores, lightfastness, charge transfer, ligand field, band gap, conjugation, Kubelka-Munk
 description: A tube of paint is an electronic-structure problem plus a scattering problem, perceived by an eye. This post builds the mechanism-first taxonomy of color — conjugated π-systems, ligand-field d–d transitions, charge transfer, and semiconductor band gaps — leading with the modern synthetic pigments engineered to fix the lightfastness failures of their historic ancestors, then puts absorption and scattering back together with Kubelka–Munk.
 ---

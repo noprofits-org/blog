@@ -35,6 +35,19 @@ $for(featured)$
                 <div class="figure-body">$figure$</div>
                 $if(figcaption)$<figcaption class="figure-caption">$figcaption$</figcaption>$endif$
             </figure>
+            $else$
+            $if(figSlides)$
+            <figure class="featured-figure" data-figcycle>
+                <div class="figure-label">
+                    <span data-fig-counter>Fig. 1 of $figCount$</span>
+                    <span class="fig-nav" data-fig-nav hidden>
+                        <button type="button" class="fig-btn" data-fig-prev aria-label="Previous figure">←</button>
+                        <button type="button" class="fig-btn" data-fig-next aria-label="Next figure">→</button>
+                    </span>
+                </div>
+                <div class="figure-body" aria-live="polite">$figSlides$</div>
+            </figure>
+            $endif$
             $endif$
         </div>
     </div>

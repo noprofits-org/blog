@@ -2,9 +2,6 @@
 title: "How much does correlation really cost? The correlation gap in water, measured"
 date: 2026-07-04
 author: Peter Johnston
-figlabel: Correlation gap in H₂O
-figcaption: RHF → basis-set limit vs. CCSD(T), schematic
-figure: "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200' role='img' aria-label='RHF energy converging to the Hartree-Fock limit with the correlated energy below and the correlation gap between'><style>.a{stroke:var(--accent)}.af{fill:var(--accent)}</style><g fill='none' stroke='currentColor'><line x1='34' y1='22' x2='34' y2='166' stroke-width='1.4' opacity='0.4'/><line x1='34' y1='166' x2='300' y2='166' stroke-width='1.4' opacity='0.4'/><path d='M46 40 C 120 66, 200 78, 296 82' stroke-width='2.6'/><line x1='46' y1='82' x2='296' y2='82' stroke-width='1.2' stroke-dasharray='2 5' opacity='0.7'/></g><rect x='46' y='82' width='250' height='46' class='af' opacity='0.14'/><line x1='46' y1='128' x2='296' y2='128' class='a' stroke-width='2.6'/><g fill='currentColor'><circle cx='46' cy='40' r='3'/><circle cx='120' cy='66' r='3'/><circle cx='200' cy='78' r='3'/><circle cx='296' cy='82' r='3'/></g></svg>"
 tags: quantum chemistry, Hartree-Fock, electron correlation, basis sets, coupled cluster, psi4
 description: The Hartree–Fock post drew its correlation-gap figure schematically. This post runs the actual calculations — RHF marched up a basis-set ladder to its limit, MP2 and CCSD(T) below it — and reports what electron correlation costs, in hartrees, for one bent molecule of water.
 ---

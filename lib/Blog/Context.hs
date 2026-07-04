@@ -60,8 +60,78 @@ postCtx =
   topicField "topicSlug" snd <>
   tagsHtmlField "tagChips" (\t -> "<span class=\"tag-chip\">" ++ t ++ "</span>") <>
   tagsHtmlField "hashTags" (\t -> "<span class=\"row-tag\">#" ++ t ++ "</span>") <>
+  figureSlidesCtx <>
   constField "ogtype" "article" <>
   baseCtx
+
+-- | The featured panel's figure cycler: the post's REAL figures, extracted
+-- from the compiled body snapshot — every @.tikz-figure@ block plus the
+-- @<p><em>Figure N.</em> …@ caption that immediately follows it, wrapped as
+-- @.fig-slide@s (first one active; js\/figure-cycler.js drives the rest).
+-- Both fields are withheld when a post has no figures, so templates can guard
+-- with @$if(figSlides)$@; the explicit @figure@ metadata override still wins
+-- in the template for posts whose figures aren't TikZ.
+figureSlidesCtx :: Context String
+figureSlidesCtx = field "figSlides" render <> field "figCount" count
+  where
+    figuresOf item =
+      extractFigures <$> loadSnapshotBody (itemIdentifier item) "content"
+    render item = do
+      figs <- figuresOf item
+      case figs of
+        [] -> noResult "post has no extractable figures"
+        _  -> pure (concat (zipWith slide [1 :: Int ..] figs))
+    count item = do
+      figs <- figuresOf item
+      if null figs then noResult "post has no extractable figures"
+                   else pure (show (length figs))
+    slide i (fig, mcap) =
+      "<div class=\"fig-slide" ++ (if i == 1 then " is-active" else "") ++ "\">"
+        ++ fig
+        ++ maybe "" (\c -> "<div class=\"fig-slide-caption\">" ++ c ++ "</div>") mcap
+        ++ "</div>"
+
+-- | Scan compiled post HTML for @<div class="tikz-figure">…</div>@ blocks and
+-- pair each with the caption paragraph that immediately follows, when that
+-- paragraph is a @<p><em>Figure …@ marker. Plain substring scanning — the
+-- tikz div wraps a single inline SVG, which cannot contain a nested @</div>@.
+extractFigures :: String -> [(String, Maybe String)]
+extractFigures = go
+  where
+    open, divClose, pOpen, pClose, capMark :: String
+    open     = "<div class=\"tikz-figure\">"
+    divClose = "</div>"
+    pOpen    = "<p>"
+    pClose   = "</p>"
+    capMark  = "<p><em>Figure"
+    go s = case breakOnSub open s of
+      Nothing -> []
+      Just (_, atOpen) ->
+        let afterOpen = drop (length open) atOpen
+        in case breakOnSub divClose afterOpen of
+             Nothing -> []
+             Just (inner, atClose) ->
+               let rest = drop (length divClose) atClose
+                   (mcap, rest') = captionAfter rest
+               in (open ++ inner ++ divClose, mcap) : go rest'
+    captionAfter s =
+      let s' = dropWhile (`elem` (" \t\r\n" :: String)) s
+      in if capMark `isPrefixOf` s'
+           then case breakOnSub pClose s' of
+                  Just (capWithP, atClose) ->
+                    (Just (drop (length pOpen) capWithP), drop (length pClose) atClose)
+                  Nothing -> (Nothing, s)
+           else (Nothing, s)
+
+-- | @breakOnSub pat s@: @Just (before, rest)@ where @rest@ starts at the first
+-- occurrence of @pat@; @Nothing@ when @pat@ does not occur.
+breakOnSub :: String -> String -> Maybe (String, String)
+breakOnSub pat s0 = go 0 s0
+  where
+    go i s
+      | pat `isPrefixOf` s = Just (take i s0, s)
+      | null s             = Nothing
+      | otherwise          = go (i + 1) (drop 1 s)
 
 -- | Render each of a post's comma-separated tags to an HTML fragment and
 -- concatenate. Empty (field withheld) when a post has no @tags@, so callers can
