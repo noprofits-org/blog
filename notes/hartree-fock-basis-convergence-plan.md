@@ -2,6 +2,14 @@ Internal planning notes — not a post, not built by Hakyll (only `posts/*` is
 matched in `lib/Blog/Site.hs`). Written 2026-07-01 for follow-up work with
 psi4 at the desk.
 
+**Status (2026-07-04): executed as option (B).** All four calculations run
+with psi4 1.11 (conda env `qchem`); post published as
+`posts/2026-07-04-the-correlation-gap-in-water-measured.md`, forward link
+added from §7 of the HF post. Open decision 2 resolved: yes, extrapolated —
+HF limit from Q5 exponential ($-76.067548$), corr from TQ $X^{-3}$
+($-0.353809$). Decision 3: stayed in the same tag family. Note the "no TeX
+locally" line below is stale — the full TikZ toolchain now renders locally.
+
 ## Why
 
 `posts/2026-07-01-hartree-fock-and-the-correlation-gap.md` makes the

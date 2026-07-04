@@ -526,7 +526,11 @@ we care about are energy *differences* of the same order: bond energies, reactio
 barriers, excitation energies. A method that recovers 99% of the energy can still
 be useless for a barrier height if the missing 1% varies between reactant and
 product. So the correlation energy is not a rounding error to wave away; it is
-frequently the whole answer.
+frequently the whole answer. (Figure 3 is drawn schematically here; a
+[follow-up post](/posts/2026-07-04-the-correlation-gap-in-water-measured.html)
+computes every line on it for this same water molecule — RHF marched up a
+basis-set ladder to its limit, CCSD(T) below it, and the gap measured at
+$-0.354$ hartree.)
 
 It helps to split it in two. **Dynamic correlation** is the instantaneous dodging
 the mean field smears over: each electron carves out a "Coulomb hole" around itself
