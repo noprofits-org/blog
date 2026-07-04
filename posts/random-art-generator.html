@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>Building a Random Art Generator with the Met Museum API and a Serverless CORS Proxy — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/theme-toggle.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="../">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">art, web development, javascript, met museum, cors proxy, serverless</span>
+    </div>
+    
+
+    <h1 class="post-title">Building a Random Art Generator with the Met Museum API and a Serverless CORS Proxy</h1>
+
+    <div class="post-meta">
+        <span>May  6, 2025</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <h2 id="bridging-art-and-technology">Bridging Art and Technology</h2>
+<p>Taking a break from our typically science-focused content, today’s post explores a project at the intersection of art and technology. As a graduate of the College of Art and Science, I occasionally find myself drawn back to the arts, especially when technology can make it more accessible and discoverable.</p>
+<h2 id="bringing-art-discovery-to-the-web-with-a-simple-interface">Bringing Art Discovery to the Web with a Simple Interface</h2>
+<p>Art appreciation often begins with discovery - stumbling upon a piece that resonates with you unexpectedly. The Metropolitan Museum of Art houses one of the world’s most extensive art collections, spanning 5,000 years of human creativity. Their public API offers developers access to this treasure trove, but utilizing it in client-side applications presents a common web development challenge: Cross-Origin Resource Sharing (CORS) restrictions.</p>
+<p>After successfully setting up a serverless CORS proxy with Vercel, I wanted to create a practical application to demonstrate its capabilities. This led to the development of the Met Random Art Generator, a simple yet engaging web application that allows users to discover random artworks from the Met’s vast collection.</p>
+<h2 id="the-random-art-generator-a-cors-proxy-success-story">The Random Art Generator: A CORS Proxy Success Story</h2>
+<p>The Met Random Art Generator exemplifies how a serverless CORS proxy can enable smooth interaction between client-side applications and third-party APIs. Without the proxy, browser security policies would prevent direct API calls from a web app to the Met’s servers. But with our proxy in place, the application seamlessly fetches data and images, creating an intuitive art discovery experience.</p>
+<p>The generator allows users to apply filters based on department (from 19 different curatorial departments), date range (spanning the Met’s 5,000-year collection), and medium (paintings, sculpture, photographs, and more). With each click of the “Discover Random Artwork” button, users are presented with a new piece from the Met’s collection that matches their criteria, complete with its image, title, artist, date, and medium information.</p>
+<h2 id="technical-implementation-and-challenges">Technical Implementation and Challenges</h2>
+<p>Building the Random Art Generator involved several key technical aspects. First was API integration, connecting to multiple Met API endpoints to fetch departments, search for artworks matching specific criteria, and retrieve detailed information about selected pieces. Next came image handling, displaying high-resolution images through the proxy while managing loading states and potential failures. Error handling was crucial for implementing robust fallback options to ensure a smooth user experience even when API requests fail. Finally, responsive design created an interface that works well across different devices and screen sizes.</p>
+<p>One particular challenge was handling the large response data from the Met API’s search endpoint. Some queries could return thousands of object IDs, potentially overwhelming both the proxy and the client. The solution involved limiting results to manageable sizes and implementing multiple fallback approaches when initial searches failed.</p>
+<h2 id="why-this-matters-for-developers">Why This Matters for Developers</h2>
+<p>The Random Art Generator demonstrates how a CORS proxy can solve real-world development challenges. By acting as an intermediary between the client and the Met API, the proxy enables functionality that would otherwise be impossible due to browser security restrictions.</p>
+<p>This approach can be applied to countless other scenarios where developers need to access third-party APIs from client-side applications. Whether it’s weather data, social media feeds, or financial information, a serverless CORS proxy provides a lightweight solution without requiring complex backend infrastructure.</p>
+<h2 id="beyond-technical-implementation-the-joy-of-discovery">Beyond Technical Implementation: The Joy of Discovery</h2>
+<p>While the technical aspects of this project are interesting, the true value lies in the experience it creates for users. The Random Art Generator turns the Met’s extensive collection into a digital treasure hunt, where each click might reveal an ancient Egyptian artifact, a Renaissance masterpiece, or a modern photograph.</p>
+<p>This combination of technology and art appreciation exemplifies how development tools like our serverless CORS proxy can serve higher purposes - in this case, making art more accessible and discoverable for everyone with an internet connection.</p>
+<h2 id="try-it-yourself">Try It Yourself</h2>
+<p>Visit the <a href="https://noprofits.org/random-art-generator/">Met Random Art Generator</a> to experience the application firsthand. Experiment with different filters to discover artworks that match your interests, or simply click the button repeatedly to take a randomized tour through the Met’s collection.</p>
+<p>For developers interested in the technical aspects, read about <a href="../posts/cors-proxy.html">how the serverless CORS proxy was built</a> or explore implementing similar solutions in your own projects.</p>
+<p>The combination of a powerful API, a flexible CORS proxy, and thoughtful frontend development creates an experience that’s both technically sound and genuinely delightful to use - a small but meaningful contribution to making art more accessible in the digital age.</p>
+<figure>
+<img src="../images/Reliefpanel.png" alt="Assyrian relief panel showing a winged deity with a bearded face in profile, dating from 883-859 BCE" />
+<figcaption aria-hidden="true">Assyrian relief panel showing a winged deity with a bearded face in profile, dating from 883-859 BCE</figcaption>
+</figure>
+<p><em>Gypsum alabaster relief panel from Ancient Near Eastern Art, ca. 883-859 BCE, depicting a winged deity. Image courtesy of The Metropolitan Museum of Art.</em></p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                    <a href="../colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>

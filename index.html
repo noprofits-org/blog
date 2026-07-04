@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>Home — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="./atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="./rss.xml">
+
+    <script defer src="./js/theme-toggle.js"></script>
+    <script defer src="./js/mathjax-config.js"></script>
+    <script defer src="./js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="./images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="./">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="./">Home</a>
+            <a href="./about.html">About</a>
+            <a href="./archive.html">Archive</a>
+            <a href="./contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <section class="hero">
+    <div class="hero-inner">
+        <div class="eyebrow">
+            <span class="tick"></span>
+            <span>Seattle · Technical Notes</span>
+        </div>
+        <h1 class="hero-title">Notes on data, nonprofits &amp; the tools we build to make sense of them.</h1>
+        <p class="hero-sub">Field reports from the intersection of public-interest data, automation, and the command line — science and nonprofit work alike, written up with the math, the code, and the diagrams left in.</p>
+    </div>
+</section>
+
+<section class="latest">
+    <div class="section-head">
+        <span class="tick"></span>
+        <h2>Latest</h2>
+        <span class="fill"></span>
+    </div>
+    <div class="post-list">
+    
+    <a class="post-row" href="./posts/2026-07-04-the-physics-and-chemistry-of-pigments.html">
+        <span class="post-row-date">July  4, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">The colors on the palette are energy-level gaps: engineering pigments for permanence</span>
+            <span class="post-row-excerpt">A tube of paint is an electronic-structure problem plus a scattering problem, perceived by an eye. This post builds the mechanism-first taxonomy of color — conjugated π-systems, ligand-field d–d transitions, charge transfer, and semiconductor band gaps — leading with the modern synthetic pigments engineered to fix the lightfastness failures of their historic ancestors, then puts absorption and scattering back together with Kubelka–Munk.</span>
+        </span>
+        <span class="post-row-topic">pigments, color, chromophores, lightfastness, charge transfer, ligand field, band gap, conjugation, Kubelka-Munk</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-03-one-matrix-element-absorptivity-and-the-pockels-effect.html">
+        <span class="post-row-date">July  3, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">One matrix element, two experiments: molar absorptivity and the Pockels effect</span>
+            <span class="post-row-excerpt">A companion to the molar-absorptivity post. The absolute height of an absorption band, the refractive index, and the electro-optic coefficient of a poled material are three readouts of one quantity — the transition dipole. Normalizing every spectrum to 1 throws that quantity away. This traces the same matrix element from Beer's law through the two-level model to the Pockels effect, with worked numbers.</span>
+        </span>
+        <span class="post-row-topic">nonlinear optics, hyperpolarizability, electro-optics, Pockels effect, transition dipole, molar absorptivity, spectroscopy</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-03-molar-absorptivity-is-a-rate-constant.html">
+        <span class="post-row-date">July  3, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Molar absorptivity is a rate constant in disguise</span>
+            <span class="post-row-excerpt">The molar absorptivity in Beer's law looks like a static property of a molecule — a number you read off a table, like a melting point. It is not. The integrated absorption band is proportional to the same transition dipole that fixes the spontaneous-emission rate, so an absorption measurement quietly measures a lifetime. This post follows the chain from Beer's law to the Einstein coefficients and shows why weak absorbers are always slow emitters.</span>
+        </span>
+        <span class="post-row-topic">spectroscopy, quantum chemistry, molar absorptivity, Beer-Lambert, Einstein coefficients, transition dipole, fluorescence</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-01-hartree-fock-and-the-correlation-gap.html">
+        <span class="post-row-date">July  1, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Hartree–Fock and the correlation gap: where the orbital energies come from</span>
+            <span class="post-row-excerpt">A water molecular-orbital diagram quotes orbital energies as if they were just there to be read off. This post derives the ground-state machinery — the Hartree–Fock equations, their self-consistent solution, Koopmans' theorem, and the correlation energy that the mean field leaves behind — that actually computes them.</span>
+        </span>
+        <span class="post-row-topic">quantum chemistry, Hartree-Fock, self-consistent field, molecular orbitals, symmetry, electron correlation</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-30-reading-water-geometry-orbitals-acidity-spectra.html">
+        <span class="post-row-date">June 30, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Reading water off the page: geometry, orbitals, acidity, and spectra</span>
+            <span class="post-row-excerpt">Water is the most familiar molecule and one of the strangest. This post builds it up from the bottom — where the atoms sit, what the electrons do, why it is both an acid and a base, and how it talks to light.</span>
+        </span>
+        <span class="post-row-topic">water, physical chemistry, molecular orbitals, symmetry, acid-base, spectroscopy</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-26-how-grants-noprofits-org-works.html">
+        <span class="post-row-date">June 26, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">How grants.noprofits.org works: tracing federal money through a live graph</span>
+            <span class="post-row-excerpt">A walk through the live tool at grants.noprofits.org — pulling a federal grant-flow graph straight from USAspending.gov, enriching it with ProPublica 990 data, and the decisions (sub-agency grouping, name normalization, proximity-first trimming, a fuzzy-match gate, fiscal-year-normalized taxpayer ratios) that keep it honest.</span>
+        </span>
+        <span class="post-row-topic">usaspending, propublica, d3, graph, federal grants, javascript, data, transparency</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-25-astro-apps-script-firebase.html">
+        <span class="post-row-date">June 25, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Astro, Apps Script, and Firebase: how site.noprofits.org is built</span>
+            <span class="post-row-excerpt">A factual tour of the noprofits-web-engineering stack — a static Astro site on Firebase Hosting, a Google Apps Script standing in for a backend, and a keyless GitHub Actions deploy. Architecture, configuration, and data flow, with diagrams.</span>
+        </span>
+        <span class="post-row-topic">astro, apps script, firebase, hosting, github actions, static site, workload identity federation, serverless</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-24-anatomy-of-a-hakyll-site.html">
+        <span class="post-row-date">June 24, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">The anatomy of a Hakyll site, line by line</span>
+            <span class="post-row-excerpt">A complete reference for the Haskell that builds this blog — the package layout, the Hakyll rule set, contexts, feeds, the Pandoc compiler with citations and math, the build-time TikZ filter, and the templates — presented as numbered code blocks with a detailed explanation of each.</span>
+        </span>
+        <span class="post-row-topic">haskell, hakyll, static site generator, pandoc, functional programming, build systems, tikz</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-20-what-are-cloud-functions.html">
+        <span class="post-row-date">June 20, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">What are cloud functions? A practical tour with real code</span>
+            <span class="post-row-excerpt">A from-scratch explanation of what cloud functions actually are, the problem they solve, and three real-world examples — an image-resize trigger, a scheduled report, and a webhook handler — written in JavaScript, Python, and Go with line-by-line explanations of what each function does.</span>
+        </span>
+        <span class="post-row-topic">cloud functions, serverless, javascript, python, go, aws lambda, google cloud, infrastructure</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-19-gcloud-firebase-and-google-workspace.html">
+        <span class="post-row-date">June 19, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">gcloud, Firebase, and why I keep paying for a Workspace account</span>
+            <span class="post-row-excerpt">A working tour of Google Cloud and Firebase — what each one actually is, where the line between them sits, how they integrate through a shared project and IAM, and why a paid Google Workspace account ends up being the quiet keystone that ties it all together.</span>
+        </span>
+        <span class="post-row-topic">google cloud, firebase, gcloud, google workspace, infrastructure, serverless, apps script</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-18-the-met-api-has-no-random-button.html">
+        <span class="post-row-date">June 18, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">The Met API has no random button</span>
+            <span class="post-row-excerpt">A year ago I shipped a one-button "random artwork" toy on top of the Met Museum API. It has since grown into a four-screen app — and the interesting part is what you do when the API you're randomizing over has no way to hand you something random. Manufacture it. And once you can manufacture randomness, a deterministic "artwork of the day" falls out for free.</span>
+        </span>
+        <span class="post-row-topic">art, javascript, react, met museum, cors proxy, randomness, pwa</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-18-a-citation-a-slot-and-the-line.html">
+        <span class="post-row-date">June 18, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">A citation, a slot, and the line nobody plots</span>
+            
+        </span>
+        <span class="post-row-topic">science, nonlinear-optics</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-17-reading-a-food-banks-990.html">
+        <span class="post-row-date">June 17, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">What a food bank's tax return actually says</span>
+            
+        </span>
+        <span class="post-row-topic">nonprofits, data</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-16-running-my-day-job-on-claude-code.html">
+        <span class="post-row-date">June 16, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Running my day job on Claude Code — an agent architecture for non-software work</span>
+            <span class="post-row-excerpt">My day job isn't writing software — it's coordinating insurance-restoration jobs, which is document-heavy and relentlessly repetitive. Over a few months I built a system of Claude Code agents around that workflow. This is the architecture, the decisions that made it hold together, and what I'd change.</span>
+        </span>
+        <span class="post-row-topic">claude code, agents, automation, project management, workflow, llm, architecture</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-15-reading-the-circuitikz-source.html">
+        <span class="post-row-date">June 15, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Reading the source — the circuitikz behind four schematics</span>
+            <span class="post-row-excerpt">A follow-up that opens up the four circuits from the previous post and shows the circuitikz source for each — the RC low-pass filter, the series RLC, the inverting op-amp, and the full-wave bridge rectifier — line by line.</span>
+        </span>
+        <span class="post-row-topic">tikz, circuitikz, electronics, haskell, hakyll, rendering</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-15-hardening-the-cors-proxy.html">
+        <span class="post-row-date">June 15, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Hardening the open CORS proxy — allowlists, SSRF guards, and the bypass I almost left behind</span>
+            <span class="post-row-excerpt">A year after building an open serverless CORS proxy, I closed the open-relay hole it had become — target and origin allowlists, SSRF guards, a resilience layer — and learned a sharp lesson about a forgotten debug endpoint that Vercel was still routing.</span>
+        </span>
+        <span class="post-row-topic">cors proxy, serverless, vercel, security, ssrf, javascript, tikz</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-14-rich-tikz-with-dvisvgm.html">
+        <span class="post-row-date">June 14, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">A light wave from Maxwell's equations, rendered in pure TikZ</span>
+            <span class="post-row-excerpt">Deriving the electromagnetic plane wave from Maxwell's equations, then drawing it with build-time TikZ — and the Haskell pipeline rebuild (lualatex + dvisvgm) that finally renders its transparency.</span>
+        </span>
+        <span class="post-row-topic">tikz, rendering, haskell, hakyll, electromagnetism, physics</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-14-circuit-diagrams-with-circuitikz.html">
+        <span class="post-row-date">June 14, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Schematics that compile — circuit diagrams in pure TikZ</span>
+            <span class="post-row-excerpt">Teaching the build-time TikZ pipeline to draw electrical schematics with circuitikz, demonstrated with four classic circuits — an RC filter, a series RLC, an inverting op-amp, and a full-wave bridge rectifier.</span>
+        </span>
+        <span class="post-row-topic">tikz, circuitikz, electronics, haskell, hakyll, rendering</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-01-16-quantum-tunneling-workflow.html">
+        <span class="post-row-date">January 16, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Quantum Tunneling Workflow for Hydrogen Peroxide - PES Scans, kappa Corrections, and Instanton Integration</span>
+            <span class="post-row-excerpt">An ACS-style, AI-authored workflow note that couples a relaxed PES scan with semiclassical tunneling corrections and an i-PI ring-polymer instanton sketch, including charts, tables, and runnable code.</span>
+        </span>
+        <span class="post-row-topic">quantum chemistry, tunneling, kinetics, instanton, workflow, improved_tunnel</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-01-16-quantum-tunneling-psi4-results.html">
+        <span class="post-row-date">January 16, 2026</span>
+        <span class="post-row-main">
+            <span class="post-row-title">From Mock to Reality - H2O2 Tunneling with Psi4 and Modern OptKing Constraints</span>
+            <span class="post-row-excerpt">Follow-up workflow note documenting the transition from mock calculations to real Psi4 results, including fixes for modern OptKing constraint handling and symmetry issues.</span>
+        </span>
+        <span class="post-row-topic">quantum chemistry, tunneling, kinetics, psi4, optking, improved_tunnel</span>
+    </a>
+    
+    <a class="post-row" href="./posts/process_diagrams.html">
+        <span class="post-row-date">June 21, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Visual Process Documentation - Measuring Efficiency Through Domain Crossing Analysis</span>
+            <span class="post-row-excerpt">A simple methodology for documenting and measuring process efficiency by visualizing the movement between digital and physical work, with practical applications for office workflow optimization.</span>
+        </span>
+        <span class="post-row-topic">process optimization, workflow analysis, digital transformation, office efficiency, documentation</span>
+    </a>
+    
+    <a class="post-row" href="./posts/random-art-generator.html">
+        <span class="post-row-date">May  6, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Building a Random Art Generator with the Met Museum API and a Serverless CORS Proxy</span>
+            <span class="post-row-excerpt">Taking a break from science to explore art and technology with a web application that makes the Metropolitan Museum's collection accessible through a custom-built CORS proxy solution.</span>
+        </span>
+        <span class="post-row-topic">art, web development, javascript, met museum, cors proxy, serverless</span>
+    </a>
+    
+    <a class="post-row" href="./posts/cors-proxy.html">
+        <span class="post-row-date">May  4, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Building a Serverless CORS Proxy with Vercel - Simplifying Cross-Origin Requests</span>
+            <span class="post-row-excerpt">A practical exploration of building a serverless CORS proxy using Vercel's serverless functions, offering an elegant solution to the common cross-origin resource sharing challenges faced by frontend developers.</span>
+        </span>
+        <span class="post-row-topic">cors proxy, serverless, vercel, javascript, web development</span>
+    </a>
+    
+    <a class="post-row" href="./posts/Setting-Up-Google-Sheet-and-Bound-Web-App-Script-To-Fetch-NP-Data.html">
+        <span class="post-row-date">May  3, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Building a Spreadsheet-Based API Tool with Google Sheets</span>
+            <span class="post-row-excerpt">How to leverage Google Sheets and Google Apps Script to create a powerful data retrieval system that connects to external APIs, demonstrating capabilities beyond what free Excel Online can offer.</span>
+        </span>
+        <span class="post-row-topic">Google Apps Script, web app, ProPublica API, spreadsheet automation, Excel alternatives</span>
+    </a>
+    
+    <a class="post-row" href="./posts/fundamentals_of_quantum_chemistry.html">
+        <span class="post-row-date">April 22, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Fundamentals of Quantum Chemistry I (DRAFT)</span>
+            
+        </span>
+        <span class="post-row-topic">computational chemistry, particle in a box, harmonic oscillator, hydrogen atom, uncertainty principle</span>
+    </a>
+    
+    <a class="post-row" href="./posts/understanding-the-virial-eq.html">
+        <span class="post-row-date">April 20, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Understanding the Virial Equation - A Systematic Taylor Expansion of the Ideal Gas Law</span>
+            <span class="post-row-excerpt">An exploration of how the virial equation emerges as a Taylor expansion of the ideal gas law, providing a systematic way to account for molecular interactions in real gases.</span>
+        </span>
+        <span class="post-row-topic">physical chemistry, thermodynamics, gas laws, virial equation, taylor expansion, compression factor</span>
+    </a>
+    
+    <a class="post-row" href="./posts/Visualization-Compression.html">
+        <span class="post-row-date">April 20, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Visualization of Compression Factor Behavior in Real Gases - A Virial Equation Approach</span>
+            <span class="post-row-excerpt">A computational exploration of how compression factors vary with temperature and pressure for common gases, demonstrating the transition between attractive and repulsive molecular interaction regimes.</span>
+        </span>
+        <span class="post-row-topic">computational chemistry, virial equation, compression factor, real gases, molecular interactions</span>
+    </a>
+    
+    <a class="post-row" href="./posts/Determination-of-SI-Units-for-Magnetic-interaction.html">
+        <span class="post-row-date">April 19, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Determination of SI Units for Magnetic Interactions in Quantum Mechanical Calculations</span>
+            <span class="post-row-excerpt">A systematic derivation of the SI units involved in magnetic interactions at the quantum level, focusing on the correct dimensional analysis of magnetic moments, fields, and coupling constants.</span>
+        </span>
+        <span class="post-row-topic">quantum mechanics, electromagnetism, units, magnetic interaction, computational physics</span>
+    </a>
+    
+    <a class="post-row" href="./posts/automating-IRS-Form-990-Data-Extraction-A-Computational-Approach.html">
+        <span class="post-row-date">April 12, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Automating IRS Form 990 Data Extraction - A Computational Approach to Nonprofit Financial Metrics</span>
+            <span class="post-row-excerpt">A programmatic approach to extracting and analyzing financial metrics from IRS Form 990 filings, enabling the calculation of program efficiency and fundraising efficiency for United Way Worldwide across multiple years.</span>
+        </span>
+        <span class="post-row-topic">nonprofit transparency, IRS Form 990, data extraction, computational methods, efficiency metrics</span>
+    </a>
+    
+    <a class="post-row" href="./posts/programmatic-990-retrieval-Browser-appraoch.html">
+        <span class="post-row-date">April  8, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Programmatic Retrieval of IRS Form 990 Data - A Browser Automation Approach</span>
+            <span class="post-row-excerpt">A practical methodology for programmatically retrieving nonprofit financial data from Form 990 XML filings using browser automation techniques.</span>
+        </span>
+        <span class="post-row-topic">nonprofit transparency, IRS Form 990, data retrieval, browser automation, Selenium, XML parsing</span>
+    </a>
+    
+    <a class="post-row" href="./posts/Setting-up-quantum-chemistry-environment.html">
+        <span class="post-row-date">April  5, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Setting Up a Comprehensive Quantum Chemistry Environment on Linux</span>
+            <span class="post-row-excerpt">A detailed guide for establishing a versatile computational chemistry environment on Linux systems with instructions for package installation, environment configuration, and remote access setup.</span>
+        </span>
+        <span class="post-row-topic">computational chemistry, quantum chemistry, conda, psi4, python</span>
+    </a>
+    
+    <a class="post-row" href="./posts/mapping-the-irs-990-data.html">
+        <span class="post-row-date">April  1, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Mapping the IRS Form 990 Data Repository - A Computational Approach to Nonprofit Data Discovery</span>
+            <span class="post-row-excerpt">A computational approach to mapping the structure of the IRS Form 990 data repository, identifying indices and file relationships to enable targeted retrieval of nonprofit financial data.</span>
+        </span>
+        <span class="post-row-topic">nonprofit transparency, IRS Form 990, data mapping, computational methods, repository structure</span>
+    </a>
+    
+    <a class="post-row" href="./posts/Computational-Extraction-of-financial-metrics.html">
+        <span class="post-row-date">April  1, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Computational Extraction of Financial Metrics from IRS Form 990 Data Using ProPublica's Nonprofit Explorer API</span>
+            <span class="post-row-excerpt">A computational approach to extract financial metrics from IRS Form 990 filings using ProPublica's Nonprofit Explorer API, addressing challenges in data format variability and availability, with application to nonprofit evaluation.</span>
+        </span>
+        <span class="post-row-topic">nonprofit transparency, IRS Form 990, data extraction, financial analysis, computational methods</span>
+    </a>
+    
+    <a class="post-row" href="./posts/ai-comp-tools-SI.html">
+        <span class="post-row-date">March 25, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">AI Assisted Computational Tools for TDDFT Analysis of Chromophores Supplemental Information</span>
+            <span class="post-row-excerpt">A suite of Python-based computational tools for efficient geometry optimization, TD-DFT calculations, and spectral visualization of chromophores, providing a systematic approach to predicting electronic transitions and optical properties.</span>
+        </span>
+        <span class="post-row-topic">computational chemistry, excited states, TD-DFT, chromophores, photochemistry</span>
+    </a>
+    
+    <a class="post-row" href="./posts/Comp-Tools_for_td-dft.html">
+        <span class="post-row-date">March 25, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">AI Assisted Computational Tools for Time-Dependent Density Functional Theory Analysis of Chromophores</span>
+            <span class="post-row-excerpt">A suite of Python-based computational tools for efficient geometry optimization, TD-DFT calculations, and spectral visualization of chromophores, providing a systematic approach to predicting electronic transitions and optical properties.</span>
+        </span>
+        <span class="post-row-topic">computational chemistry, excited states, TD-DFT, chromophores, photochemistry</span>
+    </a>
+    
+    <a class="post-row" href="./posts/Maths-Framework-and-Basis-Sets.html">
+        <span class="post-row-date">March 22, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Mathematical Frameworks and Basis Sets in Excited State Calculations</span>
+            <span class="post-row-excerpt">A comprehensive explanation of the mathematical principles underlying excited state calculations, including TD-DFT, EOM-CCSD, ADC, and CASSCF methodologies, as well as detailed discussions on basis set selection, computational considerations, and practical applications.</span>
+        </span>
+        <span class="post-row-topic">quantum chemistry, excited states, TD-DFT, EOM-CCSD, basis sets, ADC, CASSCF, benchmark studies</span>
+    </a>
+    
+    <a class="post-row" href="./posts/Comparative-Analysis-of-TD-DFT-Functionals-for-Formaldehyde-Excited-States.html">
+        <span class="post-row-date">March 21, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Comparative Analysis of TD-DFT Functionals for Formaldehyde Excited States</span>
+            <span class="post-row-excerpt">A systematic comparison of different DFT functionals for predicting formaldehyde excited states, revealing significant variations in excitation energies and oscillator strengths across methods.</span>
+        </span>
+        <span class="post-row-topic">computational chemistry, excited states, TD-DFT, formaldehyde, photochemistry</span>
+    </a>
+    
+    <a class="post-row" href="./posts/Modern-DNS-Analysis-on-MacOS.html">
+        <span class="post-row-date">March 19, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Modern DNS Analysis on macOS - Beyond nslookup</span>
+            <span class="post-row-excerpt">A comparative analysis of traditional and modern DNS query tools on macOS, with practical examples and insights for network administrators and security professionals.</span>
+        </span>
+        <span class="post-row-topic">networking, dns, macos, dig, nslookup</span>
+    </a>
+    
+    <a class="post-row" href="./posts/AI-Powered-Non-Profit-Transparency.html">
+        <span class="post-row-date">March 19, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">AI-Powered Non-Profit Transparency - Comparing Modern Tools for Financial Analysis</span>
+            <span class="post-row-excerpt">A comparative analysis of AI search tools in extracting and analyzing non-profit financial data, with practical applications for donors and stakeholders seeking transparency.</span>
+        </span>
+        <span class="post-row-topic">non-profits, financial-transparency, AI-tools, Form-990, ProPublica</span>
+    </a>
+    
+    <a class="post-row" href="./posts/Introduction-to-PowerShell.html">
+        <span class="post-row-date">March  1, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">PowerShell Command Line Fundamentals - A Structured Learning Approach</span>
+            <span class="post-row-excerpt">A methodical introduction to PowerShell fundamentals with structured experimental procedures and evaluation of command functionality.</span>
+        </span>
+        <span class="post-row-topic">powershell, scripting, windows, automation, beginner</span>
+    </a>
+    
+    <a class="post-row" href="./posts/Polarizability-Trends-in-Carbon-Chalcogen-Diatomic-Molecules-A-Computational-Study.html">
+        <span class="post-row-date">February 28, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Polarizability Trends in Carbon-Chalcogen Diatomic Molecules - A Computational Study</span>
+            <span class="post-row-excerpt">A systematic computational investigation of polarizability in diatomic molecules formed between carbon and Group 16 (O, S, Se, Te) elements, with analysis of geometry-optimized structures and higher-order electronic properties.</span>
+        </span>
+        <span class="post-row-topic">quantum chemistry, polarizability, computational chemistry, psi4, carbon, chalcogens</span>
+    </a>
+    
+    <a class="post-row" href="./posts/Polarizability-Trends-in-Group-4-6-Heteronuclear-Molecules-A-Computational-Study.html">
+        <span class="post-row-date">February 27, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Polarizability Trends in Group 14-16 Heteronuclear Molecules - A Computational Study</span>
+            <span class="post-row-excerpt">A systematic computational investigation of polarizability trends in diatomic molecules formed between Group 14 (C, Si, Ge, Sn, Pb) and Group 16 (O, S, Se, Te) elements, showcasing the power of automation and open-source computational chemistry tools.</span>
+        </span>
+        <span class="post-row-topic">quantum chemistry, polarizability, computational chemistry, psi4, heteronuclear molecules</span>
+    </a>
+    
+    <a class="post-row" href="./posts/QC-Maths-Framework-for-Hyperpolarizability.html">
+        <span class="post-row-date">February 25, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Mathematical Framework for Hyperpolarizability Calculations</span>
+            <span class="post-row-excerpt">A detailed explanation of the mathematical principles underlying hyperpolarizability calculations</span>
+        </span>
+        <span class="post-row-topic">quantum chemistry, hyperpolarizability, computational chemistry, theoretical physics</span>
+    </a>
+    
+    <a class="post-row" href="./posts/QC-Calculations-of-Hyperpolarizability-Setup-and-Initial-Results.html">
+        <span class="post-row-date">February 25, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Quantum Chemical Calculations of Hyperpolarizability - Setup and Initial Results</span>
+            <span class="post-row-excerpt">A detailed walkthrough of setting up computational environment for calculating hyperpolarizabilities of Group 4A elements</span>
+        </span>
+        <span class="post-row-topic">quantum chemistry, hyperpolarizability, computational chemistry, psi4</span>
+    </a>
+    
+    <a class="post-row" href="./posts/Calculating-Atomic-Polarizabilities-of-Group-4A-Elements.html">
+        <span class="post-row-date">February 25, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Calculating Atomic Polarizabilities of Group 14 Elements Using Psi4 - A Finite Field Approach</span>
+            <span class="post-row-excerpt">An experimental study calculating polarizabilities of Group 14 elements using Psi4's finite field method, with results for C, Si, and Ge, and insights into limitations for heavier elements.</span>
+        </span>
+        <span class="post-row-topic">quantum chemistry, hyperpolarizability, computational chemistry, psi4</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2025-02-19-Evolving-Network-Diagnostics-for-the-Modern-Security-Landscape.html">
+        <span class="post-row-date">February 19, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Network Path Analysis - Evolving Network Diagnostics for the Modern Security Landscape</span>
+            
+        </span>
+        <span class="post-row-topic">networking, laboratory, ping, traceroute</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2025-02-18-Understanding-Network-Paths.html">
+        <span class="post-row-date">February 18, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Network Path Analysis - Evaluating Diagnostic Tools in Security-Hardened Modern Networks</span>
+            <span class="post-row-excerpt">A modern networking laboratory exercise for Mac users exploring ICMP protocols and network diagnostics</span>
+        </span>
+        <span class="post-row-topic">networking, laboratory, ping, traceroute</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2025-01-25-radiochemistry.html">
+        <span class="post-row-date">January 27, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Unraveling Radioactive Decay - A Journey Through Half-Lives</span>
+            
+        </span>
+        <span class="post-row-topic">chemistry, radiochemistry, nuclear chemistry, mathematics, half-life</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2025-01-22-discrete-math7.html">
+        <span class="post-row-date">January 22, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Big-O Analysis of an Algorithm Segment</span>
+            
+        </span>
+        <span class="post-row-topic">mathematics, computer science, algorithms, big-O notation, time complexity</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2025-01-22-discrete-math6.html">
+        <span class="post-row-date">January 22, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Deriving the Inverse of a 2x2 Matrix</span>
+            
+        </span>
+        <span class="post-row-topic">mathematics, linear algebra, matrices, matrix inverse</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2025-01-22-discrete-math5.html">
+        <span class="post-row-date">January 22, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">No Integer Solutions for 2x² + 5y² = 14</span>
+            
+        </span>
+        <span class="post-row-topic">mathematics, number theory, Diophantine equations, proof by cases</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2025-01-22-discrete-math4.html">
+        <span class="post-row-date">January 22, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Proving the Irrationality of ∛2</span>
+            
+        </span>
+        <span class="post-row-topic">mathematics, proof by contradiction, irrational numbers, number theory</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2025-01-22-discrete-math3.html">
+        <span class="post-row-date">January 22, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Tiling a 10x10 Checkerboard with Straight Tetrominoes - An Impossibility Proof</span>
+            
+        </span>
+        <span class="post-row-topic">mathematics, tiling, tetrominoes, combinatorics, proof by coloring</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2025-01-22-discrete-math2.html">
+        <span class="post-row-date">January 22, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">No Small Perfect Cubes as Sums of Two Cubes</span>
+            
+        </span>
+        <span class="post-row-topic">mathematics, number theory, perfect cubes, Fermat's Last Theorem</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2025-01-22-discrete-math.html">
+        <span class="post-row-date">January 22, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Proving the Inequality n² + 1 ≥ 2ⁿ for n = 1, 2, 3, and 4</span>
+            
+        </span>
+        <span class="post-row-topic">mathematics, inequalities, proof</span>
+    </a>
+    
+    <a class="post-row" href="./posts/2025-01-20-chemical-kinetics.html">
+        <span class="post-row-date">January 20, 2025</span>
+        <span class="post-row-main">
+            <span class="post-row-title">Chemical Kinetics of H₂O₂</span>
+            
+        </span>
+        <span class="post-row-topic">chemistry, mathematics</span>
+    </a>
+    
+</div>
+
+</section>
+
+<p class="archive-link">Explore everything in the <a href="./archive.html">archives</a>.</p>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="./">Home</a>
+                    <a href="./about.html">About</a>
+                    <a href="./archive.html">Archive</a>
+                    <a href="./colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>

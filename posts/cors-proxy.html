@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>Building a Serverless CORS Proxy with Vercel - Simplifying Cross-Origin Requests — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/theme-toggle.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="../">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">cors proxy, serverless, vercel, javascript, web development</span>
+    </div>
+    
+
+    <h1 class="post-title">Building a Serverless CORS Proxy with Vercel - Simplifying Cross-Origin Requests</h1>
+
+    <div class="post-meta">
+        <span>May  4, 2025</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <h2 id="cross-origin-headaches-and-their-serverless-solution">Cross-Origin Headaches and Their Serverless Solution</h2>
+<p>Cross-origin resource sharing (CORS) remains one of those persistent challenges that frontend developers regularly encounter. A beautiful client-side application might work perfectly in development, but then upon deployment, those dreaded red error messages appear: “Access to fetch at ‘https://api.example.com’ from origin ‘https://app-domain.com’ has been blocked by CORS policy.” This frustration is especially common when attempting to access third-party APIs that haven’t configured CORS to allow requests from the client domain.</p>
+<p>After encountering this issue repeatedly in my nonprofit applications, I decided to create a simple yet effective solution: a serverless CORS proxy deployed on Vercel. A proxy server acts as a middleman between client-side code and an API on another server, effectively bypassing CORS restrictions by making server-side requests possible from a browser window that would otherwise be blocked.</p>
+<h2 id="how-the-cors-proxy-works">How The CORS Proxy Works</h2>
+<p>The concept is straightforward: instead of making a direct request from the browser to a target API (which would be blocked by CORS restrictions), requests are sent to the proxy server. The proxy then forwards these requests to the target API, receives the response, and returns it to the application with the appropriate CORS headers that allow the browser to accept the response.</p>
+<p>The implementation leverages Vercel’s serverless functions, which provide a lightweight and scalable infrastructure without the need to maintain dedicated servers. The core of this solution is a single JavaScript file (proxy.js) that handles incoming requests, forwards them to the specified target URL, and returns the response with properly configured CORS headers.</p>
+<p>The most challenging aspect of the implementation was handling different content types correctly. APIs might return JSON data, HTML content, images, or other binary data. The proxy needed to properly identify the content type and pass it through without corruption. Additionally, it needed to ensure compatibility with various HTTP methods (GET, POST, PUT, DELETE, etc.) and correctly forward headers and request bodies.</p>
+<p>After several iterations and testing, a solution emerged that handles these requirements elegantly. One key insight was to exclude certain headers that could cause conflicts or security issues (like host, connection, origin, and content-encoding) when forwarding requests.</p>
+<h2 id="using-the-cors-proxy-in-projects">Using the CORS Proxy in Projects</h2>
+<p>Integrating this CORS proxy into projects is remarkably simple. For a basic GET request:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> PROXY_URL <span class="op">=</span> <span class="st">'https://cors-proxy-xi-ten.vercel.app/api/proxy'</span><span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> TARGET_API <span class="op">=</span> <span class="st">'https://api.example.com/data'</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">fetch</span>(<span class="vs">`</span><span class="sc">${</span>PROXY_URL<span class="sc">}</span><span class="vs">?url=</span><span class="sc">${</span><span class="pp">encodeURIComponent</span>(TARGET_API)<span class="sc">}</span><span class="vs">`</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">then</span>(response <span class="kw">=&gt;</span> response<span class="op">.</span><span class="fu">json</span>())</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">then</span>(data <span class="kw">=&gt;</span> {</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">'Data:'</span><span class="op">,</span> data)<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">catch</span>(error <span class="kw">=&gt;</span> <span class="bu">console</span><span class="op">.</span><span class="fu">error</span>(<span class="st">'Error:'</span><span class="op">,</span> error))<span class="op">;</span></span></code></pre></div>
+<p>For POST requests or other methods that require a body and specific headers:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> PROXY_URL <span class="op">=</span> <span class="st">'https://cors-proxy-xi-ten.vercel.app/api/proxy'</span><span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> TARGET_API <span class="op">=</span> <span class="st">'https://api.example.com/data'</span><span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">fetch</span>(<span class="vs">`</span><span class="sc">${</span>PROXY_URL<span class="sc">}</span><span class="vs">?url=</span><span class="sc">${</span><span class="pp">encodeURIComponent</span>(TARGET_API)<span class="sc">}</span><span class="vs">`</span><span class="op">,</span> {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">method</span><span class="op">:</span> <span class="st">'POST'</span><span class="op">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">headers</span><span class="op">:</span> {</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Content-Type'</span><span class="op">:</span> <span class="st">'application/json'</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">body</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>({ <span class="dt">key</span><span class="op">:</span> <span class="st">'value'</span> })</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">then</span>(response <span class="kw">=&gt;</span> response<span class="op">.</span><span class="fu">json</span>())</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">then</span>(data <span class="kw">=&gt;</span> {</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">'Data:'</span><span class="op">,</span> data)<span class="op">;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span><span class="fu">catch</span>(error <span class="kw">=&gt;</span> <span class="bu">console</span><span class="op">.</span><span class="fu">error</span>(<span class="st">'Error:'</span><span class="op">,</span> error))<span class="op">;</span></span></code></pre></div>
+<p>The proxy seamlessly handles different content types, including JSON, text, and binary data like images, making it versatile for various API integrations.</p>
+<h2 id="testing-the-proxy">Testing the Proxy</h2>
+<p>To help developers test the proxy with different request configurations, a dedicated testing page is available at <a href="https://noprofits.org/cors-tester/">https://noprofits.org/cors-tester/</a>. This interactive tool allows developers to enter a target URL to access through the proxy, select from various HTTP methods (GET, POST, PUT, etc.), configure request headers and body content, and execute the request to view the response in a user-friendly format.</p>
+<p>The tester provides real-time feedback and displays the response data, headers, and any errors that might occur. It’s particularly useful for debugging API interactions and understanding how different request configurations affect the results.</p>
+<h2 id="technical-challenges-and-solutions">Technical Challenges and Solutions</h2>
+<p>Building the proxy wasn’t without challenges. One particularly troublesome issue was handling content encoding properly. Initial attempts encountered “ERR_CONTENT_DECODING_FAILED” errors when proxying certain responses. After investigation, it became clear that this was happening because the content-encoding header was being forwarded from the target API to the client, but the content had already been decoded by the node-fetch library used in the implementation.</p>
+<p>The solution was to explicitly remove the content-encoding header from responses before sending them back to the client:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Explicitly remove content-encoding header to prevent decoding errors</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>res<span class="op">.</span><span class="fu">removeHeader</span>(<span class="st">'content-encoding'</span>)<span class="op">;</span></span></code></pre></div>
+<p>Another challenge was handling various content types correctly. For JSON responses, the content needed to be parsed and re-stringified. For binary data like images, the raw buffer had to be forwarded without modification:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Handle different content types appropriately</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> contentType <span class="op">=</span> response<span class="op">.</span><span class="at">headers</span><span class="op">.</span><span class="fu">get</span>(<span class="st">'content-type'</span>) <span class="op">||</span> <span class="st">''</span><span class="op">;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (contentType<span class="op">.</span><span class="fu">includes</span>(<span class="st">'application/json'</span>)) {</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> jsonData <span class="op">=</span> <span class="cf">await</span> response<span class="op">.</span><span class="fu">json</span>()<span class="op">;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> res<span class="op">.</span><span class="fu">json</span>(jsonData)<span class="op">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (contentType<span class="op">.</span><span class="fu">includes</span>(<span class="st">'text/'</span>)) {</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> text <span class="op">=</span> <span class="cf">await</span> response<span class="op">.</span><span class="fu">text</span>()<span class="op">;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> res<span class="op">.</span><span class="fu">send</span>(text)<span class="op">;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Handle binary data (e.g., images)</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> buffer <span class="op">=</span> <span class="cf">await</span> response<span class="op">.</span><span class="fu">buffer</span>()<span class="op">;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> res<span class="op">.</span><span class="fu">send</span>(buffer)<span class="op">;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h2 id="open-source-and-available-for-everyone">Open Source and Available for Everyone</h2>
+<p>This CORS proxy is open source and available on GitHub at <a href="https://github.com/noprofits-org/cors-proxy-server">https://github.com/noprofits-org/cors-proxy-server</a>. Developers can either use the hosted version directly or fork the repository to deploy their own instance on Vercel.</p>
+<p>The repository includes comprehensive documentation, example code, and deployment instructions. It’s designed to be easy to understand and modify, even for developers who aren’t familiar with serverless functions or CORS concepts.</p>
+<h2 id="beyond-development-production-considerations">Beyond Development: Production Considerations</h2>
+<p>While this CORS proxy is a valuable tool for development and testing, there are important considerations for production use. The proxy is currently open without authentication, making it accessible to anyone. For production applications with significant traffic or sensitive data, deploying a private instance with additional security measures is recommended.</p>
+<p>The current implementation relies on Vercel’s generous free tier, which includes reasonable limits for most small to medium-sized applications. However, very high-traffic applications might require upgrading to a paid plan or implementing more sophisticated caching and rate-limiting strategies.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Cross-origin resource sharing doesn’t have to be a roadblock in the development process. With this serverless CORS proxy, developers can easily bypass these restrictions and focus on building great applications rather than wrestling with browser security policies.</p>
+<p>This tool was originally built to solve challenges when developing applications for nonprofits, and now it’s available to the broader development community. Whether for a small personal project or a complex application, this CORS proxy provides a simple, effective solution to a common problem.</p>
+<p>Visit <a href="https://noprofits.org/cors-tester/">https://noprofits.org/cors-tester/</a> to try the proxy, and check out the <a href="https://github.com/noprofits-org/cors-proxy-server">GitHub repository</a> to learn more about the implementation or deploy a custom instance. Happy coding!</p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                    <a href="../colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>

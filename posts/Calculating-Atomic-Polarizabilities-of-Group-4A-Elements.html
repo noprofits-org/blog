@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>Calculating Atomic Polarizabilities of Group 14 Elements Using Psi4 - A Finite Field Approach — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/theme-toggle.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="../">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">quantum chemistry, hyperpolarizability, computational chemistry, psi4</span>
+    </div>
+    
+
+    <h1 class="post-title">Calculating Atomic Polarizabilities of Group 14 Elements Using Psi4 - A Finite Field Approach</h1>
+
+    <div class="post-meta">
+        <span>February 25, 2025</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <h2 id="abstract">Abstract</h2>
+<p>This study explores the polarizabilities of Group 14 elements (C, Si, Ge, Sn, Pb) using the finite field method in Psi4 1.7. We successfully computed isotropic polarizabilities for carbon (7.11 a.u.), silicon (20.17 a.u.), and germanium (20.19 a.u.), revealing an increasing trend down the group. However, computational limitations arose when attempting calculations for heavier elements. This work demonstrates a practical workflow for atomic property calculations, highlights methodological challenges with heavier elements, and establishes a foundation for future investigations using alternative computational approaches.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Polarizability—the measure of an atom’s electron cloud deformability in response to an external electric field—represents a fundamental property that governs numerous physical and chemical phenomena. From intermolecular forces to optical properties, polarizability provides critical insights into how atoms and molecules interact with electromagnetic radiation and with each other.</p>
+<p>Group 14 elements (C, Si, Ge, Sn, Pb) present an especially intriguing case study for polarizability analysis due to their systematic variation in atomic radius, electron configuration, and relativistic effects as one moves down the periodic table. The progressive filling of d and f orbitals prior to the p valence shell in heavier elements introduces electronic structure complexities that can significantly affect polarizability.</p>
+<p>Computational quantum chemistry offers powerful tools for investigating these properties without the experimental complexities of measuring atomic responses to electric fields. Open-source software packages like Psi4 have democratized access to sophisticated quantum chemical calculations, though these approaches come with their own methodological challenges and limitations, particularly for heavier elements where relativistic effects become significant.<span class="citation" data-cites="Parrish2017 Schwerdtfeger2002"><sup>1,2</sup></span></p>
+<p>In this study, we implement a finite field approach within Psi4 to calculate polarizabilities across the Group 14 elements. The polarizability tensor component α<sub>xx</sub> can be approximated through the numerical derivative:</p>
+<p><span class="math display">\[\alpha_{xx} \approx \frac{\mu_x(F_x = +h) - \mu_x(F_x = -h)}{2h}\]</span></p>
+<p>where h represents the applied electric field strength. This approach provides an approximation of the dipole response to an external electric field, from which polarizability can be derived.<span class="citation" data-cites="Cohen1975"><sup>3</sup></span></p>
+<p>For reproducibility, we developed a systematic workflow that automatically generates the necessary input files for each element at various field strengths, selecting appropriate basis sets for each element. Our work serves three primary objectives: (1) establishing a reproducible workflow for polarizability calculations, (2) documenting the polarizability trend across available Group 14 elements, and (3) identifying computational constraints that emerge when extending these calculations to heavier elements.</p>
+<p>The insights gained here will inform future work aimed at overcoming these limitations, potentially through alternative basis sets, pseudopotentials, or computational methodologies that better account for relativistic effects in heavier elements.<span class="citation" data-cites="Jensen2017"><sup>4</sup></span></p>
+<h2 id="experimental">Experimental</h2>
+<h3 id="computational-setup">Computational Setup</h3>
+<p>The calculations were performed on an Ubuntu 24.04 system, accessed via SSH. Psi4 version 1.7 was installed within a dedicated Conda environment (psi4fix, Python 3.9). The following directory structure was created:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/hyperpol_exp/<span class="dt">{inputs</span><span class="op">,</span><span class="dt">outputs</span><span class="op">,</span><span class="dt">scripts</span><span class="op">,</span><span class="dt">analysis}</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ~/hyperpol_exp </span></code></pre></div>
+<h3 id="input-generation">Input Generation</h3>
+<p>The input files were generated with the following script:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="va">ELEMENTS</span><span class="op">=</span><span class="va">(</span><span class="st">&quot;C&quot;</span> <span class="st">&quot;Si&quot;</span> <span class="st">&quot;Ge&quot;</span> <span class="st">&quot;Sn&quot;</span> <span class="st">&quot;Pb&quot;</span><span class="va">)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="va">FIELDS</span><span class="op">=</span><span class="va">(</span><span class="st">&quot;0.002&quot;</span> <span class="st">&quot;0.0&quot;</span> <span class="st">&quot;-0.002&quot;</span><span class="va">)</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="va">INPUT_DIR</span><span class="op">=</span><span class="st">&quot;inputs&quot;</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-f</span> <span class="st">&quot;</span><span class="va">$INPUT_DIR</span><span class="st">&quot;</span>/<span class="pp">*</span>.in</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> elem <span class="kw">in</span> <span class="st">&quot;</span><span class="va">${ELEMENTS</span><span class="op">[@]</span><span class="va">}</span><span class="st">&quot;</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> <span class="kw">[[</span> <span class="st">&quot;</span><span class="va">$elem</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="st">&quot;Sn&quot;</span> <span class="kw">||</span> <span class="st">&quot;</span><span class="va">$elem</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="st">&quot;Pb&quot;</span> <span class="kw">]];</span> <span class="cf">then</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">BASIS</span><span class="op">=</span><span class="st">&quot;cc-pVDZ-PP&quot;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="va">BASIS</span><span class="op">=</span><span class="st">&quot;cc-pVDZ&quot;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">fi</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> field <span class="kw">in</span> <span class="st">&quot;</span><span class="va">${FIELDS</span><span class="op">[@]</span><span class="va">}</span><span class="st">&quot;</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="bu">[</span> <span class="st">&quot;</span><span class="va">$field</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="st">&quot;0.0&quot;</span> <span class="bu">]</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      <span class="va">filename</span><span class="op">=</span><span class="st">&quot;</span><span class="va">${INPUT_DIR}</span><span class="st">/</span><span class="va">${elem}</span><span class="st">_field_zero.in&quot;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span> <span class="op">&gt;</span> <span class="st">&quot;</span><span class="va">$filename</span><span class="st">&quot;</span> <span class="op">&lt;&lt; EOL</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="st">memory 2 GB</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="st">molecule </span><span class="va">${elem}</span><span class="st"> {</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="va">${elem}</span><span class="st"> 0 0 0</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="st">symmetry c1</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="st">set {</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="st">basis </span><span class="va">${BASIS}</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="st">scf_type df</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="st">e_convergence 1e-8</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="st">d_convergence 1e-8</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="st">E, wfn = energy('scf', return_wfn=True)</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="st">dipole = wfn.variable(&quot;SCF DIPOLE&quot;)</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="st">print(&quot;Dipole Moment:&quot;, dipole)</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="op">EOL</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>      <span class="va">filename</span><span class="op">=</span><span class="st">&quot;</span><span class="va">${INPUT_DIR}</span><span class="st">/</span><span class="va">${elem}</span><span class="st">field</span><span class="va">${field</span><span class="op">//</span><span class="ss">-</span><span class="op">/</span>minus<span class="va">}</span><span class="st">.in&quot;</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>      <span class="fu">cat</span> <span class="op">&gt;</span> <span class="st">&quot;</span><span class="va">$filename</span><span class="st">&quot;</span> <span class="op">&lt;&lt; EOL</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="st">memory 2 GB</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="st">molecule </span><span class="va">${elem}</span><span class="st"> {</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="va">${elem}</span><span class="st"> 0 0 0</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="st">symmetry c1</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="st">set {</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="st">basis </span><span class="va">${BASIS}</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="st">scf_type df</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="st">e_convergence 1e-8</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="st">d_convergence 1e-8</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="st">perturb_h True</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="st">perturb_with dipole</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="st">perturb_dipole [</span><span class="va">${field}</span><span class="st">, 0.0, 0.0]</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="st">}</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="st">E, wfn = energy('scf', return_wfn=True)</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="st">dipole = wfn.variable(&quot;SCF DIPOLE&quot;)</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="st">print(&quot;Dipole Moment:&quot;, dipole)</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="op">EOL</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">fi</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>  <span class="cf">done</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chmod</span> +x scripts/generate_inputs.sh</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./scripts/generate_inputs.sh</span></span></code></pre></div>
+<h3 id="calculation-execution">Calculation Execution</h3>
+<p>The Psi4 calculations were performed sequentially for each input file:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> file <span class="kw">in</span> inputs/<span class="pp">*</span>.in<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="va">base</span><span class="op">=</span><span class="va">$(</span><span class="fu">basename</span> <span class="st">&quot;</span><span class="va">$file</span><span class="st">&quot;</span> .in<span class="va">)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;Running </span><span class="va">$base</span><span class="st">...&quot;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="ex">psi4</span> <span class="at">-i</span> <span class="st">&quot;</span><span class="va">$file</span><span class="st">&quot;</span> <span class="at">-o</span> <span class="st">&quot;outputs/</span><span class="va">$base</span><span class="st">.out&quot;</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<h3 id="data-extraction">Data Extraction</h3>
+<p>Upon completion, the dipole moment values were extracted from the output files:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> file <span class="kw">in</span> outputs/<span class="pp">*</span>.out<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$file</span><span class="st">:&quot;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">grep</span> <span class="st">&quot;Dipole Moment&quot;</span> <span class="st">&quot;</span><span class="va">$file</span><span class="st">&quot;</span> <span class="at">-A</span> 1 <span class="kw">|</span> <span class="fu">tail</span> <span class="at">-n</span> 1</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<h2 id="results">Results</h2>
+<p>Our calculations yielded the following isotropic polarizability values:</p>
+<table>
+<caption>
+<strong>Table 1: Calculated Polarizabilities</strong>
+</caption>
+<thead>
+<tr>
+<th>
+Element
+</th>
+<th>
+Polarizability / a.u.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+C
+</td>
+<td>
+7.11
+</td>
+</tr>
+<tr>
+<td>
+Si
+</td>
+<td>
+20.17
+</td>
+</tr>
+<tr>
+<td>
+Ge
+</td>
+<td>
+20.19
+</td>
+</tr>
+<tr>
+<td>
+Sn
+</td>
+<td>
+N/A
+</td>
+</tr>
+<tr>
+<td>
+Pb
+</td>
+<td>
+N/A
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Figure 1: Polarizability Trend</strong></p>
+<div class="tikz-figure"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="339.229pt" height="245.685pt" viewBox="0 0 339.229 245.685">
+<defs>
+<clipPath id="n389658877cp0">
+<path d="M39.7163 209.501H335.04747V27.55993H39.7163Z"></path>
+</clipPath>
+<path id="n389658877g1-1" d="M4.5816-3.1872C4.5816-3.984 4.5318-4.7808 4.1832-5.51784C3.72504-6.474 2.90832-6.63336 2.49-6.63336C1.8924-6.63336 1.16532-6.3744 .75696-5.44812C.43824-4.76088 .38844-3.984 .38844-3.1872C.38844-2.4402 .42828-1.5438 .83664-.78684C1.26492 .01992 1.992 .21912 2.48004 .21912C3.01788 .21912 3.77484 .00996 4.21308-.93624C4.5318-1.62348 4.5816-2.40036 4.5816-3.1872ZM2.48004 0C2.0916 0 1.50396-.249 1.32468-1.20516C1.21512-1.80276 1.21512-2.71908 1.21512-3.30672C1.21512-3.94416 1.21512-4.60152 1.2948-5.13936C1.48404-6.3246 2.23104-6.41424 2.48004-6.41424C2.80872-6.41424 3.46608-6.23496 3.65532-5.24892C3.75492-4.69116 3.75492-3.9342 3.75492-3.30672C3.75492-2.55972 3.75492-1.88244 3.64536-1.245C3.49596-.2988 2.92824 0 2.48004 0Z"></path>
+<path id="n389658877g1-2" d="M2.92824-6.3744C2.92824-6.61344 2.92824-6.63336 2.69916-6.63336C2.08164-5.99592 1.20516-5.99592 .88644-5.99592V-5.68716C1.08564-5.68716 1.67328-5.68716 2.1912-5.94612V-.78684C2.1912-.42828 2.16132-.30876 1.26492-.30876H.9462V0C1.2948-.02988 2.16132-.02988 2.55972-.02988S3.82464-.02988 4.17324 0V-.30876H3.85452C2.95812-.30876 2.92824-.41832 2.92824-.78684V-6.3744Z"></path>
+<path id="n389658877g1-3" d="M1.26492-.76692L2.32068-1.7928C3.87444-3.16728 4.47204-3.70512 4.47204-4.70112C4.47204-5.83656 3.57564-6.63336 2.36052-6.63336C1.23504-6.63336 .498-5.71704 .498-4.8306C.498-4.27284 .996-4.27284 1.02588-4.27284C1.1952-4.27284 1.5438-4.39236 1.5438-4.80072C1.5438-5.05968 1.36452-5.31864 1.01592-5.31864C.93624-5.31864 .91632-5.31864 .88644-5.30868C1.11552-5.95608 1.65336-6.3246 2.23104-6.3246C3.1374-6.3246 3.56568-5.51784 3.56568-4.70112C3.56568-3.90432 3.06768-3.11748 2.51988-2.49996L.60756-.36852C.498-.25896 .498-.23904 .498 0H4.19316L4.47204-1.73304H4.22304C4.17324-1.43424 4.10352-.996 4.00392-.8466C3.9342-.76692 3.27684-.76692 3.05772-.76692H1.26492Z"></path>
+<path id="n389658877g1-4" d="M4.47204-2.00196C4.47204-3.1872 3.65532-4.1832 2.57964-4.1832C2.10156-4.1832 1.67328-4.02384 1.31472-3.67524V-5.61744C1.51392-5.55768 1.8426-5.48796 2.16132-5.48796C3.3864-5.48796 4.0836-6.39432 4.0836-6.5238C4.0836-6.58356 4.05372-6.63336 3.984-6.63336C3.97404-6.63336 3.95412-6.63336 3.90432-6.60348C3.70512-6.51384 3.21708-6.31464 2.54976-6.31464C2.15136-6.31464 1.6932-6.38436 1.22508-6.59352C1.1454-6.6234 1.12548-6.6234 1.10556-6.6234C1.00596-6.6234 1.00596-6.54372 1.00596-6.38436V-3.4362C1.00596-3.25692 1.00596-3.17724 1.1454-3.17724C1.21512-3.17724 1.23504-3.20712 1.27488-3.26688C1.38444-3.42624 1.75296-3.96408 2.55972-3.96408C3.07764-3.96408 3.32664-3.50592 3.40632-3.32664C3.56568-2.95812 3.5856-2.56968 3.5856-2.07168C3.5856-1.72308 3.5856-1.12548 3.34656-.70716C3.10752-.31872 2.739-.05976 2.28084-.05976C1.55376-.05976 .98604-.58764 .81672-1.17528C.8466-1.16532 .87648-1.15536 .98604-1.15536C1.31472-1.15536 1.48404-1.40436 1.48404-1.6434S1.31472-2.13144 .98604-2.13144C.8466-2.13144 .498-2.06172 .498-1.60356C.498-.747 1.18524 .21912 2.30076 .21912C3.45612 .21912 4.47204-.73704 4.47204-2.00196Z"></path>
+<path id="n389658877g2-28" d="M6.47036-.26312C6.47036-.51428 6.36272-.51428 6.19528-.51428C5.4418-.52624 5.4418-.7176 5.4418-.99268V-3.57604C5.4418-4.67636 4.56872-5.41788 2.88236-5.41788C2.2126-5.41788 .80132-5.35808 .80132-4.35344C.80132-3.85112 1.18404-3.63584 1.50696-3.63584C1.86576-3.63584 2.2126-3.887 2.2126-4.34148C2.2126-4.56872 2.12888-4.784 1.92556-4.91556C2.32024-5.0232 2.60728-5.0232 2.83452-5.0232C3.6478-5.0232 4.13816-4.56872 4.13816-3.588V-3.1096C2.24848-3.1096 .34684-2.58336 .34684-1.2558C.34684-.16744 1.7342 .07176 2.55944 .07176C3.48036 .07176 4.0664-.43056 4.3056-.9568C4.3056-.51428 4.3056 0 5.51356 0H6.12352C6.37468 0 6.47036 0 6.47036-.26312ZM4.13816-1.66244C4.13816-.5382 3.13352-.32292 2.7508-.32292C2.16476-.32292 1.6744-.7176 1.6744-1.26776C1.6744-2.35612 2.96608-2.72688 4.13816-2.78668V-1.66244Z"></path>
+<path id="n389658877g2-35" d="M7.00856-2.66708C7.00856-4.3056 5.88432-5.382 4.2458-5.382C3.54016-5.382 2.97804-5.15476 2.48768-4.77204V-8.30024L.4186-8.20456V-7.69028C1.16012-7.69028 1.24384-7.69028 1.24384-7.22384V0H1.74616C1.94948-.22724 2.1528-.45448 2.34416-.69368C2.95412-.0598 3.61192 .07176 4.09032 .07176C5.7408 .07176 7.00856-.93288 7.00856-2.66708ZM5.57336-2.67904C5.57336-2.14084 5.57336-1.45912 5.28632-1.0166C4.91556-.44252 4.35344-.32292 3.97072-.32292C3.15744-.32292 2.71492-.897 2.54748-1.16012V-4.19796C2.96608-4.77204 3.588-4.98732 4.09032-4.98732C5.57336-4.98732 5.57336-3.4684 5.57336-2.67904Z"></path>
+<path id="n389658877g2-49" d="M8.44376-3.2292H7.94144C7.69028-1.44716 7.24776-.51428 5.16672-.51428H3.30096V-3.97072H4.0066C5.15476-3.97072 5.27436-3.48036 5.27436-2.5714H5.77668V-5.88432H5.27436C5.27436-4.98732 5.15476-4.485 4.0066-4.485H3.30096V-7.63048H5.16672C6.9966-7.63048 7.39128-6.85308 7.57068-5.31024H8.073L7.72616-8.14476H.45448V-7.63048H1.72224V-.51428H.45448V0H7.92948L8.44376-3.2292Z"></path>
+<path id="n389658877g2-50" d="M5.75276-1.39932C5.75276-1.57872 5.57336-1.57872 5.5016-1.57872C5.31024-1.57872 5.29828-1.54284 5.22652-1.38736C4.91556-.60996 4.1262-.3588 3.55212-.3588C1.81792-.3588 1.80596-1.9734 1.80596-2.64316H5.40592C5.681-2.64316 5.75276-2.64316 5.75276-2.94216C5.75276-3.30096 5.66904-4.19796 5.11888-4.76008C4.61656-5.2624 3.9468-5.41788 3.25312-5.41788C1.38736-5.41788 .37076-4.19796 .37076-2.691C.37076-1.0166 1.60264 .07176 3.4086 .07176S5.75276-1.196 5.75276-1.39932ZM4.65244-2.99H1.80596C1.82988-3.48036 1.84184-3.9468 2.093-4.37736C2.32024-4.76008 2.73884-5.0232 3.25312-5.0232C4.53284-5.0232 4.64048-3.588 4.65244-2.99Z"></path>
+<path id="n389658877g2-55" d="M5.04712-7.37932C5.04712-7.86968 4.61656-8.372 3.7674-8.372C2.67904-8.372 1.35148-7.91752 1.35148-6.53016V-5.31024H.46644V-4.79596H1.35148V-.51428H.52624V0C.80132-.02392 1.69832-.02392 2.0332-.02392C2.38004-.02392 3.3488-.02392 3.63584 0V-.51428H2.59532V-4.79596H3.95876V-5.31024H2.53552V-6.54212C2.53552-7.78596 3.32488-7.97732 3.71956-7.97732C3.85112-7.97732 3.87504-7.96536 3.9468-7.94144C3.7674-7.82184 3.65976-7.61852 3.65976-7.36736C3.65976-6.88896 4.04248-6.67368 4.35344-6.67368C4.61656-6.67368 5.04712-6.85308 5.04712-7.37932Z"></path>
+<path id="n389658877g2-57" d="M6.3388 0V-.51428H5.17868V-1.87772H6.3388V-2.392H5.17868V-7.52284C5.17868-7.82184 5.16672-7.86968 4.86772-7.86968C4.65244-7.86968 4.62852-7.86968 4.485-7.69028L.37076-2.392V-1.87772H3.7674V-.51428H2.46376V0C2.8106-.02392 3.99464-.02392 4.4252-.02392C4.83184-.02392 6.01588-.02392 6.3388 0ZM3.87504-2.392H.92092L3.87504-6.19528V-2.392Z"></path>
+<path id="n389658877g2-58" d="M9.89092-2.7508V-3.26508C9.60388-3.24116 8.32416-3.24116 7.94144-3.24116L5.69296-3.26508V-2.7508H7.37932V-1.53088C7.37932-1.27972 7.37932-.94484 6.90092-.64584C6.66172-.49036 6.29096-.37076 5.78864-.37076C5.10692-.37076 3.92288-.5382 3.18136-1.41128C2.71492-1.94948 2.42788-2.67904 2.42788-4.11424C2.42788-5.34612 2.6312-6.18332 3.1694-6.8172C3.93484-7.7142 5.13084-7.8338 5.70492-7.8338C6.60192-7.8338 8.04908-7.33148 8.40788-5.22652C8.4318-5.11888 8.53944-5.11888 8.68296-5.11888C8.95804-5.11888 8.95804-5.1428 8.95804-5.42984V-8.03712C8.95804-8.3122 8.95804-8.34808 8.69492-8.34808L7.79792-7.48696C7.12816-8.06104 6.32684-8.34808 5.4418-8.34808C2.58336-8.34808 .74152-6.61388 .74152-4.10228C.74152-1.63852 2.52356 .14352 5.45376 .14352C6.25508 .14352 7.19992-.03588 7.69028-.66976C8.09692-.28704 8.77864 0 8.81452 0C8.95804 0 8.95804-.1196 8.95804-.31096V-2.7508H9.89092Z"></path>
+<path id="n389658877g2-66" d="M3.33684 0V-.51428H2.59532V-5.382L.56212-5.28632V-4.77204C1.26776-4.77204 1.35148-4.77204 1.35148-4.3056V-.51428H.52624V0C.80132-.02392 1.62656-.02392 1.94948-.02392C2.28436-.02392 3.0498-.02392 3.33684 0ZM2.73884-7.27168C2.73884-7.76204 2.3322-8.1328 1.87772-8.1328C1.38736-8.1328 1.00464-7.73812 1.00464-7.27168C1.00464-6.78132 1.41128-6.41056 1.86576-6.41056C2.35612-6.41056 2.73884-6.80524 2.73884-7.27168Z"></path>
+<path id="n389658877g2-72" d="M3.42056 0V-.51428H2.59532V-8.30024L.52624-8.20456V-7.69028C1.26776-7.69028 1.35148-7.69028 1.35148-7.22384V-.51428H.52624V0C.80132-.02392 1.65048-.02392 1.9734-.02392S3.14548-.02392 3.42056 0Z"></path>
+<path id="n389658877g2-75" d="M10.91948 0V-.51428H10.09424V-3.65976C10.09424-4.76008 9.6278-5.382 8.28828-5.382C7.08032-5.382 6.5182-4.56872 6.32684-4.186C6.13548-5.2026 5.3222-5.382 4.55676-5.382C3.4086-5.382 2.78668-4.64048 2.53552-4.0664H2.52356V-5.382L.50232-5.28632V-4.77204C1.24384-4.77204 1.32756-4.77204 1.32756-4.3056V-.51428H.50232V0C.7774-.02392 1.63852-.02392 1.9734-.02392S3.18136-.02392 3.45644 0V-.51428H2.6312V-3.06176C2.6312-4.3654 3.59996-4.98732 4.35344-4.98732C4.79596-4.98732 5.05908-4.7242 5.05908-3.79132V-.51428H4.23384V0C4.50892-.02392 5.37004-.02392 5.70492-.02392S6.91288-.02392 7.18796 0V-.51428H6.36272V-3.06176C6.36272-4.3654 7.33148-4.98732 8.08496-4.98732C8.52748-4.98732 8.7906-4.7242 8.7906-3.79132V-.51428H7.96536V0C8.24044-.02392 9.10156-.02392 9.43644-.02392S10.6444-.02392 10.91948 0Z"></path>
+<path id="n389658877g2-77" d="M7.176 0V-.51428H6.35076V-3.65976C6.35076-4.79596 5.8604-5.382 4.5448-5.382C3.68368-5.382 2.94216-4.9634 2.53552-4.0664H2.52356V-5.382L.50232-5.28632V-4.77204C1.24384-4.77204 1.32756-4.77204 1.32756-4.3056V-.51428H.50232V0C.7774-.02392 1.63852-.02392 1.9734-.02392S3.18136-.02392 3.45644 0V-.51428H2.6312V-3.06176C2.6312-4.35344 3.588-4.98732 4.35344-4.98732C4.79596-4.98732 5.04712-4.70028 5.04712-3.79132V-.51428H4.22188V0C4.49696-.02392 5.35808-.02392 5.69296-.02392S6.90092-.02392 7.176 0Z"></path>
+<path id="n389658877g2-81" d="M6.3388-2.61924C6.3388-4.23384 5.23848-5.41788 3.36076-5.41788C1.41128-5.41788 .37076-4.17404 .37076-2.61924C.37076-1.05248 1.47108 .07176 3.3488 .07176C5.29828 .07176 6.3388-1.11228 6.3388-2.61924ZM4.9036-2.73884C4.9036-1.74616 4.9036-.3588 3.36076-.3588C1.80596-.3588 1.80596-1.75812 1.80596-2.73884C1.80596-3.30096 1.80596-3.89896 2.0332-4.32952C2.29632-4.80792 2.83452-5.0232 3.3488-5.0232C4.03052-5.0232 4.46108-4.70028 4.6644-4.3654C4.9036-3.93484 4.9036-3.31292 4.9036-2.73884Z"></path>
+<path id="n389658877g2-82" d="M5.77668 0V-.51428H4.13816V-7.49892C4.13816-7.84576 4.11424-7.84576 3.73152-7.84576C2.84648-7.08032 1.51892-7.08032 1.2558-7.08032H1.02856V-6.56604H1.2558C1.6744-6.56604 2.30828-6.6378 2.78668-6.79328V-.51428H1.12424V0L3.44448-.02392L5.77668 0Z"></path>
+<path id="n389658877g2-83" d="M8.44376-5.89628C8.44376-7.18796 7.30756-8.20456 5.33416-8.20456H.45448V-7.69028H1.72224V-.51428H.45448V0C.80132-.02392 2.08104-.02392 2.5116-.02392S4.22188-.02392 4.56872 0V-.51428H3.30096V-3.6478H5.33416C7.33148-3.6478 8.44376-4.6644 8.44376-5.89628ZM6.7574-5.89628C6.7574-5.10692 6.7574-4.10228 4.9036-4.10228H3.24116V-7.69028H4.9036C6.7574-7.69028 6.7574-6.70956 6.7574-5.89628Z"></path>
+<path id="n389658877g2-84" d="M7.00856-2.66708C7.00856-4.31756 5.89628-5.382 4.28168-5.382C3.57604-5.382 2.96608-5.1428 2.48768-4.76008V-5.382L.4186-5.28632V-4.77204C1.16012-4.77204 1.24384-4.77204 1.24384-4.3056V1.80596H.4186V2.32024C.69368 2.29632 1.5548 2.29632 1.88968 2.29632S3.09764 2.29632 3.37272 2.32024V1.80596H2.54748V-.49036C2.84648-.22724 3.37272 .07176 4.09032 .07176C5.72884 .07176 7.00856-.92092 7.00856-2.66708ZM5.57336-2.66708C5.57336-.93288 4.71224-.32292 3.9468-.32292C3.43252-.32292 2.91824-.58604 2.54748-1.14816V-4.186C2.99-4.76008 3.62388-4.95144 4.09032-4.95144C4.86772-4.95144 5.57336-4.2458 5.57336-2.66708Z"></path>
+<path id="n389658877g2-96" d="M5.10692-4.43716C5.10692-5.04712 4.485-5.382 3.91092-5.382C2.96608-5.382 2.55944-4.55676 2.392-4.05444H2.38004V-5.382L.4186-5.28632V-4.77204C1.16012-4.77204 1.24384-4.77204 1.24384-4.3056V-.51428H.4186V0C.69368-.02392 1.59068-.02392 1.92556-.02392C2.2724-.02392 3.24116-.02392 3.5282 0V-.51428H2.48768V-2.691C2.48768-3.08568 2.5714-4.98732 3.97072-4.98732C3.80328-4.85576 3.71956-4.65244 3.71956-4.43716C3.71956-3.9468 4.11424-3.74348 4.41324-3.74348S5.10692-3.9468 5.10692-4.43716Z"></path>
+<path id="n389658877g2-98" d="M4.8438-1.66244C4.8438-2.23652 4.53284-2.6312 4.29364-2.84648C3.80328-3.25312 3.39664-3.32488 2.7508-3.44448C1.98536-3.57604 1.26776-3.7076 1.26776-4.28168C1.26776-5.05908 2.3322-5.05908 2.58336-5.05908C3.91092-5.05908 3.98268-4.22188 4.0066-3.92288C4.01856-3.7674 4.11424-3.7674 4.25776-3.7674C4.50892-3.7674 4.50892-3.80328 4.50892-4.07836V-5.10692C4.50892-5.33416 4.50892-5.41788 4.32952-5.41788C4.25776-5.41788 4.23384-5.41788 4.05444-5.31024C4.0066-5.27436 3.87504-5.19064 3.81524-5.15476C3.48036-5.34612 3.03784-5.41788 2.60728-5.41788C2.24848-5.41788 .45448-5.41788 .45448-3.86308C.45448-2.60728 1.93752-2.34416 2.30828-2.28436C2.6312-2.22456 3.02588-2.1528 3.07372-2.1528C3.55212-2.04516 4.03052-1.74616 4.03052-1.24384C4.03052-.32292 2.94216-.32292 2.691-.32292C2.08104-.32292 1.32756-.51428 .99268-1.6744C.92092-1.9136 .90896-1.92556 .70564-1.92556C.45448-1.92556 .45448-1.88968 .45448-1.6146V-.2392C.45448-.01196 .45448 .07176 .63388 .07176C.7176 .07176 .74152 .07176 .98072-.1196L1.29168-.34684C1.82988 .07176 2.47572 .07176 2.691 .07176C3.3488 .07176 4.8438-.07176 4.8438-1.66244Z"></path>
+<path id="n389658877g2-105" d="M4.47304-1.48304V-2.11692H3.97072V-1.495C3.97072-.70564 3.61192-.3588 3.24116-.3588C2.52356-.3588 2.52356-1.16012 2.52356-1.4352V-4.79596H4.2458V-5.31024H2.52356V-7.5946H2.02124C2.00928-6.41056 1.4352-5.22652 .25116-5.19064V-4.79596H1.21992V-1.47108C1.21992-.20332 2.20064 .07176 3.06176 .07176C3.9468 .07176 4.47304-.598 4.47304-1.48304Z"></path>
+<path id="n389658877g2-109" d="M7.176 0V-.51428C6.43448-.51428 6.35076-.51428 6.35076-.98072V-5.382L4.22188-5.28632V-4.77204C4.9634-4.77204 5.04712-4.77204 5.04712-4.3056V-1.96144C5.04712-1.05248 4.50892-.32292 3.57604-.32292C2.67904-.32292 2.6312-.62192 2.6312-1.27972V-5.382L.50232-5.28632V-4.77204C1.24384-4.77204 1.32756-4.77204 1.32756-4.3056V-1.47108C1.32756-.27508 2.12888 .07176 3.4086 .07176C3.69564 .07176 4.58068 .07176 5.09496-.897H5.10692V.07176L7.176 0Z"></path>
+<path id="n389658877g2-118" d="M6.80524-4.79596V-5.31024C6.3986-5.28632 6.35076-5.28632 5.8604-5.28632L4.83184-5.31024V-4.79596C4.83184-4.79596 5.40592-4.79596 5.40592-4.64048C5.40592-4.6046 5.37004-4.53284 5.35808-4.49696L3.95876-1.48304L2.42788-4.79596H3.08568V-5.31024C2.79864-5.28632 1.98536-5.28632 1.65048-5.28632C1.30364-5.28632 .598-5.28632 .28704-5.31024V-4.79596H1.05248L3.26508 0C3.20528 .14352 3.03784 .49036 2.97804 .63388C2.72688 1.17208 2.34416 1.99732 1.50696 1.99732C1.45912 1.99732 1.3156 1.99732 1.18404 1.92556C1.20796 1.9136 1.56676 1.77008 1.56676 1.3156C1.56676 .92092 1.27972 .66976 .92092 .66976C.55016 .66976 .26312 .92092 .26312 1.32756C.26312 1.88968 .78936 2.392 1.50696 2.392C2.48768 2.392 3.13352 1.50696 3.37272 .98072L5.9202-4.53284C5.99196-4.70028 6.0398-4.79596 6.80524-4.79596Z"></path>
+<path id="n389658877g2-120" d="M5.40592-2.36808H4.9036C4.80792-1.10032 4.5448-.43056 3.03784-.43056H1.94948L5.2624-4.85576C5.37004-4.98732 5.37004-5.01124 5.37004-5.083C5.37004-5.31024 5.25044-5.31024 5.0232-5.31024H.69368L.56212-3.25312H1.06444C1.1362-4.38932 1.39932-4.91556 2.72688-4.91556H3.80328L.4784-.4784C.37076-.34684 .37076-.32292 .37076-.2392C.37076 0 .4784 0 .7176 0H5.2026L5.40592-2.36808Z"></path>
+<path id="n389658877g0-28" d="M4.81068-.88644V-1.4442H4.56168V-.88644C4.56168-.30876 4.31268-.249 4.20312-.249C3.87444-.249 3.8346-.6972 3.8346-.747V-2.739C3.8346-3.15732 3.8346-3.54576 3.47604-3.91428C3.0876-4.30272 2.5896-4.46208 2.11152-4.46208C1.2948-4.46208 .60756-3.99396 .60756-3.3366C.60756-3.0378 .80676-2.86848 1.06572-2.86848C1.3446-2.86848 1.52388-3.06768 1.52388-3.32664C1.52388-3.44616 1.47408-3.77484 1.01592-3.7848C1.28484-4.1334 1.77288-4.24296 2.0916-4.24296C2.57964-4.24296 3.14736-3.85452 3.14736-2.96808V-2.59956C2.6394-2.56968 1.9422-2.5398 1.31472-2.241C.56772-1.90236 .31872-1.38444 .31872-.9462C.31872-.13944 1.28484 .10956 1.91232 .10956C2.56968 .10956 3.02784-.28884 3.21708-.75696C3.25692-.35856 3.52584 .05976 3.99396 .05976C4.20312 .05976 4.81068-.07968 4.81068-.88644ZM3.14736-1.3944C3.14736-.4482 2.43024-.10956 1.98204-.10956C1.494-.10956 1.08564-.45816 1.08564-.95616C1.08564-1.50396 1.50396-2.33064 3.14736-2.3904V-1.3944Z"></path>
+<path id="n389658877g0-35" d="M5.18916-2.15136C5.18916-3.41628 4.21308-4.40232 3.07764-4.40232C2.30076-4.40232 1.87248-3.9342 1.71312-3.75492V-6.91224L.27888-6.80268V-6.49392C.97608-6.49392 1.05576-6.4242 1.05576-5.93616V0H1.30476L1.66332-.61752C1.81272-.38844 2.23104 .10956 2.96808 .10956C4.15332 .10956 5.18916-.86652 5.18916-2.15136ZM4.36248-2.16132C4.36248-1.7928 4.34256-1.1952 4.05372-.747C3.84456-.43824 3.46608-.10956 2.92824-.10956C2.48004-.10956 2.12148-.3486 1.88244-.71712C1.743-.92628 1.743-.95616 1.743-1.13544V-3.1872C1.743-3.37644 1.743-3.3864 1.85256-3.54576C2.241-4.10352 2.7888-4.1832 3.02784-4.1832C3.47604-4.1832 3.8346-3.92424 4.07364-3.54576C4.3326-3.1374 4.36248-2.56968 4.36248-2.16132Z"></path>
+<path id="n389658877g0-42" d="M6.6234-2.32068C6.6234-2.42028 6.6234-2.49 6.49392-2.49C6.38436-2.49 6.38436-2.43024 6.3744-2.33064C6.29472-.90636 5.229-.08964 4.14336-.08964C3.5358-.08964 1.58364-.42828 1.58364-3.39636C1.58364-6.3744 3.52584-6.71304 4.1334-6.71304C5.21904-6.71304 6.10548-5.80668 6.30468-4.35252C6.3246-4.21308 6.3246-4.1832 6.46404-4.1832C6.6234-4.1832 6.6234-4.21308 6.6234-4.42224V-6.78276C6.6234-6.95208 6.6234-7.0218 6.51384-7.0218C6.474-7.0218 6.43416-7.0218 6.35448-6.90228L5.85648-6.16524C5.48796-6.5238 4.98-7.0218 4.02384-7.0218C2.16132-7.0218 .55776-5.43816 .55776-3.40632C.55776-1.3446 2.17128 .21912 4.02384 .21912C5.64732 .21912 6.6234-1.16532 6.6234-2.32068Z"></path>
+<path id="n389658877g0-49" d="M6.49392-2.56968H6.24492C5.99592-1.03584 5.76684-.30876 4.05372-.30876H2.72904C2.26092-.30876 2.241-.37848 2.241-.70716V-3.36648H3.1374C4.10352-3.36648 4.21308-3.04776 4.21308-2.20116H4.46208V-4.84056H4.21308C4.21308-3.984 4.10352-3.67524 3.1374-3.67524H2.241V-6.06564C2.241-6.39432 2.26092-6.46404 2.72904-6.46404H4.01388C5.53776-6.46404 5.80668-5.91624 5.96604-4.5318H6.21504L5.93616-6.7728H.32868V-6.46404H.56772C1.33464-6.46404 1.35456-6.35448 1.35456-5.99592V-.77688C1.35456-.41832 1.33464-.30876 .56772-.30876H.32868V0H6.0756L6.49392-2.56968Z"></path>
+<path id="n389658877g0-50" d="M4.1334-1.18524C4.1334-1.28484 4.05372-1.30476 4.00392-1.30476C3.91428-1.30476 3.89436-1.245 3.87444-1.16532C3.52584-.13944 2.62944-.13944 2.52984-.13944C2.03184-.13944 1.63344-.43824 1.40436-.80676C1.10556-1.28484 1.10556-1.9422 1.10556-2.30076H3.8844C4.10352-2.30076 4.1334-2.30076 4.1334-2.50992C4.1334-3.49596 3.59556-4.46208 2.35056-4.46208C1.1952-4.46208 .27888-3.4362 .27888-2.1912C.27888-.85656 1.32468 .10956 2.47008 .10956C3.6852 .10956 4.1334-.996 4.1334-1.18524ZM3.47604-2.50992H1.11552C1.17528-3.99396 2.01192-4.24296 2.35056-4.24296C3.37644-4.24296 3.47604-2.89836 3.47604-2.50992Z"></path>
+<path id="n389658877g0-58" d="M7.3206-2.41032V-2.71908L6.10548-2.6892C5.70708-2.6892 4.86048-2.6892 4.50192-2.71908V-2.41032H4.82064C5.71704-2.41032 5.74692-2.30076 5.74692-1.93224V-1.2948C5.74692-.17928 4.482-.08964 4.20312-.08964C3.55572-.08964 1.58364-.43824 1.58364-3.40632C1.58364-6.38436 3.54576-6.71304 4.14336-6.71304C5.20908-6.71304 6.11544-5.81664 6.31464-4.35252C6.33456-4.21308 6.33456-4.1832 6.474-4.1832C6.63336-4.1832 6.63336-4.21308 6.63336-4.42224V-6.78276C6.63336-6.95208 6.63336-7.0218 6.5238-7.0218C6.48396-7.0218 6.44412-7.0218 6.36444-6.90228L5.86644-6.16524C5.54772-6.48396 5.00988-7.0218 4.02384-7.0218C2.17128-7.0218 .55776-5.44812 .55776-3.40632S2.15136 .21912 4.04376 .21912C4.77084 .21912 5.56764-.03984 5.90628-.62748C6.03576-.40836 6.43416-.00996 6.54372-.00996C6.63336-.00996 6.63336-.08964 6.63336-.23904V-1.97208C6.63336-2.36052 6.6732-2.41032 7.3206-2.41032Z"></path>
+<path id="n389658877g0-66" d="M2.46012 0V-.30876C1.80276-.30876 1.76292-.35856 1.76292-.747V-4.40232L.36852-4.29276V-3.984C1.01592-3.984 1.10556-3.92424 1.10556-3.4362V-.75696C1.10556-.30876 .996-.30876 .32868-.30876V0L1.42428-.02988C1.77288-.02988 2.12148-.00996 2.46012 0ZM1.91232-6.01584C1.91232-6.28476 1.68324-6.54372 1.38444-6.54372C1.0458-6.54372 .8466-6.26484 .8466-6.01584C.8466-5.74692 1.07568-5.48796 1.37448-5.48796C1.71312-5.48796 1.91232-5.76684 1.91232-6.01584Z"></path>
+<path id="n389658877g0-72" d="M2.5398 0V-.30876C1.87248-.30876 1.76292-.30876 1.76292-.75696V-6.91224L.32868-6.80268V-6.49392C1.02588-6.49392 1.10556-6.4242 1.10556-5.93616V-.75696C1.10556-.30876 .996-.30876 .32868-.30876V0L1.43424-.02988L2.5398 0Z"></path>
+<path id="n389658877g0-75" d="M8.09748 0V-.30876C7.57956-.30876 7.33056-.30876 7.3206-.60756V-2.50992C7.3206-3.36648 7.3206-3.67524 7.01184-4.0338C6.8724-4.20312 6.54372-4.40232 5.96604-4.40232C5.1294-4.40232 4.69116-3.80472 4.52184-3.42624C4.3824-4.29276 3.64536-4.40232 3.19716-4.40232C2.47008-4.40232 2.00196-3.97404 1.72308-3.35652V-4.40232L.31872-4.29276V-3.984C1.01592-3.984 1.0956-3.91428 1.0956-3.42624V-.75696C1.0956-.30876 .98604-.30876 .31872-.30876V0L1.4442-.02988L2.55972 0V-.30876C1.8924-.30876 1.78284-.30876 1.78284-.75696V-2.5896C1.78284-3.62544 2.49-4.1832 3.12744-4.1832C3.75492-4.1832 3.86448-3.64536 3.86448-3.07764V-.75696C3.86448-.30876 3.75492-.30876 3.0876-.30876V0L4.21308-.02988L5.3286 0V-.30876C4.66128-.30876 4.55172-.30876 4.55172-.75696V-2.5896C4.55172-3.62544 5.25888-4.1832 5.89632-4.1832C6.5238-4.1832 6.63336-3.64536 6.63336-3.07764V-.75696C6.63336-.30876 6.5238-.30876 5.85648-.30876V0L6.98196-.02988L8.09748 0Z"></path>
+<path id="n389658877g0-77" d="M5.3286 0V-.30876C4.81068-.30876 4.56168-.30876 4.55172-.60756V-2.50992C4.55172-3.36648 4.55172-3.67524 4.24296-4.0338C4.10352-4.20312 3.77484-4.40232 3.19716-4.40232C2.47008-4.40232 2.00196-3.97404 1.72308-3.35652V-4.40232L.31872-4.29276V-3.984C1.01592-3.984 1.0956-3.91428 1.0956-3.42624V-.75696C1.0956-.30876 .98604-.30876 .31872-.30876V0L1.4442-.02988L2.55972 0V-.30876C1.8924-.30876 1.78284-.30876 1.78284-.75696V-2.5896C1.78284-3.62544 2.49-4.1832 3.12744-4.1832C3.75492-4.1832 3.86448-3.64536 3.86448-3.07764V-.75696C3.86448-.30876 3.75492-.30876 3.0876-.30876V0L4.21308-.02988L5.3286 0Z"></path>
+<path id="n389658877g0-81" d="M4.69116-2.13144C4.69116-3.40632 3.69516-4.46208 2.49-4.46208C1.245-4.46208 .27888-3.37644 .27888-2.13144C.27888-.8466 1.31472 .10956 2.48004 .10956C3.6852 .10956 4.69116-.86652 4.69116-2.13144ZM3.86448-2.21112C3.86448-1.85256 3.86448-1.31472 3.64536-.87648C3.42624-.42828 2.988-.13944 2.49-.13944C2.06172-.13944 1.62348-.3486 1.35456-.80676C1.10556-1.245 1.10556-1.85256 1.10556-2.21112C1.10556-2.59956 1.10556-3.1374 1.3446-3.57564C1.61352-4.0338 2.08164-4.24296 2.48004-4.24296C2.91828-4.24296 3.34656-4.02384 3.60552-3.59556S3.86448-2.5896 3.86448-2.21112Z"></path>
+<path id="n389658877g0-83" d="M6.21504-4.95012C6.21504-5.9262 5.229-6.80268 3.86448-6.80268H.3486V-6.49392H.58764C1.35456-6.49392 1.37448-6.38436 1.37448-6.0258V-.77688C1.37448-.41832 1.35456-.30876 .58764-.30876H.3486V0C.6972-.02988 1.43424-.02988 1.81272-.02988S2.9382-.02988 3.2868 0V-.30876H3.04776C2.28084-.30876 2.26092-.41832 2.26092-.77688V-3.14736H3.94416C5.13936-3.14736 6.21504-3.95412 6.21504-4.95012ZM5.18916-4.95012C5.18916-4.482 5.18916-3.40632 3.60552-3.40632H2.23104V-6.09552C2.23104-6.4242 2.25096-6.49392 2.71908-6.49392H3.60552C5.18916-6.49392 5.18916-5.43816 5.18916-4.95012Z"></path>
+<path id="n389658877g0-88" d="M1.91232-.52788C1.91232-.81672 1.67328-1.05576 1.38444-1.05576S.85656-.81672 .85656-.52788S1.0956 0 1.38444 0S1.91232-.23904 1.91232-.52788Z"></path>
+<path id="n389658877g0-96" d="M3.62544-3.79476C3.62544-4.11348 3.31668-4.40232 2.8884-4.40232C2.16132-4.40232 1.80276-3.735 1.66332-3.30672V-4.40232L.27888-4.29276V-3.984C.97608-3.984 1.05576-3.91428 1.05576-3.42624V-.75696C1.05576-.30876 .9462-.30876 .27888-.30876V0L1.41432-.02988C1.81272-.02988 2.28084-.02988 2.67924 0V-.30876H2.47008C1.73304-.30876 1.71312-.41832 1.71312-.77688V-2.31072C1.71312-3.29676 2.13144-4.1832 2.8884-4.1832C2.95812-4.1832 2.97804-4.1832 2.99796-4.17324C2.96808-4.16328 2.76888-4.04376 2.76888-3.7848C2.76888-3.50592 2.97804-3.35652 3.19716-3.35652C3.37644-3.35652 3.62544-3.47604 3.62544-3.79476Z"></path>
+<path id="n389658877g0-97" d="M4.97004-1.85256C4.97004-2.84856 4.31268-3.66528 3.47604-3.86448L2.20116-4.17324C1.58364-4.32264 1.1952-4.86048 1.1952-5.43816C1.1952-6.13536 1.73304-6.74292 2.50992-6.74292C4.17324-6.74292 4.39236-5.10948 4.45212-4.66128C4.46208-4.60152 4.46208-4.54176 4.57164-4.54176C4.70112-4.54176 4.70112-4.59156 4.70112-4.7808V-6.78276C4.70112-6.95208 4.70112-7.0218 4.59156-7.0218C4.52184-7.0218 4.51188-7.01184 4.44216-6.89232L4.09356-6.3246C3.79476-6.61344 3.3864-7.0218 2.49996-7.0218C1.3944-7.0218 .55776-6.14532 .55776-5.08956C.55776-4.26288 1.08564-3.5358 1.86252-3.26688C1.97208-3.22704 2.48004-3.10752 3.17724-2.9382C3.44616-2.86848 3.74496-2.79876 4.02384-2.43024C4.233-2.17128 4.3326-1.8426 4.3326-1.51392C4.3326-.80676 3.8346-.08964 2.99796-.08964C2.70912-.08964 1.95216-.13944 1.42428-.62748C.8466-1.16532 .81672-1.80276 .80676-2.16132C.7968-2.26092 .71712-2.26092 .68724-2.26092C.55776-2.26092 .55776-2.1912 .55776-2.01192V-.01992C.55776 .1494 .55776 .21912 .66732 .21912C.73704 .21912 .747 .1992 .81672 .08964C.81672 .08964 .8466 .0498 1.17528-.47808C1.48404-.13944 2.12148 .21912 3.00792 .21912C4.17324 .21912 4.97004-.75696 4.97004-1.85256Z"></path>
+<path id="n389658877g0-102" d="M4.41228-7.2708C4.41228-7.38036 4.32264-7.47 4.21308-7.47C4.07364-7.47 4.0338-7.3704 4.00392-7.2708L.60756 2.11152C.55776 2.241 .55776 2.2908 .55776 2.2908C.55776 2.40036 .6474 2.49 .75696 2.49C.8964 2.49 .93624 2.3904 .96612 2.2908L4.36248-7.09152C4.41228-7.221 4.41228-7.2708 4.41228-7.2708Z"></path>
+<path id="n389658877g0-105" d="M3.30672-1.23504V-1.80276H3.05772V-1.25496C3.05772-.51792 2.75892-.13944 2.3904-.13944C1.72308-.13944 1.72308-1.0458 1.72308-1.21512V-3.984H3.14736V-4.29276H1.72308V-6.1254H1.47408C1.46412-5.30868 1.16532-4.24296 .18924-4.20312V-3.984H1.03584V-1.23504C1.03584-.00996 1.96212 .10956 2.32068 .10956C3.02784 .10956 3.30672-.5976 3.30672-1.23504Z"></path>
+<path id="n389658877g0-109" d="M5.3286 0V-.30876C4.6314-.30876 4.55172-.37848 4.55172-.86652V-4.40232L3.0876-4.29276V-3.984C3.7848-3.984 3.86448-3.91428 3.86448-3.42624V-1.65336C3.86448-.78684 3.3864-.10956 2.65932-.10956C1.82268-.10956 1.78284-.57768 1.78284-1.0956V-4.40232L.31872-4.29276V-3.984C1.0956-3.984 1.0956-3.95412 1.0956-3.06768V-1.57368C1.0956-.7968 1.0956 .10956 2.60952 .10956C3.16728 .10956 3.60552-.16932 3.89436-.78684V.10956L5.3286 0Z"></path>
+<path id="n389658877g0-118" d="M5.05968-3.984V-4.29276C4.8306-4.27284 4.54176-4.26288 4.31268-4.26288L3.44616-4.29276V-3.984C3.75492-3.97404 3.91428-3.80472 3.91428-3.55572C3.91428-3.45612 3.90432-3.4362 3.85452-3.31668L2.84856-.86652L1.743-3.54576C1.70316-3.64536 1.68324-3.6852 1.68324-3.72504C1.68324-3.984 2.05176-3.984 2.241-3.984V-4.29276L1.15536-4.26288C.88644-4.26288 .48804-4.27284 .18924-4.29276V-3.984C.66732-3.984 .85656-3.984 .996-3.6354L2.49 0L2.241 .58764C2.02188 1.13544 1.743 1.82268 1.10556 1.82268C1.05576 1.82268 .82668 1.82268 .63744 1.6434C.9462 1.60356 1.02588 1.38444 1.02588 1.22508C1.02588 .96612 .83664 .80676 .60756 .80676C.40836 .80676 .18924 .93624 .18924 1.23504C.18924 1.68324 .60756 2.0418 1.10556 2.0418C1.73304 2.0418 2.1414 1.47408 2.38044 .90636L4.1334-3.34656C4.39236-3.97404 4.90032-3.984 5.05968-3.984Z"></path>
+<path id="n389658877g0-120" d="M3.99396-1.86252H3.74496C3.65532-.68724 3.44616-.249 2.2908-.249H1.11552L3.8844-3.99396C3.97404-4.10352 3.97404-4.12344 3.97404-4.16328C3.97404-4.29276 3.89436-4.29276 3.71508-4.29276H.52788L.41832-2.6892H.66732C.72708-3.70512 .91632-4.07364 2.01192-4.07364H3.14736L.36852-.31872C.27888-.20916 .27888-.18924 .27888-.13944C.27888 0 .3486 0 .53784 0H3.82464L3.99396-1.86252Z"></path>
+</defs>
+<g id="n389658877page1">
+<path d="M81.906 209.501V27.55993M187.38188 209.501V27.55993M292.85777 209.501V27.55993" stroke="#d9d9d9" fill="none" stroke-width=".09962" stroke-miterlimit="10"></path>
+<path d="M39.7163 209.501H335.04747M39.7163 173.11279H335.04747M39.7163 136.72457H335.04747M39.7163 100.33636H335.04747M39.7163 63.94814H335.04747M39.7163 27.55993H335.04747" stroke="#d9d9d9" fill="none" stroke-width=".09962" stroke-miterlimit="10"></path>
+<path d="M81.906 213.75292V209.501M187.38188 213.75292V209.501M292.85777 213.75292V209.501" stroke="#808080" fill="none" stroke-width=".19925" stroke-miterlimit="10"></path>
+<path d="M37.59002 209.501H41.8426M37.59002 173.11279H41.8426M37.59002 136.72457H41.8426M37.59002 100.33636H41.8426M37.59002 63.94814H41.8426M37.59002 27.55993H41.8426" stroke="#808080" fill="none" stroke-width=".19925" stroke-miterlimit="10"></path>
+<path d="M39.7163 209.501H333.05494" stroke="#000" fill="none" stroke-width=".3985" stroke-miterlimit="10"></path>
+<path d="M335.04746 209.501L331.85943 207.90699L333.05494 209.501L331.85943 211.09501"></path>
+<path d="M39.7163 209.501V29.55245" stroke="#000" fill="none" stroke-width=".3985" stroke-miterlimit="10"></path>
+<path d="M39.716299 27.55994L38.122289 30.74797L39.716299 29.55246L41.310309 30.74797"></path>
+<g transform="matrix(.999735 0 0 .999735 0 245.685)">
+<use x="78.288249" y="-21.383332" xlink:href="#n389658877g0-42"></use>
+<use x="183.177447" y="-21.383332" xlink:href="#n389658877g0-97"></use>
+<use x="188.715209" y="-21.383332" xlink:href="#n389658877g0-66"></use>
+<use x="286.657019" y="-21.383332" xlink:href="#n389658877g0-58"></use>
+<use x="294.475636" y="-21.383332" xlink:href="#n389658877g0-50"></use>
+</g>
+<g transform="matrix(.999735 0 0 .999735 -.000004 245.68502)">
+<use x="29.081292" y="-32.965262" xlink:href="#n389658877g1-1"></use>
+</g>
+<g transform="matrix(.999735 0 0 .999735 -.000004 245.685)">
+<use x="29.081292" y="-69.34362" xlink:href="#n389658877g1-4"></use>
+</g>
+<g transform="matrix(.999735 0 0 .999735 -.000002 245.685)">
+<use x="24.101612" y="-105.720978" xlink:href="#n389658877g1-2"></use>
+<use x="29.081612" y="-105.720978" xlink:href="#n389658877g1-1"></use>
+<use x="24.101612" y="-142.099335" xlink:href="#n389658877g1-2"></use>
+<use x="29.081612" y="-142.099335" xlink:href="#n389658877g1-4"></use>
+<use x="24.101612" y="-178.477693" xlink:href="#n389658877g1-3"></use>
+<use x="29.081612" y="-178.477693" xlink:href="#n389658877g1-1"></use>
+</g>
+<g transform="matrix(.999735 0 0 .999735 -.000002 245.68502)">
+<use x="24.101612" y="-214.85505" xlink:href="#n389658877g1-3"></use>
+<use x="29.081612" y="-214.85505" xlink:href="#n389658877g1-4"></use>
+</g>
+<g clip-path="url(#n389658877cp0)">
+<path d="M74.81931 209.501H88.992701V157.75724H74.81931ZM180.29513 209.501H194.46852V62.71175H180.29513ZM285.77098 209.501H299.94436V62.5662H285.77098Z" fill="#bfbfbf"></path>
+<path d="M74.81931 209.501H88.992701V157.75724H74.81931ZM180.29513 209.501H194.46852V62.71175H180.29513ZM285.77098 209.501H299.94436V62.5662H285.77098Z" stroke="#000" fill="none" stroke-width=".3985" stroke-miterlimit="10"></path>
+</g>
+<g transform="matrix(.999735 0 0 .999735 0 245.685)">
+<use x="169.418094" y="-7.413035" xlink:href="#n389658877g0-49"></use>
+<use x="176.200856" y="-7.413035" xlink:href="#n389658877g0-72"></use>
+<use x="178.969732" y="-7.413035" xlink:href="#n389658877g0-50"></use>
+<use x="183.39197" y="-7.413035" xlink:href="#n389658877g0-75"></use>
+<use x="191.688651" y="-7.413035" xlink:href="#n389658877g0-50"></use>
+<use x="196.110889" y="-7.413035" xlink:href="#n389658877g0-77"></use>
+<use x="201.369765" y="-7.413035" xlink:href="#n389658877g0-105"></use>
+</g>
+<g transform="matrix(0 -.999735 .999735 0 99.082 176.15901)">
+<use x="14.774084" y="-84.28166" xlink:href="#n389658877g0-83"></use>
+<use x="21.277964" y="-84.28166" xlink:href="#n389658877g0-81"></use>
+<use x="26.257964" y="-84.28166" xlink:href="#n389658877g0-72"></use>
+<use x="29.026845" y="-84.28166" xlink:href="#n389658877g0-28"></use>
+<use x="34.006845" y="-84.28166" xlink:href="#n389658877g0-96"></use>
+<use x="37.911161" y="-84.28166" xlink:href="#n389658877g0-66"></use>
+<use x="40.680045" y="-84.28166" xlink:href="#n389658877g0-120"></use>
+<use x="45.102285" y="-84.28166" xlink:href="#n389658877g0-28"></use>
+<use x="50.082285" y="-84.28166" xlink:href="#n389658877g0-35"></use>
+<use x="55.620047" y="-84.28166" xlink:href="#n389658877g0-66"></use>
+<use x="58.388928" y="-84.28166" xlink:href="#n389658877g0-72"></use>
+<use x="61.157809" y="-84.28166" xlink:href="#n389658877g0-66"></use>
+<use x="63.926691" y="-84.28166" xlink:href="#n389658877g0-105"></use>
+<use x="67.522252" y="-84.28166" xlink:href="#n389658877g0-118"></use>
+<use x="76.097809" y="-84.28166" xlink:href="#n389658877g0-102"></use>
+<use x="84.39449" y="-84.28166" xlink:href="#n389658877g0-28"></use>
+<use x="89.374499" y="-84.28166" xlink:href="#n389658877g0-88"></use>
+<use x="92.143376" y="-84.28166" xlink:href="#n389658877g0-109"></use>
+<use x="97.681139" y="-84.28166" xlink:href="#n389658877g0-88"></use>
+</g>
+<g transform="matrix(1.000404 0 0 1.000404 0 245.68502)">
+<use x="81.448893" y="-230.103927" xlink:href="#n389658877g2-83"></use>
+<use x="90.275375" y="-230.103927" xlink:href="#n389658877g2-81"></use>
+<use x="97.008847" y="-230.103927" xlink:href="#n389658877g2-72"></use>
+<use x="100.752328" y="-230.103927" xlink:href="#n389658877g2-28"></use>
+<use x="107.294447" y="-230.103927" xlink:href="#n389658877g2-96"></use>
+<use x="112.796042" y="-230.103927" xlink:href="#n389658877g2-66"></use>
+<use x="116.539522" y="-230.103927" xlink:href="#n389658877g2-120"></use>
+<use x="122.519519" y="-230.103927" xlink:href="#n389658877g2-28"></use>
+<use x="129.061641" y="-230.103927" xlink:href="#n389658877g2-35"></use>
+<use x="136.53664" y="-230.103927" xlink:href="#n389658877g2-66"></use>
+<use x="140.280132" y="-230.103927" xlink:href="#n389658877g2-72"></use>
+<use x="144.023623" y="-230.103927" xlink:href="#n389658877g2-66"></use>
+<use x="147.767105" y="-230.103927" xlink:href="#n389658877g2-105"></use>
+<use x="152.634821" y="-230.103927" xlink:href="#n389658877g2-118"></use>
+<use x="164.224051" y="-230.103927" xlink:href="#n389658877g2-81"></use>
+<use x="170.957531" y="-230.103927" xlink:href="#n389658877g2-55"></use>
+<use x="179.556773" y="-230.103927" xlink:href="#n389658877g2-58"></use>
+<use x="190.129413" y="-230.103927" xlink:href="#n389658877g2-96"></use>
+<use x="195.631005" y="-230.103927" xlink:href="#n389658877g2-81"></use>
+<use x="202.364484" y="-230.103927" xlink:href="#n389658877g2-109"></use>
+<use x="209.839493" y="-230.103927" xlink:href="#n389658877g2-84"></use>
+<use x="221.799493" y="-230.103927" xlink:href="#n389658877g2-82"></use>
+<use x="228.532972" y="-230.103927" xlink:href="#n389658877g2-57"></use>
+<use x="239.751443" y="-230.103927" xlink:href="#n389658877g2-49"></use>
+<use x="248.577927" y="-230.103927" xlink:href="#n389658877g2-72"></use>
+<use x="252.321419" y="-230.103927" xlink:href="#n389658877g2-50"></use>
+<use x="258.456877" y="-230.103927" xlink:href="#n389658877g2-75"></use>
+<use x="269.675387" y="-230.103927" xlink:href="#n389658877g2-50"></use>
+<use x="275.810855" y="-230.103927" xlink:href="#n389658877g2-77"></use>
+<use x="282.915104" y="-230.103927" xlink:href="#n389658877g2-105"></use>
+<use x="288.15357" y="-230.103927" xlink:href="#n389658877g2-98"></use>
+</g>
+</g>
+</svg></div>
+<h2 id="discussion">Discussion</h2>
+<p>The calculated polarizabilities for carbon (7.11 a.u.), silicon (20.17 a.u.), and germanium (20.19 a.u.) reveal a clear pattern that aligns with theoretical expectations. The marked increase in polarizability from carbon to silicon reflects the substantial jump in atomic radius and the corresponding expansion of the electron cloud, which becomes more easily distorted by external electric fields. The nearly identical values for silicon and germanium, despite germanium’s larger atomic radius, suggest that other factors—potentially including electronic structure effects such as d-orbital participation and relativistic contributions—may be counterbalancing the expected increase in polarizability.</p>
+<p>It is worth noting that our calculated value for carbon (7.11 a.u.) is lower than literature values typically ranging from 11-12 a.u. This discrepancy can be attributed to our use of the cc-pVDZ basis set, which lacks the diffuse functions critical for accurately modeling the outer regions of the electron density that contribute significantly to polarizability.<span class="citation" data-cites="Shelton1992"><sup>5</sup></span> This observation underscores the importance of basis set selection in polarizability calculations and suggests that augmented basis sets (e.g., aug-cc-pVDZ) would likely yield improved results.</p>
+<p>A significant methodological limitation emerged for tin and lead, where our calculation attempts were unsuccessful due to issues with the cc-pVDZ-PP basis sets. Despite their theoretical availability in the Psi4 ecosystem, these basis sets could not be located by the Conda-distributed version of Psi4 1.7 used in this study.<span class="citation" data-cites="Parrish2017"><sup>1</sup></span> This finding highlights an important practical constraint in computational chemistry: the gap between theoretical capability and practical implementation in software packages.</p>
+<p>For heavier elements like tin and lead, relativistic effects become increasingly important, necessitating pseudopotentials or relativistic methods to achieve accurate results.<span class="citation" data-cites="Schwerdtfeger2002"><sup>2</sup></span> The absence of readily accessible pseudopotential basis sets in our Psi4 installation represents a common challenge in computational chemistry workflows that must be addressed through alternative approaches.</p>
+<p>The finite field method itself proved to be a robust approach for polarizability calculation, with the field strength of 0.002 a.u. providing a good balance between numerical stability (avoiding roundoff errors at very small fields) and linearity (avoiding higher-order effects at larger fields).<span class="citation" data-cites="Cohen1975"><sup>3</sup></span> This method’s simplicity and direct physical interpretation make it an attractive approach for polarizability studies, particularly when implemented within accessible computational platforms like Psi4.</p>
+<p>The directory structure and automated input generation scripts we developed successfully organized the workflow and allowed for efficient calculation across multiple elements and field strengths. This approach facilitated systematic investigation of trends and ensured reproducibility of results, demonstrating the value of structured computational workflows in quantum chemical research.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This study has successfully established a computational workflow for calculating atomic polarizabilities of Group 14 elements using the finite field method in Psi4. Our results confirm the expected trend of increasing polarizability down the group, with a significant jump from carbon to silicon, followed by a plateau between silicon and germanium. These findings align with theoretical expectations based on atomic size and electronic structure considerations.</p>
+<p>The inability to complete calculations for tin and lead due to basis set availability issues illuminates an important frontier in computational chemistry: the challenges associated with modeling heavier elements where relativistic effects become significant. This limitation sets a clear direction for future work. Implementation of custom basis sets and pseudopotentials within the Psi4 environment could extend these calculations to heavier elements. Exploration of alternative quantum chemistry software packages with more comprehensive basis set libraries for heavy elements might also prove fruitful. The application of augmented basis sets such as aug-cc-pVDZ would likely improve accuracy for the lighter elements already studied. Development of hybrid computational approaches incorporating relativistic corrections would address the fundamental challenges of accurately modeling heavier elements.<span class="citation" data-cites="Jensen2017 Karna1991"><sup>4,6</sup></span></p>
+<p>By documenting both the successes and limitations of our approach, this work contributes to the broader understanding of computational methodology in quantum chemistry and provides a foundation for future investigations into the electronic properties of Group 14 elements and beyond.</p>
+<h2 id="acknowledgments">Acknowledgments</h2>
+<p>We acknowledge the contributions of the Psi4 development team and the Conda-Forge community for providing and maintaining the open-source tools that made this research possible.</p>
+<h2 class="unnumbered" id="references">References</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-Parrish2017" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Parrish, R. M.; Burns, L. A.; Smith, D. G. A.; Simmonett, A. C.; DePrince, A. E.; Hohenstein, E. G.; Bozkaya, U.; Sokolov, A. Yu.; Di Remigio, R.; Richard, R. M.; Sherrill, C. D. Psi4 1.1: <span>An</span> Open-Source Electronic Structure Program Emphasizing Automation, Advanced Libraries, and Interoperability. <em>Journal of Chemical Theory and Computation</em> <strong>2017</strong>, <em>13</em> (7), 3185–3197. <a href="https://doi.org/10.1021/acs.jctc.7b00174">https://doi.org/10.1021/acs.jctc.7b00174</a>.</div>
+</div>
+<div id="ref-Schwerdtfeger2002" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">Schwerdtfeger, P. Atomic Static Dipole Polarizabilities. <em>Atoms, Molecules and Clusters in Electric Fields: Theoretical Approaches to the Calculation of Electric Polarizability</em> <strong>2002</strong>, 1–32.</div>
+</div>
+<div id="ref-Cohen1975" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Cohen, H. D.; Roothaan, C. C. J. Electric Dipole Polarizability of Atoms by the <span>Hartree</span>—<span>Fock</span> Method. <span>I</span>. <span>Theory</span> for Closed-Shell Systems. <em>The Journal of Chemical Physics</em> <strong>1965</strong>, <em>43</em> (10), S34–S39. <a href="https://doi.org/10.1063/1.1701512">https://doi.org/10.1063/1.1701512</a>.</div>
+</div>
+<div id="ref-Jensen2017" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Jensen, F. <em>Introduction to Computational Chemistry</em>, 3rd ed.; John Wiley &amp; Sons: Chichester, UK, 2017.</div>
+</div>
+<div id="ref-Shelton1992" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Shelton, D. P.; Rice, J. E. Measurements and Calculations of the Hyperpolarizabilities of Atoms and Small Molecules in the Gas Phase. <em>Chemical Reviews</em> <strong>1994</strong>, <em>94</em> (1), 3–29. <a href="https://doi.org/10.1021/cr00025a001">https://doi.org/10.1021/cr00025a001</a>.</div>
+</div>
+<div id="ref-Karna1991" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Karna, S. P.; Dupuis, M. Frequency Dependent Nonlinear Optical Properties of Molecules: <span>Formulation</span> and Implementation in the <span>HONDO</span> Program. <em>Journal of Computational Chemistry</em> <strong>1991</strong>, <em>12</em> (4), 487–504. <a href="https://doi.org/10.1002/jcc.540120409">https://doi.org/10.1002/jcc.540120409</a>.</div>
+</div>
+</div>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                    <a href="../colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>

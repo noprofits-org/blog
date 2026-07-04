@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>Quantum Tunneling Workflow for Hydrogen Peroxide - PES Scans, kappa Corrections, and Instanton Integration — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/theme-toggle.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="../">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">quantum chemistry, tunneling, kinetics, instanton, workflow, improved_tunnel</span>
+    </div>
+    
+
+    <h1 class="post-title">Quantum Tunneling Workflow for Hydrogen Peroxide - PES Scans, kappa Corrections, and Instanton Integration</h1>
+
+    <div class="post-meta">
+        <span>January 16, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <h2 id="abstract">Abstract</h2>
+<p>Quantum tunneling can dominate torsional isomerization in light-atom systems. This ACS-style note demonstrates an end-to-end workflow in the improved_tunnel codebase using hydrogen peroxide as a model system. The workflow couples a relaxed dihedral scan with semiclassical tunneling corrections (WKB, SCT, and Eckart) and prepares a ring-polymer instanton input for i-PI. The calculations shown here use the package’s mock quantum chemistry engine to generate illustrative data; the goal is reproducible method documentation and visualization, not benchmark energetics.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Tunneling remains a central motif in chemical kinetics, especially for light atoms and torsional rearrangements. Semiclassical approaches such as WKB and small-curvature tunneling approximate barrier transmission while preserving practical computational cost.[2] Analytical barriers (e.g., Eckart) provide a compact reference model for transmission functions.[1] For deep tunneling, path-integral approaches such as ring-polymer instantons provide a more rigorous treatment of quantum delocalization.[3] This post links these pieces into a single workflow and documents how to run it, plot results, and hand off an instanton path to i-PI.[4]</p>
+<h2 id="experimental-section">Experimental Section</h2>
+<h3 id="workflow-overview">Workflow overview</h3>
+<p>The calculations use the improved_tunnel workflow runner. A relaxed scan is carried out over the H-O-O-H dihedral, followed by tunneling corrections and Arrhenius-rate postprocessing. The results are then summarized with plots and tables, and an i-PI XML input is generated for instanton optimization.</p>
+<h3 id="potential-energy-scan">Potential energy scan</h3>
+<p>A relaxed scan was performed from 0 to 360 deg using a constrained dihedral. The mock engine provides a smooth, symmetric torsional barrier that is sufficient for workflow validation.</p>
+<h3 id="tunneling-corrections-and-energy-grid">Tunneling corrections and energy grid</h3>
+<p>We evaluate a transmission function P(E) on a fractional grid of the barrier height and compute the tunneling correction kappa(T) as</p>
+<p><span class="math display">\[
+\kappa(T) = \frac{1}{k_B T} \int_0^{E_{max}} P(E) \exp\left(-(E - V_b)/(k_B T)\right)\, dE + \exp\left(-(E_{max} - V_b)/(k_B T)\right)
+\]</span></p>
+<p>where V_b is the barrier height and the exponential tail accounts for energies beyond the computed grid. The grid uses 200 points, min_energy_ratio = 0.01, and max_energy_ratio = 1.05. The formula allows kappa &lt; 1 when above-barrier reflection reduces transmission.</p>
+<h3 id="instanton-input-i-pi">Instanton input (i-PI)</h3>
+<p>The workflow generates an i-PI XML input for a ring-polymer instanton calculation. The XML references an external driver that provides forces and energies.</p>
+<h3 id="example-configuration">Example configuration</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> improved_tunnel.core.config <span class="im">import</span> WorkflowConfig, TunnelingConfig, PESScanConfig, KineticsConfig</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> improved_tunnel.workflow.runner <span class="im">import</span> TunnelingWorkflow</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> improved_tunnel.molecule.structure <span class="im">import</span> Molecule</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>config <span class="op">=</span> WorkflowConfig(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    pes_scan<span class="op">=</span>PESScanConfig(scan_type<span class="op">=</span><span class="st">&quot;relaxed&quot;</span>, step_size<span class="op">=</span><span class="fl">10.0</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    tunneling<span class="op">=</span>TunnelingConfig(methods<span class="op">=</span>[<span class="st">&quot;WKB&quot;</span>, <span class="st">&quot;SCT&quot;</span>, <span class="st">&quot;Eckart&quot;</span>]),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    kinetics<span class="op">=</span>KineticsConfig(temp_min<span class="op">=</span><span class="fl">100.0</span>, temp_max<span class="op">=</span><span class="fl">500.0</span>, temp_step<span class="op">=</span><span class="fl">20.0</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    calculate_zpe<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>workflow <span class="op">=</span> TunnelingWorkflow(config, use_mock_engine<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>state <span class="op">=</span> workflow.run(Molecule.h2o2())</span></code></pre></div>
+<h3 id="i-pi-input-generation">i-PI input generation</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> improved_tunnel.instanton <span class="im">import</span> generate_instanton_input, IPIConfig</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> improved_tunnel.molecule.structure <span class="im">import</span> Molecule</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mol <span class="op">=</span> Molecule.h2o2()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>config <span class="op">=</span> IPIConfig(n_beads<span class="op">=</span><span class="dv">32</span>, temperature<span class="op">=</span><span class="fl">300.0</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>generate_instanton_input(mol, config<span class="op">=</span>config, output_file<span class="op">=</span><span class="st">&quot;ipi_h2o2.xml&quot;</span>)</span></code></pre></div>
+<h3 id="table-1-workflow-settings">Table 1: Workflow settings</h3>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>System</td>
+<td>H2O2 torsion, H-O-O-H dihedral</td>
+</tr>
+<tr>
+<td>PES scan</td>
+<td>Relaxed, 0-360 deg, 10 deg step</td>
+</tr>
+<tr>
+<td>Tunneling methods</td>
+<td>WKB, SCT, Eckart</td>
+</tr>
+<tr>
+<td>Energy grid</td>
+<td>200 points, 0.01-1.05 Vb</td>
+</tr>
+<tr>
+<td>Temperature grid</td>
+<td>100-500 K, 20 K step</td>
+</tr>
+<tr>
+<td>Prefactor</td>
+<td>1.0e13 s^-1</td>
+</tr>
+<tr>
+<td>QC engine</td>
+<td>Mock (illustrative)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="results-and-discussion">Results and Discussion</h2>
+<p>The relaxed scan yields a symmetric torsional barrier of approximately 2.87 kcal/mol (mock value). The barrier height sets the scale for the transmission grid and for Arrhenius rate calculations.</p>
+<figure>
+<img src="../images/h2o2_tunneling_pes.png" alt="H2O2 torsional PES">
+<figcaption>
+<strong>Figure 1.</strong> Relaxed torsional potential energy surface for H2O2 from the mock engine. Energies are shown relative to the minimum.
+</figcaption>
+</figure>
+<p>Transmission coefficients rise sharply near the barrier. In this mock dataset, WKB and SCT track closely, while the analytic Eckart transmission turns on more abruptly above the barrier.[1,2]</p>
+<figure>
+<img src="../images/h2o2_transmission_comparison.png" alt="Transmission comparison">
+<figcaption>
+<strong>Figure 2.</strong> Transmission coefficients vs normalized energy for WKB, SCT, and Eckart models.
+</figcaption>
+</figure>
+<p>Table 2 summarizes kappa and rate constants at 300 K. The semiclassical methods yield strong tunneling enhancement (kappa &gt;&gt; 1), whereas the Eckart model is near the classical limit in this configuration. These values are illustrative and depend on the mock PES.</p>
+<p><strong>Table 2.</strong> Rate constants and tunneling corrections at 300 K (mock data).</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>kappa(300 K)</th>
+<th>k_classical (s^-1)</th>
+<th>k_quantum (s^-1)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WKB</td>
+<td>24.85</td>
+<td>8.19e10</td>
+<td>2.04e12</td>
+</tr>
+<tr>
+<td>SCT</td>
+<td>24.85</td>
+<td>8.19e10</td>
+<td>2.04e12</td>
+</tr>
+<tr>
+<td>Eckart</td>
+<td>1.01</td>
+<td>8.19e10</td>
+<td>8.25e10</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The Arrhenius plot highlights the temperature dependence of kappa and the divergence between classical and quantum rates at low temperature.</p>
+<figure>
+<img src="../images/h2o2_arrhenius_wkb.png" alt="Arrhenius plot with tunneling correction">
+<figcaption>
+<strong>Figure 3.</strong> Arrhenius plot comparing classical and quantum-corrected rates (WKB) from the mock workflow.
+</figcaption>
+</figure>
+<p>The kappa curve is monotonic with temperature and remains sensitive to the depth of the energy grid; using max_energy_ratio &lt; 1 would underestimate kappa by omitting the above-barrier region.</p>
+<figure>
+<img src="../images/h2o2_kappa_vs_temperature.png" alt="Tunneling correction vs temperature">
+<figcaption>
+<strong>Figure 4.</strong> Temperature dependence of the tunneling correction kappa for three methods.
+</figcaption>
+</figure>
+<p>Finally, the i-PI input enables an instanton optimization that can refine the deep-tunneling rate. The schematic below shows a 32-bead ring polymer representing the instanton path at 300 K.[3,4]</p>
+<figure>
+<img src="../images/h2o2_ring_polymer.png" alt="Ring polymer schematic">
+<figcaption>
+<strong>Figure 5.</strong> Ring-polymer instanton schematic used for i-PI input (illustrative).
+</figcaption>
+</figure>
+<h2 id="practical-usage">Practical Usage</h2>
+<p>To reproduce the workflow and print rate constants:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> pip install <span class="at">-e</span> .</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/h2o2_tunneling.py</span></code></pre></div>
+<p>Use <code>--real</code> to call Psi4 instead of the mock engine:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> examples/h2o2_tunneling.py <span class="at">--real</span></span></code></pre></div>
+<p>The workflow returns structured dictionaries (angles, energies, transmissions, kappa values) that can be plotted with matplotlib. A minimal PES plot is shown below:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> improved_tunnel.core.constants <span class="im">import</span> HARTREE_TO_KCAL</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>angles <span class="op">=</span> np.array(state.pes_result[<span class="st">&quot;angles&quot;</span>])</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>energies <span class="op">=</span> np.array(state.pes_result[<span class="st">&quot;energies&quot;</span>])</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>rel_kcal <span class="op">=</span> (energies <span class="op">-</span> energies.<span class="bu">min</span>()) <span class="op">*</span> HARTREE_TO_KCAL</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.plot(angles, rel_kcal)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Dihedral angle (deg)&quot;</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Relative energy (kcal/mol)&quot;</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<h2 id="limitations-and-future-work">Limitations and Future Work</h2>
+<p>The mock engine does not reproduce ab initio energetics, so all numbers shown here should be treated as workflow demonstrations. For publishable results, the scan should be recomputed with Psi4 or ORCA and the instanton optimization should be converged with an external driver. A natural next step is to compare semiclassical kappa(T) against a full ring-polymer instanton rate for the same PES.</p>
+<h2 id="authorship-and-provenance">Authorship and Provenance</h2>
+<p>This post, the computational setup, and all figures were generated by an AI system using the improved_tunnel repository. The intent is transparency and reproducible workflow documentation rather than reporting new experimental measurements.</p>
+<h2 id="references">References</h2>
+<ol type="1">
+<li>Eckart, C. The Penetration of a Potential Barrier by Electrons. Phys. Rev. 1930, 35, 1303-1309. DOI: 10.1103/PhysRev.35.1303.</li>
+<li>Kastner, J. Theory and Simulation of Atom Tunneling in Chemical Reactions. Wiley Interdiscip. Rev. Comput. Mol. Sci. 2014, 4, 158-168. DOI: 10.1002/wcms.1156.</li>
+<li>Richardson, J. O.; Althorpe, S. C. Ring-Polymer Instanton Method for Calculating Tunneling Splittings. J. Chem. Phys. 2009, 131, 214106. DOI: 10.1063/1.3267315.</li>
+<li>Ceriotti, M.; Cuny, J.; Parrinello, M.; Manolopoulos, D. E. i-PI: A Python Interface for Ab Initio Path Integral Molecular Dynamics Simulations. Comput. Phys. Commun. 2014, 185, 1019-1026. DOI: 10.1016/j.cpc.2013.10.027.</li>
+</ol>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                    <a href="../colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>

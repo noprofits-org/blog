@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>What are cloud functions? A practical tour with real code — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/theme-toggle.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="../">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">cloud functions, serverless, javascript, python, go, aws lambda, google cloud, infrastructure</span>
+    </div>
+    
+
+    <h1 class="post-title">What are cloud functions? A practical tour with real code</h1>
+
+    <div class="post-meta">
+        <span class="byline">Peter Johnston</span> · <span>June 20, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <p>Every few months someone asks me what I mean when I say a piece of a system “runs
+on a cloud function.” The phrase has become background noise — <em>serverless</em>,
+<em>Lambda</em>, <em>functions-as-a-service</em> — and the noise hides a genuinely simple idea.
+This post is the explanation I wish I could just hand people: what a cloud function
+<em>is</em>, what problem it solves, and three real examples with the code spelled out
+line by line.</p>
+<h2 id="the-idea-stripped-down">The idea, stripped down</h2>
+<p>Normally, when you want code to run on the internet, you rent a computer. You
+configure an operating system, install a runtime, start a long-running process
+that listens on a port, and then you keep that process alive forever — paying for
+the machine whether anyone uses it at 3pm or 3am.</p>
+<p>A <strong>cloud function</strong> inverts that. You hand the provider a single function — a
+chunk of code with one entry point — and you say <em>“run this whenever X happens.”</em>
+You never provision a server, never start a process, never think about the
+operating system. The provider:</p>
+<ul>
+<li>keeps your code dormant and <strong>costs you nothing while it’s idle</strong>,</li>
+<li><strong>spins up an instance on demand</strong> the instant a trigger fires,</li>
+<li>runs your function, hands back the result, and</li>
+<li><strong>tears the instance down</strong> (or keeps it warm briefly for the next call).</li>
+</ul>
+<p>That’s the whole model. It’s often called <strong>serverless</strong> — not because there are
+no servers, but because <em>you</em> never see or manage one. It’s also called
+<strong>Functions-as-a-Service (FaaS)</strong>. The big implementations are <strong>AWS Lambda</strong>,
+<strong>Google Cloud Functions</strong> (and Cloud Run functions), <strong>Azure Functions</strong>, and
+<strong>Cloudflare Workers</strong>.</p>
+<h3 id="what-makes-something-a-good-fit">What makes something a good fit</h3>
+<p>Cloud functions shine when work is <strong>event-driven</strong> and <strong>bursty</strong>:</p>
+<ul>
+<li>A file lands in storage → resize it.</li>
+<li>A timer fires every morning → email a report.</li>
+<li>A webhook arrives from Stripe or GitHub → react to it.</li>
+<li>An HTTP request hits an endpoint → return some JSON.</li>
+</ul>
+<p>They’re a poor fit for the opposite shape: long-running jobs, work that needs to
+hold state in memory between requests, or constant high-throughput traffic where a
+always-on server is cheaper. Two constraints flow from the model and are worth
+memorizing:</p>
+<ol type="1">
+<li><strong>They’re stateless.</strong> Each invocation may run on a fresh instance. Anything you
+want to keep — uploaded files, counters, sessions — lives in an external store
+(a database, object storage, a cache), never in a local variable between calls.</li>
+<li><strong>They’re short-lived.</strong> Providers cap execution time (commonly a few minutes).
+A function is a sprinter, not a marathon runner.</li>
+</ol>
+<p>There’s also one famous wrinkle: the <strong>cold start</strong>. If your function hasn’t run
+recently, the provider has to load the runtime and your code before executing —
+adding anywhere from tens of milliseconds to a couple of seconds. Stay “warm” by
+being called often, and that overhead disappears.</p>
+<p>With the model in place, let’s look at real functions. I’ll use three languages so
+you can see that the <em>shape</em> is the same everywhere; only the syntax changes.</p>
+<h2 id="example-1-resize-an-image-when-its-uploaded-python-google-cloud-functions">Example 1 — Resize an image when it’s uploaded (Python, Google Cloud Functions)</h2>
+<p>This is the canonical event-driven example. A user uploads a photo to a storage
+bucket; we want a thumbnail generated automatically. There’s no HTTP request and no
+user waiting — the <strong>upload event itself</strong> is the trigger.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># main.py — deployed to Google Cloud Functions (2nd gen), Python runtime.</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Trigger: a &quot;finalize&quot; event on a Cloud Storage bucket (i.e. an object was created).</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> io</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image          <span class="co"># Pillow: the standard Python imaging library</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> google.cloud <span class="im">import</span> storage</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Reuse a single storage client across warm invocations instead of</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># reconnecting every time. This is the stateless rule done right:</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># the client is a connection helper, not application state.</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>storage_client <span class="op">=</span> storage.Client()</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>THUMBNAIL_SIZE <span class="op">=</span> (<span class="dv">200</span>, <span class="dv">200</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>THUMBNAIL_BUCKET <span class="op">=</span> <span class="st">&quot;my-app-thumbnails&quot;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_thumbnail(cloud_event):</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Triggered whenever a new object is finalized in the watched bucket.&quot;&quot;&quot;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># The event payload tells us *which* file triggered us. We never</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># receive the file's bytes directly — only its coordinates.</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    data <span class="op">=</span> cloud_event.data</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    bucket_name <span class="op">=</span> data[<span class="st">&quot;bucket&quot;</span>]</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    file_name <span class="op">=</span> data[<span class="st">&quot;name&quot;</span>]</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Guard against infinite loops: if we wrote a thumbnail back into a</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># watched bucket, that write would trigger us again. Skip what we made.</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> file_name.startswith(<span class="st">&quot;thumb_&quot;</span>):</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Skipping already-thumbnailed file: </span><span class="sc">{</span>file_name<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Download the original image's bytes from the source bucket.</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    source_bucket <span class="op">=</span> storage_client.bucket(bucket_name)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    blob <span class="op">=</span> source_bucket.blob(file_name)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    image_bytes <span class="op">=</span> blob.download_as_bytes()</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Resize it in memory. No temp files on disk — the instance is</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="co">#    ephemeral and the local filesystem is throwaway.</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    image <span class="op">=</span> Image.<span class="bu">open</span>(io.BytesIO(image_bytes))</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    image.thumbnail(THUMBNAIL_SIZE)        <span class="co"># preserves aspect ratio</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    <span class="bu">buffer</span> <span class="op">=</span> io.BytesIO()</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    image.save(<span class="bu">buffer</span>, <span class="bu">format</span><span class="op">=</span><span class="st">&quot;JPEG&quot;</span>)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    <span class="bu">buffer</span>.seek(<span class="dv">0</span>)                          <span class="co"># rewind so we can read from the start</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 3. Upload the result to a *different* bucket (avoids the loop above).</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    dest_bucket <span class="op">=</span> storage_client.bucket(THUMBNAIL_BUCKET)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    dest_blob <span class="op">=</span> dest_bucket.blob(<span class="ss">f&quot;thumb_</span><span class="sc">{</span>file_name<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    dest_blob.upload_from_file(<span class="bu">buffer</span>, content_type<span class="op">=</span><span class="st">&quot;image/jpeg&quot;</span>)</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Wrote thumb_</span><span class="sc">{</span>file_name<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>image<span class="sc">.</span>size<span class="sc">}</span><span class="ss">) to </span><span class="sc">{</span>THUMBNAIL_BUCKET<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p><strong>What this code does, step by step.</strong> The function <code>make_thumbnail</code> is the entry
+point — the single piece of code the cloud provider invokes. It receives a
+<code>cloud_event</code> object describing <em>what happened</em>, not the file itself: we get the
+bucket name and file name and have to fetch the bytes ourselves. We download the
+original, use Pillow’s <code>thumbnail()</code> to shrink it (which keeps the aspect ratio),
+and write the result to a separate thumbnails bucket.</p>
+<p>Two details capture the cloud-function mindset:</p>
+<ul>
+<li><strong>The loop guard.</strong> Writing a file into a bucket can itself fire a “new object”
+event. If we wrote thumbnails back into the <em>source</em> bucket, the function would
+trigger itself forever. We avoid it by writing to a different bucket and by
+skipping names that start with <code>thumb_</code>. This kind of self-triggering bug is a
+rite of passage in event-driven systems.</li>
+<li><strong>Everything in memory.</strong> We never touch local disk. The instance might be
+destroyed the moment we return, so we treat its filesystem as scratch space at
+best and do the whole transformation through <code>io.BytesIO</code> buffers.</li>
+</ul>
+<p>You’d deploy it with a one-liner that wires the bucket event to the function:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">gcloud</span> functions deploy make_thumbnail <span class="dt">\</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--gen2</span> <span class="at">--runtime</span><span class="op">=</span>python312 <span class="at">--region</span><span class="op">=</span>us-central1 <span class="dt">\</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--trigger-event-filters</span><span class="op">=</span><span class="st">&quot;type=google.cloud.storage.object.v1.finalized&quot;</span> <span class="dt">\</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--trigger-event-filters</span><span class="op">=</span><span class="st">&quot;bucket=my-app-uploads&quot;</span> <span class="dt">\</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--entry-point</span><span class="op">=</span>make_thumbnail</span></code></pre></div>
+<p>Notice what’s absent: no server, no Dockerfile, no port, no process manager. You
+name the trigger and the entry point, and you’re done.</p>
+<h2 id="example-2-a-scheduled-daily-report-javascript-aws-lambda">Example 2 — A scheduled daily report (JavaScript, AWS Lambda)</h2>
+<p>Not every trigger is an event from another service. A very common one is <strong>time</strong>:
+“run this every morning at 8am.” Here a scheduler (AWS EventBridge) invokes a
+Node.js Lambda that tallies yesterday’s orders and emails a summary.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// index.mjs — AWS Lambda, Node.js runtime.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">// Trigger: an EventBridge schedule rule, e.g. cron(0 8 * * ? *) = 08:00 UTC daily.</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { DynamoDBClient } <span class="im">from</span> <span class="st">&quot;@aws-sdk/client-dynamodb&quot;</span><span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { QueryCommand } <span class="im">from</span> <span class="st">&quot;@aws-sdk/lib-dynamodb&quot;</span><span class="op">;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { SESClient<span class="op">,</span> SendEmailCommand } <span class="im">from</span> <span class="st">&quot;@aws-sdk/client-ses&quot;</span><span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">// Clients declared OUTSIDE the handler. On a warm start the module is</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">// already loaded, so these are reused — a cheap, important optimization.</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> db <span class="op">=</span> <span class="kw">new</span> <span class="fu">DynamoDBClient</span>({})<span class="op">;</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> ses <span class="op">=</span> <span class="kw">new</span> <span class="fu">SESClient</span>({})<span class="op">;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">// The handler is the entry point AWS calls. `event` carries trigger</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">// metadata; for a scheduled rule we mostly ignore it.</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> handler <span class="op">=</span> <span class="kw">async</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 1. Figure out &quot;yesterday&quot; as an ISO date string (YYYY-MM-DD).</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> yesterday <span class="op">=</span> <span class="kw">new</span> <span class="bu">Date</span>(<span class="bu">Date</span><span class="op">.</span><span class="fu">now</span>() <span class="op">-</span> <span class="dv">24</span> <span class="op">*</span> <span class="dv">60</span> <span class="op">*</span> <span class="dv">60</span> <span class="op">*</span> <span class="dv">1000</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">toISOString</span>()</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">slice</span>(<span class="dv">0</span><span class="op">,</span> <span class="dv">10</span>)<span class="op">;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 2. Query the orders table for everything created yesterday.</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> result <span class="op">=</span> <span class="cf">await</span> db<span class="op">.</span><span class="fu">send</span>(</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">new</span> <span class="fu">QueryCommand</span>({</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>      <span class="dt">TableName</span><span class="op">:</span> <span class="st">&quot;Orders&quot;</span><span class="op">,</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>      <span class="dt">IndexName</span><span class="op">:</span> <span class="st">&quot;byDate&quot;</span><span class="op">,</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>      <span class="dt">KeyConditionExpression</span><span class="op">:</span> <span class="st">&quot;orderDate = :d&quot;</span><span class="op">,</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>      <span class="dt">ExpressionAttributeValues</span><span class="op">:</span> { <span class="st">&quot;:d&quot;</span><span class="op">:</span> yesterday }<span class="op">,</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> orders <span class="op">=</span> result<span class="op">.</span><span class="at">Items</span> <span class="op">??</span> []<span class="op">;</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> revenue <span class="op">=</span> orders<span class="op">.</span><span class="fu">reduce</span>((sum<span class="op">,</span> o) <span class="kw">=&gt;</span> sum <span class="op">+</span> <span class="bu">Number</span>(o<span class="op">.</span><span class="at">total</span>)<span class="op">,</span> <span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 3. Compose and send the summary email via SES.</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> ses<span class="op">.</span><span class="fu">send</span>(</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">new</span> <span class="fu">SendEmailCommand</span>({</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Source</span><span class="op">:</span> <span class="st">&quot;reports@example.com&quot;</span><span class="op">,</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Destination</span><span class="op">:</span> { <span class="dt">ToAddresses</span><span class="op">:</span> [<span class="st">&quot;owner@example.com&quot;</span>] }<span class="op">,</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>      <span class="dt">Message</span><span class="op">:</span> {</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Subject</span><span class="op">:</span> { <span class="dt">Data</span><span class="op">:</span> <span class="vs">`Daily report for </span><span class="sc">${</span>yesterday<span class="sc">}</span><span class="vs">`</span> }<span class="op">,</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>        <span class="dt">Body</span><span class="op">:</span> {</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>          <span class="dt">Text</span><span class="op">:</span> {</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>            <span class="dt">Data</span><span class="op">:</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>              <span class="vs">`Orders: </span><span class="sc">${</span>orders<span class="op">.</span><span class="at">length</span><span class="sc">}\n</span><span class="vs">`</span> <span class="op">+</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>              <span class="vs">`Revenue: $</span><span class="sc">${</span>revenue<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">2</span>)<span class="sc">}</span><span class="vs">`</span><span class="op">,</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>          }<span class="op">,</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>        }<span class="op">,</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>  <span class="co">// 4. Return a value. Nobody is &quot;waiting&quot; on an HTTP response here,</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>  <span class="co">//    but the return is logged and signals success to the platform.</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> { <span class="dt">statusCode</span><span class="op">:</span> <span class="dv">200</span><span class="op">,</span> <span class="dt">ordersProcessed</span><span class="op">:</span> orders<span class="op">.</span><span class="at">length</span> }<span class="op">;</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span></code></pre></div>
+<p><strong>What this code does.</strong> <code>handler</code> is the function AWS Lambda runs on a schedule.
+It computes yesterday’s date, queries a DynamoDB table for that day’s orders, sums
+the revenue, and emails a two-line summary through SES (Simple Email Service). Then
+it returns a small object — there’s no browser on the other end, but the return
+value is logged and tells Lambda the run succeeded.</p>
+<p>The thing to internalize here is that <strong>the function doesn’t know or care what
+triggered it</strong>. The exact same handler could be wired to an HTTP endpoint, a queue
+message, or this cron schedule. The trigger is configured <em>around</em> the function, in
+the platform, not baked into the code. That separation is the heart of the FaaS
+model: your code is a pure unit of work, and the platform decides when to run it.</p>
+<p>Again, the clients live outside <code>handler</code> deliberately. On a <strong>cold start</strong> the
+whole module loads and the clients are constructed; on subsequent <strong>warm starts</strong>
+the module is still in memory, so only <code>handler</code> runs and the connections are
+reused. Putting them inside the handler would needlessly rebuild them every call.</p>
+<h2 id="example-3-a-webhook-handler-go-any-http-triggered-platform">Example 3 — A webhook handler (Go, any HTTP-triggered platform)</h2>
+<p>The third classic trigger is a plain <strong>HTTP request</strong> — often a <em>webhook</em>, where
+another service calls <em>you</em> to announce something happened. Here, GitHub pings us
+on every push. The function verifies the request is genuinely from GitHub, then
+acts on it.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode go"><code class="sourceCode go"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// function.go — an HTTP-triggered function (Google Cloud Functions / Cloud Run).</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> webhook</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> <span class="op">(</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>	<span class="st">&quot;crypto/hmac&quot;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>	<span class="st">&quot;crypto/sha256&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>	<span class="st">&quot;encoding/hex&quot;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>	<span class="st">&quot;encoding/json&quot;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>	<span class="st">&quot;fmt&quot;</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>	<span class="st">&quot;io&quot;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>	<span class="st">&quot;net/http&quot;</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>	<span class="st">&quot;os&quot;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">// pushPayload is the slice of GitHub's JSON we actually care about.</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> pushPayload <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>	Ref        <span class="dt">string</span> <span class="st">`json:&quot;ref&quot;`</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>	Repository <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>		FullName <span class="dt">string</span> <span class="st">`json:&quot;full_name&quot;`</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>	<span class="op">}</span> <span class="st">`json:&quot;repository&quot;`</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">// HandlePush is the entry point. Its signature is just Go's standard</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">// http.HandlerFunc — the platform routes incoming requests to it.</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> HandlePush<span class="op">(</span>w http<span class="op">.</span>ResponseWriter<span class="op">,</span> r <span class="op">*</span>http<span class="op">.</span>Request<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>	<span class="co">// 1. Read the raw body once. We need the exact bytes both to verify</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>	<span class="co">//    the signature and to parse the JSON.</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>	body<span class="op">,</span> err <span class="op">:=</span> io<span class="op">.</span>ReadAll<span class="op">(</span>r<span class="op">.</span>Body<span class="op">)</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>	<span class="cf">if</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>		http<span class="op">.</span>Error<span class="op">(</span>w<span class="op">,</span> <span class="st">&quot;cannot read body&quot;</span><span class="op">,</span> http<span class="op">.</span>StatusBadRequest<span class="op">)</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>		<span class="cf">return</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>	<span class="op">}</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>	<span class="co">// 2. Verify the payload really came from GitHub. GitHub signs each</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>	<span class="co">//    request with a shared secret using HMAC-SHA256. We recompute the</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>	<span class="co">//    signature and compare — never trust an unverified webhook.</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>	<span class="cf">if</span> <span class="op">!</span>validSignature<span class="op">(</span>body<span class="op">,</span> r<span class="op">.</span>Header<span class="op">.</span>Get<span class="op">(</span><span class="st">&quot;X-Hub-Signature-256&quot;</span><span class="op">))</span> <span class="op">{</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>		http<span class="op">.</span>Error<span class="op">(</span>w<span class="op">,</span> <span class="st">&quot;bad signature&quot;</span><span class="op">,</span> http<span class="op">.</span>StatusUnauthorized<span class="op">)</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>		<span class="cf">return</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>	<span class="op">}</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>	<span class="co">// 3. Parse just the fields we want out of the JSON body.</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>	<span class="kw">var</span> payload pushPayload</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>	<span class="cf">if</span> err <span class="op">:=</span> json<span class="op">.</span>Unmarshal<span class="op">(</span>body<span class="op">,</span> <span class="op">&amp;</span>payload<span class="op">);</span> err <span class="op">!=</span> <span class="ot">nil</span> <span class="op">{</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>		http<span class="op">.</span>Error<span class="op">(</span>w<span class="op">,</span> <span class="st">&quot;bad json&quot;</span><span class="op">,</span> http<span class="op">.</span>StatusBadRequest<span class="op">)</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>		<span class="cf">return</span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>	<span class="op">}</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>	<span class="co">// 4. Do the actual work. Here we just log it; in real life you might</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>	<span class="co">//    kick off a deploy, post to Slack, or enqueue a build.</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>	fmt<span class="op">.</span>Printf<span class="op">(</span><span class="st">&quot;Push to %s on %s</span><span class="ch">\n</span><span class="st">&quot;</span><span class="op">,</span> payload<span class="op">.</span>Repository<span class="op">.</span>FullName<span class="op">,</span> payload<span class="op">.</span>Ref<span class="op">)</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>	<span class="co">// 5. Respond fast. Webhook senders expect a quick 2xx; slow handlers</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>	<span class="co">//    get retried or marked as failed.</span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>	w<span class="op">.</span>WriteHeader<span class="op">(</span>http<span class="op">.</span>StatusOK<span class="op">)</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>	fmt<span class="op">.</span>Fprintln<span class="op">(</span>w<span class="op">,</span> <span class="st">&quot;ok&quot;</span><span class="op">)</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a><span class="co">// validSignature recomputes GitHub's HMAC-SHA256 over the body and</span></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a><span class="co">// compares it to the header in constant time (hmac.Equal avoids leaking</span></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a><span class="co">// timing information about where the comparison failed).</span></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a><span class="kw">func</span> validSignature<span class="op">(</span>body <span class="op">[]</span><span class="dt">byte</span><span class="op">,</span> header <span class="dt">string</span><span class="op">)</span> <span class="dt">bool</span> <span class="op">{</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>	secret <span class="op">:=</span> os<span class="op">.</span>Getenv<span class="op">(</span><span class="st">&quot;GITHUB_WEBHOOK_SECRET&quot;</span><span class="op">)</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>	mac <span class="op">:=</span> hmac<span class="op">.</span>New<span class="op">(</span>sha256<span class="op">.</span>New<span class="op">,</span> <span class="op">[]</span><span class="dt">byte</span><span class="op">(</span>secret<span class="op">))</span></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>	mac<span class="op">.</span>Write<span class="op">(</span>body<span class="op">)</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>	expected <span class="op">:=</span> <span class="st">&quot;sha256=&quot;</span> <span class="op">+</span> hex<span class="op">.</span>EncodeToString<span class="op">(</span>mac<span class="op">.</span>Sum<span class="op">(</span><span class="ot">nil</span><span class="op">))</span></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>	<span class="cf">return</span> hmac<span class="op">.</span>Equal<span class="op">([]</span><span class="dt">byte</span><span class="op">(</span>expected<span class="op">),</span> <span class="op">[]</span><span class="dt">byte</span><span class="op">(</span>header<span class="op">))</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><strong>What this code does.</strong> <code>HandlePush</code> is an ordinary Go HTTP handler, and that’s
+exactly the point — the cloud platform takes incoming HTTPS requests and routes
+them to this function, so you write it the same way you’d write any Go web handler.
+It reads the request body, <strong>verifies the cryptographic signature</strong> so we know the
+request truly came from GitHub and not an imposter, parses out the repository name
+and branch ref, logs the event, and returns <code>200 OK</code> quickly.</p>
+<p>Two real-world lessons are baked in:</p>
+<ul>
+<li><strong>Always verify webhooks.</strong> Your function’s URL is effectively public. Anyone who
+learns it can POST fake events. GitHub (like Stripe, Slack, and others) signs
+each request with a shared secret; <code>validSignature</code> recomputes that HMAC and uses
+<code>hmac.Equal</code> for a constant-time comparison, which avoids leaking — through
+response timing — how much of the signature matched.</li>
+<li><strong>Respond fast.</strong> Webhook providers expect a prompt <code>2xx</code>. If the real work is
+slow (a full deploy, a video transcode), the right pattern is to acknowledge
+immediately and hand the heavy lifting to a queue or another function, rather
+than making GitHub wait.</li>
+</ul>
+<h2 id="the-pattern-underneath-all-three">The pattern underneath all three</h2>
+<p>Look back at the examples and the family resemblance is obvious. In every case you
+wrote <strong>one function with a single entry point</strong>, and something <em>external</em> — a file
+upload, a clock, an HTTP request — decided when it ran:</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Example</th>
+<th>Language</th>
+<th>Trigger</th>
+<th>Entry point</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Thumbnailer</td>
+<td>Python</td>
+<td>Storage upload event</td>
+<td><code>make_thumbnail</code></td>
+</tr>
+<tr>
+<td>Daily report</td>
+<td>JavaScript</td>
+<td>Scheduled timer</td>
+<td><code>handler</code></td>
+</tr>
+<tr>
+<td>Webhook</td>
+<td>Go</td>
+<td>HTTP request</td>
+<td><code>HandlePush</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>None of them provisioned a server, opened a port, or ran a loop waiting for work.
+None of them stored anything in a local variable expecting it to survive to the
+next call. Each was small, single-purpose, and stateless — and each one costs
+nothing when no one is using it.</p>
+<p>That’s the deal cloud functions offer: give up persistent in-memory state and
+long-running processes, and in exchange you stop thinking about servers entirely.
+You write the <em>what</em> — the unit of work — and the platform owns the <em>when</em> and the
+<em>where</em>. For event-driven, bursty, glue-the-services-together work, it’s hard to
+beat. And once the model clicks, you start seeing functions everywhere a system
+says <em>“when X happens, do Y.”</em></p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                    <a href="../colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>

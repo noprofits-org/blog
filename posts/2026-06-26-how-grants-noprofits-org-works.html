@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>How grants.noprofits.org works: tracing federal money through a live graph — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/theme-toggle.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="../">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">usaspending, propublica, d3, graph, federal grants, javascript, data, transparency</span>
+    </div>
+    
+
+    <h1 class="post-title">How grants.noprofits.org works: tracing federal money through a live graph</h1>
+
+    <div class="post-meta">
+        <span class="byline">Peter Johnston</span> · <span>June 26, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <p>The tool at <code>grants.noprofits.org</code> answers one question: when the federal
+government hands money to an organization, where does it come from, and where
+does it go from there? You type an org — a hospital, a university, a state health
+department — and it pulls that organization’s federal awards live from
+<a href="https://www.usaspending.gov/">USAspending.gov</a>, walks outward a couple of hops,
+and draws the result as a force-directed money-flow graph. Each recipient node is
+then enriched with its IRS Form 990 financials from
+<a href="https://projects.propublica.org/nonprofits/api">ProPublica</a>, so the inspector
+can show what fraction of an organization’s revenue is federal grant money. The
+real point isn’t the pretty graph — it’s making taxpayer money <em>legible</em>: you can
+see that a sub-agency you’ve never heard of is the actual funder, and that a
+nonprofit you have heard of runs largely on federal dollars.</p>
+<p>This post is a tour of how it’s built. The source of truth is the
+<a href="https://github.com/noprofits-org/grants"><code>noprofits-org/grants</code></a> repo, and most
+of the interesting decisions are recorded there as <code>(#NN)</code> comments tied to a real
+bug or a wrong first attempt. Those are the parts worth reading, so that’s what
+I’ve pulled out here.</p>
+<h2 id="architecture-at-a-glance">Architecture at a glance</h2>
+<p>There’s no build step and no server. <code>index.html</code> loads ES modules directly in
+the browser:</p>
+<pre><code>index.html          # the live tool
+├── live-main.js     # app controller: search, render, inspector, state
+├── usaspending.js   # USAspending.gov client → {grants, charities, connected}
+├── flow-graph.js    # D3 force-directed renderer (the visualization engine)
+├── propublica.js    # IRS-990 enrichment (taxpayer rings + inspector)
+└── live.css         # design tokens</code></pre>
+<p>The separation that matters is between <strong>the rendering engine and the data
+adapter</strong>. <code>flow-graph.js</code> is deliberately data-shape agnostic: it renders <em>any</em>
+directed, weighted, entity→entity flow graph. It knows nothing about federal
+grants. <code>usaspending.js</code> is one adapter that happens to feed it federal data; you
+could write another adapter against a different source and the renderer wouldn’t
+change. The contract between them is a single object shape that
+<code>usaspending.js</code> emits and everything downstream reads:</p>
+<ul>
+<li><strong>grants</strong> — the edges: <code>{ filer_ein, grant_ein, grant_amt, tax_year }</code></li>
+<li><strong>charities</strong> — the nodes: <code>{ filer_ein, filer_name, receipt_amt, govt_amt, … }</code>,
+where the <code>filer_ein</code> field is an id with a type prefix (<code>A:</code> for an agency,
+<code>R:</code> for a recipient)</li>
+<li><strong>connected</strong> — the set of node ids that survived trimming and are actually
+rendered</li>
+</ul>
+<p>The field names (<code>filer_ein</code>, <code>tax_year</code>) are a tell: this shape predates the
+live tool — it came from an earlier 990-based version where the nodes really were
+990 filers with EINs. The live adapter keeps the shape and overloads it, which is
+why an “EIN” here is actually a normalized agency or recipient name. Reusing the
+contract meant the renderer didn’t have to be rewritten when the data source
+changed.</p>
+<h2 id="pulling-the-graph-from-usaspending">Pulling the graph from USAspending</h2>
+<p>This is the heart of the tool. <code>usaspending.js</code> builds the graph with a bounded
+breadth-first search (BFS) outward from the org you searched for. The root goes on
+the frontier at depth 0; each hop expands the frontier by querying USAspending for
+each node’s awards, registers the new endpoints, and stops at a configured depth:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> frontier <span class="op">=</span> [{ <span class="op">...</span><span class="bu">root</span><span class="op">,</span> <span class="dt">depth</span><span class="op">:</span> <span class="dv">0</span> }]<span class="op">;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> expanded <span class="op">=</span> <span class="kw">new</span> <span class="bu">Set</span>()<span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (frontier<span class="op">.</span><span class="at">length</span> <span class="op">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> expandable <span class="op">=</span> frontier<span class="op">.</span><span class="fu">filter</span>(n <span class="kw">=&gt;</span> n<span class="op">.</span><span class="at">depth</span> <span class="op">&lt;</span> depth <span class="op">&amp;&amp;</span> <span class="op">!</span>expanded<span class="op">.</span><span class="fu">has</span>(n<span class="op">.</span><span class="at">id</span>))<span class="op">;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (expandable<span class="op">.</span><span class="at">length</span> <span class="op">===</span> <span class="dv">0</span>) <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> batches <span class="op">=</span> <span class="cf">await</span> <span class="bu">Promise</span><span class="op">.</span><span class="fu">all</span>(expandable<span class="op">.</span><span class="fu">map</span>(<span class="kw">async</span> node <span class="kw">=&gt;</span> {</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        expanded<span class="op">.</span><span class="fu">add</span>(node<span class="op">.</span><span class="at">id</span>)<span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> node<span class="op">.</span><span class="at">kind</span> <span class="op">===</span> <span class="st">'recipient'</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>            <span class="op">?</span> <span class="cf">await</span> <span class="kw">this</span><span class="op">.</span><span class="fu">recipientEdges</span>(node<span class="op">.</span><span class="at">name</span><span class="op">,</span> years)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>            <span class="op">:</span> <span class="cf">await</span> <span class="kw">this</span><span class="op">.</span><span class="fu">agencyEdges</span>(node<span class="op">.</span><span class="at">name</span><span class="op">,</span> years<span class="op">,</span> perAgencyFanout<span class="op">,</span> node<span class="op">.</span><span class="at">tier</span> <span class="op">||</span> <span class="st">'toptier'</span>)<span class="op">;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    }))<span class="op">;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="co">// …register endpoints, aggregate edge amounts, build the next frontier…</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Each level’s expansions fire concurrently with <code>Promise.all</code>. A recipient node
+gets expanded by asking “who funded this org?”; an agency node by asking “who did
+this agency fund?”. Everything past that point is about making the resulting graph
+<em>correct</em> and <em>readable</em>, and each of those is a decision with a story.</p>
+<h3 id="group-by-the-sub-agency-not-the-department-30">Group by the sub-agency, not the department (#30)</h3>
+<p>The first instinct is to group a recipient’s inbound awards by the awarding
+agency. That’s wrong, and it’s wrong in a way that destroys the whole point of the
+tool. If you collapse everything to the top-tier department, every grant from the
+National Institutes of Health, the Health Resources and Services Administration,
+and the Centers for Medicare &amp; Medicaid Services becomes one undifferentiated
+“HHS” arrow. But “HHS” isn’t who funded you — NIH did. The sub-agency <em>is</em> the
+funder:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// A recipient's inbound awards, grouped by the funding SUB-agency (NIH,</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">// HRSA, CMS…). Grouping by the top-tier &quot;Awarding Agency&quot; collapses every</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">// HHS sub-agency into a single &quot;HHS&quot; inflow, which misrepresents the funding</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">// picture (see #30); the sub-agency is the real funder. Awards with no</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">// sub-agency fall back to the top-tier department.</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> sub <span class="op">=</span> r[<span class="st">'Awarding Sub Agency'</span>]<span class="op">;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> agency <span class="op">=</span> sub <span class="op">||</span> r[<span class="st">'Awarding Agency'</span>]<span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> tier <span class="op">=</span> sub <span class="op">?</span> <span class="st">'subtier'</span> <span class="op">:</span> <span class="st">'toptier'</span><span class="op">;</span></span></code></pre></div>
+<p>Notice the <code>tier</code> that rides along. USAspending’s filter API distinguishes
+<code>subtier</code> from <code>toptier</code> agencies, and you have to query a node against the tier it
+was minted at. If you mint “HRSA” as a sub-tier node and then, on the next BFS hop,
+query it against the top-tier filter, USAspending matches nothing and the agency’s
+fan-out silently vanishes. So the tier is stored on the node and threaded back into
+the next query in <code>agencyEdges</code>.</p>
+<h3 id="one-award-group-per-query-or-you-get-a-422">One award group per query, or you get a 422</h3>
+<p>The query filters on <code>award_type_codes</code>, and there’s a constraint hiding in that
+list:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">// USAspending splits award types into groups (grants, loans, contracts, ...)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">// and ONE spending_by_award query may only use codes from a single group, else</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">// it 422s. The &quot;grants&quot; group is exactly these four — the natural identity for</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">// this app. (Block Grant, Formula Grant, Project Grant, Cooperative Agreement.)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> AWARD_TYPE_CODES <span class="op">=</span> [<span class="st">'02'</span><span class="op">,</span> <span class="st">'03'</span><span class="op">,</span> <span class="st">'04'</span><span class="op">,</span> <span class="st">'05'</span>]<span class="op">;</span></span></code></pre></div>
+<p>You can’t mix grant codes and contract codes in one <code>spending_by_award</code> call —
+USAspending returns a 422. Codes <code>02</code>–<code>05</code> are the entire grants group, which is
+exactly what this tool is about, so the constraint and the scope happen to line up.</p>
+<h3 id="normalize-names-so-one-org-is-one-node-15">Normalize names so one org is one node (#15)</h3>
+<p>Award data is messy. The same recipient shows up as <code>"FRED HUTCH "</code> in one record
+and <code>"Fred Hutch"</code> in another, and if you key nodes on the raw string you get two
+nodes for one organization and the graph fragments. Node ids key on a normalized
+name instead:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Node ids key on a NORMALIZED name (case-folded, whitespace-collapsed) so</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">// the same entity under different spacing/casing — &quot;FRED HUTCH &quot; vs &quot;Fred</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">// Hutch&quot; — resolves to ONE node instead of fragmenting (#15). The raw name</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">// still rides on every edge's sourceName/targetName for display. A stable</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">// id (recipient UEI) would also disambiguate genuinely distinct same-named</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">// orgs, but that needs the root resolved to a UEI first — deferred.</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">normKey</span>(name) { <span class="cf">return</span> (name <span class="op">||</span> <span class="st">''</span>)<span class="op">.</span><span class="fu">trim</span>()<span class="op">.</span><span class="fu">toLowerCase</span>()<span class="op">.</span><span class="fu">replace</span>(<span class="ss">/</span><span class="sc">\s+</span><span class="ss">/g</span><span class="op">,</span> <span class="st">' '</span>)<span class="op">;</span> }</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">agencyId</span>(name) { <span class="cf">return</span> <span class="st">'A:'</span> <span class="op">+</span> <span class="kw">this</span><span class="op">.</span><span class="fu">normKey</span>(name)<span class="op">;</span> }</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">recipientId</span>(name) { <span class="cf">return</span> <span class="st">'R:'</span> <span class="op">+</span> <span class="kw">this</span><span class="op">.</span><span class="fu">normKey</span>(name)<span class="op">;</span> }</span></code></pre></div>
+<p>The normalized string is only the <em>id</em>; the original display name still travels on
+every edge, so the graph reads “Fred Hutch” even though both spellings collapse to
+the same node. The comment also flags the limitation honestly: case-folding merges
+genuinely-distinct orgs that share a name. The real fix is a stable identifier
+(USAspending’s Unique Entity Identifier), but that requires resolving the root to a
+UEI first — deferred, and noted as such.</p>
+<h3 id="trim-by-proximity-first-then-by-dollars-37">Trim by proximity first, then by dollars (#37)</h3>
+<p>A two-hop BFS over federal data produces far more nodes than you want on screen, so
+the graph trims to a <code>maxOrgs</code> budget. The obvious ranking — keep the biggest
+dollar nodes — turned out to be exactly wrong, and the comment explaining why is my
+favorite in the repo:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Trim to maxOrgs, always keeping the root, ranking by PROXIMITY first</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">// then dollar volume (#37). Volume-only ranking dropped the root's own</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">// direct funders (e.g. HRSA at depth 1) in favour of billion-dollar</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">// nodes several hops away, and trimmed small connector nodes — which,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">// with the both-endpoints-survive edge rule, stranded whole far clusters</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">// (a floating CMS-&gt;states blob) with no path back to the root. Keeping</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">// shallower nodes first means a direct funder is never cut for a distant</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">// one, and the keep-set stays a prefix-by-depth of the BFS.</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> keep <span class="op">=</span> <span class="kw">new</span> <span class="bu">Set</span>(meta<span class="op">.</span><span class="fu">keys</span>())<span class="op">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (keep<span class="op">.</span><span class="at">size</span> <span class="op">&gt;</span> maxOrgs) {</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> ranked <span class="op">=</span> <span class="bu">Array</span><span class="op">.</span><span class="fu">from</span>(meta<span class="op">.</span><span class="fu">entries</span>())</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">filter</span>(([id]) <span class="kw">=&gt;</span> id <span class="op">!==</span> <span class="bu">root</span><span class="op">.</span><span class="at">id</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">sort</span>((a<span class="op">,</span> b) <span class="kw">=&gt;</span> {</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>            <span class="kw">const</span> da <span class="op">=</span> connected<span class="op">.</span><span class="fu">get</span>(a[<span class="dv">0</span>]) <span class="op">??</span> <span class="kw">Infinity</span><span class="op">,</span> db <span class="op">=</span> connected<span class="op">.</span><span class="fu">get</span>(b[<span class="dv">0</span>]) <span class="op">??</span> <span class="kw">Infinity</span><span class="op">;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> da <span class="op">-</span> db <span class="op">||</span> (b[<span class="dv">1</span>]<span class="op">.</span><span class="at">inflow</span> <span class="op">+</span> b[<span class="dv">1</span>]<span class="op">.</span><span class="at">outflow</span>) <span class="op">-</span> (a[<span class="dv">1</span>]<span class="op">.</span><span class="at">inflow</span> <span class="op">+</span> a[<span class="dv">1</span>]<span class="op">.</span><span class="at">outflow</span>)<span class="op">;</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">slice</span>(<span class="dv">0</span><span class="op">,</span> <span class="bu">Math</span><span class="op">.</span><span class="fu">max</span>(<span class="dv">0</span><span class="op">,</span> maxOrgs <span class="op">-</span> <span class="dv">1</span>))</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">map</span>(([id]) <span class="kw">=&gt;</span> id)<span class="op">;</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    keep <span class="op">=</span> <span class="kw">new</span> <span class="bu">Set</span>([<span class="bu">root</span><span class="op">.</span><span class="at">id</span><span class="op">,</span> <span class="op">...</span>ranked])<span class="op">;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><code>connected.get(id)</code> is the node’s BFS depth. The sort compares depth first
+(<code>da - db</code>) and only breaks ties by total dollar flow. So a depth-1 direct funder
+of the org you searched always outranks a depth-2 giant. Ranking by dollars alone
+literally dropped the root’s own funders — HRSA, sitting right next to the org you
+asked about — in favor of a billion-dollar node two hops out that you didn’t care
+about.</p>
+<h3 id="never-render-a-floating-blob-37">Never render a floating blob (#37)</h3>
+<p>Trimming creates a second hazard. An edge survives only if <em>both</em> its endpoints
+survive the trim. Cut a small connector node and you can sever the only path
+between a distant cluster and the root, leaving an island — a “floating CMS→states
+blob” with no visible connection to anything. The fix is to prune the kept set down
+to the connected component that actually contains the root:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Prune to the root's connected component so no disconnected cluster is</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">// ever rendered (#37). Undirected walk — a recipient root reaches its</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">// funder agencies by traversing edges backward.</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> adj <span class="op">=</span> <span class="kw">new</span> <span class="bu">Map</span>()<span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">const</span> id <span class="kw">of</span> keep) adj<span class="op">.</span><span class="fu">set</span>(id<span class="op">,</span> [])<span class="op">;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">const</span> { src<span class="op">,</span> tgt } <span class="kw">of</span> keptEdges) { adj<span class="op">.</span><span class="fu">get</span>(src)<span class="op">.</span><span class="fu">push</span>(tgt)<span class="op">;</span> adj<span class="op">.</span><span class="fu">get</span>(tgt)<span class="op">.</span><span class="fu">push</span>(src)<span class="op">;</span> }</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> reachable <span class="op">=</span> <span class="kw">new</span> <span class="bu">Set</span>([<span class="bu">root</span><span class="op">.</span><span class="at">id</span>])<span class="op">;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> queue <span class="op">=</span> [<span class="bu">root</span><span class="op">.</span><span class="at">id</span>]<span class="op">;</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (queue<span class="op">.</span><span class="at">length</span>) {</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (<span class="kw">const</span> nb <span class="kw">of</span> (adj<span class="op">.</span><span class="fu">get</span>(queue<span class="op">.</span><span class="fu">shift</span>()) <span class="op">||</span> [])) {</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="op">!</span>reachable<span class="op">.</span><span class="fu">has</span>(nb)) { reachable<span class="op">.</span><span class="fu">add</span>(nb)<span class="op">;</span> queue<span class="op">.</span><span class="fu">push</span>(nb)<span class="op">;</span> }</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>keep <span class="op">=</span> reachable<span class="op">;</span></span></code></pre></div>
+<p>The walk is deliberately <em>undirected</em>. Money flows agency→recipient, but the org
+you searched for is usually a recipient, and it reaches its funders by traversing
+those edges <em>backward</em>. A directed walk from a recipient root would reach nothing.
+Anything not reachable from the root is dropped before render, so an island is never
+drawn.</p>
+<h2 id="enriching-with-990-data-and-taxpayer-rings">Enriching with 990 data and taxpayer rings</h2>
+<p>Once the graph is on screen, <code>live-main.js</code> enriches every recipient in the
+background with ProPublica’s 990 data. This is what powers the inspector’s
+financials and the “taxpayer ring” that flags orgs heavily dependent on federal
+money. Two disciplines govern this whole layer: <em>never attach the wrong 990</em>, and
+<em>never let an enrichment failure break the graph</em>.</p>
+<h3 id="the-match-has-to-be-right-or-its-misinformation-23">The match has to be right, or it’s misinformation (#23)</h3>
+<p>ProPublica’s search is fuzzy. Search “Fred Hutch” and you’ll get the real
+organization plus a scattering of similarly-named or chapter/affiliate orgs. If you
+naively take the first result, you can attach the wrong organization’s financials —
+and in a tool whose entire purpose is showing where taxpayer money goes, a wrong
+990 isn’t a cosmetic bug, it’s misinformation. So <code>bestMatch</code> gates candidates
+before ranking them:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Gate (per candidate, both STOP-stripped): keep only candidates that</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">//   (a) overlap ≥60% of the smaller token set, AND</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">//   (b) contain the query's MOST DISTINCTIVE token (longest, as a rare-token</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">//       proxy) — this kills cross-domain false accepts that share only a common</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">//       word, which the bare 60% ratio let through.</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> Q <span class="op">=</span> <span class="kw">new</span> <span class="bu">Set</span>(<span class="fu">toks</span>(query))<span class="op">;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="op">!</span>Q<span class="op">.</span><span class="at">size</span>) <span class="cf">return</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> distinctive <span class="op">=</span> [<span class="op">...</span>Q]<span class="op">.</span><span class="fu">reduce</span>((a<span class="op">,</span> b) <span class="kw">=&gt;</span> (b<span class="op">.</span><span class="at">length</span> <span class="op">&gt;</span> a<span class="op">.</span><span class="at">length</span> <span class="op">?</span> b <span class="op">:</span> a))<span class="op">;</span></span></code></pre></div>
+<p>The 60%-overlap test alone wasn’t enough: two names sharing only a common word
+(“Foundation”, “Health”) could clear it. The distinctive-token requirement — the
+query’s longest token, used as a cheap proxy for “rarest” — has to appear in the
+candidate, which kills those cross-domain false accepts. Among survivors, the
+ranking prefers an exact token-set match, then the most shared tokens, then the
+<em>fewest extra</em> tokens — that last tiebreak favors the parent organization over a
+“…of Anytown Chapter” variant that would otherwise outrank it. The matched name is
+returned alongside the EIN so the inspector can flag when it differs from the
+recipient’s name on the graph.</p>
+<h3 id="the-cors-proxy-and-best-effort-null">The CORS proxy and best-effort-null</h3>
+<p>ProPublica’s API sends no Cross-Origin Resource Sharing (CORS) headers, so the
+browser can’t call it directly. Every request goes through the org’s shared Vercel
+proxy. The more important discipline is what happens on failure:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">async</span> <span class="fu">resolveEin</span>(name) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> key <span class="op">=</span> name<span class="op">.</span><span class="fu">trim</span>()<span class="op">.</span><span class="fu">toLowerCase</span>()<span class="op">;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="kw">this</span><span class="op">.</span><span class="at">einCache</span><span class="op">.</span><span class="fu">has</span>(key)) <span class="cf">return</span> <span class="kw">this</span><span class="op">.</span><span class="at">einCache</span><span class="op">.</span><span class="fu">get</span>(key)<span class="op">;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> d<span class="op">;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span> {</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        d <span class="op">=</span> <span class="cf">await</span> <span class="kw">this</span><span class="op">.</span><span class="fu">proxied</span>(<span class="vs">`</span><span class="sc">${</span>BASE<span class="sc">}</span><span class="vs">/search.json?q=</span><span class="sc">${</span><span class="pp">encodeURIComponent</span>(name)<span class="sc">}</span><span class="vs">`</span>)<span class="op">;</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">catch</span> (e) {</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">console</span><span class="op">.</span><span class="fu">warn</span>(<span class="st">'propublica search failed'</span><span class="op">,</span> name<span class="op">,</span> e)<span class="op">;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="kw">null</span><span class="op">;</span> <span class="co">// transient — do not cache</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> result <span class="op">=</span> <span class="fu">bestMatch</span>(name<span class="op">,</span> d<span class="op">.</span><span class="at">organizations</span> <span class="op">||</span> [])<span class="op">;</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">this</span><span class="op">.</span><span class="at">einCache</span><span class="op">.</span><span class="fu">set</span>(key<span class="op">,</span> result)<span class="op">;</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Every enrichment is best-effort and resolves to <code>null</code> on any failure — an agency
+isn’t a nonprofit and has no 990, and a network blip is just a <code>null</code> too. The
+graph is already drawn; enrichment only ever <em>adds</em> to it, so a failed 990 lookup
+leaves the node exactly as it was rather than breaking the render. There’s a subtle
+caching rule in there too: a <em>deterministic</em> result (a real match, or a clean
+“nothing matched”) gets cached, but a <em>transient</em> failure returns <code>null</code> without
+caching, so a later interaction retries instead of being stuck on a momentary blip.</p>
+<h3 id="dont-divide-multi-year-money-by-one-years-revenue-28">Don’t divide multi-year money by one year’s revenue (#28)</h3>
+<p>The taxpayer ratio is the number the whole tool builds toward: what fraction of an
+organization’s revenue is federal grant money? The naive computation divides the
+graph’s federal inflow by the org’s 990 total revenue — and that can come out over
+100%, which reads as a data error and undermines trust in the figure. The bug is a
+units mismatch: the graph sums inflow across <em>all</em> selected fiscal years, but a 990
+reports <em>one</em> year’s revenue.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Taxpayer ratio normalized to the 990's fiscal year (#28). The graph</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">// sums federal inflow across ALL selected years, but a 990's revenue is</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">// one year — dividing the two can exceed 100% and read as a data error.</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Compare only the 990 year's federal inflow to that year's revenue, and</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">// only when the 990 year is within the selected fiscal years (so it</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">// stays consistent with what's on screen).</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="op">!</span>isAgency <span class="op">&amp;&amp;</span> profile <span class="op">&amp;&amp;</span> profile<span class="op">.</span><span class="at">revenue</span> <span class="op">&amp;&amp;</span> profile<span class="op">.</span><span class="at">year</span> <span class="op">!=</span> <span class="kw">null</span> <span class="op">&amp;&amp;</span> <span class="kw">this</span><span class="op">.</span><span class="at">years</span><span class="op">.</span><span class="fu">includes</span>(profile<span class="op">.</span><span class="at">year</span>)) {</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    ratioYear <span class="op">=</span> profile<span class="op">.</span><span class="at">year</span><span class="op">;</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> entry <span class="op">=</span> <span class="kw">this</span><span class="op">.</span><span class="at">yearInflows</span><span class="op">.</span><span class="fu">get</span>(n<span class="op">.</span><span class="at">id</span>)<span class="op">;</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (entry <span class="op">&amp;&amp;</span> entry<span class="op">.</span><span class="at">year</span> <span class="op">===</span> ratioYear) {</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        yearInflow <span class="op">=</span> entry<span class="op">.</span><span class="at">inflow</span><span class="op">;</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        share <span class="op">=</span> yearInflow <span class="op">/</span> profile<span class="op">.</span><span class="at">revenue</span><span class="op">;</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>The fix restricts the numerator to the <em>same</em> fiscal year the 990 covers, and only
+computes the ratio when that year is among the years on screen, so the percentage is
+consistent with the graph the user is looking at. The graph <em>ring</em>, on the other
+hand, intentionally uses the coarse all-years signal against a <code>0.05</code> threshold —
+it’s a binary “this org leans on federal money” highlight, not a stated figure:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> TAXPAYER_THRESHOLD <span class="op">=</span> <span class="fl">0.05</span><span class="op">;</span>   <span class="co">// federal grants / total revenue → rust ring + alert</span></span></code></pre></div>
+<p>The ring and the inspector number deliberately differ: one is a cheap visual flag,
+the other is a precise, fiscal-year-normalized percentage you can quote.</p>
+<h3 id="timeouts-so-a-hung-request-never-strands-the-ui-13-22">Timeouts so a hung request never strands the UI (#13, #22)</h3>
+<p><code>enrichAll</code> fires a dozen or two of these concurrently per Visualize. A single
+hung proxy connection used to strand that node’s ring on “loading” forever (#22),
+and on the USAspending side a hung request would leave the loading overlay spinning
+(#13). Both sides cap every request with an <code>AbortController</code>:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">async</span> <span class="fu">proxied</span>(target<span class="op">,</span> { timeout <span class="op">=</span> <span class="dv">10000</span> } <span class="op">=</span> {}) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> ctl <span class="op">=</span> <span class="kw">new</span> <span class="fu">AbortController</span>()<span class="op">;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> t <span class="op">=</span> <span class="pp">setTimeout</span>(() <span class="kw">=&gt;</span> ctl<span class="op">.</span><span class="fu">abort</span>()<span class="op">,</span> timeout)<span class="op">;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span> {</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">const</span> res <span class="op">=</span> <span class="cf">await</span> <span class="fu">fetch</span>(<span class="vs">`</span><span class="sc">${</span>PROXY<span class="sc">}</span><span class="vs">?url=</span><span class="sc">${</span><span class="pp">encodeURIComponent</span>(target)<span class="sc">}</span><span class="vs">`</span><span class="op">,</span> { <span class="dt">signal</span><span class="op">:</span> ctl<span class="op">.</span><span class="at">signal</span> })<span class="op">;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="op">!</span>res<span class="op">.</span><span class="at">ok</span>) <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="st">'proxy '</span> <span class="op">+</span> res<span class="op">.</span><span class="at">status</span>)<span class="op">;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="cf">await</span> res<span class="op">.</span><span class="fu">json</span>()<span class="op">;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">catch</span> (e) {</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (e<span class="op">.</span><span class="at">name</span> <span class="op">===</span> <span class="st">'AbortError'</span>) <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="st">'proxy timeout'</span>)<span class="op">;</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">throw</span> e<span class="op">;</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">finally</span> {</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>        <span class="pp">clearTimeout</span>(t)<span class="op">;</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>A timeout surfaces as an ordinary error, which the best-effort-null discipline
+above already handles — so a slow request degrades to a missing enrichment, never a
+stuck spinner.</p>
+<h2 id="rendering">Rendering</h2>
+<p><code>flow-graph.js</code> stays small because it’s the generic engine. It derives a visual
+<em>role</em> for each node from the shape alone:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">roleOf</span>(n) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (n<span class="op">.</span><span class="at">id</span> <span class="op">===</span> <span class="kw">this</span><span class="op">.</span><span class="at">focusId</span>) <span class="cf">return</span> <span class="st">'focus'</span><span class="op">;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> n<span class="op">.</span><span class="at">kind</span> <span class="op">===</span> <span class="st">'agency'</span> <span class="op">?</span> <span class="st">'govt'</span> <span class="op">:</span> <span class="st">'grantee'</span><span class="op">;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>The node you searched for is the focus; agencies are <code>govt</code>; everyone else is a
+grantee. In federal data there’s no such thing as a non-government funder, so the
+design’s neutral “funder” color is unused and agencies read in rust instead — the
+color carries the meaning “this is public money.”</p>
+<p>One small but necessary detail: the colors live in CSS as design tokens, but SVG
+<code>fill</code> and <code>stroke</code> attributes can’t take <code>var(--…)</code>. So the renderer resolves each
+token to a concrete color once, via <code>getComputedStyle</code>, and caches the palette:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">// resolved to concrete colors here because SVG attributes (fill/stroke)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">// can't take var() (#18).</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">cssToken</span>(name) {</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">getComputedStyle</span>(<span class="bu">document</span><span class="op">.</span><span class="at">documentElement</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">getPropertyValue</span>(<span class="st">'--'</span> <span class="op">+</span> name)<span class="op">.</span><span class="fu">trim</span>()<span class="op">;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>That keeps a single source of truth for color across the whole suite — the
+stylesheet — while still feeding SVG the literal hex strings it requires. The
+renderer also offers two layouts off the same data: a force-directed view and a
+depth-columnar hierarchy view, since the BFS depth is already on every node.</p>
+<h2 id="whats-deferred-and-the-point">What’s deferred, and the point</h2>
+<p>Two honest limitations. The first is in that normalization comment: case-folding
+names merges genuinely-distinct organizations that happen to share a name, and the
+real fix — keying nodes on USAspending’s stable Unique Entity Identifier — is
+deferred because it needs the root resolved to a UEI first. The second is that the
+fiscal-year-normalized taxpayer ratio is still an approximation: it lines up the
+990’s reporting year with the awards in that year, but award timing and 990 fiscal
+years don’t always align cleanly, so the percentage is a good estimate rather than
+an audited figure.</p>
+<p>Neither of those changes what the tool is for. Federal money moves through a
+structure that’s genuinely hard to see: a department contains sub-agencies you’ve
+never heard of, those sub-agencies fund organizations you have, and those
+organizations may run largely on the public’s money. Every decision above —
+grouping by sub-agency, normalizing names, trimming by proximity, gating the 990
+match, normalizing the ratio to a fiscal year — exists to make that flow legible
+without lying about it. That’s the whole job.</p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                    <a href="../colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>

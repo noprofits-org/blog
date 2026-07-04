@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>Determination of SI Units for Magnetic Interactions in Quantum Mechanical Calculations — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/theme-toggle.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="../">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">quantum mechanics, electromagnetism, units, magnetic interaction, computational physics</span>
+    </div>
+    
+
+    <h1 class="post-title">Determination of SI Units for Magnetic Interactions in Quantum Mechanical Calculations</h1>
+
+    <div class="post-meta">
+        <span>April 19, 2025</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <h2 id="abstract">Abstract</h2>
+<p>This work presents a comprehensive analysis of the SI unit system as applied to magnetic interactions in quantum mechanical calculations. By systematically tracing the dimensional relationships between magnetic moments, magnetic fields, and energy, we derive the correct units for magnetic coupling constants and other key parameters in computational models. The analysis clarifies several common misconceptions regarding the units of magnetic quantities and provides a consistent framework for interpreting computational results in terms of measurable physical quantities. This approach is particularly valuable for researchers working at the interface of quantum chemistry and materials science, where precise understanding of magnetic interactions is essential for modeling and predicting the properties of magnetic materials.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Magnetic interactions play a crucial role in a wide range of physical phenomena, from the behavior of quantum spins in molecular magnets to the macroscopic properties of magnetic materials. However, the consistent application of units to magnetic quantities has been a persistent source of confusion in the scientific literature, partly due to the historical use of different unit systems (CGS, Gaussian, SI) and partly due to the inherent complexity of electromagnetic theory.<span class="citation" data-cites="Jackson1999"><sup>1</sup></span></p>
+<p>In computational approaches to magnetic systems, this confusion can lead to errors in the interpretation of calculated results or in the parameterization of models. The situation is further complicated in quantum mechanical calculations, where magnetic moments arise from a combination of electronic and spin contributions, each with their own physical dimensions.<span class="citation" data-cites="Griffiths2018"><sup>2</sup></span></p>
+<p>This work aims to provide a clear and systematic derivation of the SI units for magnetic quantities relevant to quantum mechanical calculations, with a particular focus on magnetic moments, fields, coupling constants, and their relationships to energy. By working from first principles and carefully tracking the dimensions of each quantity, we establish a consistent framework for unit conversion and for the interpretation of computational results.</p>
+<h2 id="theoretical-framework">Theoretical Framework</h2>
+<h3 id="fundamental-constants-and-their-units">Fundamental Constants and Their Units</h3>
+<p>To establish a solid foundation for our analysis, we begin with the fundamental constants of electromagnetism in the SI system. The vacuum permeability, denoted by <span class="math inline">\(\mu_0\)</span>, has a defined value of <span class="math inline">\(4\pi \times 10^{-7}\)</span> H/m (henries per meter) or equivalently <span class="math inline">\(4\pi \times 10^{-7}\)</span> N/A² (newtons per ampere squared). This constant characterizes the magnetic properties of free space and plays a central role in the formulation of Maxwell’s equations, particularly in defining the relationship between magnetic field and the current that generates it.</p>
+<p>The vacuum permittivity, <span class="math inline">\(\epsilon_0\)</span>, with a value of approximately <span class="math inline">\(8.85 \times 10^{-12}\)</span> F/m (farads per meter), describes the electric properties of free space. It appears in Coulomb’s law and relates the electric displacement field to the electric field in a vacuum. This constant is a fundamental parameter in the description of electric phenomena and electromagnetic wave propagation.</p>
+<p>The speed of light in vacuum, <span class="math inline">\(c\)</span>, equals <span class="math inline">\(2.998 \times 10^{8}\)</span> m/s (meters per second). In electromagnetism, this constant emerges naturally from Maxwell’s equations and represents the speed at which electromagnetic waves propagate in free space. Since the 2019 redefinition of SI units, the speed of light has a fixed exact value, and the meter is defined in terms of it.</p>
+<p>The elementary charge, <span class="math inline">\(e\)</span>, has a value of <span class="math inline">\(1.602 \times 10^{-19}\)</span> C (coulombs). This fundamental physical constant represents the electric charge carried by a single proton or, equivalently, the magnitude of the negative charge carried by an electron. It serves as the natural unit of electric charge in atomic and subatomic processes.</p>
+<p>The Planck constant, <span class="math inline">\(h\)</span>, with a value of <span class="math inline">\(6.626 \times 10^{-34}\)</span> J·s (joule-seconds), is a fundamental constant in quantum mechanics that relates the energy of a photon to its frequency. It appears in the expressions for quantized energy levels and in the uncertainty principle, establishing the scale at which quantum effects become significant.</p>
+<p>The Bohr magneton, <span class="math inline">\(\mu_B\)</span>, equals <span class="math inline">\(9.274 \times 10^{-24}\)</span> J/T (joules per tesla). This physical constant represents the magnetic moment of an electron arising from its orbital angular momentum. It serves as a natural unit of magnetic moment in atomic and nuclear physics, particularly in the description of electron spin magnetic moment and in the analysis of magnetic properties of materials.</p>
+<p>These constants are related by the fundamental equation:</p>
+<p><span class="math display">\[c^2 = \frac{1}{\mu_0 \epsilon_0}\]</span></p>
+<p>which follows from Maxwell’s equations and serves as a consistency check for our unit system.<span class="citation" data-cites="Griffiths2018"><sup>2</sup></span></p>
+<h3 id="magnetic-moments-and-fields">Magnetic Moments and Fields</h3>
+<p>The magnetic moment <span class="math inline">\(\vec{\mu}\)</span> of a particle can arise from its intrinsic spin or from its orbital motion. In the SI system, magnetic moment has units of A·m² (ampere square meter) or, equivalently, J/T (joule per tesla).<span class="citation" data-cites="Blundell2001"><sup>3</sup></span></p>
+<p>The energy of a magnetic moment in an external magnetic field <span class="math inline">\(\vec{B}\)</span> is given by:</p>
+<p><span class="math display">\[E = -\vec{\mu} \cdot \vec{B}\]</span></p>
+<p>Since energy is measured in joules (J), and magnetic moment in J/T, the magnetic field <span class="math inline">\(\vec{B}\)</span> must have units of tesla (T), which is equivalent to Vs/m² or kg/(s²·A).</p>
+<p>For a current loop with area <span class="math inline">\(A\)</span> and current <span class="math inline">\(I\)</span>, the magnetic moment is:</p>
+<p><span class="math display">\[\vec{\mu} = I \vec{A}\]</span></p>
+<p>Confirming the units of magnetic moment as A·m².</p>
+<h3 id="quantum-mechanical-magnetic-moment">Quantum Mechanical Magnetic Moment</h3>
+<p>In quantum mechanics, the magnetic moment of an electron has contributions from both spin and orbital angular momentum:</p>
+<p><span class="math display">\[\vec{\mu}_e = -g_e \frac{e}{2m_e} \vec{S} - \frac{e}{2m_e} \vec{L}\]</span></p>
+<p>where <span class="math inline">\(g_e \approx 2.002\)</span> is the electron g-factor, <span class="math inline">\(e\)</span> is the elementary charge, <span class="math inline">\(m_e\)</span> is the electron mass, <span class="math inline">\(\vec{S}\)</span> is the spin angular momentum, and <span class="math inline">\(\vec{L}\)</span> is the orbital angular momentum.<span class="citation" data-cites="Cohen-Tannoudji1991"><sup>4</sup></span></p>
+<p>The angular momentum (both spin and orbital) has units of <span class="math inline">\(\hbar\)</span>, which in SI is J·s. Thus:</p>
+<p><span class="math display">\[[\vec{\mu}_e] = \frac{\text{C}}{\text{kg}} \cdot \text{J} \cdot \text{s} = \frac{\text{C} \cdot \text{J} \cdot \text{s}}{\text{kg}} = \frac{\text{A} \cdot \text{s} \cdot \text{J} \cdot \text{s}}{\text{kg}} = \frac{\text{A} \cdot \text{s}^2 \cdot \text{J}}{\text{kg}}\]</span></p>
+<p>Since <span class="math inline">\(\text{J} = \text{kg} \cdot \text{m}^2 / \text{s}^2\)</span>, we have:</p>
+<p><span class="math display">\[[\vec{\mu}_e] = \frac{\text{A} \cdot \text{s}^2 \cdot \text{kg} \cdot \text{m}^2 / \text{s}^2}{\text{kg}} = \text{A} \cdot \text{m}^2\]</span></p>
+<p>confirming the units of magnetic moment as A·m².</p>
+<h2 id="magnetic-interaction-energy">Magnetic Interaction Energy</h2>
+<h3 id="magnetic-dipole-dipole-interaction">Magnetic Dipole-Dipole Interaction</h3>
+<p>The energy of interaction between two magnetic dipoles <span class="math inline">\(\vec{\mu}_1\)</span> and <span class="math inline">\(\vec{\mu}_2\)</span> separated by a displacement vector <span class="math inline">\(\vec{r}\)</span> is given by:</p>
+<p><span class="math display">\[E = \frac{\mu_0}{4\pi} \left[ \frac{\vec{\mu}_1 \cdot \vec{\mu}_2}{r^3} - \frac{3(\vec{\mu}_1 \cdot \vec{r})(\vec{\mu}_2 \cdot \vec{r})}{r^5} \right]\]</span></p>
+<p>Let’s analyze the units term by term:</p>
+<ul>
+<li><span class="math inline">\(\mu_0/4\pi\)</span> has units of N/A², or equivalently, T·m/A</li>
+<li><span class="math inline">\(\vec{\mu}_1\)</span> and <span class="math inline">\(\vec{\mu}_2\)</span> have units of A·m²</li>
+<li><span class="math inline">\(r^3\)</span> and <span class="math inline">\(r^5\)</span> have units of m³ and m⁵, respectively</li>
+</ul>
+<p>Combining these:</p>
+<p><span class="math display">\[[E] = \frac{\text{T} \cdot \text{m}}{\text{A}} \cdot \frac{\text{A}^2 \cdot \text{m}^4}{\text{m}^3} = \text{T} \cdot \text{A} \cdot \text{m}^2 = \frac{\text{kg}}{\text{s}^2 \cdot \text{A}} \cdot \text{A} \cdot \text{m}^2 = \frac{\text{kg} \cdot \text{m}^2}{\text{s}^2} = \text{J}\]</span></p>
+<p>This confirms that the interaction energy is correctly expressed in units of joules.</p>
+<h3 id="heisenberg-exchange-interaction">Heisenberg Exchange Interaction</h3>
+<p>In quantum mechanical systems, the exchange interaction between spins is often expressed using the Heisenberg Hamiltonian:</p>
+<p><span class="math display">\[\mathcal{H} = -\sum_{i,j} J_{ij} \vec{S}_i \cdot \vec{S}_j\]</span></p>
+<p>where <span class="math inline">\(J_{ij}\)</span> is the exchange coupling constant and <span class="math inline">\(\vec{S}_i\)</span>, <span class="math inline">\(\vec{S}_j\)</span> are dimensionless spin operators (their eigenvalues are pure numbers like <span class="math inline">\(\pm 1/2\)</span> for spin-1/2 particles).<span class="citation" data-cites="White2007"><sup>5</sup></span></p>
+<p>Since the Hamiltonian must have units of energy (J), the exchange coupling constant <span class="math inline">\(J_{ij}\)</span> must also have units of energy, typically expressed in eV, cm⁻¹, or K (kelvin, through the relation <span class="math inline">\(E = k_B T\)</span>).</p>
+<h3 id="zeeman-interaction">Zeeman Interaction</h3>
+<p>The Zeeman interaction describes the coupling of a magnetic moment to an external magnetic field:</p>
+<p><span class="math display">\[\mathcal{H}_{\text{Zeeman}} = -\vec{\mu} \cdot \vec{B} = -g\mu_B \vec{S} \cdot \vec{B}\]</span></p>
+<p>where <span class="math inline">\(g\)</span> is the g-factor (dimensionless), <span class="math inline">\(\mu_B\)</span> is the Bohr magneton (J/T), <span class="math inline">\(\vec{S}\)</span> is the dimensionless spin operator, and <span class="math inline">\(\vec{B}\)</span> is the magnetic field (T).</p>
+<p>The units check out: <span class="math inline">\([\mathcal{H}_{\text{Zeeman}}] = \frac{\text{J}}{\text{T}} \cdot \text{T} = \text{J}\)</span>, confirming that the Zeeman energy is expressed in joules.</p>
+<h2 id="computational-implementation">Computational Implementation</h2>
+<h3 id="finite-field-approach">Finite Field Approach</h3>
+<p>In computational studies, the magnetic properties of molecules can be calculated using a finite field approach, where the energy is computed in the presence of magnetic fields of varying strengths. The components of the susceptibility tensor can then be obtained by numerical differentiation:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_magnetic_susceptibility(molecule, field_strength<span class="op">=</span><span class="fl">0.001</span>):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Calculate magnetic susceptibility using finite field approach.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">    -----------</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">    molecule : str</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">        Molecule specification in XYZ format.</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">    field_strength : float</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">        Strength of magnetic field in Tesla.</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">        </span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">    --------</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">    chi : numpy.ndarray</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">        3x3 magnetic susceptibility tensor in SI units (m³/mol).</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="im">from</span> psi4 <span class="im">import</span> energy, set_options</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Setup calculation</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    set_options({</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">'basis'</span>: <span class="st">'aug-cc-pVDZ'</span>,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">'reference'</span>: <span class="st">'rhf'</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">'scf_type'</span>: <span class="st">'pk'</span>,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">'e_convergence'</span>: <span class="fl">1e-10</span>,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">'d_convergence'</span>: <span class="fl">1e-10</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Define field directions</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    field_directions <span class="op">=</span> np.eye(<span class="dv">3</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize tensor</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    chi <span class="op">=</span> np.zeros((<span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate reference energy (no field)</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    e0 <span class="op">=</span> energy(<span class="st">'scf'</span>, molecule<span class="op">=</span>molecule)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calculate energies with fields in different directions</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Positive field in direction i</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>        field_vec <span class="op">=</span> field_directions[i] <span class="op">*</span> field_strength</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>        set_options({<span class="st">'perturb_h'</span>: <span class="va">True</span>, <span class="st">'perturb_with'</span>: <span class="st">'magnetic_field'</span>, <span class="st">'perturb_magnitude'</span>: field_strength})</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>        e_pos <span class="op">=</span> energy(<span class="st">'scf'</span>, molecule<span class="op">=</span>molecule)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Negative field in direction i</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>        field_vec <span class="op">=</span> <span class="op">-</span>field_directions[i] <span class="op">*</span> field_strength</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>        set_options({<span class="st">'perturb_h'</span>: <span class="va">True</span>, <span class="st">'perturb_with'</span>: <span class="st">'magnetic_field'</span>, <span class="st">'perturb_magnitude'</span>: <span class="op">-</span>field_strength})</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>        e_neg <span class="op">=</span> energy(<span class="st">'scf'</span>, molecule<span class="op">=</span>molecule)</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Second derivative approximation</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>            chi[i, j] <span class="op">=</span> (e_pos <span class="op">+</span> e_neg <span class="op">-</span> <span class="dv">2</span><span class="op">*</span>e0) <span class="op">/</span> (field_strength<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert to SI units (m³/mol)</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Conversion factor depends on how the quantum chemistry program handles units</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    conversion_factor <span class="op">=</span> <span class="fl">1.0</span>  <span class="co"># Placeholder - actual value depends on program specifics</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    chi <span class="op">*=</span> conversion_factor</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> chi</span></code></pre></div>
+<p>This code snippet illustrates the basic approach to calculating magnetic susceptibility using finite differences of the energy with respect to applied magnetic fields.</p>
+<h3 id="unit-conversions">Unit Conversions</h3>
+<p>In practice, computational chemistry programs may use different internal unit systems, requiring conversions to SI units for comparison with experimental data. Here’s an example of converting between common unit systems:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> convert_magnetic_coupling_units(j_value, input_unit, output_unit):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Convert magnetic coupling constant between different units.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">    -----------</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">    j_value : float</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">        Value of coupling constant in input_unit.</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">    input_unit : str</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">        Input unit ('eV', 'cm-1', 'K', 'J').</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">    output_unit : str</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">        Output unit ('eV', 'cm-1', 'K', 'J').</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">        </span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">    --------</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">    float</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">        Coupling constant in output_unit.</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Constants</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    kb <span class="op">=</span> <span class="fl">8.617333262e-5</span>  <span class="co"># Boltzmann constant in eV/K</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> <span class="fl">4.135667696e-15</span>  <span class="co"># Planck constant in eV·s</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    c <span class="op">=</span> <span class="dv">299792458</span>        <span class="co"># Speed of light in m/s</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert to eV first</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> input_unit <span class="op">==</span> <span class="st">'eV'</span>:</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        j_in_ev <span class="op">=</span> j_value</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> input_unit <span class="op">==</span> <span class="st">'cm-1'</span>:</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        j_in_ev <span class="op">=</span> j_value <span class="op">*</span> h <span class="op">*</span> c <span class="op">*</span> <span class="dv">100</span>  <span class="co"># h*c in eV·m, *100 for cm→m</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> input_unit <span class="op">==</span> <span class="st">'K'</span>:</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        j_in_ev <span class="op">=</span> j_value <span class="op">*</span> kb</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> input_unit <span class="op">==</span> <span class="st">'J'</span>:</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        j_in_ev <span class="op">=</span> j_value <span class="op">/</span> <span class="fl">1.602176634e-19</span>  <span class="co"># e in C</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f&quot;Unsupported input unit: </span><span class="sc">{</span>input_unit<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert from eV to output unit</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> output_unit <span class="op">==</span> <span class="st">'eV'</span>:</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> j_in_ev</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> output_unit <span class="op">==</span> <span class="st">'cm-1'</span>:</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> j_in_ev <span class="op">/</span> (h <span class="op">*</span> c <span class="op">*</span> <span class="dv">100</span>)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> output_unit <span class="op">==</span> <span class="st">'K'</span>:</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> j_in_ev <span class="op">/</span> kb</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> output_unit <span class="op">==</span> <span class="st">'J'</span>:</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> j_in_ev <span class="op">*</span> <span class="fl">1.602176634e-19</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="ss">f&quot;Unsupported output unit: </span><span class="sc">{</span>output_unit<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>This function demonstrates the conversion of magnetic coupling constants between different units commonly used in the scientific literature.</p>
+<h2 id="common-pitfalls-and-misconceptions">Common Pitfalls and Misconceptions</h2>
+<h3 id="cgs-vs.-si-units">CGS vs. SI Units</h3>
+<p>One common source of confusion in the literature is the use of different unit systems, particularly CGS (Gaussian) vs. SI units. In the CGS system, the magnetic dipole-dipole interaction energy takes the form:</p>
+<p><span class="math display">\[E = \frac{\vec{\mu}_1 \cdot \vec{\mu}_2}{r^3} - \frac{3(\vec{\mu}_1 \cdot \vec{r})(\vec{\mu}_2 \cdot \vec{r})}{r^5}\]</span></p>
+<p>Note the absence of the <span class="math inline">\(\mu_0/4\pi\)</span> factor that appears in the SI expression.</p>
+<p>When converting between CGS and SI units for magnetic quantities, it’s important to account for both the different units and the explicit appearance of <span class="math inline">\(\mu_0\)</span> in SI formulas:</p>
+<ul>
+<li>Magnetic moment: 1 emu (CGS) = 10⁻³ A·m² (SI)</li>
+<li>Magnetic field: 1 G (Gauss, CGS) = 10⁻⁴ T (SI)</li>
+<li>Magnetic susceptibility: 1 emu/mol (CGS) = 4π×10⁻⁶ m³/mol (SI)</li>
+</ul>
+<h3 id="dimensionless-vs.-dimensional-spin">Dimensionless vs. Dimensional Spin</h3>
+<p>Another potential source of confusion is the use of dimensionless spin operators in the Heisenberg Hamiltonian versus dimensional angular momentum in the expression for magnetic moment. It’s important to remember that:</p>
+<ul>
+<li>Spin operators <span class="math inline">\(\vec{S}\)</span> in the Heisenberg Hamiltonian are dimensionless</li>
+<li>Angular momentum <span class="math inline">\(\vec{L}\)</span> and <span class="math inline">\(\vec{S}\)</span> in the magnetic moment expression have units of <span class="math inline">\(\hbar\)</span></li>
+</ul>
+<p>This distinction affects how the g-factor and exchange coupling constants are defined and interpreted.</p>
+<h2 id="applications">Applications</h2>
+<h3 id="molecular-magnetism">Molecular Magnetism</h3>
+<p>In molecular magnets, the magnetic coupling between spin centers determines the overall magnetic behavior of the molecule. By calculating the exchange coupling constants <span class="math inline">\(J_{ij}\)</span> between different spin centers, we can predict magnetic properties such as the ground state spin, susceptibility, and magnetization curves.<span class="citation" data-cites="Kahn1993"><sup>6</sup></span></p>
+<p>For example, in a dinuclear copper(II) complex with two <span class="math inline">\(S=1/2\)</span> centers, the energy gap between the singlet and triplet states is directly related to the exchange coupling constant:</p>
+<p><span class="math display">\[\Delta E = E(S=0) - E(S=1) = -2J\]</span></p>
+<p>By calculating this energy gap using quantum chemistry methods, we can determine <span class="math inline">\(J\)</span> and predict the magnetic behavior of the complex.</p>
+<h3 id="spin-hamiltonians-in-materials-science">Spin Hamiltonians in Materials Science</h3>
+<p>In materials science, effective spin Hamiltonians are used to model the magnetic properties of extended systems:<span class="citation" data-cites="Spaldin2010"><sup>7</sup></span></p>
+<p><span class="math display">\[\mathcal{H} = -\sum_{\langle i,j \rangle} J_{ij} \vec{S}_i \cdot \vec{S}_j - \sum_i g_i \mu_B \vec{S}_i \cdot \vec{B} + \sum_i D_i (S_i^z)^2 + \sum_{\langle i,j \rangle} \vec{D}_{ij} \cdot (\vec{S}_i \times \vec{S}_j)\]</span></p>
+<p>where the terms represent exchange interaction, Zeeman interaction, single-ion anisotropy, and Dzyaloshinskii-Moriya interaction, respectively.</p>
+<p>The consistent application of units is crucial when parameterizing such Hamiltonians based on quantum chemical calculations or when comparing calculated properties with experimental measurements.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this work, we have provided a systematic derivation of the SI units involved in magnetic interactions at the quantum level. By carefully tracking the dimensions of each quantity and their relationships, we have established a consistent framework for understanding and interpreting magnetic properties in computational studies.</p>
+<p>The key points from this analysis can be summarized as follows. Magnetic moments in SI units are expressed as A·m² or equivalently as J/T, while magnetic fields are quantified in tesla (T). Exchange coupling constants, which are central to quantum mechanical descriptions of magnetic interactions, carry units of energy and may be expressed in joules, electron volts, wavenumbers (cm⁻¹), or kelvin through the Boltzmann constant. It is crucial to note that the magnetic dipole-dipole interaction formula in SI units necessarily includes the factor <span class="math inline">\(\mu_0/4\pi\)</span>, which distinguishes it from its CGS counterpart. Additionally, when working with the Heisenberg Hamiltonian, one must remember that the spin operators are dimensionless, unlike the angular momentum operators that appear in expressions for magnetic moments.</p>
+<p>This framework provides a solid foundation for computational studies of magnetic systems, ensuring that calculated properties can be correctly related to experimentally measurable quantities.<span class="citation" data-cites="atkins2010physical"><sup>8</sup></span> A comprehensive understanding of these units and their interrelationships is essential for accurate modeling of magnetic phenomena at both quantum and macroscopic scales.</p>
+<h2 class="unnumbered" id="references">References</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-Jackson1999" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Jackson, J. D. <em>Classical Electrodynamics</em>, 3rd ed.; Wiley: New York, 1999.</div>
+</div>
+<div id="ref-Griffiths2018" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">Griffiths, D. J.; Schroeter, D. F. <em>Introduction to Electrodynamics</em>, 4th ed.; Cambridge University Press: Cambridge, 2018. <a href="https://doi.org/10.1017/9781108333511">https://doi.org/10.1017/9781108333511</a>.</div>
+</div>
+<div id="ref-Blundell2001" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Blundell, S. <em>Magnetism in Condensed Matter</em>; Oxford master series in condensed matter physics; Oxford University Press: Oxford, 2001.</div>
+</div>
+<div id="ref-Cohen-Tannoudji1991" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Cohen-Tannoudji, C.; Diu, B.; Laloë, F. <em>Quantum Mechanics</em>; Wiley: New York, 1991; Vol. 1.</div>
+</div>
+<div id="ref-White2007" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">White, R. M.; Geballe, T. H. Quantum Theory of Magnetism. <em>Solid State Physics</em> <strong>2007</strong>, <em>59</em>, 1–296. <a href="https://doi.org/10.1016/S0081-1947(07)31001-6">https://doi.org/10.1016/S0081-1947(07)31001-6</a>.</div>
+</div>
+<div id="ref-Kahn1993" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Kahn, O. <em>Molecular Magnetism</em>; VCH Publishers: New York, 1993.</div>
+</div>
+<div id="ref-Spaldin2010" class="csl-entry" role="listitem">
+<div class="csl-left-margin">7. </div><div class="csl-right-inline">Spaldin, N. A. <em>Magnetic Materials: Fundamentals and Applications</em>, 2nd ed.; Cambridge University Press: Cambridge, 2010. <a href="https://doi.org/10.1017/CBO9780511781599">https://doi.org/10.1017/CBO9780511781599</a>.</div>
+</div>
+<div id="ref-atkins2010physical" class="csl-entry" role="listitem">
+<div class="csl-left-margin">8. </div><div class="csl-right-inline">Atkins, P.; Paula, J. de. <em>Physical Chemistry</em>, 9th ed.; W. H. Freeman: New York, 2010.</div>
+</div>
+</div>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                    <a href="../colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>

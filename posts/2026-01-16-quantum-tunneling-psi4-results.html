@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>From Mock to Reality - H2O2 Tunneling with Psi4 and Modern OptKing Constraints — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/theme-toggle.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="../">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">quantum chemistry, tunneling, kinetics, psi4, optking, improved_tunnel</span>
+    </div>
+    
+
+    <h1 class="post-title">From Mock to Reality - H2O2 Tunneling with Psi4 and Modern OptKing Constraints</h1>
+
+    <div class="post-meta">
+        <span>January 16, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <h2 id="abstract">Abstract</h2>
+<p>This note documents the transition of the improved_tunnel workflow from mock calculations to production Psi4 runs.<span class="citation" data-cites="Smith2020Psi4"><sup>1</sup></span> We address two implementation challenges: (1) the deprecation of <code>fixed_dihedral</code> constraints in modern OptKing, requiring migration to <code>ranged_dihedral</code>,<span class="citation" data-cites="OptKing2024"><sup>2</sup></span> and (2) symmetry projection errors during relaxed scans. With these fixes, we obtain a physically reasonable torsional barrier of 6.70 kcal/mol for H2O2 and observe significant tunneling enhancement (kappa = 3.6 at 300 K) from the WKB method.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Our previous post demonstrated the improved_tunnel workflow using a mock quantum chemistry engine. While useful for validating the pipeline, mock data cannot capture real electronic structure effects. This follow-up reports results from actual Psi4 calculations at the MP2/cc-pVTZ level.</p>
+<p>Two obstacles emerged when running with Psi4. First, modern OptKing (bundled with Psi4 1.5+) deprecated <code>fixed_dihedral</code> in favor of <code>ranged_dihedral</code> with min/max bounds.<span class="citation" data-cites="OptKing2024 Psi4Manual2024"><sup>2,3</sup></span> Second, high-symmetry dihedral angles (0 deg, 180 deg) triggered “Cannot compute projection of different symmetries” errors during the SCF procedure. We describe the fixes for both issues and present the resulting PES, transmission coefficients, and tunneling corrections.</p>
+<h2 id="experimental-section">Experimental Section</h2>
+<h3 id="constraint-handling-fix">Constraint Handling Fix</h3>
+<p>The original code used <code>optking__fixed_dihedral</code> to constrain dihedrals during relaxed scans. Modern OptKing replaces this with <code>ranged_dihedral</code>, where setting min = max recovers fixed-value behavior:<span class="citation" data-cites="OptKing2024"><sup>2</sup></span></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Old (deprecated):</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>psi4.set_options({<span class="st">'optking__fixed_dihedral'</span>: <span class="st">'1 2 3 4 115.0'</span>})</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># New (modern OptKing):</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>psi4.set_options({<span class="st">'optking__ranged_dihedral'</span>: <span class="st">'1 2 3 4 115.0 115.0'</span>})</span></code></pre></div>
+<p>The updated <code>_set_constraints</code> method in <code>psi4_engine.py</code> now uses <code>ranged_dihedral</code> for target-value constraints and <code>frozen_dihedral</code> for freezing at the current geometry.</p>
+<h3 id="symmetry-fix">Symmetry Fix</h3>
+<p>Psi4 detected symmetry changes during the scan, causing SCF projection errors. We force C1 symmetry and disable reorientation in the geometry string:<span class="citation" data-cites="Smith2020Psi4"><sup>1</sup></span></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_psi4_geometry(<span class="va">self</span>, symmetry: <span class="bu">str</span> <span class="op">=</span> <span class="st">&quot;c1&quot;</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    lines <span class="op">=</span> [<span class="ss">f&quot;</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>charge<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>multiplicity<span class="sc">}</span><span class="ss">&quot;</span>]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> atom <span class="kw">in</span> <span class="va">self</span>.atoms:</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        x, y, z <span class="op">=</span> atom.coordinates</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        lines.append(<span class="ss">f&quot;</span><span class="sc">{</span>atom<span class="sc">.</span>symbol<span class="sc">}</span><span class="ss">  </span><span class="sc">{</span>x<span class="sc">:15.10f}</span><span class="ss">  </span><span class="sc">{</span>y<span class="sc">:15.10f}</span><span class="ss">  </span><span class="sc">{</span>z<span class="sc">:15.10f}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    lines.append(<span class="ss">f&quot;symmetry </span><span class="sc">{</span>symmetry<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    lines.append(<span class="st">&quot;no_reorient&quot;</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    lines.append(<span class="st">&quot;no_com&quot;</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>.join(lines)</span></code></pre></div>
+<h3 id="calculation-settings">Calculation Settings</h3>
+<p><strong>Table 1.</strong> Workflow configuration for Psi4 calculations.</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>System</td>
+<td>H2O2 torsion (H-O-O-H dihedral)</td>
+</tr>
+<tr>
+<td>Method</td>
+<td>MP2/cc-pVTZ</td>
+</tr>
+<tr>
+<td>PES scan</td>
+<td>Relaxed, 0-360 deg, 10 deg step</td>
+</tr>
+<tr>
+<td>Tunneling methods</td>
+<td>WKB, SCT, Eckart</td>
+</tr>
+<tr>
+<td>Energy grid</td>
+<td>200 points, 0.01-1.05 × Vb</td>
+</tr>
+<tr>
+<td>Temperature grid</td>
+<td>100-500 K, 20 K step</td>
+</tr>
+<tr>
+<td>QC engine</td>
+<td>Psi4 (real calculations)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="results-and-discussion">Results and Discussion</h2>
+<h3 id="potential-energy-surface">Potential Energy Surface</h3>
+<p>The relaxed scan yields a torsional barrier of <strong>6.70 kcal/mol</strong> at the MP2/cc-pVTZ level. This is close to the experimental trans barrier of ~7.4 kcal/mol for H2O2.<span class="citation" data-cites="Koput1998"><sup>4</sup></span></p>
+<figure>
+<img src="../images/h2o2_psi4_pes.png" alt="H2O2 torsional PES from Psi4">
+<figcaption>
+<strong>Figure 1.</strong> Relaxed torsional PES for H2O2 at MP2/cc-pVTZ. The barrier height of 6.70 kcal/mol corresponds to the trans configuration (180 deg). Green triangles mark local minima identified by the workflow.
+</figcaption>
+</figure>
+<p>The PES shows the expected periodic structure with barriers at 0 deg (cis) and 180 deg (trans), and minima near the gauche conformations. Some irregularity in minima positions reflects the discrete 10 deg scan resolution.</p>
+<h3 id="tunneling-corrections">Tunneling Corrections</h3>
+<p><strong>Table 2.</strong> Rate constants and tunneling corrections at 300 K (Psi4 data).</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>kappa(300 K)</th>
+<th>k_classical (s^-1)</th>
+<th>k_quantum (s^-1)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WKB</td>
+<td>3.64</td>
+<td>1.31 × 10^8</td>
+<td>4.78 × 10^8</td>
+</tr>
+<tr>
+<td>SCT</td>
+<td>3.64</td>
+<td>1.31 × 10^8</td>
+<td>4.78 × 10^8</td>
+</tr>
+<tr>
+<td>Eckart</td>
+<td>1.01</td>
+<td>1.31 × 10^8</td>
+<td>1.33 × 10^8</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The WKB and SCT methods yield <strong>kappa = 3.64</strong> at 300 K, indicating the quantum-corrected rate is 3.6 times faster than the classical transition state theory rate.<span class="citation" data-cites="Kastner2014"><sup>5</sup></span> This is a significant tunneling enhancement for a light-atom torsional motion.</p>
+<p>The Eckart method returns kappa near 1.0, suggesting the analytic barrier fitting is not capturing the true barrier shape.<span class="citation" data-cites="Eckart1930"><sup>6</sup></span> This is a known limitation when the PES deviates from the idealized Eckart form.</p>
+<h3 id="temperature-dependence">Temperature Dependence</h3>
+<figure>
+<img src="../images/h2o2_psi4_kappa.png" alt="Tunneling correction vs temperature">
+<figcaption>
+<strong>Figure 2.</strong> Temperature dependence of the tunneling correction kappa for WKB/SCT (brown) and Eckart (cyan). WKB/SCT show strong tunneling at low temperature (kappa ~ 47 at 100 K), converging toward the classical limit at high temperature.
+</figcaption>
+</figure>
+<p>The kappa vs temperature curve exhibits the expected behavior.<span class="citation" data-cites="Kastner2014"><sup>5</sup></span> At low temperature (100 K), kappa reaches approximately 47, indicating that tunneling dominates the reaction dynamics. At room temperature (300 K), kappa falls to 3.6, representing moderate tunneling enhancement. At elevated temperature (500 K), kappa approaches 2, converging toward the classical limit. This temperature dependence is characteristic of quantum tunneling through a barrier, where the tunneling contribution becomes increasingly important as thermal energy decreases relative to the barrier height.</p>
+<h3 id="transmission-coefficients">Transmission Coefficients</h3>
+<figure>
+<img src="../images/h2o2_psi4_transmission.png" alt="Transmission coefficient comparison">
+<figcaption>
+<strong>Figure 3.</strong> Transmission coefficients vs normalized energy (E/V) for the three tunneling methods. WKB/SCT show a transition near E/V = 0.9, while Eckart exhibits a sharp step at E/V = 1.0.
+</figcaption>
+</figure>
+<p>The transmission plot reveals that WKB/SCT produce non-zero transmission below the barrier (E/V &lt; 1), which integrates to give kappa &gt; 1.<span class="citation" data-cites="Kastner2014"><sup>5</sup></span> The Eckart method’s step-function behavior explains its near-classical kappa value.<span class="citation" data-cites="Eckart1930"><sup>6</sup></span></p>
+<h3 id="arrhenius-analysis">Arrhenius Analysis</h3>
+<figure>
+<img src="../images/h2o2_psi4_arrhenius.png" alt="Arrhenius plot">
+<figcaption>
+<strong>Figure 4.</strong> Arrhenius plot comparing classical TST rates (blue) with quantum-corrected rates (red). The divergence at low temperature reflects tunneling enhancement.
+</figcaption>
+</figure>
+<p>The Arrhenius plot shows the quantum-corrected rates (red) exceed classical rates (blue) across all temperatures, with the gap widening at low T where tunneling contributions dominate.</p>
+<h3 id="ring-polymer-instanton-input">Ring-Polymer Instanton Input</h3>
+<figure>
+<img src="../images/h2o2_psi4_ring_polymer.png" alt="Ring polymer instanton guess">
+<figcaption>
+<strong>Figure 5.</strong> Initial ring-polymer geometry for instanton optimization, generated by rotating the dihedral across 32 beads.
+</figcaption>
+</figure>
+<p>The workflow generates an i-PI input file for ring-polymer instanton optimization, which can refine the deep-tunneling rate beyond the semiclassical approximation.<span class="citation" data-cites="Richardson2009 Ceriotti2014"><sup>7,8</sup></span></p>
+<h2 id="summary-of-code-changes">Summary of Code Changes</h2>
+<p>The following files were modified to enable Psi4 compatibility:</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>File</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>qchem/psi4_engine.py</code></td>
+<td>Use <code>ranged_dihedral</code> instead of deprecated <code>fixed_dihedral</code></td>
+</tr>
+<tr>
+<td><code>molecule/structure.py</code></td>
+<td>Add <code>symmetry c1</code>, <code>no_reorient</code>, <code>no_com</code> to geometry string</td>
+</tr>
+<tr>
+<td><code>kinetics/rates.py</code></td>
+<td>Remove kappa &gt;= 1 clamp (allows kappa &lt; 1 for above-barrier reflection)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="conclusions">Conclusions</h2>
+<p>The improved_tunnel workflow now produces physically meaningful results with Psi4.<span class="citation" data-cites="Smith2020Psi4"><sup>1</sup></span> The calculated barrier height of 6.70 kcal/mol at the MP2/cc-pVTZ level is consistent with experimental measurements.<span class="citation" data-cites="Koput1998"><sup>4</sup></span> The WKB and SCT methods yield a tunneling correction factor kappa = 3.64 at 300 K, indicating substantial tunneling enhancement for this light-atom torsional system.<span class="citation" data-cites="Kastner2014"><sup>5</sup></span> The temperature dependence follows the expected trend, with strong tunneling contributions at low temperature that diminish as the system approaches classical behavior at elevated temperatures. The Eckart method requires further investigation, as its analytic barrier model does not capture the full tunneling contribution for this system.<span class="citation" data-cites="Eckart1930"><sup>6</sup></span></p>
+<h2 id="authorship-and-provenance">Authorship and Provenance</h2>
+<p>This post, code modifications, and analysis were generated by an AI system (Claude) working with the improved_tunnel repository. Results reflect actual Psi4 calculations at the MP2/cc-pVTZ level.</p>
+<h2 class="unnumbered" id="references">References</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-Smith2020Psi4" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Smith, D. G. A.; Burns, L. A.; Simmonett, A. C.; Parrish, R. M.; Schieber, M. C.; Galvelis, R.; Kraus, P.; Kruse, H.; Di Remigio, R.; Alenaizan, A.; James, A. M.; Lehtola, S.; Misiewicz, J. P.; Scheurer, M.; Shaw, R. A.; Schriber, J. B.; Xie, Y.; Glick, Z. L.; Sirianni, D. A.; O’Brien, J. S.; Waldrop, J. M.; Kumar, A.; Hohenstein, E. G.; Pritchard, B. P.; Brooks, B. R.; Schaefer, H. F.; Sokolov, A. Yu.; Patkowski, K.; DePrince, A. E.; Bozkaya, U.; King, R. A.; Evangelista, F. A.; Turney, J. M.; Crawford, T. D.; Sherrill, C. D. PSI4 1.4: Open-Source Software for High-Throughput Quantum Chemistry. <em>The Journal of Chemical Physics</em> <strong>2020</strong>, <em>152</em> (18), 184108. <a href="https://doi.org/10.1063/5.0006002">https://doi.org/10.1063/5.0006002</a>.</div>
+</div>
+<div id="ref-OptKing2024" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">OptKing Developers. OptKing: A Python Package for Geometry Optimization, 2024.</div>
+</div>
+<div id="ref-Psi4Manual2024" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Psi4 Development Team. Psi4 Manual: Geometry Optimization, 2024.</div>
+</div>
+<div id="ref-Koput1998" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Koput, J.; Carter, S.; Handy, N. C. Potential Energy Surface and Vibrational-Rotational Energy Levels of Hydrogen Peroxide. <em>The Journal of Physical Chemistry A</em> <strong>1998</strong>, <em>102</em> (31), 6325–6330. <a href="https://doi.org/10.1021/jp9812583">https://doi.org/10.1021/jp9812583</a>.</div>
+</div>
+<div id="ref-Kastner2014" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Kästner, J. Theory and Simulation of Atom Tunneling in Chemical Reactions. <em>Wiley Interdisciplinary Reviews: Computational Molecular Science</em> <strong>2014</strong>, <em>4</em> (2), 158–168. <a href="https://doi.org/10.1002/wcms.1165">https://doi.org/10.1002/wcms.1165</a>.</div>
+</div>
+<div id="ref-Eckart1930" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Eckart, C. The Penetration of a Potential Barrier by Electrons. <em>Physical Review</em> <strong>1930</strong>, <em>35</em> (11), 1303–1309. <a href="https://doi.org/10.1103/PhysRev.35.1303">https://doi.org/10.1103/PhysRev.35.1303</a>.</div>
+</div>
+<div id="ref-Richardson2009" class="csl-entry" role="listitem">
+<div class="csl-left-margin">7. </div><div class="csl-right-inline">Richardson, J. O.; Althorpe, S. C. Ring-Polymer Instanton Method for Calculating Tunneling Splittings. <em>The Journal of Chemical Physics</em> <strong>2009</strong>, <em>131</em> (21), 214106. <a href="https://doi.org/10.1063/1.3267318">https://doi.org/10.1063/1.3267318</a>.</div>
+</div>
+<div id="ref-Ceriotti2014" class="csl-entry" role="listitem">
+<div class="csl-left-margin">8. </div><div class="csl-right-inline">Ceriotti, M.; More, J.; Manolopoulos, D. E. I-PI: A Python Interface for Ab Initio Path Integral Molecular Dynamics Simulations. <em>Computer Physics Communications</em> <strong>2014</strong>, <em>185</em> (3), 1019–1026. <a href="https://doi.org/10.1016/j.cpc.2013.10.027">https://doi.org/10.1016/j.cpc.2013.10.027</a>.</div>
+</div>
+</div>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                    <a href="../colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>

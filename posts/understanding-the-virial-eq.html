@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>Understanding the Virial Equation - A Systematic Taylor Expansion of the Ideal Gas Law — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/theme-toggle.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="../">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">physical chemistry, thermodynamics, gas laws, virial equation, taylor expansion, compression factor</span>
+    </div>
+    
+
+    <h1 class="post-title">Understanding the Virial Equation - A Systematic Taylor Expansion of the Ideal Gas Law</h1>
+
+    <div class="post-meta">
+        <span class="byline">Physical Chemistry Study Guide Team</span> · <span>April 20, 2025</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <h1 id="understanding-the-virial-equation-a-systematic-taylor-expansion-of-the-ideal-gas-law">Understanding the Virial Equation: A Systematic Taylor Expansion of the Ideal Gas Law</h1>
+<p>The behavior of real gases deviates from the predictions of the ideal gas law, particularly at high pressures or low temperatures where molecular interactions become significant. In this study guide, we explore how the virial equation of state emerges naturally as a Taylor expansion of the ideal gas law, providing a systematic framework for accounting for these deviations. Understanding the virial equation and its relationship to other equations of state is essential for accurately describing the properties of gases across a wide range of conditions.<span class="citation" data-cites="atkins2010physical"><sup>1</sup></span></p>
+<h2 id="the-ideal-gas-law-as-a-starting-point">The Ideal Gas Law as a Starting Point</h2>
+<p>The ideal gas law, <span class="math inline">\(PV = nRT\)</span>, serves as a fundamental starting point in our understanding of gas behavior. This equation emerges from the combination of Boyle’s law, Charles’s law, and Avogadro’s principle. It works remarkably well under conditions of low pressure and high temperature, where gas molecules are far apart and their interactions are negligible. However, as pressure increases or temperature decreases, molecular interactions become significant, and the ideal gas law fails to accurately predict real gas behavior.</p>
+<p>The compression factor, <span class="math inline">\(Z = \frac{PV}{nRT}\)</span>, provides a convenient measure of deviation from ideal behavior. For an ideal gas, <span class="math inline">\(Z = 1\)</span> under all conditions. For real gases, <span class="math inline">\(Z\)</span> can be greater or less than 1, depending on whether repulsive or attractive forces dominate. The study of how <span class="math inline">\(Z\)</span> varies with pressure and temperature reveals important information about intermolecular interactions.</p>
+<h2 id="the-virial-expansion-a-taylor-series-approach">The Virial Expansion: A Taylor Series Approach</h2>
+<p>The virial equation of state represents a systematic extension of the ideal gas law through a Taylor series expansion. The virial equation was developed to account for molecular interactions in a way that becomes increasingly accurate as more terms are included.</p>
+<p>The virial equation can be expressed in two equivalent forms:</p>
+<p>The first form expresses the virial equation as an expansion in powers of pressure:</p>
+<p><span class="math display">\[Z = \frac{PV}{nRT} = 1 + B'P + C'P^2 + ...\]</span></p>
+<p>The second form presents it as an expansion in powers of reciprocal molar volume:</p>
+<p><span class="math display">\[Z = \frac{PV}{nRT} = 1 + \frac{B}{V_m} + \frac{C}{V_m^2} + ...\]</span></p>
+<p>where <span class="math inline">\(B\)</span>, <span class="math inline">\(C\)</span>, etc., known as the second, third, etc. virial coefficients, depend on temperature but not on pressure or volume. The first virial coefficient is always 1, corresponding to the ideal gas behavior.</p>
+<p>The mathematical derivation of the virial expansion can be understood through a systematic application of Taylor series. If we consider the compression factor <span class="math inline">\(Z\)</span> as a function of <span class="math inline">\(1/V_m\)</span>, we can expand it around the point <span class="math inline">\(1/V_m = 0\)</span> (corresponding to the ideal gas limit):</p>
+<p><span class="math display">\[Z(1/V_m) = Z(0) + \left.\frac{dZ}{d(1/V_m)}\right|_0 \cdot (1/V_m) + \frac{1}{2!} \cdot \left.\frac{d^2Z}{d(1/V_m)^2}\right|_0 \cdot (1/V_m)^2 + ...\]</span></p>
+<p>Since <span class="math inline">\(Z\)</span> approaches 1 as <span class="math inline">\(1/V_m\)</span> approaches 0 (the ideal gas limit), <span class="math inline">\(Z(0) = 1\)</span>. The coefficients of the higher-order terms are the virial coefficients:</p>
+<p><span class="math display">\[B = \left.\frac{dZ}{d(1/V_m)}\right|_0\]</span>
+<span class="math display">\[C = \frac{1}{2!} \cdot \left.\frac{d^2Z}{d(1/V_m)^2}\right|_0\]</span></p>
+<p>A similar derivation applies for the pressure expansion form of the virial equation.</p>
+<h2 id="physical-interpretation-of-virial-coefficients">Physical Interpretation of Virial Coefficients</h2>
+<p>The virial coefficients have a clear physical interpretation in terms of molecular interactions, which helps explain the compression factor variations. The second virial coefficient, <span class="math inline">\(B\)</span>, primarily accounts for two-body interactions, representing the effects of pairwise forces between molecules. When attractive forces dominate (typically at moderate pressures), <span class="math inline">\(B\)</span> is negative, leading to <span class="math inline">\(Z &lt; 1\)</span>. When repulsive forces dominate (typically at high pressures), <span class="math inline">\(B\)</span> is positive, resulting in <span class="math inline">\(Z &gt; 1\)</span>.</p>
+<p>From statistical mechanics, the second virial coefficient can be rigorously derived as:</p>
+<p><span class="math display">\[B(T) = -2\pi N_A \int_0^{\infty} [e^{-U(r)/kT} - 1]r^2 dr\]</span></p>
+<p>Where <span class="math inline">\(N_A\)</span> is Avogadro’s number, <span class="math inline">\(U(r)\)</span> is the pair potential energy function between two molecules separated by distance <span class="math inline">\(r\)</span>, <span class="math inline">\(k\)</span> is Boltzmann’s constant, and <span class="math inline">\(T\)</span> is the temperature. This equation clearly shows how <span class="math inline">\(B\)</span> arises from deviations from perfect randomness due to molecular interactions. For purely repulsive potentials, the integrand is always positive, leading to a negative <span class="math inline">\(B\)</span>. For realistic potentials with both attractive and repulsive regions, <span class="math inline">\(B\)</span> can be either positive or negative depending on temperature.</p>
+<p>Higher-order coefficients account for more complex interactions: the third virial coefficient, <span class="math inline">\(C\)</span>, represents three-body interactions, and so on. At sufficiently low densities, the contribution of higher-order terms becomes negligible, and the equation truncated after the second term provides a good approximation.</p>
+<h2 id="the-temperature-dependence-of-virial-coefficients">The Temperature Dependence of Virial Coefficients</h2>
+<p>A fascinating aspect of the virial equation is the temperature dependence of the virial coefficients. For most gases, the second virial coefficient B increases with temperature, becoming less negative or more positive. This behavior reflects the diminishing importance of attractive forces relative to the kinetic energy of the molecules as temperature increases.</p>
+<p>At a specific temperature known as the Boyle temperature (<span class="math inline">\(T_B\)</span>), the second virial coefficient B becomes zero. At this temperature, the gas behaves ideally over a wider range of pressures than at other temperatures, as the attractive and repulsive forces effectively balance each other. The Boyle temperature is characteristic of each gas and provides valuable insights into the strength of intermolecular forces.</p>
+<p>Experimental data for common gases illustrates this temperature dependence. For example, at 273 K, the second virial coefficient for nitrogen is approximately -10.5 cm³/mol, while at 600 K, it increases to 21.7 cm³/mol.<span class="citation" data-cites="atkins2010physical"><sup>1</sup></span> This dramatic change from negative to positive values with increasing temperature is observed for most gases and reflects the shifting balance between attractive and repulsive interactions.</p>
+<p>The temperature dependence can be understood through the statistical mechanical expression for <span class="math inline">\(B(T)\)</span>. As temperature increases, the exponential term <span class="math inline">\(e^{-U(r)/kT}\)</span> approaches 1 for all <span class="math inline">\(r\)</span> except at very small separations where <span class="math inline">\(U(r)\)</span> is large and positive (repulsive). This causes <span class="math inline">\(B(T)\)</span> to become more positive as temperature increases, consistent with experimental observations.</p>
+<h2 id="connection-to-other-equations-of-state">Connection to Other Equations of State</h2>
+<p>The virial expansion provides a theoretical framework that encompasses many other equations of state.<span class="citation" data-cites="atkins2010physical"><sup>1</sup></span> For example, the van der Waals equation, which accounts for molecular volume and attractive forces through its parameters a and b, can be rewritten as a virial expansion:</p>
+<p>For the van der Waals equation: <span class="math display">\[P = \frac{RT}{V_m - b} - \frac{a}{V_m^2}\]</span></p>
+<p>When expressed as a virial expansion, the coefficients are:
+<span class="math display">\[B = b - \frac{a}{RT}\]</span>
+<span class="math display">\[C = b^2\]</span></p>
+<p>This relationship provides insight into the physical meaning of the van der Waals parameters: ‘b’ primarily contributes to the repulsive term in the second virial coefficient, while ‘a/RT’ represents the contribution of attractive forces.</p>
+<p>Similar expressions can be derived for other equations of state. For the Berthelot equation <span class="math display">\[P = \frac{RT}{V_m - b} - \frac{a}{TV_m^2}\]</span>, the virial coefficients are:
+<span class="math display">\[B = b - \frac{a}{RT^2}\]</span>
+<span class="math display">\[C = b^2\]</span></p>
+<p>For the Dieterici equation <span class="math display">\[P = \frac{RT}{V_m - b}e^{-a/RTV_m}\]</span>, the coefficients can also be derived through Taylor expansion.</p>
+<p>This systematic relationship between various equations of state demonstrates how the virial expansion serves as a unifying theoretical framework, with different equations of state essentially differing in how they approximate higher-order virial coefficients.</p>
+<h2 id="determination-of-virial-coefficients">Determination of Virial Coefficients</h2>
+<p>Virial coefficients can be determined both experimentally and theoretically, showcasing the powerful connection between macroscopic observations and molecular-level interactions.</p>
+<h3 id="experimental-determination">Experimental Determination</h3>
+<p>Experimentally, virial coefficients are extracted from precise measurements of the pressure-volume-temperature (PVT) relationships of gases. Several experimental approaches exist for determining virial coefficients. Direct PVT measurements involve measuring the compression factor Z at various pressures and temperatures, from which virial coefficients can be extracted through regression analysis. Graphical methods provide another approach, particularly for the second virial coefficient. By plotting <span class="math inline">\(P/ρ\)</span> against <span class="math inline">\(P\)</span> (where <span class="math inline">\(ρ\)</span> is the mass density), researchers obtain a straight line with slope proportional to <span class="math inline">\(B'\)</span>. The y-intercept of this plot yields the value of <span class="math inline">\(RT/M\)</span>, where <span class="math inline">\(M\)</span> is the molar mass, providing a convenient method for determining both the gas constant <span class="math inline">\(R\)</span> and the virial coefficient simultaneously. Speed of sound measurements offer a third technique. At low pressures, the speed of sound in a gas depends on the first derivative of the pressure with respect to density, which is related to the virial coefficients. This method often provides more accurate values than direct <span class="math inline">\(PVT\)</span> measurements.</p>
+<p>Consider argon gas at 273 K, which has a measured second virial coefficient <span class="math inline">\(B = -21.7 cm³/mol\)</span> and third virial coefficient <span class="math inline">\(C = 1200 cm⁶/mol²\)</span>. These values can be used to calculate the compression factor of argon at various pressures, providing a quantitative measure of its deviation from ideal behavior.</p>
+<h3 id="theoretical-calculation">Theoretical Calculation</h3>
+<p>From statistical mechanics, the virial coefficients can be calculated if the intermolecular potential energy function is known. The second virial coefficient is given by:</p>
+<p><span class="math display">\[B(T) = -2\pi N_A \int_{0}^{\infty} [e^{-U(r)/kT} - 1]r^2 dr\]</span></p>
+<p>For simple potential models like the Lennard-Jones potential:</p>
+<p><span class="math display">\[U(r) = 4\epsilon[(σ/r)^{12} - (σ/r)^6]\]</span></p>
+<p>The integration can be performed numerically to obtain <span class="math inline">\(B(T)\)</span>. The parameters <span class="math inline">\(ε\)</span> (the depth of the potential well) and <span class="math inline">\(σ\)</span> (the molecular diameter) can be determined by fitting to experimental data or calculated from quantum mechanical principles.</p>
+<p>Modern computational chemistry methods have greatly advanced the accuracy of these calculations. For example, high-level ab initio calculations can generate accurate potential energy surfaces for molecular interactions, which can then be used to compute virial coefficients through numerical integration or Monte Carlo methods.</p>
+<h2 id="applications-in-modern-computational-chemistry">Applications in Modern Computational Chemistry</h2>
+<p>In modern computational chemistry, the virial expansion plays a crucial role in predicting the thermodynamic properties of gases and fluids. The advent of powerful computational methods has revolutionized the calculation of virial coefficients, enabling unprecedented accuracy and applicability to complex molecular systems.</p>
+<h3 id="high-precision-calculations-for-real-gases">High-Precision Calculations for Real Gases</h3>
+<p>Contemporary computational approaches can calculate virial coefficients with remarkable precision. For simple gases like helium, modern calculations can achieve uncertainties of less than 0.1%, allowing for the development of highly accurate equations of state for metrological applications and precision thermometry.</p>
+<p>These calculations typically proceed through several sequential steps. The process begins with generation of an accurate intermolecular potential energy surface through high-level quantum chemistry calculations, such as coupled-cluster methods with large basis sets. This is followed by calculation of classical virial coefficients through configurational integration, typically using Monte Carlo methods. For complete accuracy, scientists then apply quantum corrections, which become particularly important for light molecules like hydrogen and helium at low temperatures. Finally, for the highest precision measurements, researchers incorporate relativistic and QED (quantum electrodynamics) effects into their models.</p>
+<h3 id="complex-molecular-systems">Complex Molecular Systems</h3>
+<p>The virial approach has been extended to several categories of complex molecular systems. For polar and associating fluids, special computational techniques have been developed to handle the strong orientation-dependent forces in polar molecules and hydrogen-bonding systems. When dealing with mixtures, researchers can calculate cross-virial coefficients that describe interactions between different molecular species through similar statistical mechanical methods, providing a theoretical basis for understanding the behavior of gas mixtures. The approach has even been extended to confined fluids through modified virial expansions developed for fluids in nanopores and near surfaces, where boundary effects significantly alter molecular interactions.</p>
+<h3 id="critical-point-phenomena">Critical Point Phenomena</h3>
+<p>Near the critical point, where the distinction between liquid and gas phases disappears, the virial expansion typically converges poorly. However, specialized computational techniques based on renormalization group theory can incorporate critical phenomena into extended virial-type expansions, providing a more complete description of fluid behavior across all conditions.</p>
+<p>These computational advances are particularly valuable for understanding the behavior of gases under extreme conditions, such as high pressures and low temperatures, where experimental measurements may be challenging. They also enable the prediction of properties for hypothetical or unstable chemical species, contributing to our understanding of chemical processes in environments ranging from industrial reactors to interstellar space.</p>
+<h2 id="the-critical-point-and-principle-of-corresponding-states">The Critical Point and Principle of Corresponding States</h2>
+<p>An important aspect of real gas behavior is the existence of critical points. The critical point represents the conditions (temperature, pressure, and volume) at which the distinction between liquid and gas phases disappears.</p>
+<p>The virial equation provides insight into critical behavior through the temperature dependence of its coefficients. Near the critical point, higher-order virial coefficients become increasingly important, and the truncated virial expansion typically fails to accurately describe the system. This breakdown reflects the long-range correlations that develop between molecules near the critical point, a phenomenon that requires more sophisticated theoretical treatments.</p>
+<p>The principle of corresponding states emerges naturally when considering the virial expansion in terms of reduced variables (<span class="math inline">\(T_r = T/T_c\)</span>, <span class="math inline">\(P_r = P/P_c\)</span>, <span class="math inline">\(V_r = V/V_c\)</span>). When expressed in these reduced variables, the virial coefficients become nearly universal functions across different gases, explaining the empirical observation that gases at the same reduced conditions exhibit similar behavior. This principle provides a powerful means of predicting the properties of gases based on their critical constants.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The virial equation of state, derived as a Taylor expansion of the ideal gas law, provides a powerful and systematic framework for understanding the behavior of real gases. By accounting for molecular interactions through virial coefficients, it bridges the gap between the simplicity of the ideal gas law and the complexity of real gas behavior.</p>
+<p>The temperature dependence of virial coefficients, particularly the concept of the Boyle temperature, offers valuable insights into the nature of intermolecular forces. Furthermore, the connection between virial coefficients and statistical mechanics establishes a direct link between macroscopic gas properties and microscopic molecular interactions.</p>
+<p>The virial approach also provides a theoretical foundation for understanding the principle of corresponding states and for interpreting the significance of critical constants. Its flexibility allows it to encompass other equations of state, such as the van der Waals equation, while providing a more systematic framework for improvement through the inclusion of additional terms.</p>
+<p>Understanding the virial expansion is not merely of theoretical interest; it has practical applications in various fields, from industrial processes involving gases at high pressures to atmospheric science and astrophysics. As computational methods continue to advance, the virial approach remains a cornerstone in our understanding of the behavior of gases and fluids.</p>
+<h2 id="example-problems-and-applications">Example Problems and Applications</h2>
+<p>To illustrate the practical application of the virial equation, consider the following examples:</p>
+<h3 id="example-1-calculating-the-compression-factor">Example 1: Calculating the Compression Factor</h3>
+<p>For argon at 273 K and 100 atm, the second virial coefficient B = -21.7 cm³/mol and the third virial coefficient C = 1200 cm⁶/mol². Assuming these are the only significant terms in the virial expansion, we can calculate the compression factor:</p>
+<p><span class="math display">\[Z = 1 + \frac{B}{V_m} + \frac{C}{V_m^2}\]</span></p>
+<p>At 100 atm and 273 K, the molar volume of an ideal gas would be <span class="math inline">\(V_m = \frac{RT}{P} = \frac{0.08314 \text{ L}\cdot\text{bar/mol}\cdot\text{K} \times 273 \text{ K}}{100 \text{ atm} \times 1.01325 \text{ bar/atm}} = 0.2241 \text{ L/mol}\)</span>.</p>
+<p>Substituting into the virial equation:
+<span class="math display">\[Z = 1 + \frac{-21.7 \times 10^{-3} \text{ L/mol}}{0.2241 \text{ L/mol}} + \frac{1200 \times 10^{-6} \text{ L}^2\text{/mol}^2}{(0.2241 \text{ L/mol})^2}\]</span>
+<span class="math display">\[Z = 1 - 0.0968 + 0.0239 = 0.9271\]</span></p>
+<p>This calculation reveals that argon under these conditions is approximately 7% more compressible than an ideal gas, primarily due to attractive interactions (negative second virial coefficient).</p>
+<h3 id="example-2-determining-the-boyle-temperature">Example 2: Determining the Boyle Temperature</h3>
+<p>For nitrogen, the second virial coefficient can be approximated as <span class="math inline">\(B(T) = a + \frac{b}{T}\)</span>, where a and b are constants. Experimental data shows that B = -10.5 cm³/mol at 273 K and B = 21.7 cm³/mol at 600 K.</p>
+<p>We can determine the constants a and b:
+<span class="math display">\[-10.5 = a + \frac{b}{273}\]</span>
+<span class="math display">\[21.7 = a + \frac{b}{600}\]</span></p>
+<p>Solving, we get a = 39.5 cm³/mol and b = -13,673 cm³·K/mol.</p>
+<p>The Boyle temperature is defined as the temperature at which B = 0:
+<span class="math display">\[0 = 39.5 + \frac{-13,673}{T_B}\]</span>
+<span class="math display">\[T_B = \frac{13,673}{39.5} = 346.2 \text{ K}\]</span></p>
+<p>This result matches well with the experimental Boyle temperature for nitrogen (around 346.8 K), demonstrating the practical utility of the virial approach in predicting gas behavior.</p>
+<h2 class="unnumbered" id="references">References</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-atkins2010physical" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Atkins, P.; Paula, J. de. <em>Physical Chemistry</em>, 9th ed.; W. H. Freeman: New York, 2010.</div>
+</div>
+</div>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                    <a href="../colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>

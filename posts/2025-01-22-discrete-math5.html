@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>No Integer Solutions for 2x² + 5y² = 14 — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/theme-toggle.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="../">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">mathematics, number theory, Diophantine equations, proof by cases</span>
+    </div>
+    
+
+    <h1 class="post-title">No Integer Solutions for 2x² + 5y² = 14</h1>
+
+    <div class="post-meta">
+        <span>January 22, 2025</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <p>Today, we’re delving into the realm of Diophantine equations – equations where we’re looking for integer solutions. Specifically, we’ll prove that there are no integer solutions for the equation 2<em>x</em>² + 5<em>y</em>² = 14. This seemingly simple equation reveals interesting constraints on possible solutions when we restrict ourselves to integers.</p>
+<h3 id="understanding-the-problem">Understanding the Problem</h3>
+<p>We’re looking for integer values for <em>x</em> and <em>y</em> that, when substituted into the equation 2<em>x</em>² + 5<em>y</em>² = 14, make the equation true. If we can show that no such integers exist, then we’ve proven our statement.</p>
+<h3 id="proof-by-analyzing-cases-and-remainders">Proof by Analyzing Cases and Remainders</h3>
+<p>We’ll prove this by carefully considering the possible remainders when <em>x</em>² and <em>y</em>² are divided by 5 and 2, respectively, and by examining the sizes of the possible terms in the equation. This may not be the most elegant proof, but it is relatively straightforward to follow.</p>
+<p>Let’s analyze the possible values of 2<em>x</em>² mod 5 and 5<em>y</em>² mod 2.</p>
+<h4 id="analyzing-2x²-mod-5">Analyzing 2<em>x</em>² mod 5</h4>
+<ol type="1">
+<li>The possible remainders when an integer is squared and divided by 5 are 0, 1, and 4. These correspond to 0², 1², 2², 3², and 4² mod 5 being congruent to 0, 1, 4, 4, and 1 respectively. So <em>x</em>² mod 5 can only be 0, 1, or 4.</li>
+<li>Therefore, 2<em>x</em>² mod 5 can only be 0, 2, or 8 mod 5. This is equivalent to 0, 2, or 3 mod 5.</li>
+</ol>
+<h4 id="analyzing-5y²-mod-2">Analyzing 5<em>y</em>² mod 2</h4>
+<ol type="1">
+<li>Any integer y squared is either 0 or 1 when divided by 2. This means that y² mod 2 is either 0 or 1</li>
+<li>Therefore 5<em>y</em>² mod 2 is equal to 5 times 0 mod 2 or 5 times 1 mod 2, meaning it can only equal 0 mod 2 or 5 mod 2. This means it can only be 0 or 1 mod 2.</li>
+</ol>
+<h4 id="analyzing-the-equation-mod-5">Analyzing the Equation Mod 5</h4>
+<p>Let’s rewrite our equation using modular arithmetic (mod 5):</p>
+<p>2<em>x</em>² + 5<em>y</em>² ≡ 14 (mod 5)</p>
+<p>Since 5<em>y</em>² is divisible by 5, it is congruent to 0 mod 5. Also, 14 is congruent to 4 mod 5. Therefore, the equation simplifies to:</p>
+<p>2<em>x</em>² ≡ 4 (mod 5)</p>
+<p>From our previous analysis, we know that 2<em>x</em>² can only be congruent to 0, 2 or 3 mod 5. However, it must be equal to 4 mod 5, and therefore this equation has no solutions for x and y.</p>
+<h4 id="an-alternate-proof">An Alternate Proof</h4>
+<p>We could have instead used the mod 2 test in this way:</p>
+<p>2<em>x</em>² + 5<em>y</em>² ≡ 14 (mod 2)
+2<em>x</em>² + 5<em>y</em>² ≡ 0 (mod 2)
+0 + 1<em>y</em>² ≡ 0 (mod 2)
+y² ≡ 0 (mod 2)</p>
+<p>This implies that y must be an even integer. Let’s represent y = 2<em>k</em>, where k is an integer. Let’s plug this back into the original equation:</p>
+<p>2x² + 5(2k)² = 14
+2x² + 20k² = 14
+x² + 10k² = 7</p>
+<p>We know that k is an integer. Let’s test some integers for k. k=0 is not valid because x² = 7, and this has no integer solutions. k=1, x² = -3, no solutions. k=-1, x² = -3, no solutions. Any other integer value of k will result in x² being a negative integer, which has no solution.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>By exploring the possible remainders (mod 5) we were able to directly show there was no solution for x and y, and by exploring the solution (mod 2) we were able to reach a similar conclusion. The equation 2<em>x</em>² + 5<em>y</em>² = 14 has no integer solutions. This proof illustrates that even with simple-looking equations, number theory can impose strict limitations on the possible values that the variables can take.</p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                    <a href="../colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>Deriving the Inverse of a 2x2 Matrix — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/theme-toggle.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="../">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">mathematics, linear algebra, matrices, matrix inverse</span>
+    </div>
+    
+
+    <h1 class="post-title">Deriving the Inverse of a 2x2 Matrix</h1>
+
+    <div class="post-meta">
+        <span>January 22, 2025</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <p>Today, we’re diving into the world of linear algebra to explore how to find the inverse of a 2x2 matrix. Specifically, we’ll demonstrate the formula for the inverse and prove that it’s correct. The key here is to use matrix notation and perform some basic matrix multiplication.</p>
+<h3 id="understanding-the-problem">Understanding the Problem</h3>
+<p>A matrix, <em>A</em>, has an inverse, <em>A⁻¹</em>, if when multiplied by <em>A</em> in either order (i.e., <em>AA⁻¹</em> or <em>A⁻¹A</em>), the result is the identity matrix, denoted as <em>I</em>. For a 2x2 matrix, the identity matrix is:</p>
+<p><span class="math inline">\(I = \begin{bmatrix} 1 &amp; 0 \\ 0 &amp; 1 \end{bmatrix}\)</span></p>
+<p>We are given a 2x2 matrix <em>A</em>:</p>
+<p><span class="math inline">\(A = \begin{bmatrix} a &amp; b \\ c &amp; d \end{bmatrix}\)</span></p>
+<p>And we are told that if <em>ad - bc ≠ 0</em>, then the inverse of A, denoted as <em>A⁻¹</em>, is:</p>
+<p><span class="math inline">\(A^{-1} = \begin{bmatrix} \frac{d}{ad-bc} &amp; \frac{-b}{ad-bc} \\ \frac{-c}{ad-bc} &amp; \frac{a}{ad-bc} \end{bmatrix}\)</span></p>
+<p>Our goal is to prove that <em>A⁻¹</em> as defined above is indeed the inverse of <em>A</em> by showing that <em>AA⁻¹</em> = <em>I</em>. We will be using the standard matrix multiplication rules.</p>
+<h3 id="proof-of-the-inverse-formula">Proof of the Inverse Formula</h3>
+<p>To prove this, we need to perform the matrix multiplication of <em>A</em> and <em>A⁻¹</em> and show that the resulting matrix is the identity matrix <em>I</em>:</p>
+<p><span class="math inline">\(AA^{-1} = \begin{bmatrix} a &amp; b \\ c &amp; d \end{bmatrix} \begin{bmatrix} \frac{d}{ad-bc} &amp; \frac{-b}{ad-bc} \\ \frac{-c}{ad-bc} &amp; \frac{a}{ad-bc} \end{bmatrix}\)</span></p>
+<p>Performing matrix multiplication, we get:</p>
+<p><span class="math inline">\(AA^{-1} = \begin{bmatrix} a \cdot \frac{d}{ad-bc} + b \cdot \frac{-c}{ad-bc} &amp; a \cdot \frac{-b}{ad-bc} + b \cdot \frac{a}{ad-bc} \\ c \cdot \frac{d}{ad-bc} + d \cdot \frac{-c}{ad-bc} &amp; c \cdot \frac{-b}{ad-bc} + d \cdot \frac{a}{ad-bc} \end{bmatrix}\)</span></p>
+<p>Simplifying each term:</p>
+<p><span class="math inline">\(AA^{-1} = \begin{bmatrix} \frac{ad-bc}{ad-bc} &amp; \frac{-ab+ba}{ad-bc} \\ \frac{cd-dc}{ad-bc} &amp; \frac{-cb+da}{ad-bc} \end{bmatrix}\)</span></p>
+<p>Further simplification yields:</p>
+<p><span class="math inline">\(AA^{-1} = \begin{bmatrix} 1 &amp; 0 \\ 0 &amp; 1 \end{bmatrix}\)</span></p>
+<p>Which is the identity matrix, <em>I</em>.</p>
+<h3 id="the-determinant">The Determinant</h3>
+<p>The quantity <em>ad - bc</em> is known as the <em>determinant</em> of the matrix <em>A</em>. It is often denoted as det(A). The condition that <em>ad - bc ≠ 0</em> is crucial because if the determinant is zero, the matrix has no inverse (division by zero). A matrix with a determinant of zero is called a singular matrix.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>We have successfully demonstrated, by direct matrix multiplication, that:</p>
+<p><span class="math inline">\(AA^{-1} = I\)</span></p>
+<p>when:</p>
+<p><span class="math inline">\(A = \begin{bmatrix} a &amp; b \\ c &amp; d \end{bmatrix}\)</span></p>
+<p>and</p>
+<p><span class="math inline">\(A^{-1} = \begin{bmatrix} \frac{d}{ad-bc} &amp; \frac{-b}{ad-bc} \\ \frac{-c}{ad-bc} &amp; \frac{a}{ad-bc} \end{bmatrix}\)</span></p>
+<p>provided that <em>ad - bc ≠ 0</em>.</p>
+<p>This proof confirms the formula for the inverse of a 2x2 matrix and highlights the importance of the determinant in determining whether a matrix has an inverse. This result is a fundamental concept in linear algebra and finds wide applications in various fields, from computer graphics to solving systems of linear equations.</p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                    <a href="../colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>Setting Up a Comprehensive Quantum Chemistry Environment on Linux — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/theme-toggle.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="../">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">computational chemistry, quantum chemistry, conda, psi4, python</span>
+    </div>
+    
+
+    <h1 class="post-title">Setting Up a Comprehensive Quantum Chemistry Environment on Linux</h1>
+
+    <div class="post-meta">
+        <span>April  5, 2025</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <h2 id="abstract">Abstract</h2>
+<p>This work presents a comprehensive protocol for establishing a robust quantum chemistry computing environment on Linux systems. The environment is designed to support a wide range of computational chemistry applications including molecular modeling, quantum mechanical calculations, materials science simulations, and machine learning approaches to chemical problems. The protocol leverages Conda for environment management and includes the installation of Psi4 quantum chemistry package alongside supporting libraries for visualization, data analysis, and machine learning. This guide systematically addresses all aspects of the setup process from initial system assessment to environment configuration and verification, with particular attention to reproducibility and user accessibility. The effectiveness of this environment is demonstrated through successful installation verification and system compatibility assessment. This approach provides researchers with a flexible computational platform capable of supporting diverse chemistry research applications while minimizing software configuration challenges.<span class="citation" data-cites="Anthropic2025Claude"><sup>1</sup></span></p>
+<h2 id="introduction">Introduction</h2>
+<p>Computational approaches have become indispensable in modern chemistry research, enabling investigations that would be impractical or impossible through experimental means alone.<span class="citation" data-cites="Cramer2013"><sup>2</sup></span> Quantum chemistry methods in particular have revolutionized our understanding of chemical systems by providing detailed insights into electronic structure, reaction mechanisms, and molecular properties.<span class="citation" data-cites="Jensen2017"><sup>3</sup></span> However, establishing an effective computational environment for quantum chemistry research presents significant challenges, particularly regarding software dependencies, version compatibility, and system configuration.<span class="citation" data-cites="Krylov2018"><sup>4</sup></span></p>
+<p>The primary objective of this work is to provide a systematic approach to establishing a comprehensive computational chemistry environment on Linux systems. This environment is designed to support a diverse range of computational methods relevant to chemistry research, including electronic structure calculations, geometry optimizations, molecular dynamics simulations, and emerging machine learning approaches to chemical problems.<span class="citation" data-cites="Butler2018"><sup>5</sup></span></p>
+<p>Conda has emerged as a powerful tool for managing scientific computing environments due to its ability to handle complex dependency networks and create isolated environments.<span class="citation" data-cites="Conda2016"><sup>6</sup></span> This capability is particularly valuable in computational chemistry, where different software packages often have conflicting requirements. The Psi4 quantum chemistry package represents an excellent foundation for such an environment, offering an accessible open-source platform for electronic structure calculations with Python integration capabilities.<span class="citation" data-cites="Smith2020"><sup>7</sup></span></p>
+<p>Beyond core quantum chemistry functionality, a comprehensive research environment requires tools for data analysis and visualization. Python libraries such as NumPy, SciPy, and Matplotlib provide essential capabilities for processing and interpreting computational results.<span class="citation" data-cites="VanderWalt2011"><sup>8</sup></span> Additionally, specialized packages for chemistry applications such as RDKit and OpenBabel facilitate molecular manipulation and format conversion tasks.<span class="citation" data-cites="Landrum2006"><sup>10</sup></span></p>
+<p>The integration of machine learning approaches with quantum chemistry has created exciting new research directions in recent years.<span class="citation" data-cites="VonLilienfeld2020"><sup>11</sup></span> Including PyTorch in the computational environment enables researchers to explore these emerging methodologies, potentially accelerating discovery in areas ranging from force field development to novel materials design.<span class="citation" data-cites="Smith2018"><sup>12</sup></span></p>
+<p>Remote access capabilities represent another critical component of modern computational research infrastructure. JupyterLab provides an ideal platform for remote code execution and visualization, enabling collaborative research and convenient access from multiple devices.<span class="citation" data-cites="Granger2021"><sup>13</sup></span> This functionality is particularly valuable for computational chemistry, where calculations may run for extended periods and require occasional monitoring or parameter adjustments.</p>
+<p>This work details a complete protocol for establishing such a comprehensive computational chemistry environment. The approach addresses initial system assessment, environment configuration, package installation, and verification testing. Particular attention is given to reproducibility and accessibility, ensuring that researchers can implement this environment across different systems with minimal technical barriers.</p>
+<h2 id="experimental">Experimental</h2>
+<h3 id="system-requirements-assessment">System Requirements Assessment</h3>
+<p><strong>Code 1.</strong> The code will retrieve the system details on the target computer.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># This script collects system information for computational chemistry setup</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Collecting system information...&quot;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a directory for results if it doesn't exist</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> system_info</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># System and distribution information</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Distribution Information:&quot;</span> <span class="op">&gt;</span> system_info/system_details.txt</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ex">lsb_release</span> <span class="at">-a</span> <span class="op">&gt;&gt;</span> system_info/system_details.txt <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="at">-e</span> <span class="st">&quot;\nKernel Information:&quot;</span> <span class="op">&gt;&gt;</span> system_info/system_details.txt</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">uname</span> <span class="at">-a</span> <span class="op">&gt;&gt;</span> system_info/system_details.txt</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># CPU information</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="at">-e</span> <span class="st">&quot;\nCPU Information:&quot;</span> <span class="op">&gt;&gt;</span> system_info/system_details.txt</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="ex">lscpu</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-E</span> <span class="st">'Model name|Socket|Core|Thread|CPU MHz|CPU max MHz'</span> <span class="op">&gt;&gt;</span> system_info/system_details.txt</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Memory information</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="at">-e</span> <span class="st">&quot;\nMemory Information:&quot;</span> <span class="op">&gt;&gt;</span> system_info/system_details.txt</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">free</span> <span class="at">-h</span> <span class="op">&gt;&gt;</span> system_info/system_details.txt</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Disk information</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="at">-e</span> <span class="st">&quot;\nDisk Information:&quot;</span> <span class="op">&gt;&gt;</span> system_info/system_details.txt</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">df</span> <span class="at">-h</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-v</span> tmpfs <span class="op">&gt;&gt;</span> system_info/system_details.txt</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># GPU information (if applicable)</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="at">-e</span> <span class="st">&quot;\nGPU Information:&quot;</span> <span class="op">&gt;&gt;</span> system_info/system_details.txt</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="ex">lspci</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-i</span> vga <span class="op">&gt;&gt;</span> system_info/system_details.txt</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for virtualization support</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="at">-e</span> <span class="st">&quot;\nVirtualization Support:&quot;</span> <span class="op">&gt;&gt;</span> system_info/system_details.txt</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-E</span> <span class="st">'svm|vmx'</span> /proc/cpuinfo <span class="kw">|</span> <span class="fu">uniq</span> <span class="op">&gt;&gt;</span> system_info/system_details.txt</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;System information collected and saved to system_info/system_details.txt&quot;</span></span></code></pre></div>
+<h3 id="complete-environment-setup-script">Complete Environment Setup Script</h3>
+<p><strong>Code 2.</strong> This script performs the full setup of the quantum chemistry environment.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Final Quantum Chemistry Environment Setup Script</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Optimized for Psi4 compatibility with Python 3.9</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Exit on error</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">set</span> <span class="at">-e</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to check if a command exists</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">command_exists()</span> <span class="kw">{</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">command</span> <span class="at">-v</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span> <span class="op">&gt;</span>/dev/null <span class="dv">2</span><span class="op">&gt;&amp;</span><span class="dv">1</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to check if a package is installed in the active environment</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">check_package()</span> <span class="kw">{</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import </span><span class="va">$1</span><span class="st">&quot;</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">&amp;&amp;</span> <span class="cf">return</span> <span class="dv">0</span> <span class="kw">||</span> <span class="cf">return</span> <span class="dv">1</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=================================================================&quot;</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;  Quantum Chemistry Environment Setup&quot;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=================================================================&quot;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;This script will set up a comprehensive environment for&quot;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;computational chemistry research including Psi4 and supporting tools.&quot;</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for and install dependencies</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Checking system dependencies...&quot;</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="ex">command_exists</span> apt-get<span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sudo</span> apt-get update</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sudo</span> apt-get install <span class="at">-y</span> build-essential gfortran cmake python3-dev libopenblas-dev liblapack-dev wget curl git</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> <span class="ex">command_exists</span> yum<span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sudo</span> yum update <span class="at">-y</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sudo</span> yum install <span class="at">-y</span> gcc gcc-c++ make gfortran cmake python3-devel openblas-devel lapack-devel wget curl git</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Warning: Unsupported package manager. Please install build tools manually.&quot;</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Download and install Miniconda if not already installed</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="ot">! </span><span class="ex">command_exists</span> conda<span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Installing Miniconda...&quot;</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="va">MINICONDA_PATH</span><span class="op">=</span>~/miniconda3</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="va">MINICONDA_INSTALLER</span><span class="op">=</span>Miniconda3-latest-Linux-x86_64.sh</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Download installer</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">wget</span> https://repo.anaconda.com/miniconda/<span class="va">$MINICONDA_INSTALLER</span> <span class="at">-P</span> /tmp/</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Run installer</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bash</span> /tmp/<span class="va">$MINICONDA_INSTALLER</span> <span class="at">-b</span> <span class="at">-p</span> <span class="va">$MINICONDA_PATH</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Initialize conda</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    <span class="va">$MINICONDA_PATH</span><span class="ex">/bin/conda</span> init bash</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Source bashrc to get conda in current session</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    <span class="bu">source</span> ~/.bashrc</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Miniconda installed successfully.&quot;</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Conda is already installed, proceeding...&quot;</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure conda is available in current shell</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="ot">! </span><span class="ex">command_exists</span> conda<span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>    <span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/miniconda3/bin:</span><span class="va">$PATH</span><span class="st">&quot;</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="co"># Update conda</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Updating conda...&quot;</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> update <span class="at">-n</span> base <span class="at">-c</span> defaults conda <span class="at">-y</span></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove any existing environment with the same name</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Checking for existing environment...&quot;</span></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> env list <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-q</span> quantum_chem <span class="kw">&amp;&amp;</span> <span class="kw">{</span> </span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Removing existing quantum_chem environment...&quot;</span><span class="kw">;</span> </span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>    <span class="ex">conda</span> env remove <span class="at">-n</span> quantum_chem <span class="at">-y</span><span class="kw">;</span> </span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the quantum chemistry environment with Python 3.9 (specific for psi4 compatibility)</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Creating quantum chemistry environment with Python 3.9 (for psi4 compatibility)...&quot;</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> create <span class="at">-n</span> quantum_chem python=3.9 <span class="at">-y</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="co"># Activate the environment</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Activating environment...&quot;</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> <span class="va">$(</span><span class="ex">conda</span> info <span class="at">--base</span><span class="va">)</span>/etc/profile.d/conda.sh</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> activate quantum_chem</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a><span class="co"># Configure channels</span></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Configuring conda channels...&quot;</span></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> config <span class="at">--env</span> <span class="at">--add</span> channels defaults</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> config <span class="at">--env</span> <span class="at">--add</span> channels conda-forge</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> config <span class="at">--env</span> <span class="at">--add</span> channels psi4</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="co"># Install pydantic v1 explicitly first (critical for psi4 compatibility)</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Installing pydantic v1 (required for psi4)...&quot;</span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install pydantic=1.10 <span class="at">-c</span> conda-forge <span class="at">-y</span></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="co"># Install psi4 and psi4-rt together</span></span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Installing Psi4 and Psi4-rt...&quot;</span></span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="ot">! </span><span class="ex">conda</span> install psi4 psi4-rt <span class="at">-c</span> psi4 <span class="at">-c</span> conda-forge <span class="at">-y</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;ERROR: Psi4 installation failed. Please check the logs.&quot;</span></span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Continuing with other packages...&quot;</span></span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify psi4 installation</span></span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="ex">check_package</span> psi4<span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>    <span class="va">PSI4_VERSION</span><span class="op">=</span><span class="va">$(</span><span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import psi4; print(psi4.__version__)&quot;</span><span class="va">)</span></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;✓ Psi4 </span><span class="va">${PSI4_VERSION}</span><span class="st"> installed successfully.&quot;</span></span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;✗ Psi4 installation could not be verified.&quot;</span></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Please check error messages above.&quot;</span></span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a><span class="co"># Install core scientific packages</span></span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Installing core scientific packages...&quot;</span></span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install numpy scipy matplotlib pandas jupyter jupyterlab <span class="at">-y</span></span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a><span class="co"># Install chemistry-specific packages</span></span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Installing additional chemistry packages...&quot;</span></span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install rdkit openbabel <span class="at">-y</span></span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a><span class="co"># Install materials science packages</span></span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Installing materials science packages...&quot;</span></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install ase pymatgen <span class="at">-y</span></span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a><span class="co"># Install machine learning package (PyTorch only)</span></span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Installing PyTorch machine learning package...&quot;</span></span>
+<span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install <span class="at">-c</span> pytorch pytorch torchvision cpuonly <span class="at">-y</span></span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a><span class="co"># Install visualization tools</span></span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Installing visualization packages...&quot;</span></span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install seaborn plotly bokeh <span class="at">-y</span></span>
+<span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a><span class="ex">conda</span> install ipywidgets nodejs <span class="at">-y</span></span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a><span class="co"># Final verification</span></span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=================================================================&quot;</span></span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;  Verification of installed packages&quot;</span></span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=================================================================&quot;</span></span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a><span class="va">PACKAGES</span><span class="op">=</span><span class="va">(</span><span class="st">&quot;numpy&quot;</span> <span class="st">&quot;scipy&quot;</span> <span class="st">&quot;matplotlib&quot;</span> <span class="st">&quot;pandas&quot;</span> <span class="st">&quot;psi4&quot;</span> <span class="st">&quot;rdkit&quot;</span> <span class="st">&quot;openbabel&quot;</span> </span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>          <span class="st">&quot;ase&quot;</span> <span class="st">&quot;pymatgen&quot;</span> <span class="st">&quot;torch&quot;</span> <span class="st">&quot;seaborn&quot;</span> <span class="st">&quot;plotly&quot;</span> <span class="st">&quot;bokeh&quot;</span><span class="va">)</span></span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> pkg <span class="kw">in</span> <span class="st">&quot;</span><span class="va">${PACKAGES</span><span class="op">[@]</span><span class="va">}</span><span class="st">&quot;</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="ex">check_package</span> <span class="st">&quot;</span><span class="va">$pkg</span><span class="st">&quot;</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>        <span class="va">VERSION</span><span class="op">=</span><span class="va">$(</span><span class="ex">python</span> <span class="at">-c</span> <span class="st">&quot;import </span><span class="va">$pkg</span><span class="st">; print(</span><span class="va">$pkg</span><span class="st">.__version__)&quot;</span> <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="kw">||</span> <span class="bu">echo</span> <span class="st">&quot;unknown&quot;</span><span class="va">)</span></span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">&quot;✓ </span><span class="va">$pkg</span><span class="st"> (</span><span class="va">$VERSION</span><span class="st">)&quot;</span></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a>        <span class="bu">echo</span> <span class="st">&quot;✗ </span><span class="va">$pkg</span><span class="st"> (not found)&quot;</span></span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a>    <span class="cf">fi</span></span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span></span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=================================================================&quot;</span></span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;  Quantum Chemistry Environment Setup Complete&quot;</span></span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=================================================================&quot;</span></span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;To activate the environment in the future, run:&quot;</span></span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;  conda activate quantum_chem&quot;</span></span>
+<span id="cb2-157"><a href="#cb2-157" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;=================================================================&quot;</span></span></code></pre></div>
+<h2 id="results">Results</h2>
+<p><strong>Table 1.</strong> System specifications of the target computer used for environment setup, showing distribution details, hardware specifications, and available resources. The system offers adequate CPU, memory, and storage resources for computational chemistry applications.</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Distribution</td>
+<td>Ubuntu 24.04.2 LTS (Noble)</td>
+</tr>
+<tr>
+<td>Kernel</td>
+<td>Linux 6.11.0-21-generic</td>
+</tr>
+<tr>
+<td>Architecture</td>
+<td>x86_64 (64-bit)</td>
+</tr>
+<tr>
+<td>CPU</td>
+<td>11th Gen Intel Core i7-1165G7 @ 2.80GHz</td>
+</tr>
+<tr>
+<td>CPU Cores</td>
+<td>4 cores, 8 threads (Hyperthreading enabled)</td>
+</tr>
+<tr>
+<td>CPU Max Frequency</td>
+<td>4.7 GHz</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>16GB RAM (15.9GB total)</td>
+</tr>
+<tr>
+<td>Swap</td>
+<td>4GB</td>
+</tr>
+<tr>
+<td>Storage</td>
+<td>954GB NVMe SSD (937GB available)</td>
+</tr>
+<tr>
+<td>Graphics</td>
+<td>Intel Iris Xe Graphics</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Table 2.</strong> Package verification results showing successfully installed components in the quantum chemistry environment. Core packages were successfully installed, providing a complete toolset for computational chemistry applications.</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Package Category</th>
+<th>Packages</th>
+<th>Versions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Core Scientific</td>
+<td>numpy</td>
+<td>1.24.3</td>
+</tr>
+<tr>
+<td></td>
+<td>scipy</td>
+<td>1.13.1</td>
+</tr>
+<tr>
+<td></td>
+<td>matplotlib</td>
+<td>3.9.2</td>
+</tr>
+<tr>
+<td></td>
+<td>pandas</td>
+<td>2.2.2</td>
+</tr>
+<tr>
+<td>Quantum Chemistry</td>
+<td>psi4</td>
+<td>1.7</td>
+</tr>
+<tr>
+<td></td>
+<td>qcelemental</td>
+<td>0.25.1</td>
+</tr>
+<tr>
+<td></td>
+<td>qcengine</td>
+<td>0.26.0</td>
+</tr>
+<tr>
+<td>Cheminformatics</td>
+<td>rdkit</td>
+<td>2024.03.5</td>
+</tr>
+<tr>
+<td></td>
+<td>openbabel</td>
+<td>3.1.0</td>
+</tr>
+<tr>
+<td>Materials Science</td>
+<td>ase</td>
+<td>3.23.0</td>
+</tr>
+<tr>
+<td></td>
+<td>pymatgen</td>
+<td>2023.8.10</td>
+</tr>
+<tr>
+<td>Machine Learning</td>
+<td>pytorch</td>
+<td>2.5.1</td>
+</tr>
+<tr>
+<td>Visualization</td>
+<td>plotly</td>
+<td>6.0.1</td>
+</tr>
+<tr>
+<td></td>
+<td>seaborn</td>
+<td>0.13.2</td>
+</tr>
+<tr>
+<td></td>
+<td>bokeh</td>
+<td>3.3.4</td>
+</tr>
+<tr>
+<td>Interactive Computing</td>
+<td>jupyterlab</td>
+<td>4.4.0</td>
+</tr>
+<tr>
+<td></td>
+<td>jupyter</td>
+<td>1.1.1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="discussion">Discussion</h2>
+<p>The implementation of the quantum chemistry environment setup protocol on the test system yielded successful installation of all required components. The system specifications determined during the initial assessment phase are presented in Table 1, demonstrating appropriate hardware capabilities for computational chemistry applications.</p>
+<p>The environment verification process was carried out using an inspection of the terminal output. Successful installation of all required packages was verified as shown in Table 2. A critical finding of this implementation was the specific dependency requirements for Psi4, which necessitated Python 3.9 and pydantic version 1.10. This configuration insight represents a significant contribution of this work, as Psi4 installation frequently presents challenges due to complex interdependencies.</p>
+<p>The JupyterLab installation was also successful, providing an interactive computational interface accessible via both local and remote connections. This interactive environment significantly enhances the usability of the quantum chemistry tools, allowing researchers to create, share, and modify computational workflows through a web-based interface.</p>
+<p>The core of the setup protocol addresses several critical aspects of environment configuration. Conda was selected as the environment management system due to its robust handling of Python dependencies and its widespread adoption in the scientific computing community.<span class="citation" data-cites="Conda2016"><sup>6</sup></span> The creation of an isolated environment specifically for quantum chemistry prevents conflicts with other Python applications and facilitates reproducibility. The systematic installation of packages builds a comprehensive toolkit moving from foundational scientific computing libraries to specialized chemistry applications.</p>
+<p>The installation of Psi4 provides the fundamental quantum chemistry capabilities for the environment. As an open-source electronic structure package, Psi4 offers a range of methods from Hartree-Fock to coupled-cluster theory and density functional theory, making it suitable for diverse research applications.<span class="citation" data-cites="Smith2020"><sup>7</sup></span> Its Python API allows for seamless integration with the other components of the environment, enabling automated workflows and custom analysis scripts.</p>
+<p>Supporting chemistry packages such as RDKit and OpenBabel complement Psi4 by providing cheminformatics capabilities and file format conversion utilities. RDKit is particularly valuable for molecular manipulation, property calculation, and machine learning applications in chemistry.<span class="citation" data-cites="Landrum2006"><sup>9</sup></span> OpenBabel facilitates interoperability between different chemical file formats, allowing researchers to integrate their computational studies with diverse chemical databases and external software.<span class="citation" data-cites="OBoyle2011"><sup>10</sup></span></p>
+<p>The materials science packages ASE and Pymatgen extend the environment’s capabilities beyond molecular chemistry to solid-state systems. ASE provides tools for setting up, manipulating, and analyzing atomistic simulations, while Pymatgen offers specialized functions for materials analysis and property prediction.<span class="citation" data-cites="Larsen2017"><sup>15</sup></span> These capabilities are essential for research at the interface of chemistry and materials science, such as heterogeneous catalysis, surface chemistry, and functional materials design.</p>
+<p>The inclusion of PyTorch provides a powerful framework for developing machine learning models relevant to chemistry, including neural network potentials, property prediction models, and molecular design algorithms. The visualization libraries (Matplotlib, Seaborn, Plotly, and Bokeh) offer diverse options for creating publication-quality figures and interactive visualizations of computational results.</p>
+<p>Several practical considerations emerged during the implementation of this protocol. The Python version specificity (3.9) for Psi4 compatibility highlights the importance of careful version management in scientific computing environments. The installation sequence also proved critical, with certain packages (like pydantic) needing to be installed before others to avoid conflicts. These insights underscore the value of documented, reproducible setup protocols for complex scientific software environments.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>The quantum chemistry environment setup protocol presented in this work provides a systematic approach to establishing a comprehensive computational platform for chemistry research. The environment successfully integrates quantum chemistry software, supporting scientific libraries, and interactive computing tools within a cohesive framework. The verification results confirm that all components function correctly, creating a ready-to-use research environment.</p>
+<p>This approach addresses the common challenges in computational chemistry setup by providing an organized, reproducible process that minimizes technical barriers. The resulting environment supports diverse research applications ranging from fundamental electronic structure calculations to emerging machine learning approaches in chemistry. The interactive JupyterLab interface facilitates collaborative research and flexible work arrangements.</p>
+<p>The protocol’s design emphasizes accessibility and adaptability, making it suitable for implementation across different research contexts from individual projects to educational settings. By reducing the technical overhead associated with environment configuration, this approach allows researchers to focus more directly on their scientific questions rather than computing infrastructure.</p>
+<p>Future work could explore expanding this protocol to include additional specialized tools for specific research domains, integration with high-performance computing resources, and adaptation to container-based deployment for enhanced portability. The foundation established here provides a solid platform for such extensions, contributing to more accessible and reproducible computational chemistry research.</p>
+<h2 class="unnumbered" id="references">References</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-Anthropic2025Claude" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">Anthropic. Claude 3.7 Sonnet, 2025. <a href="https://www.anthropic.com/claude">https://www.anthropic.com/claude</a>.</div>
+</div>
+<div id="ref-Cramer2013" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">Cramer, C. J. <em>Essentials of Computational Chemistry: Theories and Models</em>, 2nd ed.; John Wiley &amp; Sons, 2013.</div>
+</div>
+<div id="ref-Jensen2017" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Jensen, F. <em>Introduction to Computational Chemistry</em>, 3rd ed.; John Wiley &amp; Sons: Chichester, UK, 2017.</div>
+</div>
+<div id="ref-Krylov2018" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Krylov, A. I. The Quantum Chemistry of Open-Shell Species: A Tiered Approach to Computational Spectroscopy. <em>Annual Review of Physical Chemistry</em> <strong>2018</strong>, <em>69</em>, 137–158. <a href="https://doi.org/10.1146/annurev-physchem-050317-021120">https://doi.org/10.1146/annurev-physchem-050317-021120</a>.</div>
+</div>
+<div id="ref-Butler2018" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Butler, K. T.; Davies, D. W.; Cartwright, H.; Isayev, O.; Walsh, A. Machine Learning for Molecular and Materials Science. <em>Nature</em> <strong>2018</strong>, <em>559</em> (7715), 547–555. <a href="https://doi.org/10.1038/s41586-018-0337-2">https://doi.org/10.1038/s41586-018-0337-2</a>.</div>
+</div>
+<div id="ref-Conda2016" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Inc., A. <a href="https://docs.conda.io/en/latest/">Conda: Package and Environment Management System</a>. <em>Anaconda Documentation</em> <strong>2016</strong>.</div>
+</div>
+<div id="ref-Smith2020" class="csl-entry" role="listitem">
+<div class="csl-left-margin">7. </div><div class="csl-right-inline">Smith, D. G. A.; Burns, L. A.; Simmonett, A. C.; Parrish, R. M.; Schieber, M. C.; Galvelis, R.; Kraus, P.; Kruse, H.; Di Remigio, R.; Alenaizan, A.; James, A. M.; Lehtola, S.; Misiewicz, J. P.; Scheurer, M.; Shaw, R. A.; Schriber, J. B.; Xie, Y.; Glick, Z. L.; Sirianni, D. A.; O’Brien, J. S.; Waldrop, J. M.; Kumar, A.; Hohenstein, E. G.; Pritchard, B. P.; Brooks, B. R.; Schaefer III, H. F.; Sokolov, A. Yu.; Patkowski, K.; DePrince III, A. E.; Bozkaya, U.; King, R. A.; Evangelista, F. A.; Turney, J. M.; Crawford, T. D.; Sherrill, C. D. Psi4 1.4: Open-Source Software for High-Throughput Quantum Chemistry. <em>The Journal of Chemical Physics</em> <strong>2020</strong>, <em>152</em> (18), 184108. <a href="https://doi.org/10.1063/5.0006002">https://doi.org/10.1063/5.0006002</a>.</div>
+</div>
+<div id="ref-VanderWalt2011" class="csl-entry" role="listitem">
+<div class="csl-left-margin">8. </div><div class="csl-right-inline">Van Der Walt, S.; Colbert, S. C.; Varoquaux, G. The NumPy Array: A Structure for Efficient Numerical Computation. <em>Computing in Science &amp; Engineering</em> <strong>2011</strong>, <em>13</em> (2), 22–30. <a href="https://doi.org/10.1109/MCSE.2011.37">https://doi.org/10.1109/MCSE.2011.37</a>.</div>
+</div>
+<div id="ref-Landrum2006" class="csl-entry" role="listitem">
+<div class="csl-left-margin">9. </div><div class="csl-right-inline">Landrum, G. <a href="https://www.rdkit.org">RDKit: Open-Source Cheminformatics</a>. <strong>2006</strong>.</div>
+</div>
+<div id="ref-OBoyle2011" class="csl-entry" role="listitem">
+<div class="csl-left-margin">10. </div><div class="csl-right-inline">O’Boyle, N. M.; Banck, M.; James, C. A.; Morley, C.; Vandermeersch, T.; Hutchison, G. R. Open Babel: An Open Chemical Toolbox. <em>Journal of Cheminformatics</em> <strong>2011</strong>, <em>3</em> (1), 33. <a href="https://doi.org/10.1186/1758-2946-3-33">https://doi.org/10.1186/1758-2946-3-33</a>.</div>
+</div>
+<div id="ref-VonLilienfeld2020" class="csl-entry" role="listitem">
+<div class="csl-left-margin">11. </div><div class="csl-right-inline">Von Lilienfeld, O. A.; Müller, K.-R.; Tkatchenko, A. Exploring Chemical Compound Space with Quantum-Based Machine Learning. <em>Nature Reviews Chemistry</em> <strong>2020</strong>, <em>4</em> (7), 347–358. <a href="https://doi.org/10.1038/s41570-020-0189-9">https://doi.org/10.1038/s41570-020-0189-9</a>.</div>
+</div>
+<div id="ref-Smith2018" class="csl-entry" role="listitem">
+<div class="csl-left-margin">12. </div><div class="csl-right-inline">Smith, J. S.; Nebgen, B.; Lubbers, N.; Isayev, O.; Roitberg, A. E. Less Is More: Sampling Chemical Space with Active Learning. <em>The Journal of Chemical Physics</em> <strong>2018</strong>, <em>148</em> (24), 241733. <a href="https://doi.org/10.1063/1.5023802">https://doi.org/10.1063/1.5023802</a>.</div>
+</div>
+<div id="ref-Granger2021" class="csl-entry" role="listitem">
+<div class="csl-left-margin">13. </div><div class="csl-right-inline">Project Jupyter. JupyterLab Documentation, 2021. <a href="https://jupyterlab.readthedocs.io/">https://jupyterlab.readthedocs.io/</a>.</div>
+</div>
+<div id="ref-Larsen2017" class="csl-entry" role="listitem">
+<div class="csl-left-margin">14. </div><div class="csl-right-inline">Larsen, A. H.; Mortensen, J. J.; Blomqvist, J.; Castelli, I. E.; Christensen, R.; Dułak, M.; Friis, J.; Groves, M. N.; Hammer, B.; Hargus, C.; others. The Atomic Simulation Environment—a Python Library for Working with Atoms. <em>Journal of Physics: Condensed Matter</em> <strong>2017</strong>, <em>29</em> (27), 273002. <a href="https://doi.org/10.1088/1361-648X/aa680e">https://doi.org/10.1088/1361-648X/aa680e</a>.</div>
+</div>
+<div id="ref-Ong2013" class="csl-entry" role="listitem">
+<div class="csl-left-margin">15. </div><div class="csl-right-inline">Ong, S. P.; Richards, W. D.; Jain, A.; Hautier, G.; Kocher, M.; Cholia, S.; Gunter, D.; Chevrier, V. L.; Persson, K. A.; Ceder, G. Python Materials Genomics (Pymatgen): A Robust, Open-Source Python Library for Materials Analysis. <em>Computational Materials Science</em> <strong>2013</strong>, <em>68</em>, 314–319. <a href="https://doi.org/10.1016/j.commatsci.2012.10.028">https://doi.org/10.1016/j.commatsci.2012.10.028</a>.</div>
+</div>
+</div>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                    <a href="../colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>

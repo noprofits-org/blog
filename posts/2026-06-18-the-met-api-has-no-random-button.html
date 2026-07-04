@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="NoProfits Blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>The Met API has no random button — NoProfits Blog</title>
+
+    <!-- Set theme before paint to avoid a flash -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/theme-toggle.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <header class="site-header">
+        <a class="brand" href="../">
+            <span class="brand-tick"></span>
+            <span class="brand-name">NoProfits<span class="muted">Blog</span></span>
+        </a>
+        <nav class="site-nav">
+            <a href="../">Home</a>
+            <a href="../about.html">About</a>
+            <a href="../archive.html">Archive</a>
+            <a href="../contact.html">Contact</a>
+            <span class="theme-toggle" role="group" aria-label="Color theme">
+                <button type="button" data-theme="light" aria-pressed="false">Light</button>
+                <button type="button" data-theme="dark" aria-pressed="false">Dark</button>
+            </span>
+        </nav>
+    </header>
+
+    <main role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">art, javascript, react, met museum, cors proxy, randomness, pwa</span>
+    </div>
+    
+
+    <h1 class="post-title">The Met API has no random button</h1>
+
+    <div class="post-meta">
+        <span class="byline">Peter Johnston</span> · <span>June 18, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <p>A little over a year ago I wrote up a small toy: the <a href="../posts/random-art-generator.html">Met Random Art
+Generator</a>, a single button that pulled a random
+piece from the <a href="https://metmuseum.github.io/">Metropolitan Museum of Art’s open API</a>
+and put it on screen. The whole point of that post was the <a href="../posts/cors-proxy.html">serverless CORS
+proxy</a> sitting behind it — the art generator was just the
+demo that proved the proxy worked.</p>
+<p>The demo outlived its purpose. Over the past year it grew into an actual app —
+now living at <a href="https://rag.noprofits.org">rag.noprofits.org</a> — with four screens, a
+swipeable card stack, a favorites collection, and a daily artwork. This post is
+about the two decisions that shaped it: how you fake randomness over an API that
+won’t give you any, and how, once you can fake it, you get a deterministic
+“artwork of the day” for nothing.</p>
+<h2 id="the-problem-there-is-no-random-object">The problem: there is no random object</h2>
+<p>The Met’s API is generous — no key, no rate limit to speak of, ~half a million
+objects — but it has no endpoint that means <em>give me a random artwork</em>. What it has
+is:</p>
+<ul>
+<li><code>/objects</code> — every object ID, all ~500k of them, as one giant array.</li>
+<li><code>/objects/{id}</code> — the full record for one object.</li>
+<li><code>/search?q=...</code> — IDs matching a text query, optionally filtered.</li>
+</ul>
+<p>The naive move — the one the original toy made — is to grab the full ID list and
+pick an index with <code>Math.random()</code>. It technically works, and it’s technically
+random. But most of those IDs have no image, or no rights to show one, so you spend
+most of your clicks fetching a record only to discover there’s nothing to display.
+A “random art generator” that shows you a blank card half the time is not a random
+art generator.</p>
+<p>The fix is to stop randomizing over <em>all objects</em> and start randomizing over <em>all
+objects that have an image</em>. The search endpoint can do exactly that filter —
+<code>hasImages=true</code> — but search needs a query. You can’t search for “anything.” So
+you search for something common enough to return a deep pool, and you rotate what
+that something is:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> SEED_TERMS <span class="op">=</span> [</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">'portrait'</span><span class="op">,</span> <span class="st">'landscape'</span><span class="op">,</span> <span class="st">'flowers'</span><span class="op">,</span> <span class="st">'figure'</span><span class="op">,</span> <span class="st">'study'</span><span class="op">,</span> <span class="st">'river'</span><span class="op">,</span> <span class="st">'garden'</span><span class="op">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">'still life'</span><span class="op">,</span> <span class="st">'horse'</span><span class="op">,</span> <span class="st">'temple'</span><span class="op">,</span> <span class="st">'goddess'</span><span class="op">,</span> <span class="st">'vessel'</span><span class="op">,</span> <span class="st">'mask'</span><span class="op">,</span> <span class="st">'textile'</span><span class="op">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">'drawing'</span><span class="op">,</span> <span class="st">'sculpture'</span><span class="op">,</span> <span class="st">'ship'</span><span class="op">,</span> <span class="st">'king'</span><span class="op">,</span> <span class="st">'queen'</span><span class="op">,</span> <span class="st">'dancer'</span><span class="op">,</span> <span class="st">'tree'</span><span class="op">,</span> <span class="st">'moon'</span><span class="op">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">'gold'</span><span class="op">,</span> <span class="st">'silver'</span><span class="op">,</span> <span class="st">'blue'</span><span class="op">,</span> <span class="st">'red'</span><span class="op">,</span> <span class="st">'green'</span><span class="op">,</span> <span class="st">'ivory'</span><span class="op">,</span> <span class="st">'bronze'</span><span class="op">,</span> <span class="st">'marble'</span><span class="op">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ...</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>]<span class="op">;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="kw">async</span> <span class="kw">function</span> <span class="fu">fetchPool</span>({ departmentId <span class="op">=</span> <span class="kw">null</span><span class="op">,</span> term <span class="op">=</span> <span class="kw">null</span> } <span class="op">=</span> {}) {</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> q <span class="op">=</span> term <span class="op">||</span> <span class="fu">pick</span>(SEED_TERMS)<span class="op">;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> url <span class="op">=</span> MET_BASE <span class="op">+</span> <span class="st">'/search?hasImages=true&amp;q='</span> <span class="op">+</span> <span class="pp">encodeURIComponent</span>(q)<span class="op">;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (departmentId) url <span class="op">+=</span> <span class="st">'&amp;departmentId='</span> <span class="op">+</span> departmentId<span class="op">;</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> data <span class="op">=</span> <span class="cf">await</span> <span class="fu">fetchJSON</span>(url)<span class="op">;</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">shuffle</span>(data<span class="op">.</span><span class="at">objectIDs</span> <span class="op">||</span> [])<span class="op">;</span>   <span class="co">// local Fisher–Yates</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Each seed term — “horse,” “marble,” “moon” — returns hundreds or thousands of IDs,
+<em>every one of which has an image</em>, because the API guaranteed it. Rotating the term
+across a session gives you breadth the way a true random walk over 500k objects
+never could, and it does it while sidestepping the blank-card problem entirely. The
+randomness is real — <code>shuffle</code> is a Fisher–Yates over the returned IDs — it’s just
+been fenced into a region of the collection that’s worth looking at.</p>
+<h2 id="a-self-refilling-buffer-not-a-button">A self-refilling buffer, not a button</h2>
+<p>The original was strictly one-shot: click, fetch, wait, look. A swipeable stack
+needs the <em>next</em> card ready before you ask for it, and it needs to quietly skip the
+occasional dud (an ID whose image 404s, or whose record came back without a usable
+thumbnail). So the pool got wrapped in a small feed object that refills itself:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">createFeed</span>({ departmentId <span class="op">=</span> <span class="kw">null</span><span class="op">,</span> term <span class="op">=</span> <span class="kw">null</span> } <span class="op">=</span> {}) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> pool <span class="op">=</span> []<span class="op">,</span> cursor <span class="op">=</span> <span class="dv">0</span><span class="op">,</span> scope <span class="op">=</span> { departmentId<span class="op">,</span> term }<span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">async</span> <span class="kw">function</span> <span class="fu">ensurePool</span>() {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (cursor <span class="op">&gt;=</span> pool<span class="op">.</span><span class="at">length</span>) { pool <span class="op">=</span> <span class="cf">await</span> <span class="fu">fetchPool</span>(scope)<span class="op">;</span> cursor <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> }</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">async</span> <span class="kw">function</span> <span class="fu">next</span>() {</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">let</span> tries <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> (tries <span class="op">&lt;</span> <span class="dv">24</span>) {</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      tries<span class="op">++;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="cf">await</span> <span class="fu">ensurePool</span>()<span class="op">;</span>              <span class="co">// refetch + reshuffle when drained</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> id <span class="op">=</span> pool[cursor<span class="op">++</span>]<span class="op">;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (id <span class="op">==</span> <span class="kw">null</span>) <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      <span class="cf">try</span> {</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="kw">const</span> art <span class="op">=</span> <span class="cf">await</span> <span class="fu">fetchObject</span>(id)<span class="op">;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (art <span class="op">&amp;&amp;</span> art<span class="op">.</span><span class="at">thumb</span>) <span class="cf">return</span> art<span class="op">;</span>   <span class="co">// skip anything unshowable</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">catch</span> (e) { <span class="co">/* skip */</span> }</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="st">'Could not load artwork'</span>)<span class="op">;</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> { next<span class="op">,</span> setScope }<span class="op">;</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><code>next()</code> is the whole UX in one function: walk the shuffled pool, fetch records,
+skip anything without a thumbnail, refetch a fresh pool when the current one runs
+dry, and give up gracefully after 24 misses rather than spinning forever. The card
+stack just calls <code>next()</code> whenever it needs another card and preloads the image
+before flipping it into view.</p>
+<h2 id="the-payoff-a-daily-artwork-for-free">The payoff: a daily artwork for free</h2>
+<p>Here’s the part I like. Once randomness is “pick an index into a pool,” <em>determinism
+is the same machine with the dice swapped out.</em> The “Today” screen shows everyone
+the same artwork on the same calendar day, with no server deciding what that is —
+because the date itself is the seed:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">dailySeed</span>() {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> t <span class="op">=</span> <span class="fu">todayKey</span>()<span class="op">;</span>                       <span class="co">// &quot;2026-06-18&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">let</span> h <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> t<span class="op">.</span><span class="at">length</span><span class="op">;</span> i<span class="op">++</span>) h <span class="op">=</span> (h <span class="op">*</span> <span class="dv">31</span> <span class="op">+</span> t<span class="op">.</span><span class="fu">charCodeAt</span>(i)) <span class="op">&gt;&gt;&gt;</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> h<span class="op">;</span>                                   <span class="co">// same date → same integer, everywhere</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>That’s the classic string hash (<code>h = 31·h + c</code>) over the date string. Feed its
+output where <code>Math.random()</code> used to go, and the selection becomes a pure function
+of the day:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> seed <span class="op">=</span> Store<span class="op">.</span><span class="fu">dailySeed</span>()<span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> term <span class="op">=</span> DAILY_TERMS[seed <span class="op">%</span> DAILY_TERMS<span class="op">.</span><span class="at">length</span>]<span class="op">;</span>   <span class="co">// deterministic term</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> pool <span class="op">=</span> <span class="cf">await</span> MetAPI<span class="op">.</span><span class="fu">fetchPool</span>({ term })<span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">let</span> k <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> k <span class="op">&lt;</span> pool<span class="op">.</span><span class="at">length</span><span class="op">;</span> k<span class="op">++</span>) {</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> idx <span class="op">=</span> (seed <span class="op">+</span> k <span class="op">*</span> <span class="dv">7</span>) <span class="op">%</span> pool<span class="op">.</span><span class="at">length</span><span class="op">;</span>            <span class="co">// deterministic walk</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> id <span class="op">=</span> pool[idx]<span class="op">;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> art <span class="op">=</span> <span class="cf">await</span> MetAPI<span class="op">.</span><span class="fu">fetchObject</span>(id)<span class="op">.</span><span class="fu">catch</span>(() <span class="kw">=&gt;</span> <span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (art <span class="op">&amp;&amp;</span> art<span class="op">.</span><span class="at">thumb</span>) <span class="cf">return</span> art<span class="op">;</span>                    <span class="co">// first showable wins</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Two visitors on opposite sides of the world, both opening the app on June 18, get
+the same “Artwork of the Day” — no database, no cron job, no shared state. The only
+coordination is the calendar. The result is cached in <code>localStorage</code> so a second
+visit the same day doesn’t re-walk the pool, and a tiny visit-streak counter rides
+along beside it. The whole feature is a few dozen lines, and it exists purely
+because the randomness was already factored into “seed → index.”</p>
+<h2 id="still-no-build-step">Still no build step</h2>
+<p>One thing I was stubborn about: this is React now — four screens, routing, a detail
+overlay with a zoom/pan lightbox — but it still has <strong>no build step</strong>. The <code>.jsx</code>
+files are transpiled in the browser by Babel Standalone:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">script</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;https://unpkg.com/react@18.3.1/umd/react.production.min.js&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">script</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;https://unpkg.com/@babel/standalone@7.29.0/babel.min.js&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">script</span><span class="ot"> type=</span><span class="st">&quot;text/babel&quot;</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;js/met.jsx&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">script</span><span class="ot"> type=</span><span class="st">&quot;text/babel&quot;</span><span class="ot"> src</span><span class="op">=</span><span class="st">&quot;js/app.jsx&quot;</span><span class="dt">&gt;&lt;/</span><span class="kw">script</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>It deploys to GitHub Pages exactly like a plain HTML page — <code>git push</code> and you’re
+done. No npm, no bundler, no CI step, no <code>node_modules</code> to rot. For a personal
+project I touch every few weeks, that tradeoff is the right one: I’d rather pay a
+little transpile-on-load cost in the client than maintain a toolchain between me and
+a one-line fix. It is emphatically <em>not</em> the right call for anything with real
+traffic — you ship the entire Babel compiler to every visitor and recompile on
+every load — and the honest cost shows up in one sharp edge: you can’t open
+<code>index.html</code> from <code>file://</code>, because the browser blocks Babel from fetching the
+<code>.jsx</code> files over the <code>file:</code> protocol. You have to serve it over <code>http://</code> even
+locally. Worth knowing before you copy the pattern.</p>
+<h2 id="the-proxy-a-year-on">The proxy, a year on</h2>
+<p>The CORS proxy that started the whole thing is still in the loop, but it’s no longer
+the <em>only</em> thing in the loop. The API service tries direct, then the proxy, then a
+public fallback, in order:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> PROXY_WRAPS <span class="op">=</span> [</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  (u) <span class="kw">=&gt;</span> u<span class="op">,</span>                                                              <span class="co">// direct</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  (u) <span class="kw">=&gt;</span> <span class="st">'https://cors-proxy-xi-ten.vercel.app/api/proxy?url='</span> <span class="op">+</span> <span class="pp">encodeURIComponent</span>(u)<span class="op">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  (u) <span class="kw">=&gt;</span> <span class="st">'https://corsproxy.io/?'</span> <span class="op">+</span> <span class="pp">encodeURIComponent</span>(u)<span class="op">,</span>              <span class="co">// fallback</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>]<span class="op">;</span></span></code></pre></div>
+<p>The Met’s API actually sends permissive CORS headers for most requests, so the
+direct path usually wins and the proxy only catches the cases that don’t. That’s a
+nice inversion from the original post, where the proxy was load-bearing. It’s also
+why <a href="../posts/hardening-the-cors-proxy.html">hardening that proxy</a> mattered: it now
+runs an allowlist, and <code>rag.noprofits.org</code> is on it, so the app’s own traffic sails
+through while the open-relay door I’d left ajar is shut.</p>
+<h2 id="what-i-left-undone">What I left undone</h2>
+<p>Two honest notes. The detail view has a <em>Curator’s Note</em> — a short AI-written
+paragraph about the piece — that only works inside Claude’s design environment,
+where <code>window.claude.complete</code> exists. On the live site it degrades to a polite
+“not available right now.” Wiring it to a real model endpoint is future work I
+haven’t done.</p>
+<p>And I kept the old version. The previous single-file app is still there at
+<a href="https://rag.noprofits.org/classic.html"><code>classic.html</code></a>, powered by the original
+<code>main.js</code>, so the thing that post a year ago described still runs, side by side with
+what it became. Partly that’s sentiment. Mostly it’s that “the old one still works”
+is a feature, and deleting working code to feel tidy is a bad trade.</p>
+<p>If you want to poke at it: <a href="https://rag.noprofits.org">rag.noprofits.org</a>, source on
+<a href="https://github.com/noprofits-org/random-art-generator">GitHub</a>. Swipe right on the
+ones you like.</p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand-col">
+                <div class="footer-brand">
+                    <span class="brand-tick"></span>
+                    <span class="footer-name">NoProfits<span class="muted">Blog</span></span>
+                </div>
+                <p class="footer-tagline">Site generated by <a href="http://jaspervdj.be/hakyll">Hakyll</a>, authored by <a href="https://noprofits.org">No Profits</a>. Select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="footer-cols">
+                <div class="footer-col">
+                    <h4>Site</h4>
+                    <a href="../">Home</a>
+                    <a href="../about.html">About</a>
+                    <a href="../archive.html">Archive</a>
+                    <a href="../colophon.html">Colophon</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Elsewhere</h4>
+                    <a href="https://github.com/noprofits-org">github.com/noprofits-org</a>
+                    <a href="https://noprofits.org">noprofits.org</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 NOPROFITS.ORG · BSD-3-CLAUSE</span>
+            <span>BUILT WITH HAKYLL + PANDOC</span>
+        </div>
+    </footer>
+</body>
+
+</html>
