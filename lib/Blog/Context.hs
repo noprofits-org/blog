@@ -1,14 +1,53 @@
 -- | Shared template contexts.
 module Blog.Context
   ( postCtx
+  , baseCtx
   ) where
 
 import Data.Char (toLower)
-import Data.List (isInfixOf)
+import Data.List (isInfixOf, isPrefixOf)
 import Hakyll
 
+-- | Canonical origin for absolute URLs (og:url, og:image). Card scrapers do not
+-- resolve relative URLs, so social meta must be absolutized against this.
+siteHost :: String
+siteHost = "https://blog.noprofits.org"
+
+-- | Fallback description used for social meta on pages without their own.
+siteDescription :: String
+siteDescription =
+  "Notes on data, nonprofits, and the tools we build to make sense of them."
+
+-- | Fields every page that renders @templates/default.html@ needs: the social
+-- @ogimage@ (absolute, per-post overridable) and the site-description fallback,
+-- over the Hakyll defaults. Used directly for static pages / index / archive,
+-- and folded into 'postCtx'.
+baseCtx :: Context String
+baseCtx =
+  ogImageField <>
+  constField "siteHost" siteHost <>
+  constField "sitedesc" siteDescription <>
+  defaultContext
+
+-- | Absolute URL of a page's share image. Uses the post's optional @og-image@
+-- metadata (absolute URL or site-relative path, absolutized) and otherwise the
+-- one static branded card at @\/images\/og-image.png@.
+ogImageField :: Context a
+ogImageField = field "ogimage" $ \item -> do
+  mo <- getMetadataField (itemIdentifier item) "og-image"
+  pure $ case mo of
+    Just u  -> absolutize u
+    Nothing -> siteHost ++ "/images/og-image.png"
+  where
+    absolutize u
+      | "http://"  `isPrefixOf` u = u
+      | "https://" `isPrefixOf` u = u
+      | "/"        `isPrefixOf` u = siteHost ++ u
+      | otherwise                 = siteHost ++ "/" ++ u
+
 -- | Context for posts: a human-readable @date@ field, the derived @topic@ /
--- @topicSlug@ used by the home-page filter pills, plus the defaults.
+-- @topicSlug@ used by the home-page filter pills, the @article@ og:type marker,
+-- plus 'baseCtx'.
 --
 -- @topic@ is a coarse subject bucket derived from a post's FIRST tag so the
 -- Latest filter has a small, stable set of pills instead of one pill per raw
@@ -21,7 +60,8 @@ postCtx =
   topicField "topicSlug" snd <>
   tagsHtmlField "tagChips" (\t -> "<span class=\"tag-chip\">" ++ t ++ "</span>") <>
   tagsHtmlField "hashTags" (\t -> "<span class=\"row-tag\">#" ++ t ++ "</span>") <>
-  defaultContext
+  constField "ogtype" "article" <>
+  baseCtx
 
 -- | Render each of a post's comma-separated tags to an HTML fragment and
 -- concatenate. Empty (field withheld) when a post has no @tags@, so callers can
