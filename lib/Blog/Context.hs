@@ -3,7 +3,7 @@ module Blog.Context
   ( postCtx
   ) where
 
-import Data.Char (isSpace, toLower)
+import Data.Char (toLower)
 import Data.List (isInfixOf)
 import Hakyll
 
@@ -40,7 +40,6 @@ splitTags :: Maybe String -> [String]
 splitTags Nothing   = []
 splitTags (Just cs) = filter (not . null) (map trim (splitOn ',' cs))
   where
-    trim = f . f where f = reverse . dropWhile isSpace
     splitOn c s = case break (== c) s of
       (a, [])     -> [a]
       (a, _ : bs) -> a : splitOn c bs
@@ -56,7 +55,6 @@ topicField key sel = field key $ \item -> do
 -- has no @tags@ (those fall through to the "Engineering" bucket).
 firstTag :: Maybe String -> String
 firstTag = maybe "" (trim . map toLower . takeWhile (/= ','))
-  where trim = f . f where f = reverse . dropWhile isSpace
 
 -- | Map a first tag to a (display label, url slug) subject bucket. Keyword
 -- table is scanned in order; first substring hit wins; default is Engineering.
