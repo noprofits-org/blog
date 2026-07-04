@@ -101,7 +101,7 @@ img { max-width:100%; height:auto; }
 .archive-head h1 { font-size:42px; font-family:var(--display); font-weight:900; letter-spacing:0.01em; }
 .archive-sub { font-size:16px; color:var(--fg-soft); margin:0 0 40px; padding-left:22px; }
 .post-row {
-  display:grid; grid-template-columns:118px 1fr auto; gap:26px; align-items:baseline;
+  display:grid; grid-template-columns:118px 1fr 200px; gap:26px; align-items:baseline;
   padding:22px 0; border-bottom:1px solid var(--line);
 }
 .post-row:first-child { border-top:2px solid var(--rule); }
