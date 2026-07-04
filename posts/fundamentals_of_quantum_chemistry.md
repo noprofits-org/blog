@@ -242,7 +242,7 @@ between a C–H and an O–H stretch.
     {0.8*0.12107*(4*(0.20782*x)^2 - 2)*exp(-0.5*(0.20782*x)^2) + 0.8228};
 \addplot[thick, color=violet, domain=-16:16, samples=300]
     {0.8*0.049424*(8*(0.20782*x)^3 - 12*(0.20782*x))*exp(-0.5*(0.20782*x)^2) + 1.1519};
-\addplot[dashed, thick, color=black] {0.0071072*x^2};
+\addplot[dashed, thick, color=black, domain=-16:16, samples=300] {0.0071072*x^2};
 \legend{$n=0$, $n=1$, $n=2$, $n=3$}
 \end{axis}
 ```
