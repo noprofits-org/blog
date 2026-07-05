@@ -17,7 +17,7 @@ Direct programmatic access to this data remains difficult due to several factors
 
 These challenges create substantial barriers to efficient data collection, limiting research capabilities and transparency in the nonprofit sector. While third-party platforms like ProPublica's Nonprofit Explorer provide more accessible interfaces, programmatically interacting with these platforms presents its own set of challenges.
 
-Previous research on nonprofit financial data access has largely relied on manual collection or specialized APIs. Ottinger highlighted the limitations of third-party data providers, noting incomplete coverage and restricted field availability.[@ottinger2022] Mitchell proposed a targeted retrieval approach using index files but acknowledged the challenges of large file sizes and complex repository structures.[@mitchell2021]
+Previous research on nonprofit financial data access has largely relied on manual collection or specialized APIs. Ottinger highlighted the limitations of third-party data providers, noting incomplete coverage and restricted field availability.[@ottinger2022] A targeted retrieval approach using index files is feasible, but it must contend with large file sizes and complex repository structures.
 
 Direct access to primary IRS data sources has been attempted by several researchers. Williams and Akaakar documented the delays and barriers to accessing Form 990 data, describing them as "real risks for nonprofits" and calling for improved access mechanisms.[@williams2023] Barreto noted the consistent gaps in data availability affecting comprehensive analysis when using third-party sources.[@barreto2019]
 
