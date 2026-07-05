@@ -3,6 +3,9 @@ title: "The overhead myth: the first number donors check is the worst one"
 date: 2026-07-06
 tags: nonprofits, data
 description: The program-expense ratio is the number donors, watchdogs, and grantmakers reach for first — and the people who built the rating recanted it in 2013. A look at why the sector's favorite efficiency metric is gameable, corrosive, and best distrusted.
+figure: '<img src="/images/The-overhead-myth.png" alt="The nonprofit starvation cycle: a four-stage feedback loop of overhead expectations, underinvestment, weaker results, and confirmed distrust.">'
+figlabel: The nonprofit starvation cycle
+figcaption: Overhead expectations push orgs to underinvest, weakening results and confirming the distrust — which tightens the loop.
 ---
 
 The [donor's guide](/posts/2026-07-05-how-to-vet-a-charity.html) in this series called the program expense ratio "the single most abused number in the sector," treated it as a screen and never a verdict, and left a promissory note: *there's a whole "overhead myth" argument here that deserves its own post.* This is that post. The claim is stronger than "the ratio has a trap in it." The claim is that a decade of the ratio being the headline number donors, watchdogs, and grantmakers fixate on has actively made nonprofits worse — that the metric doesn't merely mismeasure quality, it degrades it. The people best positioned to know this are the ones who used to sell the metric, and in 2013 they said so in writing.
@@ -34,23 +37,23 @@ The mechanical critique says the ratio is noisy. The serious critique says the r
 
 <figure>
   <img src="/images/The-overhead-myth.png" alt="A four-stage feedback loop drawn as a ring of arrows around a central spiral. Top: a hand holding a gear with a dollar sign and a downward arrow — funders demand minimal overhead. Right: a columned institution standing on cracked ground — starved infrastructure. Bottom: a wilting plant beside a declining bar chart — weaker results. Left: a magnifying glass over a falling line with a down arrow — funders' distrust is confirmed, tightening the loop again.">
-  <figcaption>The nonprofit starvation cycle: unrealistic overhead expectations push organizations to underinvest in their own infrastructure, which weakens results, which confirms the distrust — and tightens the expectation for the next turn.</figcaption>
+  <figcaption><strong>Figure 1.</strong> The nonprofit starvation cycle: unrealistic overhead expectations push organizations to underinvest in their own infrastructure, which weakens results, which confirms the distrust — and tightens the expectation for the next turn.</figcaption>
 </figure>
 
-The engine of the cycle is exactly the metric this post is about. Because "low overhead" reads as virtue, the rational move for a nonprofit competing for scarce dollars is to cut the capacity that would let it do the mission better — and to hide the cuts it can't afford to make. The ratio doesn't just fail to detect dysfunction; it *rewards* it and *manufactures* it. Recent work continues to document the mechanism: a 2025 study traces how overhead-ratio pressure still drives real misreporting and underinvestment across the sector.[@Kim2025] Sixteen years after Gregory and Howard named it, the cycle is not a historical artifact.
+The engine of that loop (Figure 1) is exactly the metric this post is about. Because "low overhead" reads as virtue, the rational move for a nonprofit competing for scarce dollars is to cut the capacity that would let it do the mission better — and to hide the cuts it can't afford to make. The ratio doesn't just fail to detect dysfunction; it *rewards* it and *manufactures* it. Recent work continues to document the mechanism: a 2025 study traces how overhead-ratio pressure still drives real misreporting and underinvestment across the sector.[@Kim2025] Sixteen years after Gregory and Howard named it, the cycle is not a historical artifact.
 
 ## Why the low end is the real red flag
 
-Here is the inversion that the [donor's guide](/posts/2026-07-05-how-to-vet-a-charity.html) gestured at and this post can state flatly: a **suspiciously high** program ratio — 95% and up — is more often a warning than a virtue. It means one of a few things, none of them "well run": an organization too small or too young to have built real infrastructure; one starving itself on exactly the cycle above; or one whose accountants are simply better at the classification game. The genuinely healthy organization — the one that pays competitive salaries, keeps a [three-to-six-month reserve](/posts/2026-07-05-how-to-vet-a-charity.html), runs an evaluation function, and invests in the fundraising that will fund next year — will very often post a *lower* program ratio than the fragile one next to it. On this metric, and only on this metric, the fragile org wins. That should end your confidence in the metric.
+Here is the inversion that the [donor's guide](/posts/2026-07-05-how-to-vet-a-charity.html) gestured at and this post can state flatly: a **suspiciously high** program ratio — 95% and up — is more often a warning than a virtue. It means one of a few things, none of them "well run": an organization too small or too young to have built real infrastructure; one starving itself on exactly the cycle above; or one whose accountants are simply better at the classification game. The genuinely healthy organization — the one that pays competitive salaries, keeps a [three-to-six-month reserve](/posts/2026-07-05-how-to-vet-a-charity.html), runs an evaluation function, and invests in the fundraising that will fund next year — will very often post a *lower* program ratio than the fragile one next to it. On this metric, and only on this metric, the fragile org wins (Figure 2). That should end your confidence in the metric.
 
 <figure>
   <img src="/images/the-payoff-not-the-cycle.png" alt="Two office buildings weighed on a balance scale. On the left, a building displaying a high program-expense pie chart sits on a cracked, crumbling column and tilts precariously. On the right, a taller, solidly constructed building shows a smaller program-ratio slice but stands stable and complete on a firm base.">
-  <figcaption>Judged on the program-expense ratio alone, the fragile organization wins: the building with the higher ratio is the one cracking at its foundation, while the sturdier org posts a <em>lower</em> ratio precisely because it invests in the infrastructure that keeps it standing.</figcaption>
+  <figcaption><strong>Figure 2.</strong> Judged on the program-expense ratio alone, the fragile organization wins: the building with the higher ratio is the one cracking at its foundation, while the sturdier org posts a <em>lower</em> ratio precisely because it invests in the infrastructure that keeps it standing.</figcaption>
 </figure>
 
 ## What to look at instead
 
-None of this means finances are unknowable — it means the single ratio is the wrong lens, and the fix is triangulation, which is the whole method of the donor's guide. Read the four numbers *together* and across several years:
+None of this means finances are unknowable — it means the single ratio is the wrong lens, and the fix is triangulation, which is the whole method of the donor's guide. Read the four numbers *together* and across several years, reframing each question as in Table 1:
 
 | Instead of asking | Ask |
 | --- | --- |
@@ -58,6 +61,8 @@ None of this means finances are unknowable — it means the single ratio is the 
 | What's the program ratio this year? | Which direction is it moving over three to four years, and why? |
 | How little does it spend on itself? | Does it hold a real reserve and invest in the systems that deliver the mission? |
 | Does the CEO earn "too much"? | Is comp reasonable *against the budget and comparable orgs* (Part VII, Schedule J)? |
+
+*Table 1.* Reframing the four screens: for each overhead-flavored question on the left, the question on the right is the one that actually tracks organizational health.
 
 The watchdogs have followed their own advice. In its September 2023 methodology overhaul, **Charity Navigator removed** the administrative-expense ratio, the fundraising-expense ratio, and program-expense growth from its scoring, folding what remained into a broader rating built on finance *and accountability, impact, and governance* rather than a single efficiency fraction.[@CharityNavigator2023] The scoreboard the 2013 letter disowned has, a decade on, been partly dismantled by the people who ran it. Dan Pallotta's argument from the same period — that we ask charities to do more and more while forbidding them the overhead, growth capital, and risk-taking every for-profit takes for granted — is the same point from the operator's chair.[@Pallotta2013]
 

@@ -3,6 +3,9 @@ title: "Stop renting what you can own: a nonprofit back office on free tools"
 date: 2026-07-05
 tags: nonprofits, infrastructure
 description: Small nonprofits quietly bleed donor and grant money on SaaS subscriptions they don't need, while free tiers from Vercel, Supabase, Firebase, and Google Apps Script would do the same job and leave them owning the infrastructure. A field guide to building your own digital footprint for near zero.
+figure: '<img src="/images/Back-office-on-free-tools.png" alt="Two mistakes drive nonprofit back-office waste: paying for unnecessary SaaS, and ignoring the free infrastructure you already have.">'
+figlabel: Two mistakes drive the waste
+figcaption: Paying for SaaS that duplicates a free tool, and letting the free infrastructure you already have gather cobwebs.
 ---
 
 Here is a failure mode I see constantly in small nonprofits, and it's expensive precisely because it looks responsible. The org signs up for a website builder, a separate form tool, a donor CRM, an email platform, a scheduling app, a file-sharing subscription — a dozen SaaS products at \$15 to \$100 a month each — and a year later a meaningful slice of the budget is going to software instead of the mission. Worse, none of it is *owned*. Stop paying and it all evaporates: the site, the data, the donor list, the whole digital footprint was rented.
@@ -11,10 +14,10 @@ This is the operator's side of the [nonprofit series](/posts/2026-07-05-how-to-v
 
 <figure>
   <img src="/images/Back-office-on-free-tools.png" alt="Two mistakes drive the waste. Left: 'Unnecessary SaaS' — a person surrounded by a wall of paid-subscription boxes throwing money in the trash while a free tool sits ignored. Right: 'Ignored infrastructure' — a team building atop a solid brick wall of existing free infrastructure that has gathered cobwebs, discarding a 'Rented SaaS' block.">
-  <figcaption>The two mistakes that drain a small nonprofit's back office: paying for SaaS that duplicates a free tool, and letting the free infrastructure you already have gather cobwebs.</figcaption>
+  <figcaption><strong>Figure 1.</strong> The two mistakes that drain a small nonprofit's back office: paying for SaaS that duplicates a free tool, and letting the free infrastructure you already have gather cobwebs.</figcaption>
 </figure>
 
-Two mistakes drive the waste. One is **paying for SaaS you don't need** — subscriptions bought to solve a problem a free tool already solves. The other is subtler: **not using the free infrastructure that's sitting right there**, so the org never builds anything it owns and stays dependent on whatever it's renting this year. Both are fixable, and the pattern is almost always the same swap:
+Two mistakes drive the waste (Figure 1). One is **paying for SaaS you don't need** — subscriptions bought to solve a problem a free tool already solves. The other is subtler: **not using the free infrastructure that's sitting right there**, so the org never builds anything it owns and stays dependent on whatever it's renting this year. Both are fixable, and the pattern is almost always the same swap:
 
 | The job          | Commonly rented          | Owned, for free                         |
 |------------------|--------------------------|-----------------------------------------|
@@ -24,9 +27,18 @@ Two mistakes drive the waste. One is **paying for SaaS you don't need** — subs
 | A real database  | Proprietary CRM           | Supabase (Postgres) or Firestore        |
 | Automation       | Zapier-style subscription | Apps Script / Cloudflare Workers        |
 
-The rest of this post is that table, expanded — organized by the job to be done.
+The rest of this post is Table 1, expanded — organized by the job to be done.
+
+*Table 1.* The core swap, by job: for each back-office need, the subscription a nonprofit commonly rents versus the free tool that owns the same job.
 
 ## The free stack, by job
+
+The pieces below tend to orbit a single free hub — usually a Google Sheet — with the other services wired to it (Figure 2).
+
+<figure>
+  <img src="/images/owned-by-you.png" alt="A hub-and-spoke diagram. At the center, a 'Google Sheets Hub' connects out to owned, free tools — Google Forms, Apps Script, Cloudflare Workers, Supabase, a volunteer portal, reports, a dashboard, and a website — all enclosed inside a boundary labeled 'Owned by your nonprofit.' Greyed-out rented SaaS categories — CRM, scheduling, email platform, website builder, form builder — float discarded outside the boundary.">
+  <figcaption><strong>Figure 2.</strong> One shape the owned stack often takes: a spreadsheet hub wired to free Google, Cloudflare, and Supabase services. Everything inside the boundary belongs to the org; the rented SaaS equivalents (greyed, outside) are the subscriptions it no longer needs.</figcaption>
+</figure>
 
 **Identity, email, and documents.** [Google for Nonprofits](https://www.google.com/nonprofits/) gives eligible orgs a *free* Google Workspace edition — real `@yourorg.org` email, Docs, Sheets, Drive, shared calendars. Microsoft has an equivalent nonprofit program. This one program replaces a stack of paid subscriptions on day one, and it's the keystone everything else hangs off of. (I've written before about [why a Workspace account ends up being the quiet center of a whole stack](/posts/2026-06-19-gcloud-firebase-and-google-workspace.html).)
 

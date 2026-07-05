@@ -2,6 +2,7 @@
 module Blog.Context
   ( postCtx
   , baseCtx
+  , hasFigure
   ) where
 
 import Data.Char (toLower)
@@ -61,8 +62,29 @@ postCtx =
   tagsHtmlField "tagChips" (\t -> "<span class=\"tag-chip\">" ++ t ++ "</span>") <>
   tagsHtmlField "hashTags" (\t -> "<span class=\"row-tag\">#" ++ t ++ "</span>") <>
   figureSlidesCtx <>
+  hasFigureField <>
   constField "ogtype" "article" <>
   baseCtx
+
+-- | @$if(hasFigure)$@ marker: emitted (as "1") when a post has a figure the
+-- featured panel can show — an explicit @figure@ metadata image or a TikZ
+-- figure in its compiled body. The random-featured picker uses it to mark
+-- eligible "Latest" rows; withheld (so @$if$@ is false) otherwise.
+hasFigureField :: Context String
+hasFigureField = field "hasFigure" $ \item -> do
+  yes <- hasFigure item
+  if yes then pure "1" else noResult "post has no figure"
+
+-- | Whether a post has a featured-showable figure: explicit @figure@ metadata,
+-- or a @<div class="tikz-figure">@ in its compiled @content@ snapshot.
+hasFigure :: Item a -> Compiler Bool
+hasFigure item = do
+  mfig <- getMetadataField (itemIdentifier item) "figure"
+  case mfig of
+    Just _  -> pure True
+    Nothing -> do
+      body <- loadSnapshotBody (itemIdentifier item) "content"
+      pure ("tikz-figure" `isInfixOf` (body :: String))
 
 -- | The featured panel's figure cycler: the post's REAL figures, extracted
 -- from the compiled body snapshot — every @.tikz-figure@ block plus the

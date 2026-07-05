@@ -1,6 +1,6 @@
 <div class="post-list">
     $for(posts)$
-    <a class="post-row" href="$url$" data-topic="$topicSlug$">
+    <a class="post-row" href="$url$" data-topic="$topicSlug$"$if(hasFigure)$ data-has-figure="1"$endif$>
         <div class="post-row-meta">
             <span class="post-row-date">$date$</span>
             <span class="post-row-topic">$topic$</span>
