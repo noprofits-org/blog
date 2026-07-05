@@ -1,5 +1,5 @@
 ---
-title: Stop renting what you can own: a nonprofit back office on free tools
+title: "Stop renting what you can own: a nonprofit back office on free tools"
 date: 2026-07-05
 tags: nonprofits, infrastructure
 description: Small nonprofits quietly bleed donor and grant money on SaaS subscriptions they don't need, while free tiers from Vercel, Supabase, Firebase, and Google Apps Script would do the same job and leave them owning the infrastructure. A field guide to building your own digital footprint for near zero.
