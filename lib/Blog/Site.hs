@@ -6,10 +6,11 @@ module Blog.Site
   ( siteRules
   ) where
 
+import Control.Monad (filterM)
 import Hakyll
 
 import Blog.Compilers (bibtexMathCompiler)
-import Blog.Context   (baseCtx, postCtx)
+import Blog.Context   (baseCtx, postCtx, hasFigure)
 import Blog.Feed      (feedConfiguration, feedCtx)
 
 -- | Bibliography inputs for the post compiler.
@@ -86,12 +87,16 @@ siteRules previewDrafts = do
         route idRoute
         compile $ do
             posts <- recentFirst =<< loadAll "posts/*"
-            -- Newest post fills the featured slot; the rest fills the filtered
-            -- "Latest" list so the featured note is never duplicated below.
-            let (featured, rest) = splitAt 1 posts
+            -- The newest post WITH A FIGURE is baked into the featured slot as
+            -- the no-JS / first-paint default; js/featured-random.js swaps in a
+            -- random figure-having post per visit (see that file). "Latest"
+            -- lists every post — the picker hides whichever row is currently
+            -- featured to avoid duplication.
+            pool <- filterM hasFigure posts
+            let featured = take 1 pool
                 indexCtx =
                     listField "featured" postCtx (return featured) <>
-                    listField "posts"    postCtx (return rest)     <>
+                    listField "posts"    postCtx (return posts)    <>
                     constField "title" "Home"                      <>
                     baseCtx
 
