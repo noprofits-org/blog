@@ -7,7 +7,7 @@ description: A donor's guide to the four numbers on a Form 990 that actually tel
 
 Say you're about to give money to a charity, and for once you want to check under the hood first. The good news is that the data exists: every tax-exempt organization in the US files a [Form 990](https://www.irs.gov/forms-pubs/about-form-990), and every one of those returns is public. The bad news is that the 990 is a fourteen-page federal form, and nobody hands you a key to it.
 
-You don't need the whole form. You need four numbers, and — more importantly — you need to know the trap hiding in each one, because every single one of these can be gamed or misread. This is the first in a short series on reading nonprofits from the outside; a companion post already walks through [one food bank's returns across thirteen years](/posts/2026-06-17-reading-a-food-banks-990.html). Here I want to give you the general skill instead of one worked example.
+You don't need the whole form. You need four numbers, and — more importantly — you need to know the trap hiding in each one, because every single one of these can be gamed or misread. This is part of a short series on reading nonprofits from the outside — it helps to first know [what kind of tax-exempt organization you're looking at](/posts/2026-07-05-501c3-vs-c4-vs-c6.html), and a companion post walks through [one food bank's returns across thirteen years](/posts/2026-06-17-reading-a-food-banks-990.html). Here I want to give you the general skill instead of one worked example.
 
 ## 1. The program expense ratio
 
