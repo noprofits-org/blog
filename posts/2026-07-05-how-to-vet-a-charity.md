@@ -57,6 +57,8 @@ No single number condemns or blesses an organization. Each of the four has a hol
 
 And read more than one year. A single 990 is a photograph; three or four in a row is the movie, and the movie is where the truth is — you can see a reserve being drawn down on purpose, a fundraising bet starting to pay off, or costs quietly ratcheting past revenue. That decade-long view is exactly what the [food bank walkthrough](/posts/2026-06-17-reading-a-food-banks-990.html) is about.
 
+And if you're on the other side of this — actually *running* a small nonprofit — the companion piece on [building a back office on free tools](/posts/2026-07-05-nonprofit-back-office-free-tools.html) is about keeping that overhead low in the first place.
+
 **Where to get the numbers.** You don't need to download PDFs. The [ProPublica Nonprofit Explorer](https://projects.propublica.org/nonprofits/) has the filings and a clean API, and the [nonprofit search tools](https://search.noprofits.org) at noprofits.org are built to pull exactly these figures and make them legible. The transparency already exists — the only hard part is that almost nobody looks.
 
 <small>Benchmarks cited are from the BBB Wise Giving Alliance and Charity Navigator's published standards and are rules of thumb, not bright lines. Example figures are from IRS Form 990 filings for the Hunger Intervention Program (EIN 26-3716527) via the ProPublica Nonprofit Explorer API; figures are as-filed and unaudited.</small>
