@@ -9,6 +9,11 @@ Here is a failure mode I see constantly in small nonprofits, and it's expensive 
 
 This is the operator's side of the [nonprofit series](/posts/2026-07-05-how-to-vet-a-charity.html). The first two posts were about reading an organization from the outside — [what type it is](/posts/2026-07-05-501c3-vs-c4-vs-c6.html) and [what its 990 says](/posts/2026-07-05-how-to-vet-a-charity.html). This one is about the inside: if you run a small nonprofit, most of your back office can be built on free tiers, and the money you save is money that never has to show up as overhead on that 990.
 
+<figure>
+  <img src="/images/Back-office-on-free-tools.png" alt="Two mistakes drive the waste. Left: 'Unnecessary SaaS' — a person surrounded by a wall of paid-subscription boxes throwing money in the trash while a free tool sits ignored. Right: 'Ignored infrastructure' — a team building atop a solid brick wall of existing free infrastructure that has gathered cobwebs, discarding a 'Rented SaaS' block.">
+  <figcaption>The two mistakes that drain a small nonprofit's back office: paying for SaaS that duplicates a free tool, and letting the free infrastructure you already have gather cobwebs.</figcaption>
+</figure>
+
 Two mistakes drive the waste. One is **paying for SaaS you don't need** — subscriptions bought to solve a problem a free tool already solves. The other is subtler: **not using the free infrastructure that's sitting right there**, so the org never builds anything it owns and stays dependent on whatever it's renting this year. Both are fixable, and the pattern is almost always the same swap:
 
 | The job          | Commonly rented          | Owned, for free                         |
