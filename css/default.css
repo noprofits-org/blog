@@ -349,6 +349,24 @@ a { color: inherit; text-decoration: none; }
 }
 .post-body img { display: block; margin: 18px auto; }
 
+/* Diagram figures are raster PNGs carrying dark ink on a TRANSPARENT ground, so
+   in dark mode they'd disappear into the dark panel. Pin the figure container to
+   a light cream plate in dark mode (same rationale as the .tikz-figure constant
+   plate) and darken the captions/labels that sit inside it back to the light-
+   theme tiers so they stay legible on the cream. */
+[data-theme='dark'] .post-body figure,
+[data-theme='dark'] .featured-figure {
+  background: #FCFAF5;
+  border-color: #E4DFD5;
+}
+[data-theme='dark'] .post-body figcaption,
+[data-theme='dark'] .post-body figure figcaption,
+[data-theme='dark'] .figure-label,
+[data-theme='dark'] .figure-caption,
+[data-theme='dark'] .fig-slide-caption { color: #5A665F; }
+[data-theme='dark'] .post-body figcaption strong { color: #16221D; }
+[data-theme='dark'] .fig-slide-caption em { color: #16221D; }
+
 /* TikZ figures: rendered inline SVG carrying hardcoded ink/blue/red strokes and
    white fills, so they sit on a CONSTANT light plate that does NOT flip with the
    theme (the one intentional raw-hex exception in the screen styles). */
