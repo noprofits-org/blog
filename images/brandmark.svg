@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Header brandmark — the favicon emblem with a TRANSPARENT background.
-  Identical to favicon.svg except the cream disc (.st1 fill #f7f4ee) is set to
-  `none` so the mark reads cleanly over any header background. Keep in sync with
-  public/favicon.svg if the source artwork changes.
+  Header brandmark — the favicon emblem. The gear interior keeps its solid cream
+  fill (.st1 #f7f4ee) so the mark reads as the same light shape over any header
+  background, in both light and dark mode. Keep in sync with public/favicon.svg
+  if the source artwork changes.
 -->
 <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 441.05 441.73">
   <defs>
@@ -13,7 +13,7 @@
       }
 
       .st1 {
-        fill: none;
+        fill: #f7f4ee;
       }
 
       .st2 {
