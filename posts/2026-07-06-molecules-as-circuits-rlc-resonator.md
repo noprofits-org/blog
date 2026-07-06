@@ -21,9 +21,7 @@ absorption band in a linear-optics textbook — treats a bound electron as a mas
 on a spring driven by the oscillating field of light: a driven, damped harmonic
 oscillator. A series RLC circuit is *exactly* that oscillator written in
 electrical units, with the same second-order equation of motion and the same
-resonance. The analogy is an isomorphism, not a resemblance. So it is worth
-taking seriously — and worth pushing until it breaks, because where it breaks is
-where the interesting chemistry lives.
+resonance. The analogy is an isomorphism, not a resemblance.
 
 <figure>
   <img src="/images/2026-07-06-molecules-as-circuits-rlc-resonator-hero.png" alt="A donor-pi-acceptor chromophore above its equivalent series RLC circuit: the oscillating field drives a resistor, inductor, and capacitor in one loop, with the pi bridge mapped to the inductor and the donor-acceptor pair mapped to the capacitor.">
@@ -50,9 +48,9 @@ computed the two dials that set that gap: lengthen the conjugated bridge, or
 strengthen a donor–acceptor pair at its ends. This post does something different.
 It takes those same molecules — a family I built and measured in grad
 school[@Jin2016; @Johnston2016Thesis] — and asks how far a single equivalent
-circuit can carry the whole story. The answer is: further than you would guess
-for the color, and then over a cliff for everything that makes the molecules
-worth making.
+circuit can carry the whole story: further than you would expect for the color,
+and not nearly far enough for everything else that makes the molecules worth
+making.
 
 ## 1. Color is a resonance
 
@@ -115,6 +113,12 @@ papers.[@Jin2016; @Johnston2016Thesis])
     \node[font=\footnotesize, text=blue!45!black, align=center, anchor=south]
         at (axis cs:JRD5,796) {full isophorone-locked CLD bridge\\762--788 nm};
 
+    % connecting line (light) through the four-point plateau, drawn under the
+    % markers to guide the eye through the walk
+    \addplot[thin, gray!55, forget plot] coordinates {
+        (YLD-124,786) (JRD1,788) (JRD5,778) (KRD1,762)
+    };
+
     % the cluster of four
     \addplot[only marks, mark=*, mark size=4pt, color=blue!60!black] coordinates {
         (YLD-124,786) (JRD1,788) (JRD5,778) (KRD1,762)
@@ -123,23 +127,20 @@ papers.[@Jin2016; @Johnston2016Thesis])
     \addplot[only marks, mark=square*, mark size=4.5pt, color=orange!85!black] coordinates {
         (JRD2,630)
     };
-    % connecting line (light) to guide the eye through the walk
-    \addplot[thin, gray!55, forget plot] coordinates {
-        (YLD-124,786) (JRD1,788) (JRD5,778) (KRD1,762) (JRD2,630)
-    };
+
+    % the cliff, drawn literally as a vertical dimension line just left of JRD2:
+    % the full 132 nm drop from the plateau level (762) down to JRD2 (630)
+    \draw[{Stealth[length=5pt]}-{Stealth[length=5pt]}, orange!80!black, line width=0.9pt]
+        ([xshift=-16pt]axis cs:JRD2,762) -- ([xshift=-16pt]axis cs:JRD2,632);
+    \node[font=\small, text=orange!55!black, align=right, anchor=east]
+        at ([xshift=-22pt]axis cs:JRD2,697) {short diene:\\$-132$\,nm};
 
     % per-point value labels
     \node[font=\footnotesize, anchor=south west] at (axis cs:YLD-124,787) {786};
     \node[font=\footnotesize, anchor=south] at (axis cs:JRD1,789)    {788};
     \node[font=\footnotesize, anchor=south] at (axis cs:JRD5,779)    {778};
     \node[font=\footnotesize, anchor=south east] at (axis cs:KRD1,762) {762};
-    \node[font=\footnotesize, anchor=south east, text=orange!60!black] at (axis cs:JRD2,634) {630};
-
-    % annotate the cliff
-    \node[font=\small, text=orange!60!black, align=center, anchor=west]
-        at (axis cs:KRD1,672) {short diene:\\$-132$ nm};
-    \draw[-{Stealth[length=5pt]}, orange!60!black]
-        (axis cs:KRD1,700) .. controls (axis cs:JRD2,700) .. (axis cs:JRD2,650);
+    \node[font=\footnotesize, anchor=north east, text=orange!55!black] at (axis cs:JRD2,627) {630};
 
     % KRD1 thiophene nudge note
     \node[font=\footnotesize, text=black!55, anchor=north, align=center]
