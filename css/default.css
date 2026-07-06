@@ -74,7 +74,10 @@ a { color: inherit; text-decoration: none; }
   border-bottom: 1px solid var(--border);
   animation: npFadeUp 0.5s ease both;
 }
-.featured-inner { max-width: var(--maxw); margin: 0 auto; padding: 56px 32px; }
+.featured-inner { max-width: var(--maxw); margin: 0 auto; padding: 56px 32px; transition: opacity .3s ease; }
+/* Hold the featured card invisible (but laid out, so no reflow) until the
+   randomizer resolves — see the no-flash script in default.html. */
+.feat-pending .featured-inner { opacity: 0; }
 .featured-head {
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px; margin-bottom: 32px;
