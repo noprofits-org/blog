@@ -29,5 +29,8 @@ PR_*.md
 # Stray per-run timer artifact that shows up across working dirs
 timer.dat
 
+# Local build toolchain (Haskell Stack + TinyTeX) — large binaries, kept local
+.tools/
+
 ### macOS ###
 .DS_Store
