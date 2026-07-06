@@ -41,6 +41,19 @@
       })();
     </script>
 
+    <!-- No-flash featured: hide the randomizable featured card until the picker
+         (js/featured-random.js) swaps in its choice, so the baked default post
+         doesn't flash before the swap. Safety timeout reveals it if JS is off-
+         path or the picker never runs. Home page only reacts (it owns .featured). -->
+    <script>
+      (function () {
+        document.documentElement.classList.add('feat-pending');
+        setTimeout(function () {
+          document.documentElement.classList.remove('feat-pending');
+        }, 1500);
+      })();
+    </script>
+
     <link rel="preload" href="/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 

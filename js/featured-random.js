@@ -1,26 +1,31 @@
 // Home-page featured-post randomizer. Progressive enhancement: the server bakes
 // the newest post that HAS A FIGURE into the featured slot (so the card is valid
 // with JS off and for crawlers). On each visit this swaps in a random
-// figure-having post, fetching only that one post's figure — so the home page
-// stays light instead of shipping every post's diagram. Any failure leaves the
-// baked default untouched.
+// figure-having post — the TEXT immediately (it all lives in the Latest row, no
+// fetch) so the baked default never flashes, then the FIGURE fetched from that
+// one post's page and dropped into a reserved slot. Any failure leaves the baked
+// default or the text-only card.
 //
-// Eligible posts are the "Latest" rows tagged data-has-figure (Blog.Context's
-// hasFigure marker). The text column is read from that row; the figure is pulled
-// from the post's own page and its URLs absolutized so they resolve from "/".
+// The card is held invisible pre-paint by a small inline script in the page head
+// (the `feat-pending` class); reveal() clears it once the text is in place.
+//
+// innerHTML is built only from first-party same-origin content (the site's own
+// rows/pages), with all plain-text fields HTML-escaped.
 (function () {
   'use strict';
 
   document.addEventListener('DOMContentLoaded', function () {
+    function reveal() { document.documentElement.classList.remove('feat-pending'); }
+
     var featured = document.querySelector('.featured');
-    if (!featured) return;
+    if (!featured) { reveal(); return; }
     var grid = featured.querySelector('.featured-grid');
     var dateEl = featured.querySelector('.featured-date');
-    if (!grid) return;
+    if (!grid) { reveal(); return; }
 
     var rows = Array.prototype.slice.call(
       document.querySelectorAll('.post-row[data-has-figure]'));
-    if (!rows.length) return;
+    if (!rows.length) { reveal(); return; }
 
     var curLink = featured.querySelector('.featured-title a');
     var curUrl = curLink ? curLink.getAttribute('href') : null;
@@ -28,10 +33,8 @@
     function pathOf(u) {
       try { return new URL(u, location.href).pathname; } catch (e) { return u || ''; }
     }
-
-    // Hide whichever Latest row is the currently-featured post, so it isn't
-    // duplicated above. A class (not the [hidden] attribute) so the topic filter,
-    // which drives [hidden], can't un-hide it.
+    // Hide whichever Latest row is the currently-featured post (class, not the
+    // [hidden] attribute, so the topic filter can't un-hide it).
     function reconcile(url) {
       var p = pathOf(url);
       Array.prototype.slice.call(document.querySelectorAll('.post-row'))
@@ -40,8 +43,8 @@
         });
     }
 
-    // Random eligible row, avoiding the immediately-previous pick and the baked
-    // default so the card visibly changes on a new visit.
+    // Random eligible row, avoiding the previous pick and the baked default so
+    // the card visibly changes.
     var LAST = 'np-featured-last', last = null;
     try { last = sessionStorage.getItem(LAST); } catch (e) {}
     var choices = rows.filter(function (r) {
@@ -53,7 +56,7 @@
         return pathOf(r.getAttribute('href')) !== pathOf(curUrl);
       });
     }
-    if (!choices.length) { reconcile(curUrl); return; }
+    if (!choices.length) { reconcile(curUrl); reveal(); return; }
 
     var pick = choices[Math.floor(Math.random() * choices.length)];
     var url = pick.getAttribute('href');
@@ -61,8 +64,34 @@
     var base = new URL(url, location.href);
 
     function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
-    function text(sel) { var n = pick.querySelector(sel); return n ? n.textContent.trim() : ''; }
+    function rowText(sel) { var n = pick.querySelector(sel); return n ? n.textContent.trim() : ''; }
 
+    // ---- Synchronous: swap the text column now, reserve the figure, reveal. ----
+    var title = rowText('.post-row-title'), desc = rowText('.post-row-desc'),
+        topic = rowText('.post-row-topic'), date = rowText('.post-row-date');
+    var tags = Array.prototype.slice.call(pick.querySelectorAll('.post-row-tags .row-tag'))
+      .map(function (t) { return t.textContent.replace(/^#/, '').trim(); }).filter(Boolean);
+
+    if (dateEl && date) dateEl.textContent = date;
+
+    grid.innerHTML =
+      '<div class="featured-text">' +
+        (topic ? '<span class="featured-topic">' + esc(topic) + '</span>' : '') +
+        '<h2 class="featured-title"><a href="' + esc(url) + '">' + esc(title) + '</a></h2>' +
+        (desc ? '<p class="featured-desc">' + esc(desc) + '</p>' : '') +
+        (tags.length ? '<div class="tag-chips">' + tags.map(function (t) {
+          return '<span class="tag-chip">' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
+        '<a class="featured-readmore" href="' + esc(url) + '">Read the note →</a>' +
+      '</div>' +
+      '<figure class="featured-figure">' +
+        '<div class="figure-label">Fig. 1</div>' +
+        '<div class="figure-body" style="min-height:240px"></div>' +
+      '</figure>';
+
+    reconcile(url);
+    reveal();
+
+    // ---- Async: fetch the chosen post's figure and drop it into the slot. ----
     fetch(url).then(function (r) {
       if (!r.ok) throw new Error('fetch ' + r.status);
       return r.text();
@@ -81,8 +110,6 @@
           capHtml = sib.innerHTML;
         }
       }
-      // The featured card has its own "Fig. 1" label, so drop a leading
-      // "Figure N." marker from the borrowed caption.
       capHtml = capHtml.replace(/^\s*<(strong|em)>\s*Figure\s+\d+\.?\s*<\/\1>\s*/i, '')
                        .replace(/^\s*Figure\s+\d+\.?\s*/i, '');
 
@@ -94,29 +121,22 @@
         });
       var figMarkup = fig.classList.contains('tikz-figure') ? fig.outerHTML : fig.innerHTML;
 
-      var title = text('.post-row-title'), desc = text('.post-row-desc'),
-          topic = text('.post-row-topic'), date = text('.post-row-date');
-      var tags = Array.prototype.slice.call(pick.querySelectorAll('.post-row-tags .row-tag'))
-        .map(function (t) { return t.textContent.replace(/^#/, '').trim(); }).filter(Boolean);
-
-      if (dateEl && date) dateEl.textContent = date;
-
-      grid.innerHTML =
-        '<div class="featured-text">' +
-          (topic ? '<span class="featured-topic">' + esc(topic) + '</span>' : '') +
-          '<h2 class="featured-title"><a href="' + esc(url) + '">' + esc(title) + '</a></h2>' +
-          (desc ? '<p class="featured-desc">' + esc(desc) + '</p>' : '') +
-          (tags.length ? '<div class="tag-chips">' + tags.map(function (t) {
-            return '<span class="tag-chip">' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
-          '<a class="featured-readmore" href="' + esc(url) + '">Read the note →</a>' +
-        '</div>' +
-        '<figure class="featured-figure">' +
-          '<div class="figure-label">Fig. 1</div>' +
-          '<div class="figure-body">' + figMarkup + '</div>' +
-          (capHtml ? '<figcaption class="figure-caption">' + capHtml + '</figcaption>' : '') +
-        '</figure>';
-
-      reconcile(url);
-    }).catch(function () { reconcile(curUrl); });
+      var figEl = grid.querySelector('.featured-figure');
+      if (!figEl) return;
+      var body = figEl.querySelector('.figure-body');
+      body.style.minHeight = '';
+      body.innerHTML = figMarkup;
+      if (capHtml) {
+        var cap = document.createElement('figcaption');
+        cap.className = 'figure-caption';
+        cap.innerHTML = capHtml;
+        figEl.appendChild(cap);
+      }
+    }).catch(function () {
+      // No figure available: drop the empty slot and let the text fill the row.
+      var figEl = grid.querySelector('.featured-figure');
+      if (figEl) figEl.remove();
+      grid.style.gridTemplateColumns = '1fr';
+    });
   });
 })();

@@ -52,17 +52,6 @@ the transition dipole is correspondingly large, and — by the machinery of the
 a large transition dipole means a large oscillator strength and a fast
 radiative clock. Push–pull buys a redder *and* brighter band with one design.
 
-<figure>
-  <img src="/images/push-pull-chromophores-charge-transfer.png" alt="A donor group, a conjugated ring bridge, and an acceptor group drawn left to right, with the donor raising the HOMO level, the acceptor lowering the LUMO level, and an arrow carrying an electron across the molecule through the squeezed gap.">
-</figure>
-
-**Figure 1.** The donor–π–acceptor design. The donor's lone pair raises the
-HOMO, the acceptor's empty π* lowers the LUMO, and the conjugated bridge couples
-them, so the gap is squeezed from both sides. Because the HOMO lives on the
-donor end and the LUMO on the acceptor end, the HOMO→LUMO excitation carries an
-electron across the molecule — a charge-transfer transition, red-shifted and
-intense at once.
-
 ## 2. The calculation
 
 Four molecules isolate the two dials: **benzene** (bare bridge), **aniline**
@@ -70,10 +59,10 @@ Four molecules isolate the two dials: **benzene** (bare bridge), **aniline**
 donor and acceptor together). Each was built analytically, optimized at
 B3LYP/def2-SVP in C1 symmetry with tight convergence, and then run through full
 TD-DFT (RPA, not the Tamm–Dancoff approximation) for the twelve lowest singlet
-states in the larger def2-TZVP basis [@Weigend2005Balanced], with two
-functionals per molecule: **B3LYP**, a global hybrid [@Becke1993Exchange], and
-**CAM-B3LYP**, its range-separated correction [@Yanai2004Coulomb] — the reason
-for running both is §5. Everything ran in psi4 1.11 [@Smith2020Psi4]; the core
+states in the larger def2-TZVP basis,[@Weigend2005Balanced] with two
+functionals per molecule: **B3LYP**, a global hybrid,[@Becke1993Exchange] and
+**CAM-B3LYP**, its range-separated correction[@Yanai2004Coulomb] — the reason
+for running both is §5. Everything ran in psi4 1.11;[@Smith2020Psi4] the core
 of the excited-state call is Code 1.
 
 ```python
@@ -112,7 +101,7 @@ methodological point, is robust to this.
 ## 3. Donor alone, acceptor alone
 
 Table 1 collects the lowest bright band of each molecule under each functional,
-and Figure 2 shows the broadened CAM-B3LYP spectra.
+and Figure 1 shows the broadened CAM-B3LYP spectra.
 
 | molecule | functional | λmax (nm) | E (eV) | f | τ_rad (ns) | band |
 |---|---|---|---|---|---|---|
@@ -135,15 +124,15 @@ table, with the shortest radiative lifetime of the three substituted rings.
 at 231 and 205 nm with B3LYP) are the textbook symmetry-forbidden ¹B₂ᵤ and ¹B₁ᵤ
 states — oscillator strengths numerically zero — and its first *bright*
 absorption is the degenerate ¹E₁ᵤ pair at 176 nm, off the left edge of
-Figure 2's window. Experimentally that band sits near 179 nm in the gas phase
-[@Hiraya1991Benzene]; the computed values land within 0.1–0.2 eV of it. An
+Figure 1's window. Experimentally that band sits near 179 nm in the gas phase;[@Hiraya1991Benzene]
+the computed values land within 0.1–0.2 eV of it. An
 unsubstituted ring is transparent until the deep ultraviolet.
 
 **A donor alone red-shifts, weakly.** Conjugating the amino lone pair into the
 ring pushes the HOMO up, and aniline's first π→π* lands at 265 nm (B3LYP) /
 255 nm (CAM-B3LYP) — a large shift from 176 nm, but with oscillator strength
 only ≈ 0.04, and a correspondingly lazy radiative lifetime of 24–29 ns. The
-vapor-phase experiment puts this band near 282 nm [@Kimura1964Aniline]. The
+vapor-phase experiment puts this band near 282 nm.[@Kimura1964Aniline] The
 donor moved the gap; it did not produce a strong band.
 
 **An acceptor alone red-shifts differently.** The nitro group drags in its own
@@ -152,9 +141,8 @@ n→π* near 320 nm (f ≈ 0), its lowest nominally bright band (283/255 nm) is
 weak, f ≈ 0.014–0.018, and its genuinely strong π→π* sits one state higher at
 259 nm (B3LYP) / 240 nm (CAM-B3LYP) with f ≈ 0.2 — the band the classic
 vapor-and-solution study of nitrobenzene, which observed it near 252 nm,
-assigned as intramolecular charge transfer toward the nitro group
-[@Nagakura1964Nitrobenzene]. The
-weak lowest bright state's radiative lifetime stretches to 54–83 ns —
+assigned as intramolecular charge transfer toward the nitro group.[@Nagakura1964Nitrobenzene]
+The weak lowest bright state's radiative lifetime stretches to 54–83 ns —
 exactly the weak-absorber-is-slow-emitter lockstep the
 [absorptivity post](/posts/2026-07-03-molar-absorptivity-is-a-rate-constant.html)
 predicts.
@@ -204,10 +192,12 @@ predicts.
 \legend{benzene, aniline, nitrobenzene, para-nitroaniline}
 \node[font=\small\bfseries, text=green!35!black] at (axis cs:315,26000) {CT band};
 \draw[-{Stealth[length=5pt]}, green!35!black] (axis cs:305,25000) -- (axis cs:288,24500);
+\node[font=\footnotesize, align=center, text=black!70] at (axis cs:239,25200) {benzene $^1$E$_{1u}$ band\\174 nm, off scale};
+\draw[-{Stealth[length=5pt]}, black!45] (axis cs:213,23600) -- (axis cs:200.5,21600);
 \end{axis}
 ```
 
-**Figure 2.** Broadened CAM-B3LYP absorption spectra of the four molecules
+**Figure 1.** Broadened CAM-B3LYP absorption spectra of the four molecules
 (Gaussian broadening, FWHM 0.35 eV). Benzene is flat across the whole window —
 its first allowed band lies at 174 nm, off the left edge. Aniline (donor only)
 and nitrobenzene (acceptor only) each raise structure in the 220–260 nm region
@@ -261,21 +251,21 @@ Why run every molecule twice? Because charge-transfer states are the textbook
 failure mode of standard TD-DFT. A global hybrid like B3LYP, with a fixed
 fraction of exact exchange, lacks the correct long-range −1/R attraction
 between the separated hole and electron, and therefore places CT states too low
-— sometimes catastrophically so [@Dreuw2004]. Range-separated functionals like
+— sometimes catastrophically so.[@Dreuw2004] Range-separated functionals like
 CAM-B3LYP switch in full exact exchange at long interelectronic distance
-precisely to fix this [@Yanai2004Coulomb]. A push–pull molecule computed with
+precisely to fix this.[@Yanai2004Coulomb] A push–pull molecule computed with
 both functionals is therefore a built-in stress test: local states should barely
 move between them, and CT states should move a lot.
 
 That is exactly what the data do. Benzene's E₁ᵤ shifts by +0.09 eV from B3LYP
 to CAM-B3LYP; aniline's local π→π* by +0.19 eV. Para-nitroaniline's CT band
 shifts by **+0.42 eV** (3.98 → 4.40 eV, 311 → 282 nm) — several times the local
-states' movement (Figure 3). Nitrobenzene is the instructive middle case: its
+states' movement (Figure 2). Nitrobenzene is the instructive middle case: its
 low-lying π→π* states already shove density toward the nitro group
 (hole–particle separations of 1.9–2.0 Å, just under the CT threshold), and they
 shift by 0.39–0.47 eV — functional sensitivity tracks CT character even where
 the classifier's label doesn't change. Plotting the B3LYP→CAM-B3LYP shift of
-each matched bright state against its hole–particle separation (Figure 4) makes
+each matched bright state against its hole–particle separation (Figure 3) makes
 the pattern plain: states that move the electron under ~1 Å shift by ≲ 0.2 eV,
 and states that move it ~2 Å or more shift by 0.3–0.5 eV. The disagreement
 between two functionals is itself a CT diagnostic — you can *see* the missing
@@ -327,7 +317,7 @@ long-range exchange turning on.
 \end{axis}
 ```
 
-**Figure 3.** Para-nitroaniline's charge-transfer band computed with B3LYP
+**Figure 2.** Para-nitroaniline's charge-transfer band computed with B3LYP
 (blue, 311 nm) and CAM-B3LYP (green, 282 nm). The 0.42 eV disagreement between
 the two functionals is several times what the same pair produces for the local
 π→π* bands of benzene or aniline — the signature of B3LYP's missing long-range
@@ -337,11 +327,11 @@ lands slightly blue (+0.16 eV).
 
 ```tikzpicture
 \begin{axis}[
-    width=12cm, height=8cm,
+    width=14cm, height=9cm,
     xlabel={hole--particle centroid separation (\AA)},
     ylabel={$\Delta E$ (CAM-B3LYP $-$ B3LYP) (eV)},
     title={Functional disagreement tracks charge-transfer character},
-    xmin=-0.2, xmax=3.1, ymin=0, ymax=0.55,
+    xmin=-0.25, xmax=3.6, ymin=0, ymax=0.60,
     grid=major,
     grid style={line width=.2pt, draw=gray!40},
     axis lines=left,
@@ -358,16 +348,19 @@ lands slightly blue (+0.16 eV).
 \addplot[only marks, mark=triangle*, mark size=4.5pt, color=green!45!black] coordinates {
 (2.63,0.42)
 };
-\node[font=\small, anchor=west] at (axis cs:0.08,0.09) {benzene $^1$E$_{1u}$};
-\node[font=\small, anchor=west] at (axis cs:0.92,0.19) {aniline $\pi\to\pi^*$};
-\node[font=\small, anchor=east] at (axis cs:1.83,0.39) {nitrobenzene $\pi\to\pi^*$ (strong)};
-\node[font=\small, anchor=west] at (axis cs:2.04,0.47) {nitrobenzene $\pi\to\pi^*$ (weak)};
-\node[font=\small, anchor=north] at (axis cs:2.08,0.28) {aniline CT};
-\node[font=\small\bfseries, anchor=south] at (axis cs:2.63,0.44) {pNA CT};
+\draw[gray!55, thin] (axis cs:1.88,0.39) -- (axis cs:1.57,0.35);
+\draw[gray!55, thin] (axis cs:2.11,0.29) -- (axis cs:2.34,0.25);
+\draw[gray!55, thin] (axis cs:1.96,0.475) -- (axis cs:1.90,0.505);
+\node[font=\footnotesize, anchor=west] at (axis cs:0.07,0.095) {benzene $^1$E$_{1u}$};
+\node[font=\footnotesize, anchor=west] at (axis cs:0.92,0.185) {aniline $\pi\to\pi^*$};
+\node[font=\footnotesize, anchor=east, align=right] at (axis cs:1.55,0.35) {nitrobenzene\\$\pi\to\pi^*$ (strong)};
+\node[font=\footnotesize, anchor=south, align=center] at (axis cs:1.90,0.51) {nitrobenzene\\$\pi\to\pi^*$ (weak)};
+\node[font=\footnotesize, anchor=west] at (axis cs:2.36,0.24) {aniline CT};
+\node[font=\footnotesize\bfseries, anchor=south west] at (axis cs:2.66,0.45) {pNA CT};
 \end{axis}
 ```
 
-**Figure 4.** The B3LYP→CAM-B3LYP energy shift of each bright state, plotted
+**Figure 3.** The B3LYP→CAM-B3LYP energy shift of each bright state, plotted
 against that state's hole–particle centroid separation (states matched across
 functionals by their dominant orbital transition; separations from the B3LYP
 calculation). Spatially local excitations (left) barely feel the functional
