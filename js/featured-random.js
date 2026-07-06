@@ -66,6 +66,17 @@
     function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
     function rowText(sel) { var n = pick.querySelector(sel); return n ? n.textContent.trim() : ''; }
 
+    // The picker injects the figure + caption AFTER MathJax's one-time initial
+    // typeset has already run, so any \(...\) in a fetched caption stays raw.
+    // Re-typeset just the injected subtree once MathJax is ready.
+    function typeset(el) {
+      var MJ = window.MathJax;
+      if (!MJ) return;
+      var run = function () { if (MJ.typesetPromise) MJ.typesetPromise([el]).catch(function () {}); };
+      if (MJ.startup && MJ.startup.promise) MJ.startup.promise.then(run);
+      else run();
+    }
+
     // ---- Synchronous: swap the text column now, reserve the figure, reveal. ----
     var title = rowText('.post-row-title'), desc = rowText('.post-row-desc'),
         topic = rowText('.post-row-topic'), date = rowText('.post-row-date');
@@ -132,6 +143,7 @@
         cap.innerHTML = capHtml;
         figEl.appendChild(cap);
       }
+      typeset(figEl);
     }).catch(function () {
       // No figure available: drop the empty slot and let the text fill the row.
       var figEl = grid.querySelector('.featured-figure');
