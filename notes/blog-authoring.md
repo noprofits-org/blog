@@ -98,6 +98,15 @@ logo used as the Illustrator color source):
 Workflow: open the **gear logo** in Illustrator as the color source, run Text to
 Vector Graphic with the concept prompt, then add uppercase caption text.
 
+**Text inside data figures: lettered callouts only, never sentences.** Mark
+each feature worth explaining with a bold letter (A, B, C…) placed at the
+feature, and define every letter in the numbered caption (§6) — ACS style.
+Axis labels, tick text, and legend entries are the only other text allowed in
+the plot area; values, names, and explanations all go to the caption. If a
+chart clips or piles a heavy tail, mark the overflow bins visually (detached
+bars in the lifted teal, tick labels like "≤ −6" / "> 36"), letter them, and
+let the caption say what they collect.
+
 **Hero = Figure 1 = the social card.** Author Figure 1 at **1200×630 (1.91:1
 landscape)** so the same asset serves as both the in-post hero and the OG/Twitter
 card — no separate variant, no crop. Compose horizontally (e.g. a left-to-right
