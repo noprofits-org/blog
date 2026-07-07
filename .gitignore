@@ -29,6 +29,16 @@ PR_*.md
 # Stray per-run timer artifact that shows up across working dirs
 timer.dat
 
+# IRS SOI raw extract data — large source files, kept local (scripts in
+# calcs/months-of-cash-at-scale/ document how to re-download and rebuild)
+24eoextract990.zip
+24eofinextractdoc.xlsx
+calcs/data/
+calcs/months-of-cash-at-scale/c3_months.csv.gz
+
+# Original oversized hero export (kept; resized 1200x630 copy is the real one)
+images/2026-07-07-months-of-cash-at-scale-hero.png.png
+
 # Local build toolchain (Haskell Stack + TinyTeX) — large binaries, kept local
 .tools/
 
