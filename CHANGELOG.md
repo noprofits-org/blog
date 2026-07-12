@@ -9,6 +9,9 @@ and this project adheres to the
 ## Unreleased
 
 ### Added
+- Static redirect pages for all 51 posts migrated to `pvjohnston.com`, keeping
+  their original `blog.noprofits.org/posts/...` URLs working without duplicate
+  content.
 - `sitemap.xml` generation (posts plus the static pages) — `robots.txt` was
   already advertising it, but the file was never built.
 - On-disk cache for rendered TikZ diagrams (`_cache/tikz`, keyed by a hash of
@@ -21,6 +24,8 @@ and this project adheres to the
   script, pinned to `mathjax@3.2.2`.
 
 ### Changed
+- Homepage filters, site copy, and feed metadata now describe the blog's
+  nonprofit, public-interest-data, and noprofits.org infrastructure focus.
 - Draft posts (`draft: true`) are now excluded from the build entirely instead
   of getting an unlisted-but-public page; set `PREVIEW_DRAFTS=1` to build and
   list them locally.
@@ -52,6 +57,9 @@ and this project adheres to the
   the title. Tags now wrap; `.post-body` also breaks long words/URLs.
 
 ### Removed
+- The 51 personal/general posts migrated to `pvjohnston.com`; 17
+  nonprofit-specific and noprofits.org infrastructure posts remain canonical
+  here.
 - `Debug.Trace` instrumentation and verbose success-path logging from
   `site.hs` (failure diagnostics for the TikZ pipeline retained).
 

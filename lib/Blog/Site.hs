@@ -6,7 +6,7 @@ module Blog.Site
   ( siteRules
   ) where
 
-import Control.Monad (filterM)
+import Control.Monad (filterM, forM_)
 import Hakyll
 
 import Blog.Compilers (bibtexMathCompiler)
@@ -32,6 +32,18 @@ isDraft md = lookupString "draft" md == Just "true"
 -- generated, and they appear in no listing, feed, or sitemap.
 siteRules :: Bool -> Rules ()
 siteRules previewDrafts = do
+    -- Keep inbound links to posts moved during the pvjohnston.com split alive
+    -- without retaining duplicate post content in this repository. Redirect
+    -- identifiers live outside posts/* so they never enter listings or feeds;
+    -- their routes are rewritten back to the original public post paths.
+    migratedPostSlugs <- preprocess $
+        filter (not . null) . lines <$> readFile "redirects/migrated-posts.txt"
+    forM_ migratedPostSlugs $ \slug -> do
+        let target = "https://pvjohnston.com/posts/" ++ slug ++ ".html"
+        create [fromFilePath ("redirects/" ++ slug ++ ".html")] $ do
+            route $ gsubRoute "redirects/" (const "posts/")
+            compile $ makeItem (movedPostRedirect target)
+
     -- Citations
     match (fromGlob cslFile) $ compile cslCompiler
     match (fromGlob bibFile) $ compile biblioCompiler
@@ -140,3 +152,24 @@ siteRules previewDrafts = do
         compile copyFileCompiler
 
     match "templates/*" $ compile templateCompiler
+
+-- | A static redirect suitable for GitHub Pages, which cannot emit HTTP 301s.
+-- The canonical/noindex metadata keeps the moved article indexed only at its
+-- new home; the visible link is a fallback for clients that disable redirects.
+movedPostRedirect :: String -> String
+movedPostRedirect target = unlines
+    [ "<!doctype html>"
+    , "<html lang=\"en\">"
+    , "<head>"
+    , "  <meta charset=\"utf-8\">"
+    , "  <meta name=\"robots\" content=\"noindex\">"
+    , "  <meta http-equiv=\"refresh\" content=\"0; url=" ++ target ++ "\">"
+    , "  <link rel=\"canonical\" href=\"" ++ target ++ "\">"
+    , "  <title>Post moved</title>"
+    , "  <script>window.location.replace(\"" ++ target ++ "\");</script>"
+    , "</head>"
+    , "<body>"
+    , "  <p>This post has moved to <a href=\"" ++ target ++ "\">pvjohnston.com</a>.</p>"
+    , "</body>"
+    , "</html>"
+    ]

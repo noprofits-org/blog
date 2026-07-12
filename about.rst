@@ -2,90 +2,36 @@
 title: About
 ---
 
+About This Blog
+===============
 
-Who Am I?
-=========
+The noprofits.org blog publishes field notes about nonprofits, public-interest
+data, grants, Form 990 analysis, and the infrastructure behind
+`noprofits.org <https://noprofits.org>`_. The goal is to make complicated public
+records and technical systems easier to inspect, reproduce, and use.
 
-I'm a curious tinkerer who likes to play with:
+What Lives Here
+---------------
 
-* |🔧| **Technology** - Because who doesn't love when things *actually* work?
-* |🧪| **Chemistry** - It's like cooking, but with more safety goggles, and don't lick the spoon. 
-* |🌱| **Bonsai** (hopefully soon!) - Tiny trees are just regular trees that got ctrl-minus'd.
+* Nonprofit transparency, donor due diligence, and operating-reserve analysis
+* Methods for working with IRS Form 990 and federal grants data
+* Engineering notes tied directly to noprofits.org tools and infrastructure
 
-.. |🔧| unicode:: U+1F527 .. wrench
-.. |🧪| unicode:: U+1F9EA .. test tube
-.. |🌱| unicode:: U+1F331 .. seedling
+Personal writing about science, mathematics, art, software, automation, and
+systems now lives at `pvjohnston.com <https://pvjohnston.com>`_. Existing links
+to migrated posts redirect to their new canonical URLs.
 
-My Current Status
+About the Project
 -----------------
 
-.. code-block:: python
+noprofits.org builds public-interest tools for understanding nonprofit filings,
+funding, and organizational health. This blog documents the reasoning, data,
+and implementation behind that work so readers can check the assumptions and
+reuse the methods.
 
-    class BonsaiGardener:
-        def __init__(self):
-            self.trees = []
-            self.patience_level = float('inf')
-            self.coffee_level = 0
-            
-        def add_tree(self, species: str, age_years: int):
-            """Add a new tiny tree to our collection"""
-            if self.coffee_level < 1:
-                return "Too tired to garden... ☕"
-            
-            self.trees.append({
-                'species': species,
-                'age': age_years,
-                'size': 'smol',  # All bonsai are smol
-                'last_watered': 'recently'
-            })
-            return f"Yay! Added a {species} to the collection!"
-            
-        def practice_patience(self):
-            """Key skill for bonsai gardening"""
-            meditation_hours = 0
-            while meditation_hours < 1000:
-                if self.is_tree_growing_too_fast():
-                    print("Remember: Trees are like code - no rushing!")
-                meditation_hours += 1
-            
-        @property
-        def garden_status(self):
-            return f"Currently tending {len(self.trees)} tiny trees with {self.patience_level} units of patience"
+Site Credits
+------------
 
-Fun Facts About Me
-------------------
-    "I never met a programming language I didn't want to 
-    poke with a stick just to see what happens."
-
-Things I Want To Learn:
------------------------
-+------------+---------------+--------------------+
-| Today      | Tomorrow      | Someday Maybe      |
-+============+===============+====================+
-| RST Syntax | Bonsai Care   | Quantum Computing  |
-+------------+---------------+--------------------+
-| Hakyll     | More Chem     | Time Travel        |
-+------------+---------------+--------------------+
-
-Alternative Table Format of Things I Want To Learn:
----------------------------------------------------
-
-=======  ===========  ===============
-Today    Tomorrow     Someday Maybe
-=======  ===========  ===============
-RST      Bonsai       Quantum Computing
-Hakyll   Chemistry    Time Travel
-LaTeX    TikZ         Chemical Synthesis
-=======  ===========  ===============
-
-.. note::
-   If you're reading this, congratulations! You've found someone who enjoys 
-   writing documentation for fun. We are a rare species!
-
-.. warning::
-   May occasionally make terrible puns. Proceed with caution.
-
-Want to chat? Feel free to `reach out <../contact.html>`_!
-
-## Site Credits
-This blog was developed with assistance from Claude (Anthropic). While all content and final decisions are my own, Claude helped with design, coding, and brainstorming throughout the development process.
+The site and its content are maintained by Peter Johnston. It is generated with
+Hakyll and Pandoc; selected design, coding, and research work was completed with
+AI assistance under human review.

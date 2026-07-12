@@ -1,37 +1,27 @@
 ---
 title: Contact
 ---
+
 # Get in Touch
 
 I'm always interested in discussing:
 
-* Chemistry and science education
-* Programming projects (especially in Python or Haskell) 
-* Bonsai gardening tips
-* Interesting problems that need solving
+* Nonprofit transparency and donor due diligence
+* IRS Form 990, federal grants, and public-interest data
+* The tools and infrastructure behind noprofits.org
+* Collaborations that make nonprofit information easier to use
+
+For personal writing about science, mathematics, art, software, automation, and
+systems, visit [pvjohnston.com](https://pvjohnston.com).
 
 # How to Reach Me
 
-📧 Email: [peter@noprofits.org](mailto:peter@noprofits.org)  
-🌐 GitHub: [noprofits-org](https://github.com/noprofits-org)
+Email: [peter@noprofits.org](mailto:peter@noprofits.org)
 
-# Preferred Contact Method
-
-Email is best! I typically respond within 1-2 business days.
+GitHub: [noprofits-org](https://github.com/noprofits-org)
 
 # Want to Collaborate?
 
-If you're reaching out about a potential collaboration, it would be helpful to include:
-
-* A brief description of your project or idea
-* How you think we might work together
-* Any relevant time constraints or deadlines
-* Whether it's a professional, academic, or hobby project
-
-# Office Hours
-
-I occasionally hold virtual office hours for discussing technical topics. Check back here for scheduled times!
-
----
-
-*Note: For professional inquiries, please include "[BUSINESS]" in your email subject line.*
+Please include a brief description of the project, how it relates to nonprofit
+data or noprofits.org, how you think we might work together, and any relevant
+time constraints.

@@ -30,7 +30,11 @@ A static blog built with [Hakyll](https://jaspervdj.be/hakyll/), featuring:
 
 **Note:**
 
-All science, mathematics, and chemistry-related content has been moved to a separate site at [hyperpolarizability.com](https://hyperpolarizability.com).
+Personal writing about science, mathematics, art, software, automation, and
+systems now lives at [pvjohnston.com](https://pvjohnston.com). This blog remains
+the canonical home for articles about nonprofits, Form 990 data, grants, and
+the infrastructure behind noprofits.org. Existing links to migrated posts
+redirect to their new canonical URLs.
 
 ---
 
