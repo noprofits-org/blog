@@ -14,7 +14,7 @@ import Blog.Context (postCtx)
 feedConfiguration :: FeedConfiguration
 feedConfiguration = FeedConfiguration
   { feedTitle       = "noprofits.org"
-  , feedDescription = "Blogs about science, nonprofits, and other fun stuff."
+  , feedDescription = "Posts about nonprofits, public-interest data, and the tools behind noprofits.org."
   , feedAuthorName  = "Peter Johnston"
   , feedAuthorEmail = "peter@noprofits.org"
   , feedRoot        = "https://blog.noprofits.org"

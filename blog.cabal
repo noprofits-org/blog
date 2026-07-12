@@ -12,6 +12,7 @@ category:            Web
 build-type:          Simple
 extra-source-files:  README.md
                      CHANGELOG.md
+                     redirects/migrated-posts.txt
 
 common warnings
   ghc-options:         -Wall
