@@ -135,19 +135,78 @@ estimate, because the §170 support fields are only populated by organizations
 using that test. Restrict anyway — it is the population the rule binds — but do
 **not** claim the restriction sharpened the result. It didn't.
 
-## Three honesty constraints
+## Honesty and inference — the governing standard
 
-These are requirements, not preferences. Each is a claim the data does not support.
+Peter's standard, and it governs every sentence in this post: **assert nothing as
+fact that we are unsure of.** Be transparent about exactly what was done
+mathematically and what we believe it infers. Make no accusation of fraud or
+wrongdoing. But do not whitewash either — if the analysis reasonably infers
+something, state it as a reasonable conclusion, labelled as an inference from the
+method rather than as an observation. We are scientists; if the methods or the
+analysis are wrong, transparency about how the conclusion was derived is what
+lets a reader catch it. **The reader decides.**
 
-1. **Bunching is not proof of cheating.** A charity near the line recruiting more
-   small donors is the rule **working as designed**, not being gamed. The post
-   must not imply fraud, manipulation, or bad faith. The neutral verb is
-   *steer* / *respond to*, never *dodge* / *game* / *cook*.
-2. **One year of filings; a multi-year rule.** Reclassification follows sustained
-   failure, not a single measurement. This extract is one filing year, so the post
-   can show the **distribution** but can never show an organization actually
-   losing public charity status, and must not imply it observed that.
-3. **The 10% result is a null, not a finding.** See above.
+### What we observe, and what we do not
+
+**We observe:** a displacement of ~80 organizations across the 33⅓ line — a
+deficit below and an excess above — that survives 12 specifications, a bootstrap,
+and 21 placebo thresholds. That is a measurement, and the post can state it
+plainly.
+
+**We do not observe the mechanism.** At least four processes produce an identical
+signature in this data, and **our data cannot distinguish them**:
+
+1. **Broadening the donor base.** An organization near the line recruits more
+   small donors and crosses it. This is the rule working exactly as intended.
+2. **Classification judgment at the margin.** Whether a gift is one donor or
+   several, whether a grant is from a governmental unit (counted in full),
+   whether a large gift qualifies as an excludable *unusual grant* — real
+   judgment calls, legally available, that move the ratio.
+3. **Timing.** Shifting when a large gift lands across the five-year measuring
+   window.
+4. **Misreporting.** Outright misstatement of the support figures.
+
+All four yield a deficit below and an excess above. **Nothing in a single year of
+as-filed aggregates separates them**, and the post must say so in the same breath
+as the finding — not in a footnote.
+
+### The inference we will state, and its limit
+
+The honest inference the analysis supports, stated as inference: the response
+concentrates at a threshold that is **arithmetic** (33⅓, computable from a
+charity's own books) and is **not detectable** at the threshold that gates a
+**discretionary** judgment (the 10% facts-and-circumstances floor). That contrast
+is consistent with organizations *deliberately managing a number they can
+compute*. That is a reasonable conclusion from how the analysis was carried out,
+and it should be stated as one.
+
+**Its limit, stated just as plainly:** "deliberately managing a number" spans
+everything from lawful donor-broadening (mechanism 1 — the policy succeeding) to
+misreporting (mechanism 4). **This analysis cannot tell you which, for any
+organization or in aggregate**, and it is emphatically not evidence of wrongdoing
+by anyone. What would distinguish them: panel data across filing years, and
+Schedule B donor detail — neither of which is in this extract. Say that too.
+
+The verbs are *steer*, *respond to*, *manage*. Never *dodge*, *game*, *cook*, or
+*cheat*. Not because the benign reading is the true one — **we do not know that
+either** — but because the accusatory verb asserts a mechanism the data does not
+identify. The original draft of this spec claimed the bunching was "the rule
+working as designed, not being gamed"; that was the same error pointing the other
+way, and it is why this section exists.
+
+### Two further constraints
+
+1. **One year of filings; a multi-year rule.** The support ratio spans a five-year
+   measuring period and reclassification follows sustained failure, not a single
+   measurement. This extract is one filing year, so the post can show the
+   **distribution** but can never show an organization actually losing public
+   charity status, and must not imply it observed that.
+2. **The 10% result is a null, not a finding.** The estimate is positive (+44.6)
+   and noisy; placebos at 5% and 6% are just as large. The honest sentence is
+   "cannot be distinguished from the placebos," never "we showed they don't
+   respond." The bright-line/judgment-call inference above rests on this being
+   *undetectable*, not on it being *zero* — and the prose must preserve that
+   distinction, because the whole interpretation leans on it.
 
 ## Legal claims — verify before drafting, do not assert from memory
 
@@ -168,13 +227,28 @@ If a claim cannot be sourced, cut it — the finding does not depend on it.
 3. **It isn't about being unpopular — it's the 2% rule.** The payoff section, and
    the reason a reader who does not care about econometrics should keep reading.
    53.9% vs 0.0% excluded; correlation −0.744. Table 1.
-4. **Do they steer?** The estimator: missing below, excess above. Figure 1, Code 1.
-5. **Is it real?** Placebo 0/21, z = +3.77, bootstrap CI, 12 specifications.
-   Figure 3.
+4. **Do they steer?** The estimator, explained so a reader can follow the
+   reasoning without taking it on trust: fit a counterfactual density to the
+   region *excluding* a window around the line, then compare observed to
+   counterfactual inside it. Missing below, excess above. Figure 1, Code 1.
+   **Show the choices** — bandwidth, polynomial degree, window — and say they were
+   fixed before the placebo test.
+5. **Is it real?** The credibility section. Placebo 0/21, z = +3.77, bootstrap CI
+   [+28, +129], 12 specifications spanning +47 to +95 (Table 2). Figure 3. Link
+   the [downloadable script](/calcs/public-support-cliff/compute.py) here — the
+   reader should be able to disagree with the specification and rerun it. State
+   openly that a bunching estimator has researcher degrees of freedom and that the
+   placebo test is precisely what disciplines them.
 6. **How big? Depends what you divide by.** 0.072% or ~12%. Cross-link
    [nobody's average](/posts/2026-07-14-nobodys-average.html).
-7. **The bright line and the judgment call.** The 10% null; charities steer to
-   arithmetic, not to discretion. Close + one-line caveat.
+7. **What this does and does not show.** The bright line and the judgment call:
+   the 10% null, and the inference it licenses — a response concentrated at the
+   computable threshold and undetectable at the discretionary one, consistent with
+   deliberate management of a number a charity can calculate. Then the limit, in
+   the same breath: four mechanisms produce this signature, from lawful
+   donor-broadening to misreporting, and **this analysis cannot distinguish them**;
+   what would (panel data, Schedule B) is not in the extract. No accusation. The
+   reader decides. Close + one-line caveat.
 
 ## Figures
 
@@ -191,7 +265,15 @@ Matplotlib, brand palette, lettered callouts only, captions carry the words.
   near-cliff versus typical.
 
 **Table 1** — the near-cliff versus typical comparison from §The mechanism.
-**Code 1** — the support ratio and the displacement statistic.
+
+**Table 2** — the full specification grid: all 12 combinations of bandwidth and
+polynomial degree, with their displacements (+46.9 to +95.4). **Publishing the
+grid is the point.** A reader who suspects the headline number was the flattering
+pick from a pile of specifications can see the whole pile, including the coarse
+bins that attenuate it to +47. Do not report only the favourable cells.
+
+**Code 1** — the support ratio and the displacement statistic, with the
+bandwidth/degree/window choices visible rather than buried.
 
 ## Artifacts
 
@@ -200,6 +282,43 @@ Matplotlib, brand palette, lettered callouts only, captions carry the words.
 - `calcs/public-support-cliff/figures.py` — four PNGs.
 - `posts/2026-07-15-public-support-cliff.md`
 - `images/2026-07-15-public-support-cliff-{hero,distribution,placebo,concentration}.png`
+- `lib/Blog/Site.hs` — one new rule publishing the analysis scripts (below).
+
+## Code availability — a requirement, not a courtesy
+
+Peter's instruction: **save the code we used and make it available for download.**
+For a post whose entire claim rests on a specification a reader cannot see from
+the prose, publishing the script *is* the argument. A reader must be able to
+download the exact code, disagree with the bandwidth, rerun it, and get a
+different answer if we are wrong.
+
+**Site change.** `lib/Blog/Site.hs` currently copies static assets with the
+pattern at `images/*` (`route idRoute`, `compile copyFileCompiler`). Add one rule
+in the same style:
+
+```haskell
+match "calcs/*/*.py" $ do
+    route   idRoute
+    compile copyFileCompiler
+```
+
+**Scope it exactly this way — `calcs/*/*.py`, not `calcs/**`.** The glob must
+match only Python scripts one directory deep. `calcs/**` would sweep in
+`calcs/data/24eoextract990.csv` (247 MB) and every `.csv.gz` intermediate, which
+would bloat the deploy and publish derived data we deliberately leave untracked.
+
+This makes every analysis script reachable at
+`https://blog.noprofits.org/calcs/<post>/compute.py`, and retroactively publishes
+the scripts behind the earlier posts (`below-zero/`, `who-pays/`,
+`months-of-cash-at-scale/`) at no extra cost.
+
+**Post requirement.** The methods section must link **directly to the downloadable
+scripts** — `/calcs/public-support-cliff/compute.py` and `figures.py` — not merely
+mention that a repository exists. The reader should be one click from the code.
+Name the data source and its URL so the input is obtainable too.
+
+**Verification.** The build check must confirm the scripts landed in `_site/` and
+that no `.csv`/`.csv.gz` came with them.
 
 ## Environment — learned the hard way on the last post
 
@@ -241,3 +360,15 @@ Peter.
   stated in the same sentence.
 - **Section 3 must not become a fundraising-advice column.** The 2% rule is the
   mechanism, not a how-to for engineering a support ratio.
+- **The comfortable reading is as much an assertion as the accusatory one.** This
+  spec originally declared the bunching benign ("the rule working as designed").
+  That was unsupported. Neither the charitable nor the suspicious mechanism is
+  identified by this data, and a draft that quietly settles into either has
+  asserted something we do not know. The finding is the displacement; the
+  mechanism is open.
+- **Publishing the code raises the stakes on the code.** Once
+  `/calcs/public-support-cliff/compute.py` is a URL in the post, it is part of the
+  argument and will be read as such. It must run standalone against the named
+  extract, assert its own numbers, and carry a docstring stating the data source,
+  the filters, and the specification choices. Sloppy code is now a published
+  error, not a private one.
