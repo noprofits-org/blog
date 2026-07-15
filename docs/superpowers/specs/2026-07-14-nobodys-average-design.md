@@ -52,6 +52,15 @@ Together: the headline 24.4 percent is not a fact about the nonprofit sector. It
 is a measurement of 2,423 institutions, averaged over 240,000 organizations that
 look nothing like them.
 
+And the closing turn: **the distinction is already in the file.** `nonpfrea` —
+the public-charity test each organization declares on Schedule A — separates the
+piles at a median of 87.0 percent (code 07, publicly supported) against 42.2
+percent (code 09, exempt-function revenue), with hospitals at 1.4 percent and
+churches at 99.7 percent. So the post does not have to propose a taxonomy. It
+observes that the IRS already collects one, every charity already declares it
+under penalty of perjury, it ships in the same public file as the revenue lines
+— and the sector averages across it anyway.
+
 ## Verified findings
 
 All figures below were computed against `calcs/data/24eoextract990.csv` (IRS SOI
@@ -147,6 +156,49 @@ Deciles 1–9 are one sector — flat median around 70%, roughly 20% fee-funded 
 categorically different. This is the single most important table in the post: it
 is what makes "different populations" an observation rather than an opinion.
 
+### The distinction is already in the file — `nonpfrea`, n = 242,348
+
+**Peter's question, and the post's sharpest turn.** The extract carries
+`nonpfrea`, the non-private-foundation reason code: which public-charity test the
+organization declares it qualifies under on Schedule A. Its two dominant values
+are very nearly the two piles.
+
+| `nonpfrea` — declared test | n | Median contribution share | % fee (≤10) | % donation (≥90) |
+| --- | --- | --- | --- | --- |
+| 07 — §170(b)(1)(A)(vi), publicly supported | 107,177 | 87.0% | 9.1% | 46.3% |
+| 09 — §509(a)(2), exempt-function revenue | 92,654 | 42.2% | 31.1% | 24.5% |
+| 02 — school | 15,473 | 17.4% | 35.9% | 18.7% |
+| 12 — supporting org | 8,487 | 4.0% | 53.8% | 15.9% |
+| 01 — church | 4,638 | 99.7% | 15.8% | 64.5% |
+| 03 — hospital | 3,546 | 1.4% | 77.5% | 4.4% |
+| 13 — supporting org | 2,402 | 1.2% | 59.2% | 11.8% |
+| 14 — supporting org | 2,279 | 5.0% | 54.3% | 10.2% |
+| 08 — community trust | 1,692 | 80.4% | 12.5% | 40.4% |
+| 15 — supporting org | 1,449 | 0.0% | 75.4% | 6.1% |
+| 06 — governmental unit | 1,430 | 73.4% | 9.5% | 26.2% |
+
+Activity flags are sharper still:
+
+- `operatehosptlcd == "Y"`: n = 2,235, median contribution share **1.1%**
+- `operateschools170cd == "Y"`: n = 15,187, median contribution share **17.6%**
+
+**What this does to the conclusion.** The post no longer argues that these
+*should* be separate buckets. It observes that they **already are** — the IRS
+collects the distinction, every charity declares it on Schedule A under penalty
+of perjury, and it sits in the same public file as the revenue lines. The sector
+averages across it anyway. The conclusion is not a request for a new taxonomy;
+it is that there is one in the file, unused.
+
+**Required honesty constraint — the separation is strong, not clean.** Code 09's
+median is 42.2%, not near zero, and only 31.1% of 09 organizations are fee-funded
+by the ≤10% definition. The reason is substantive and the prose must state it:
+`nonpfrea` records which test an organization **qualifies under**, not how it is
+**actually funded**. An organization can qualify via 509(a)(2) and still run
+mostly on contributions. So the supportable claim is "**a strong signal the
+sector's measurement apparatus ignores**" — never "a clean partition," and never
+"the IRS already sorts them correctly." The hospital and church cuts are the
+clean ones; 07 vs 09 is the loud but noisy one.
+
 ### The inverted U, n = 195,437
 
 Honest reserve (the below-zero formula) by contribution-share band:
@@ -214,7 +266,13 @@ not this one.
 6. **The inverted U.** Both extremes fragile, middle resilient. State the
    correlation-not-causation caveat inline. Frame it as what stratifying buys
    you — structure the pooled number cannot express.
-7. **Conclusion: they don't belong in the same bucket.** The load-bearing
+7. **The distinction is already in the file.** Table 1 and the `nonpfrea` story.
+   The turn the post is built to deliver: the reader has by now accepted that
+   these are different populations, and this section reveals the IRS has been
+   coding the difference the whole time, in the same file, one column over. State
+   the qualifies-under vs actually-funded caveat here, honestly and in place —
+   it costs nothing and buys the section its credibility.
+8. **Conclusion: they don't belong in the same bucket.** The load-bearing
    section, and the reason the post exists. 501(c)(3) is a legal category, not an
    analytic one. Make the two-claim argument from §The thesis explicitly, and
    explicitly decline the bell-curve version of it — skew is not the evidence,
@@ -222,9 +280,10 @@ not this one.
    measurement apparatus (watchdog ratios, sector averages, "the average
    nonprofit…" survey journalism) inherits the legal category without ever asking
    whether it is an analytic one, and the 24.4 percent is what that mistake
-   produces. Prescribe the fix: stratify before summarizing; any sector statistic
-   must declare its weighting and its stratum or it means nothing.
-8. **Close.** Cross-link the series and the noprofits.org tools
+   produces. The fix is not new taxonomy — it is to stop discarding the one
+   already in the file: stratify before summarizing, and make any sector
+   statistic declare its weighting and its stratum or mean nothing.
+9. **Close.** Cross-link the series and the noprofits.org tools
    (search.noprofits.org, grants.noprofits.org, ProPublica Nonprofit Explorer),
    then the one-line reader caveat the nonprofit series ends on.
 
@@ -250,6 +309,12 @@ referenced by number in the prose (§6).
   the both-ends-fragile shape lettered.
 
 `og-image` points at Figure 1.
+
+**Table 1** — the `nonpfrea` breakdown from §The distinction is already in the
+file. A table, not a figure: it is enumerable facts, and the blog's convention
+already supports `**Table 1.**` with a bold caption below (§6 of the authoring
+notes). Ship the eleven codes with n ≥ 1,000; do not plot them. Referenced by
+number from structure section 7.
 
 ## Artifacts
 
@@ -301,7 +366,14 @@ Never commit straight to `main`.
   and false at the median (1.3×). Any draft sentence implying the two piles
   differ by *size* rather than by *business model* is a factual error, not a
   simplification.
-- **Section 7 is a normative claim in a data series.** The post prescribes how
-  the sector should measure itself, which is a step beyond describing what the
-  filings say. Keep the prescription tied to the specific evidence (mixture +
-  detached top) and out of general advocacy.
+- **The conclusion is a normative claim in a data series.** The post prescribes
+  how the sector should measure itself, which is a step beyond describing what
+  the filings say. Keep the prescription tied to the specific evidence (mixture +
+  detached top + the unused code) and out of general advocacy.
+- **`nonpfrea` will tempt an overclaim.** The seductive sentence is "the IRS
+  already sorts charities into these groups." It does not: 07 vs 09 separates
+  medians 87.0 vs 42.2, which is a strong signal and a noisy partition, because
+  the code records qualification rather than realized funding. Any draft implying
+  a clean sort, or that stratifying by `nonpfrea` alone would fix sector
+  statistics, is overclaiming. The defensible sentence is that the signal exists,
+  is free, is declared under penalty of perjury, and is discarded.
