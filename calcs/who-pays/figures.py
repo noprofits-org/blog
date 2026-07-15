@@ -90,3 +90,63 @@ fig.tight_layout()
 fig.savefig(OUT.format("hero"))
 plt.close(fig)
 print("wrote hero")
+
+# ---- Figure 2: the bimodal distribution --------------------------------
+fig, ax = plt.subplots(figsize=(8, 4.4))
+ax.hist(cs, bins=np.arange(0, 102, 2), color=TEAL, edgecolor=INK, lw=0.4)
+ax.axvline(cs.mean(), color=INK, lw=1.6, ls="--")
+ax.set_xlim(0, 100)
+ax.set_xlabel("contribution share of revenue (%)")
+ax.set_ylabel("charities")
+ymax = ax.get_ylim()[1]
+letter(ax, 5, ymax * 0.80, "A")            # the exact-zero pile
+letter(ax, 95, ymax * 0.80, "B")           # the exact-100 pile
+letter(ax, cs.mean(), ymax * 0.95, "C")    # the mean, describing nobody
+fig.tight_layout()
+fig.savefig(OUT.format("bimodal"))
+plt.close(fig)
+print("wrote bimodal")
+
+# ---- Figure 3: flat across deciles 1-9, then the cliff ------------------
+dec_med = np.array([np.median(cs[dec == d]) for d in range(10)])
+cut = np.sort(totrev)[-int(len(totrev) * 0.01)]      # top 1% by revenue
+top1_med = np.median(cs[totrev >= cut])
+
+fig, ax = plt.subplots(figsize=(8, 4.4))
+bar_colors = [TEAL] * 9 + [TEAL_DEEP]
+ax.bar(np.arange(1, 11), dec_med, color=bar_colors, edgecolor=INK, lw=1.0, width=0.72)
+ax.bar([11.4], [top1_med], color=TEAL_LIFT, edgecolor=INK, lw=1.0, width=0.72)
+ax.set_xticks(list(np.arange(1, 11)) + [11.4])
+ax.set_xticklabels(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "top\n1%"])
+ax.set_ylim(0, 100)                        # REQUIRED: never truncate the flat run
+ax.set_xlabel("revenue decile (smallest to largest)")
+ax.set_ylabel("median contribution share (%)")
+letter(ax, 5, 82, "A")                     # the flat run, deciles 1-9
+letter(ax, 10, 34, "B")                    # the cliff at decile 10
+letter(ax, 11.4, 13, "C")                  # the top 1%, a different population
+fig.tight_layout()
+fig.savefig(OUT.format("by-size"))
+plt.close(fig)
+print("wrote by-size")
+
+# ---- Figure 4: the inverted U ------------------------------------------
+# Group by the band compute.py already assigned — never re-derive the bands
+# here, or this figure can drift from the asserted numbers.
+LABS = ["0–10", "10–25", "25–50", "50–75", "75–90", "90–100"]
+meds = np.array([np.median(honest[band_idx == i]) for i in range(6)])
+
+fig, ax = plt.subplots(figsize=(8, 4.4))
+ax.plot(range(len(meds)), meds, color=TEAL_DEEP, lw=2.2, marker="o",
+        ms=8, mfc=CREAM, mec=INK, mew=1.4, zorder=5)
+ax.set_xticks(range(len(LABS)))
+ax.set_xticklabels(LABS)
+ax.set_ylim(0, meds.max() * 1.35)
+ax.set_xlabel("contribution share of revenue (%)")
+ax.set_ylabel("median honest reserve (months)")
+letter(ax, 0, meds[0] + meds.max() * 0.16, "A")   # fee-funded end, fragile
+letter(ax, 4, meds[4] + meds.max() * 0.16, "B")   # the resilient middle
+letter(ax, 5, meds[5] + meds.max() * 0.16, "C")   # donation-funded end, fragile
+fig.tight_layout()
+fig.savefig(OUT.format("inverted-u"))
+plt.close(fig)
+print("wrote inverted-u")
