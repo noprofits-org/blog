@@ -159,6 +159,11 @@ res = d2[d2.cs.between(0, 100)].copy()
 BINS = [0, 10, 25, 50, 75, 90, 100.01]
 LABS = ["0-10", "10-25", "25-50", "50-75", "75-90", "90-100"]
 res["band"] = pd.cut(res.cs, bins=BINS, labels=LABS, include_lowest=True)
+# band_idx is the same cut as an integer 0-5. figures.py runs in an env with
+# matplotlib but NO pandas (see its docstring) and reads this file with
+# np.genfromtxt, which needs every column numeric — so the band crosses the
+# boundary as an index into LABS, not as a string.
+res["band_idx"] = pd.cut(res.cs, bins=BINS, labels=False, include_lowest=True)
 
 WANT = [("0-10", 43_898, 5.18, 21.5), ("10-25", 16_345, 5.83, 14.9),
         ("25-50", 21_943, 7.38, 12.7), ("50-75", 26_060, 8.90, 11.8),
@@ -172,11 +177,12 @@ for lab, n_want, med_want, bz_want in WANT:
     check(f"band {lab} % below zero", (g.honest <= 0).mean() * 100, bz_want, 0.1)
 
 # ---- write intermediates ------------------------------------------------
-# `band` is written here, not recomputed in figures.py — arithmetic lives in
-# exactly one file, so a figure tweak can never move a number.
+# The band is assigned here, not recomputed in figures.py — arithmetic lives in
+# exactly one file, so a figure tweak can never move a number. Every column is
+# numeric so np.genfromtxt can read it; see the band_idx note above.
 out = mix[["EIN", "cs", "totrevenue", "npr", "dec"]].copy()
-out = out.merge(res[["EIN", "honest", "band"]], on="EIN", how="left")
-out = out[["cs", "totrevenue", "npr", "dec", "honest", "band"]]
+out = out.merge(res[["EIN", "honest", "band_idx"]], on="EIN", how="left")
+out = out[["cs", "totrevenue", "npr", "dec", "honest", "band_idx"]]
 out.to_csv("mix.csv.gz", index=False, compression="gzip")
 
 with open("agg.json", "w") as f:
