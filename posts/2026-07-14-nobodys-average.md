@@ -44,8 +44,11 @@ The arithmetic is embarrassingly simple. It is one division, done two ways
 (Code 1) — and the entire disagreement lives in the difference between them.
 
 ```python
-cs = totcntrbgfts / totrevenue * 100          # contribution share, per charity
-sector = totcntrbgfts.sum() / totrevenue.sum() * 100   # the dollar-weighted answer
+# Per charity: what share of THIS organization's revenue was donations?
+cs = totcntrbgfts / totrevenue * 100
+
+# Per dollar: what share of ALL the revenue was donations?
+sector = totcntrbgfts.sum() / totrevenue.sum() * 100
 ```
 
 **Code 1.** The whole disagreement in two lines: the per-charity ratio and the sector ratio are different questions, and the second is not the average of the first.
