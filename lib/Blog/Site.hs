@@ -52,6 +52,14 @@ siteRules previewDrafts = do
         route   idRoute
         compile copyFileCompiler
 
+    -- Analysis scripts, published for download alongside the posts that cite
+    -- them (e.g. /calcs/public-support-cliff/compute.py). Scoped to *.py exactly
+    -- one directory deep: "calcs/**" would also publish calcs/data/*.csv (the
+    -- 247MB IRS extract) and every generated .csv.gz intermediate.
+    match "calcs/*/*.py" $ do
+        route   idRoute
+        compile copyFileCompiler
+
     match "js/*" $ do
         route   idRoute
         compile copyFileCompiler
