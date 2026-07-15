@@ -1,10 +1,32 @@
 ---
-title: "One-third: the cliff a few hundred charities steer around"
+title: "One-third: the cliff a few dozen charities steer around"
 date: 2026-07-15
 tags: nonprofits, data
 description: "There is a bright line in the tax code: draw less than a third of your support from the public and you stop being a public charity. Almost no charity can see it — the median sits at 96 percent. But among the few hundred close enough to see it, the distribution bends, and it bends at the number they can compute."
 og-image: /images/2026-07-15-public-support-cliff-hero.png
 ---
+
+<aside class="correction">
+
+**Correction, 15 July 2026.** This post originally reported the effect as "about
+80 organizations." That number is not a count of organizations, and it overstated
+the effect by more than half. It was the sum of two quantities — the **excess
+above** the line (~29) and the **missing below** it (~51) — and an organization
+that moves across the line is counted in both. The honest figures are reported
+separately below, and the effect size is now stated as what it should always have
+been: **15.5 percent of the organizations the counterfactual expects just below
+the line are not there.** The statistical finding is unchanged — the density is
+asymmetric at the threshold, no placebo comes close, the bootstrap excludes zero —
+but the post now also carries a caveat it lacked: **neither half is individually
+decisive** (z of 1.50 above, 2.45 below). What the placebo test rejects is the
+joint asymmetry, not either margin. Two further limitations are now disclosed: the
+counterfactual is **not** mass-preserving (no integration constraint, which is why
+29 and 51 do not balance), and private foundation status is not uniformly a
+penalty. The title has changed from "a few hundred" to "a few dozen" for the
+same reason — a few hundred charities sit *near* the line, but the deficit is
+about fifty. With thanks to the reader whose review prompted the re-derivation.
+
+</aside>
 
 Most tax rules are dials. You pay a little more, you deduct a little less, the
 consequence scales with the number. A few are not dials. A few are cliffs, where
@@ -15,8 +37,9 @@ regimes.
 The [public support test](https://www.irs.gov/charities-non-profits/exempt-organizations-annual-reporting-requirements-form-990-schedules-a-and-b-public-charity-support-test)
 is a cliff. Economists have a prediction about what people do at cliffs, and the
 prediction is testable, and the [IRS publishes the data](https://www.irs.gov/statistics/soi-tax-stats-annual-extract-of-tax-exempt-organization-financial-data)
-to test it with. This post runs the test. The answer is yes — measurably,
-robustly, and about eighty organizations' worth (Figure 1).
+to test it with. This post runs the test. The answer is yes — measurably and
+robustly, though the effect is small: about one in seven of the organizations you
+would expect to find just below the line are not there (Figure 1).
 
 <figure>
   <img src="/images/2026-07-15-public-support-cliff-hero.png" alt="Histogram of charities by public support percentage from 24 to 44 percent, with a dashed counterfactual curve. The bars in the one and a half points below the 33 percent line sit below the curve; the bars just above the line sit above it, jumping from about 99 charities to about 132 across the line.">
@@ -26,9 +49,10 @@ robustly, and about eighty organizations' worth (Figure 1).
 support, with **A** the one-third line and **D** a counterfactual density fitted to
 the neighbourhood *excluding* the shaded window. **B**, the bins in the 1.5 points
 below the line, sit *under* the counterfactual — 280 organizations where 331 were
-expected. **C**, the bins just above, sit *over* it — 399 where 370 were expected.
-The last bin below the line holds 99 charities; the first bin above holds 132. Same
-asset as the social card.
+expected, a deficit of about 51. **C**, the bins just above, sit *over* it — 399
+where 370 were expected, an excess of about 29. The two do not balance, and the
+text says why. The last bin below the line holds 99 charities; the first bin above
+holds 132. Same asset as the social card.
 
 ## The rule
 
@@ -59,6 +83,13 @@ one that stings — their donors generally deduct up to
 [30 percent of adjusted gross income instead of 50](https://www.irs.gov/publications/p526).
 The organization keeps doing exactly what it did the day before. Its donors just
 get a worse deal for doing it.
+
+Though not every organization experiences that as a demotion. Private foundation
+status brings control — no need to court a broad donor base, no support test to
+pass every year — and some organizations would genuinely rather have it. The cliff
+is a cliff for charities that want to stay public charities, which is most of them
+but not all, and that is worth holding before reading any movement across the line
+as escape from a penalty.
 
 So: a bright line, a real penalty, and a number every charity computes about
 itself. That is the setup for one of the most-studied phenomena in public
@@ -120,6 +151,12 @@ The consequence is that the test measures **breadth, not amount**. A charity tha
 raises $2 million from four devoted donors can fail it. A charity that raises
 $50,000 from six hundred people sails through. The rule is not asking how much you
 raised. It is asking how many people you raised it from.
+
+And it asks that only about *private* money. The 2 percent cap [does not apply](https://www.irs.gov/instructions/i990sa) to governmental units
+or to other publicly supported charities — their support counts in full. So a
+nonprofit funded almost entirely by one state agency clears the test comfortably,
+while one funded by four wealthy individuals does not. The concentration this rule
+punishes is concentration among private donors, specifically.
 
 <figure>
   <img src="/images/2026-07-15-public-support-cliff-concentration.png" alt="Two overlaid distributions of the share of support excluded by the 2 percent rule. Typical charities pile at zero, with almost nothing excluded. Charities near the cliff are split: a group at zero and a much larger group with 55 to 75 percent of their support excluded.">
@@ -197,8 +234,27 @@ organizations move across a line rather than pile onto it. Widen or narrow the
 window and it persists: a 16.3 percent deficit and 10.8 percent excess at ±1
 point, 12.6 and 6.8 at ±2.
 
-Adding the two halves together gives the headline: **about 80 organizations**
-sitting above the line that the smooth curve says should be below it.
+Be careful how those two halves get added up, because I originally added them
+wrong. **The missing mass below is about 51 organizations. The excess above is
+about 29.** It is tempting to sum them into a single headline — this post did, and
+called it "about 80 organizations" — but that double-counts: an organization that
+leaves the band below and arrives in the band above is counted once at each end.
+Eighty is not a number of charities. It is a test statistic, and a good one for
+reasons in the next section, but it is not a count.
+
+The cleanest statement of the size is the deficit on its own. The counterfactual
+expects about **331** organizations in the point and a half below the line. There
+are **280**. So **15.5 percent of the charities that should be sitting just below
+the one-third line are not there** — roughly one in seven. That is the effect.
+
+The two halves do not balance — 51 missing, 29 extra — and that gap is worth
+naming rather than smoothing over. If every departing organization landed in the
+1.5 points just above, the two would be equal. They are not, which means either
+the movers land further up the scale than that window reaches, or the
+counterfactual is slightly off. The bunching literature has a fix for this, the
+**integration constraint**, which forces the fitted curve to preserve total mass.
+This analysis does not implement it. A curve that did would be the more faithful
+estimator, and its absence is the main methodological hole here.
 
 One thing worth knowing before you decide how impressed to be. The ratio being
 bent here is **not one year's fundraising** — it is a five-year aggregate, running
@@ -208,29 +264,53 @@ right side of a line.
 
 ## Is it real?
 
-Eighty organizations out of 111,991 is a small number extracted from a wiggle in a
-curve, using a method with three arbitrary choices in it. Healthy scepticism says:
-you can find a wiggle anywhere if you look with a flexible enough curve.
+Fifty missing charities out of 111,991 is a small deviation extracted from a wiggle
+in a curve, using a method with three arbitrary choices in it. Healthy scepticism
+says: you can find a wiggle anywhere if you look with a flexible enough curve.
 
 Correct. So here is the check that matters, and it is the one that earns everything
 above — run the identical estimator at thresholds where **no rule exists**. If the
-method manufactures 80-organization bumps out of noise, it will manufacture them at
-27 percent and 41 percent too. Figure 4 runs it at 21 of them.
+method manufactures bumps out of noise, it will manufacture them at 27 percent and
+41 percent too. Figure 4 runs it at 21 of them, scoring each with the same E+M
+statistic.
 
 <figure>
-  <img src="/images/2026-07-15-public-support-cliff-placebo.png" alt="Displacement estimated at 22 fake thresholds and the real one. The 21 placebo thresholds scatter between minus 55 and plus 35 organizations around zero. The real one-third cliff sits alone at plus 80.">
+  <img src="/images/2026-07-15-public-support-cliff-placebo.png" alt="The asymmetry statistic estimated at 21 fake thresholds and at the real one. The placebo thresholds scatter between minus 55 and plus 35 around zero. The real one-third cliff sits alone at plus 80.">
 </figure>
 
-**Figure 4.** The test that earns the claim. **A** is the real cliff, +80.1
-organizations. **B** is the largest of 21 placebo thresholds from 22 to 48 percent,
-at +35.0. The placebos scatter around zero (mean −4.2); the real one does not sit
-among them.
+**Figure 4.** The test that earns the claim. Each point is the E+M statistic — a
+measure of asymmetry around a threshold, not a count of organizations. **A** is the
+real cliff at +80.1. **B** is the largest of 21 placebo thresholds from 22 to 48
+percent, at +35.0. The placebos scatter around zero (mean −4.2); the real one does
+not sit among them.
 
 The placebos average **−4.2** with a standard deviation of **22.4**. The real cliff
 is **+80.1** — **3.77 standard deviations** above the placebo distribution, and
 **not one of the 21** reaches it. Bootstrapping the estimate over 400 resamples
 gives a 95 percent interval of **[+28, +129]**, with zero of the 400 landing at or
 below nothing.
+
+Two things about that statistic, both of which cut against a lazy reading of it.
+
+**First, why E+M rather than either half.** It is not a count, as the last section
+said — so why score the placebos with it? Because it is the *better test*. The
+counterfactual enters the excess with a minus sign and the deficit with a plus, so
+a curve fitted slightly too high inflates the deficit and deflates the excess by
+the same amount, and the sum cancels that error out. You can watch it happen in the
+placebos: the two halves are negatively correlated (**−0.445**), and the standard
+deviation of their sum is **22.4** where independence would predict **30.0**. That
+variance reduction is the whole reason the sum sees what the halves cannot.
+
+**Second, and less comfortably: neither half is individually decisive.** Scored on
+its own against its own placebos, the excess above the line is **1.50** standard
+deviations out, with 2 of 21 placebos beating it. The deficit below is **2.45**,
+with 1 of 21 beating it. Only the joint asymmetry clears the bar. That is legitimate
+— a joint test can reject where neither margin does, and this one is testing exactly
+the thing the theory predicts, a deficit *paired with* an excess — but it means the
+honest claim is narrower than "we found the bunchers." **The claim is that the
+density around the one-third line is asymmetric in the specific way displacement
+predicts, and that no fake threshold produces the same asymmetry.** It is not that
+fifty organizations were caught in the act.
 
 And because the specification is the obvious place to hide a thumb:
 
@@ -256,20 +336,29 @@ bandwidth, change it, and see what you get.
 
 ## How big? It depends what you divide by
 
-Eighty organizations. Out of 111,991 charities, that is **0.072 percent** —
-seven-hundredths of one percent. A rounding error. Nothing.
+About fifty organizations are missing from below the line. Out of 111,991
+charities, that is **0.046 percent** — under five-hundredths of one percent. A
+rounding error. Nothing.
 
 Except: how many charities could possibly respond to this line? From Figure 2, only
 **670** are within a point and a half of it. Everyone else is at 96 percent, sixty
-points clear, with nothing to respond to. Measured against the organizations that
-can actually see the cliff, eighty is around **12 percent**.
+points clear, with nothing to respond to. And the right denominator is narrower
+still — the deficit is measured against the **331** organizations the counterfactual
+expects in the point and a half *below* the line, which is the only group that could
+go missing from it. Against that, fifty is **15.5 percent**: about one in seven.
 
-Same eighty organizations. Same data. One denominator says a rounding error, the
-other says one in eight. This is the [previous post in this series](/posts/2026-07-14-nobodys-average.html)
+Same fifty organizations. Same data. One denominator says a rounding error, another
+says one in seven. This is the [previous post in this series](/posts/2026-07-14-nobodys-average.html)
 arriving somewhere new: the number was never the argument, the denominator was, and
 a statistic that won't tell you what it divided by isn't telling you anything. The
-honest sentence names both — *eighty organizations, which is a twelfth of those
-close enough for the rule to reach.*
+honest sentence names both — *about fifty organizations, which is one in seven of
+those the counterfactual puts within reach of the line.*
+
+There is a lesson in how this section originally read. It said "eighty
+organizations… a twelfth of those close enough," which was wrong twice over: the
+numerator double-counted, and 670 was the wrong denominator for a deficit that can
+only be drawn from the 331 below. A post arguing that denominators are where the
+meaning hides should probably have checked its own.
 
 ## What this does and does not show
 
@@ -324,12 +413,13 @@ exist.
 
 What is left is a measurement, and it is a real one: at a line in the tax code
 where the arithmetic bites, the distribution of American charities has a bend in
-it, and the bend is not there at 27 percent or 41 percent. Around eighty
-organizations, one in twelve of those close enough to see the line, are on the
-comfortable side of it when a smooth curve says they should not be. Why they are
-there is a question this data cannot answer, and you now have the same numbers I do
-— [the script](/calcs/public-support-cliff/compute.py), the specification grid, and
-the placebos. Draw your own conclusion.
+it, and the bend is not there at 27 percent or 41 percent. About fifty
+organizations — one in seven of those the counterfactual puts just below the line —
+are not where a smooth curve says they should be. Why they are not there is a
+question this data cannot answer, and you now have the same numbers I do:
+[the script](/calcs/public-support-cliff/compute.py), the specification grid, the
+placebos, and the two halves of the statistic reported separately so you can judge
+the sum for yourself. Draw your own conclusion.
 
 If you are looking at one specific organization rather than a hundred thousand,
 none of this transfers: an aggregate bend says nothing whatever about any
@@ -346,7 +436,15 @@ organizations filing the 990-EZ or 990-N are not included. The population is the
 computable from the extract. The analysis script
 (<a href="/calcs/public-support-cliff/compute.py">calcs/public-support-cliff/</a>
 in this site's repository) contains the full method, asserts every number in this
-post, and pins its random seed. The bunching estimate is an aggregate statistical
-result and is not evidence of wrongdoing by any organization; as described above,
-this analysis cannot identify the mechanism behind it and makes no claim about
-any individual filer.</small>
+post, and pins its random seed. The estimator has no integration constraint, so
+its counterfactual is not mass-preserving and the excess above the line does not
+balance the deficit below; a mass-preserving counterfactual, as used in the
+bunching literature, would be the more faithful estimator. The E+M statistic used
+to score the placebos is a measure of asymmetry, not a count of organizations, and
+neither of its halves is individually significant. The population is a single
+filing year and only those organizations declaring the §170(b)(1)(A)(vi) test —
+not the 990-EZ/990-N filers, nor those using other public-charity tests — and the
+figures here have not been reconciled against the IRS's own published SOI tables.
+The bunching estimate is an aggregate statistical result and is not evidence of
+wrongdoing by any organization; as described above, this analysis cannot identify
+the mechanism behind it and makes no claim about any individual filer.</small>

@@ -14,8 +14,36 @@ WHAT IT DOES
   Estimator: fit a counterfactual density (degree-5 polynomial, 0.5-point bins)
   over [20,50] EXCLUDING a +/-1.5-point window around 33.333, then compare
   observed to counterfactual inside the window.
-      displacement = (observed - counterfactual) above
-                   + (counterfactual - observed) below
+      E = (observed - counterfactual) above   "excess above"
+      M = (counterfactual - observed) below   "missing below"
+      displacement = E + M
+
+  WHAT DISPLACEMENT IS, AND IS NOT  (corrected 2026-07-15)
+    E + M is a TEST STATISTIC, not a count of organisations. If an organisation
+    moves from just-below to just-above the line it is counted TWICE: once as
+    absent below, once as present above. The post originally reported E+M as
+    "about 80 organizations", which overstates the number affected by ~57%.
+    The honest quantities are E ~= 29 and M ~= 51 reported separately, and the
+    cleanest effect size is M as a share of the mass the counterfactual expects
+    below the line: ~15.5%.
+
+    E+M IS defensible as a test statistic, for a specific reason: the
+    counterfactual enters E with a minus and M with a plus, so a curve fitted
+    too high inflates M and deflates E by the same amount and the sum
+    differences that level error out. Across placebos corr(E,M) = -0.445 and
+    sd(E+M) = 22.4 against 30.0 if they were independent — that is the variance
+    reduction, and it is why E+M has more power than either half.
+
+    The corollary is a caveat the post must carry: neither half is individually
+    decisive (z of E = 1.50, z of M = 2.45). What is significant is the JOINT
+    asymmetry around the line, not either margin.
+
+  NOT IMPLEMENTED: the integration constraint used in the bunching literature
+    (Chetty et al.), which forces the counterfactual to preserve total mass.
+    Without it E and M need not balance, and here they do not (29 vs 51). A
+    mass-preserving counterfactual would be the more faithful estimator; this
+    script does not have one, and the reported figures should be read with that
+    in mind.
 
   The specification (bw=0.5, degree=5, W=1.5) was FIXED BEFORE the placebo test.
   Section GRID reports all 12 bandwidth/degree combinations, including the ones
@@ -58,9 +86,12 @@ def check(label, got, want, tol):
         FAILURES.append(f"{label}: got {got:,.4f}, spec says {want:,.4f}")
 
 
-def displacement(data, cliff, lo, hi, bw=BW, deg=DEG, w=W):
-    """Excess mass above the threshold plus missing mass below it, against a
-    polynomial counterfactual fitted on the region OUTSIDE the +/-w window."""
+def parts(data, cliff, lo, hi, bw=BW, deg=DEG, w=W):
+    """Return (E, M, cf_below, cf_above) against a polynomial counterfactual
+    fitted on the region OUTSIDE the +/-w window.
+      E = excess mass above the threshold
+      M = missing mass below it
+    Reported separately because E+M double-counts movers (see module docstring)."""
     bins = np.arange(lo, hi + bw, bw)
     cnt, e = np.histogram(data, bins=bins)
     mid = (e[:-1] + e[1:]) / 2
@@ -68,7 +99,14 @@ def displacement(data, cliff, lo, hi, bw=BW, deg=DEG, w=W):
     cf = np.polyval(np.polyfit(mid[~excl], cnt[~excl], deg), mid)
     ab = (mid >= cliff) & (mid < cliff + w)
     be = (mid >= cliff - w) & (mid < cliff)
-    return (cnt[ab].sum() - cf[ab].sum()) + (cf[be].sum() - cnt[be].sum())
+    return (cnt[ab].sum() - cf[ab].sum(), cf[be].sum() - cnt[be].sum(),
+            cf[be].sum(), cf[ab].sum())
+
+
+def displacement(data, cliff, lo, hi, bw=BW, deg=DEG, w=W):
+    """E + M. A TEST STATISTIC, not a count of organisations — see docstring."""
+    E, M, _, _ = parts(data, cliff, lo, hi, bw, deg, w)
+    return E + M
 
 
 COLS = ["EIN", "tax_pd", "subseccd", "pubsupplesspct170", "totsupp170",
@@ -112,8 +150,14 @@ for w_, ab_want, cf_ab_want, be_want, cf_be_want in [
     check(f"W={w_} counterfactual below", cf[be].sum(), cf_be_want, 0.3)
 
 REAL = displacement(p, CLIFF, LO, HI)
-print("\nHEADLINE")
-check("real displacement (bw=.5 deg=5 W=1.5)", REAL, 80.1, 0.3)
+REAL_E, REAL_M, CF_BE, CF_AB = parts(p, CLIFF, LO, HI)
+print("\nHEADLINE — reported as E and M separately; E+M is a test statistic only")
+check("E  excess above the line", REAL_E, 28.7, 0.1)
+check("M  missing below the line", REAL_M, 51.4, 0.1)
+check("E + M  (test statistic, NOT a count)", REAL, 80.1, 0.3)
+check("mass the counterfactual expects below", CF_BE, 331.4, 0.1)
+MISS_PCT = REAL_M / CF_BE * 100
+check("M as % of expected below  <-- effect size", MISS_PCT, 15.5, 0.1)
 
 # ---- placebo: identical estimator at thresholds with no rule -------------
 # Window geometry mirrors the real one: [cliff-13.33, cliff+16.67] -> [20,50].
@@ -132,6 +176,28 @@ Z = (REAL - pl.mean()) / pl.std()
 check("z vs placebo distribution", Z, 3.77, 0.05)
 check("placebos >= real", (pl >= REAL).sum(), 0, 0)
 check("largest placebo", pl.max(), 35.0, 0.5)
+
+# Neither half is individually decisive — the JOINT asymmetry is what the
+# placebo test rejects. The post must say so rather than imply that "80
+# organisations bunched" was directly observed.
+print("\nPLACEBO — each half on its own (the caveat, not the headline)")
+pp = [parts(p, float(t), max(10.0, t - 13.0), min(95.0, t + 17.0))
+      for t in np.arange(22, 49, 1.0) if abs(t - CLIFF) >= 3]
+pE = np.array([x[0] for x in pp])
+pM = np.array([x[1] for x in pp])
+Z_E = (REAL_E - pE.mean()) / pE.std()
+Z_M = (REAL_M - pM.mean()) / pM.std()
+check("z of E alone (NOT significant)", Z_E, 1.50, 0.03)
+check("placebos >= real E", (pE >= REAL_E).sum(), 2, 0)
+check("z of M alone (marginal)", Z_M, 2.45, 0.03)
+check("placebos >= real M", (pM >= REAL_M).sum(), 1, 0)
+
+# Why E+M has more power than either half: the counterfactual's level error
+# enters with opposite signs and differences out.
+CORR_EM = float(np.corrcoef(pE, pM)[0, 1])
+check("corr(E,M) across placebos", CORR_EM, -0.445, 0.005)
+check("sd(E+M) observed", (pE + pM).std(), 22.4, 0.1)
+check("sd(E+M) if independent", float(np.sqrt(pE.var() + pM.var())), 30.0, 0.1)
 
 # ---- bootstrap ----------------------------------------------------------
 rng = np.random.default_rng(BOOT_SEED)
@@ -224,7 +290,11 @@ with open("stats.json", "w") as f:
                "corr_excluded": float(CORR),
                "near_lt5": float(NEAR_LT5), "near_ge40": float(NEAR_GE40),
                "near_5575": float(NEAR_5575), "near_4055": float(NEAR_4055),
-               "typ_lt5": float(TYP_LT5)}, f, indent=2)
+               "typ_lt5": float(TYP_LT5),
+               "real_E": float(REAL_E), "real_M": float(REAL_M),
+               "cf_below": float(CF_BE), "miss_pct": float(MISS_PCT),
+               "z_E": float(Z_E), "z_M": float(Z_M),
+               "corr_EM": CORR_EM}, f, indent=2)
 
 print("\nwrote cf.csv.gz, cliff.csv.gz, stats.json")
 if FAILURES:
