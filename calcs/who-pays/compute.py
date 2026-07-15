@@ -5,6 +5,17 @@ Supports posts/2026-07-14-nobodys-average.md. Every printed number is asserted
 against docs/superpowers/specs/2026-07-14-nobodys-average-design.md. If an
 assertion fires, THIS SCRIPT is wrong, not the spec.
 
+WHAT `totcntrbgfts` IS  (corrected 2026-07-15)
+  Form 990 Part VIII line 1h — the TOTAL of the contributions block, which
+  includes line 1e, GOVERNMENT GRANTS. This extract publishes only the total, so
+  nothing here separates private giving from government money. Call the ratio
+  "contribution share", never "donation share": the Tax Foundation's 2019
+  decomposition puts private contributions at ~12% of revenue and government
+  grants at ~9%, i.e. roughly half of this figure is government.
+  https://taxfoundation.org/blog/501c3-nonprofit-revenue/
+  The org-vs-sector comparison this script exists for is unaffected — the same
+  line is used identically for every filer — but the naming matters.
+
 Data: ../data/24eoextract990.csv (IRS SOI annual extract, returns filed CY2024)
 https://www.irs.gov/statistics/soi-tax-stats-annual-extract-of-tax-exempt-organization-financial-data
 
