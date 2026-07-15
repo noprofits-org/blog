@@ -170,11 +170,12 @@ is to fit a smooth curve to the density **excluding** a window around the
 threshold, and then ask that curve what the window should have held.
 
 ```python
-# Frozen before the placebo test: 0.5-point bins, degree-5 fit, ±1.5-point window.
+# Bin width, polynomial degree, window half-width.
+# Frozen before the placebo test was run.
 BW, DEG, W = 0.5, 5, 1.5
 
-# Fit the density OUTSIDE a window around the line, then ask what the window
-# would have held if the line weren't there.
+# Fit the density OUTSIDE a window around the line, then ask
+# that curve what the window should have held.
 excl = (mid > CLIFF - W) & (mid < CLIFF + W)
 cf = np.polyval(np.polyfit(mid[~excl], cnt[~excl], DEG), mid)
 
