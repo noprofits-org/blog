@@ -81,3 +81,60 @@ fig.tight_layout()
 fig.savefig(OUT.format("hero"))
 plt.close(fig)
 print("wrote hero")
+
+# ---- Figure 2: the cliff is invisible to almost everyone ---------------
+fig, ax = plt.subplots(figsize=(8, 4.4))
+ax.hist(pct, bins=np.arange(0, 102, 2), color=TEAL, edgecolor=INK, lw=0.4)
+ax.axvline(CLIFF, color=INK, lw=2.0)
+ax.axvline(np.median(pct), color=TEAL_DEEP, lw=1.6, ls="--")
+ax.set_xlim(0, 100)
+ax.set_xlabel("public support (% of total support)")
+ax.set_ylabel("charities")
+ymax = ax.get_ylim()[1]
+letter(ax, CLIFF, ymax * 0.88, "A")               # the cliff
+letter(ax, np.median(pct), ymax * 0.60, "B")      # the median, far away
+fig.tight_layout()
+fig.savefig(OUT.format("distribution"))
+plt.close(fig)
+print("wrote distribution")
+
+# ---- Figure 3: placebo — the credibility figure ------------------------
+plac = np.array([s for _, s in stats["placebos"]])
+thr = np.array([t for t, _ in stats["placebos"]])
+real = stats["real_displacement"]
+
+fig, ax = plt.subplots(figsize=(8, 4.4))
+ax.axhline(0, color=INK, lw=0.8, zorder=1)
+ax.scatter(thr, plac, s=55, color=TEAL, edgecolor=INK, lw=1.0, zorder=3)
+ax.scatter([CLIFF], [real], s=190, marker="D", color=TEAL_LIFT,
+           edgecolor=INK, lw=1.6, zorder=5)
+ax.set_xlabel("threshold tested (% public support)")
+ax.set_ylabel("displacement (organizations)")
+ax.set_xlim(20, 50)
+letter(ax, CLIFF, real + 16, "A")        # the real cliff
+letter(ax, 45.5, plac.max() + 16, "B")   # the largest placebo
+fig.tight_layout()
+fig.savefig(OUT.format("placebo"))
+plt.close(fig)
+print("wrote placebo")
+
+# ---- Figure 4: donor concentration -------------------------------------
+near = (pct > CLIFF - 5) & (pct < CLIFF + 5)
+typ = pct >= 80
+fig, ax = plt.subplots(figsize=(8, 4.4))
+bins = np.arange(0, 102, 4)
+ax.hist(pct_excl[typ], bins=bins, color=TEAL, edgecolor=INK, lw=0.4,
+        alpha=0.85, density=True, label="typical (support ≥ 80%)")
+ax.hist(pct_excl[near], bins=bins, color=TEAL_LIFT, edgecolor=INK, lw=0.4,
+        alpha=0.7, density=True, label="near the cliff (±5 points)")
+ax.set_xlim(0, 100)
+ax.set_xlabel("share of support excluded by the 2% rule (%)")
+ax.set_ylabel("density of charities")
+ax.legend(frameon=False)
+ymax = ax.get_ylim()[1]
+letter(ax, 4, ymax * 0.72, "A")     # typical: nothing excluded
+letter(ax, 60, ymax * 0.22, "B")    # near-cliff: half excluded
+fig.tight_layout()
+fig.savefig(OUT.format("concentration"))
+plt.close(fig)
+print("wrote concentration")

@@ -105,6 +105,40 @@ Near-cliff charities are **not smaller in a way that explains anything** — med
 revenue $387k against $662k, same order of magnitude, and they hold *more* assets.
 What separates them is donor concentration. This is the post's payoff.
 
+#### CORRECTION — the near-cliff median is bimodal; do not quote it
+
+**Found while rendering Figure 4, after this spec first claimed "near-cliff
+charities have 53.9% of their support excluded."** That framing is wrong in
+exactly the way [nobody's average](/posts/2026-07-14-nobodys-average.html) is
+about. The near-cliff group is **bimodal** in donor concentration:
+
+| Share of support excluded by the 2% rule | Near-cliff orgs |
+| --- | ---: |
+| 0–5% (essentially nothing excluded) | **29.5%** |
+| 5–20% | 7.2% |
+| 20–40% | 7.5% |
+| **40–55% (where the median sits)** | **6.5%** ← the valley |
+| **55–75%** | **49.2%** |
+| ≥75% | 0.0% |
+
+The median of 53.9% lands in the sparsest part of the distribution. It is a real
+number and `compute.py` still asserts it, but **the post must not lean on it** —
+it describes almost none of the group.
+
+**The honest framing, which is also the stronger one:**
+
+- **55.7%** of near-cliff charities have **≥40%** of their support excluded — the
+  donor-concentration story, and it holds for a clear majority.
+- **29.5%** have **<5%** excluded. Donor concentration does **not** explain these;
+  they are near the line for other reasons (large non-public components in total
+  support — investment income, gross receipts). **The post must say this**, not
+  imply the 2% rule accounts for everyone.
+- The contrast that carries the section: **86.0%** of *typical* charities have
+  under 5% excluded, against 29.5% of near-cliff ones.
+
+So: donor concentration is the **dominant** mechanism near the cliff, not the
+**only** one. Say "most," never "the reason."
+
 ### The bright line and the judgment call — a null
 
 An organization below 33⅓ may still qualify under the **facts-and-circumstances

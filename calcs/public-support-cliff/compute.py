@@ -182,6 +182,22 @@ check("typical median assets", typ.totassetsend.median(), 829_810, 1)
 CORR = d.pct.corr(d.pct_excluded)
 check("corr(support %, % excluded)", CORR, -0.744, 0.005)
 
+# The near-cliff group is BIMODAL in donor concentration, so its median (53.9%)
+# sits in a valley and describes almost nobody — the 40-55% band holds only 6.5%
+# of it. Report the decomposition, not the median. (The previous post in this
+# series is about exactly this mistake; it nearly got made here.)
+print("\nTHE 2% RULE — decomposition (the median is bimodal, do not lean on it)")
+NEAR_LT5 = (near.pct_excluded < 5).mean() * 100
+NEAR_GE40 = (near.pct_excluded >= 40).mean() * 100
+NEAR_5575 = ((near.pct_excluded >= 55) & (near.pct_excluded < 75)).mean() * 100
+NEAR_4055 = ((near.pct_excluded >= 40) & (near.pct_excluded < 55)).mean() * 100
+TYP_LT5 = (typ.pct_excluded < 5).mean() * 100
+check("near-cliff: % with <5% excluded", NEAR_LT5, 29.5, 0.1)
+check("near-cliff: % with >=40% excluded", NEAR_GE40, 55.7, 0.1)
+check("near-cliff: % in the 55-75% mode", NEAR_5575, 49.2, 0.1)
+check("near-cliff: % in the 40-55% VALLEY", NEAR_4055, 6.5, 0.1)
+check("typical: % with <5% excluded", TYP_LT5, 86.0, 0.1)
+
 # ---- intermediates (all-numeric; figures.py has no pandas) ---------------
 bins = np.arange(LO, HI + BW, BW)
 cnt, e = np.histogram(p, bins=bins)
@@ -205,7 +221,10 @@ with open("stats.json", "w") as f:
                "ten_displacement": float(TEN), "ten_z": float(TENZ),
                "near_excluded_median": float(near.pct_excluded.median()),
                "typ_excluded_median": float(typ.pct_excluded.median()),
-               "corr_excluded": float(CORR)}, f, indent=2)
+               "corr_excluded": float(CORR),
+               "near_lt5": float(NEAR_LT5), "near_ge40": float(NEAR_GE40),
+               "near_5575": float(NEAR_5575), "near_4055": float(NEAR_4055),
+               "typ_lt5": float(TYP_LT5)}, f, indent=2)
 
 print("\nwrote cf.csv.gz, cliff.csv.gz, stats.json")
 if FAILURES:
