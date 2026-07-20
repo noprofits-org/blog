@@ -7,6 +7,68 @@ bib → figures → hero/OG → branch → verify → PR → merge → auto-depl
 
 ---
 
+## The stance — analysis in the open, held loosely
+
+This is the governing voice of the blog; every rule below serves it. We publish
+public-data analysis as people who might be wrong, and the writing has to show
+it.
+
+**We are working through public data in the open, not delivering verdicts.** The
+honest description of most posts is: *we had a question about the nonprofit or
+economic world, we pulled public data — IRS 990s, ProPublica, USAspending, grant
+records — analyzed it, and here is what we found, how we cut it, and where our
+read could be off.* We are not credentialed authorities on the sector; we are
+careful readers of open data, writing for people who often know a corner of it
+better than we do. A post invites correction; it does not close a case.
+
+**Our numbers are our data cut — say so.** The thing most likely to be wrong is
+on our side: which fiscal years we pulled, how we defined a category, which
+organizations the filter caught or dropped, how we handled missing filings, a
+join that double-counted. State those choices where a reader can check them, and
+treat a surprising result as *"this is what our cut shows"* — an invitation to be
+corrected on the data — not a finding we are certain of. A different, equally
+defensible definition often moves the number. (The most recent correction to
+this blog was exactly this kind: a headline that read as a count of
+organizations when the data did not support it.)
+
+**We describe organizations; we do not indict them.** This is the reputation
+line that matters most here. Public data about a *named* nonprofit or person is
+easy to turn into an accusation, and we do not. A high overhead ratio is not
+proof of waste; a low one is not proof of virtue — that is the overhead myth we
+write *against*, not with. A single filing anomaly is not fraud. When a point
+needs a specific organization as an example, make sure the public record fully
+and fairly supports exactly what is said, prefer aggregates over singling out a
+small charity, and never imply wrongdoing the data cannot establish. When in
+doubt, describe the pattern, not the party.
+
+**Observational data shows association, not cause.** Almost everything here is
+observational: two lines moving together in a 990 panel is not one causing the
+other. Say "associated with," "consistent with," "we cannot separate X from Y
+here" — and reserve causal language for a design that actually earns it.
+
+**Novelty is "new to us," not "what the sector hides."** Report plainly what the
+public data shows; do not frame it as an exposé of concealed truth or claim it is
+unknown to people who work in the field. "New to us; tell us if this is already
+known or if we read it wrong" is the honest register.
+
+**Concretely — banned and required framings:**
+
+| Don't write | Write instead |
+| --- | --- |
+| "Charity X is a scam / wasteful / a fraud" | "In [year] filings, X reports [figure]; here is what that does and does not tell you" |
+| "The data proves X causes Y" | "X and Y move together in this data; we can't establish cause here" |
+| "We exposed / uncovered what they hide" | "We pulled the public filings, and here is what we found" |
+| "Obviously / clearly / everyone knows" | say it plainly, or show it |
+| any claim the finding is new to the sector | "new to us; corrections welcome if this is known" |
+| singling out one small org to stand for a problem | show the aggregate; name a specific org only when the record fully backs the exact claim |
+
+A slightly contrarian hook (§2) is still house voice — but it frames a *question*
+or a common misconception, never an indictment of an organization, and the claim
+underneath it must be exactly what the data supports. Keep the closing
+caveat/disclaimer line (§2); it is part of this stance, not decoration.
+
+---
+
 ## 1. Front matter
 
 YAML only. The template renders the title, date, byline, and tags — do **not**
@@ -160,6 +222,7 @@ shared tree while another session has uncommitted changes.
 
 - [ ] Front matter complete; title quoted if needed; links relative
 - [ ] Voice matches the series; disclaimer line if reader-facing
+- [ ] **Stance check:** numbers presented as our data cut (years/definitions/filters stated); no organization indicted beyond what the public record fully supports; no causal claim from observational data; no exposé / "new to the sector" framing; post invites correction (stance section)
 - [ ] Citations in the correct convention for the series
 - [ ] New bib entries appended (science posts only), keys unique & de-duped
 - [ ] Figure 1 authored at 1200×630 in house style; `<figure>` + alt text
