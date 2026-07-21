@@ -8,11 +8,29 @@ og-image: /images/2026-07-14-nobodys-average-hero.png
 
 <aside class="correction">
 
+**Correction, 21 July 2026.** The correction below stated, as originally
+published, that "roughly half" of contributions and grants is government money.
+That figure was inferred from the 2019 third-party decomposition in Table 1, not
+measured, and it is too high. The IRS's own
+published tax year 2022 table breaks the line out directly: government grants are
+**$305.1 billion of $756.1 billion in contributions, gifts and grants — 40.3
+percent**, about two-fifths rather than a half. Every "roughly half" in this post
+has been revised accordingly. The substance of the 15 July correction is
+unchanged: line 1h does bundle private gifts with government grants, and this
+extract still cannot separate them for any individual filer. Details, and the
+reconciliation that caught it, are in
+[checking our work](/posts/2026-07-21-checking-our-work.html).
+
+</aside>
+
+<aside class="correction">
+
 **Correction, 15 July 2026.** This post originally called the 24.4 percent figure
 "donations." That was wrong, and the error ran throughout. The Form 990 line it
 comes from (Part VIII, line 1h) bundles private gifts together with **government
 grants**, and this data offers no way to separate them — so the figure is
-*contributions and grants*, of which roughly half is government money. Where the
+*contributions and grants*, of which about two-fifths is government money (see
+the 21 July correction above). Where the
 post said "donations" it now says "contributions and grants," and a new section
 below spells out what that does and does not include. The post also framed the
 aggregate as a novel finding when the Tax Foundation and the Urban Institute had
@@ -88,8 +106,9 @@ organizations, all other contributions — and **line 1e, government grants**. T
 extract publishes only the total. It carries no 1e, so **nothing in this post can
 separate a foundation grant from a county contract booked as a grant.**
 
-That distinction is not a rounding detail; it is roughly half the number, as
-Table 1 shows. The
+That distinction is not a rounding detail; it is about two-fifths of the number,
+as the IRS's own published table shows — Table 1 below, built from 2019
+third-party data on a narrower denominator, puts it a little higher. The
 [Tax Foundation's decomposition](https://taxfoundation.org/blog/501c3-nonprofit-revenue/)
 of 2019 data splits what my file cannot:
 
@@ -103,8 +122,11 @@ of 2019 data splits what my file cannot:
 **Table 1.** What the contributions block contains, from a source that can see
 inside it. Private giving and government grants together come to about 21 percent
 of 2019 revenue — which is, allowing for growth, the 24.4 percent this post
-computes for filings in 2024. Roughly half of "contributions and grants" is
-government money.
+computes for filings in 2024. About two-fifths of "contributions and grants" is
+government money: the IRS's
+[published tax year 2022 table](https://www.irs.gov/pub/irs-soi/22eo01.xlsx),
+which reports the split directly, puts government grants at 40.3 percent of the
+block — see [checking our work](/posts/2026-07-21-checking-our-work.html).
 
 So: **when this post says a charity is "90 percent contribution-funded," that does
 not mean 90 percent of its money came from donors.** It means 90 percent arrived
@@ -399,7 +421,7 @@ shows the filing they came from. The sector average was never about your charity
 <small>This is a plain-language overview, not tax, legal, or financial advice.
 "Contributions and grants" throughout means Form 990 Part VIII line 1h, which
 includes government grants and which this extract does not break down; it is not a
-measure of private philanthropy, and roughly half of it is government money — see
+measure of private philanthropy, and about two-fifths of it is government money — see
 [what the 24 percent is, and isn't](#what-the-24-percent-is-and-isnt). Figures are
 computed from the IRS SOI annual extract of Form 990 data (returns filed in
 calendar year 2024, mostly fiscal 2023), as-filed and unaudited, and are a single
