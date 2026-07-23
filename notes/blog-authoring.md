@@ -208,7 +208,8 @@ unreferenced element is a bug.
 GitHub Pages on **push to `main`** (also PR-to-main and manual dispatch). So:
 
 1. Work on a feature branch (`post/<slug>`), never commit straight to `main`.
-2. **Verify before merge:** `stack build && stack exec site build` must succeed;
+2. **Verify before merge:** `stack build && stack exec blog build` must succeed
+   (the cabal executable is named `blog`, not `site`);
    check the post renders, citations resolve, figures load, and the card meta is
    right.
 3. Open a PR into `main`; merge triggers the deploy.
