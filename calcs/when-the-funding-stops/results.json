@@ -1,0 +1,413 @@
+{
+  "tax_year": 2023,
+  "source_version": "NCCS efile_v2_1",
+  "sources": [
+    {
+      "file": "F9-P00-T00-HEADER-2023.CSV",
+      "url": "https://nccs-efile.s3.us-east-1.amazonaws.com/public/efile_v2_1/F9-P00-T00-HEADER-2023.CSV",
+      "sha256": "75c78ada89e484b9397732a396dc3143ee68958129ec928687cdc3bca9b6d366",
+      "bytes": 335234643,
+      "rows": 527764
+    },
+    {
+      "file": "F9-P08-T00-REVENUE-2023.CSV",
+      "url": "https://nccs-efile.s3.us-east-1.amazonaws.com/public/efile_v2_1/F9-P08-T00-REVENUE-2023.CSV",
+      "sha256": "d830baefba8e0a799ba5499d9180c08e3c09f32b0010c9b325b01f93b428118f",
+      "bytes": 255283274,
+      "rows": 493193
+    },
+    {
+      "file": "F9-P09-T00-EXPENSES-2023.CSV",
+      "url": "https://nccs-efile.s3.us-east-1.amazonaws.com/public/efile_v2_1/F9-P09-T00-EXPENSES-2023.CSV",
+      "sha256": "1e5ccc78a45d3cae9cdd1a5095954325e5d7f5a8bfc287d4aee51891e7194a14",
+      "bytes": 306790991,
+      "rows": 453826
+    },
+    {
+      "file": "F9-P10-T00-BALANCE-SHEET-2023.CSV",
+      "url": "https://nccs-efile.s3.us-east-1.amazonaws.com/public/efile_v2_1/F9-P10-T00-BALANCE-SHEET-2023.CSV",
+      "sha256": "49eeb4dd9a23bd28b9215caf04b3fda5478b03d77a762d6738e7ef84a94be952",
+      "bytes": 291479976,
+      "rows": 527764
+    }
+  ],
+  "counts": {
+    "header_rows": 527764,
+    "full_990_ty2023": 329036,
+    "unique_eins": 325106,
+    "domestic_c3": 246978,
+    "nongroup_nonpartial": 244821,
+    "full_year": 244821,
+    "all_four_parts": 244821,
+    "grant_missing": 153192,
+    "grant_explicit_zero": 11174,
+    "grant_negative": 11,
+    "positive_grant_recipients": 80444,
+    "positive_revenue_expenses": 80341,
+    "grants_exceed_revenue": 170,
+    "grant_share_at_most_one": 80171,
+    "fasb_and_core_balances_present": 69354,
+    "net_assets_reconcile": 69275,
+    "nonnegative_components": 68958,
+    "analyzed": 68957
+  },
+  "omitted_component_counts_before_reconciliation": {
+    "restricted": 31159,
+    "fixed_assets": 9881,
+    "secured_debt": 48654,
+    "bonds": 64058,
+    "cash": 3313,
+    "savings": 23659,
+    "depreciation": 12017
+  },
+  "overall": {
+    "n": 68957,
+    "reserve_median": 5.147063105700474,
+    "reserve_le3_n": 24940,
+    "reserve_le3_pct": 36.16746668213525,
+    "reserve_le0_pct": 13.04871151587221,
+    "cash_median": 4.090316516448113,
+    "bond_reserve_median": 5.302530071876106,
+    "no_debt_addback_median": 4.132085123568279
+  },
+  "bands": [
+    {
+      "band": "0\u201310%",
+      "n": 20905,
+      "reserve_median": 5.552053971627928,
+      "reserve_le3_n": 7293,
+      "reserve_le3_pct": 34.88639081559435,
+      "reserve_le0_pct": 14.699832575938771,
+      "cash_median": 3.949882632779059,
+      "bond_reserve_median": 5.86385900927996,
+      "no_debt_addback_median": 4.671980704364852
+    },
+    {
+      "band": "10\u201325%",
+      "n": 12233,
+      "reserve_median": 6.032303832253054,
+      "reserve_le3_n": 3795,
+      "reserve_le3_pct": 31.022643668764815,
+      "reserve_le0_pct": 11.027548434562249,
+      "cash_median": 4.693576008602493,
+      "bond_reserve_median": 6.113553140433401,
+      "no_debt_addback_median": 5.107167454768401
+    },
+    {
+      "band": "25\u201350%",
+      "n": 11636,
+      "reserve_median": 6.117524676638312,
+      "reserve_le3_n": 3501,
+      "reserve_le3_pct": 30.087658989343417,
+      "reserve_le0_pct": 11.464420763148848,
+      "cash_median": 4.917774500590096,
+      "bond_reserve_median": 6.140633812059413,
+      "no_debt_addback_median": 5.111151706998008
+    },
+    {
+      "band": "50\u2013100%",
+      "n": 24183,
+      "reserve_median": 3.9807961957942304,
+      "reserve_le3_n": 10351,
+      "reserve_le3_pct": 42.802795352106855,
+      "reserve_le0_pct": 13.406111731381548,
+      "cash_median": 3.502189075650107,
+      "bond_reserve_median": 4.0820925757115365,
+      "no_debt_addback_median": 2.9464588504809166
+    }
+  ],
+  "expense_bands": [
+    {
+      "size": "Under $500K",
+      "bands": [
+        {
+          "band": "0\u201310%",
+          "n": 4626,
+          "reserve_median": 9.95977715212208,
+          "reserve_le3_n": 1009,
+          "reserve_le3_pct": 21.811500216169478,
+          "reserve_le0_pct": 7.522697795071336,
+          "cash_median": 8.206001220988732,
+          "bond_reserve_median": 9.95977715212208,
+          "no_debt_addback_median": 9.194208475274516
+        },
+        {
+          "band": "10\u201325%",
+          "n": 3816,
+          "reserve_median": 8.659399175005671,
+          "reserve_le3_n": 948,
+          "reserve_le3_pct": 24.842767295597483,
+          "reserve_le0_pct": 9.014675052410901,
+          "cash_median": 7.787827338068441,
+          "bond_reserve_median": 8.664886266664489,
+          "no_debt_addback_median": 7.91342290047599
+        },
+        {
+          "band": "25\u201350%",
+          "n": 4082,
+          "reserve_median": 8.23566680845692,
+          "reserve_le3_n": 1128,
+          "reserve_le3_pct": 27.633512983831455,
+          "reserve_le0_pct": 13.547280744732973,
+          "cash_median": 7.689413839456796,
+          "bond_reserve_median": 8.245673490862359,
+          "no_debt_addback_median": 6.850664994002415
+        },
+        {
+          "band": "50\u2013100%",
+          "n": 7585,
+          "reserve_median": 6.961204459164715,
+          "reserve_le3_n": 2507,
+          "reserve_le3_pct": 33.05207646671061,
+          "reserve_le0_pct": 14.541858932102835,
+          "cash_median": 6.6024877208649615,
+          "bond_reserve_median": 6.973337532147168,
+          "no_debt_addback_median": 4.8575671896846355
+        }
+      ]
+    },
+    {
+      "size": "$500K\u2013$5M",
+      "bands": [
+        {
+          "band": "0\u201310%",
+          "n": 8991,
+          "reserve_median": 5.900046408167838,
+          "reserve_le3_n": 2866,
+          "reserve_le3_pct": 31.876320765209655,
+          "reserve_le0_pct": 11.644978311644978,
+          "cash_median": 4.580333644388776,
+          "bond_reserve_median": 5.935783412701356,
+          "no_debt_addback_median": 5.029310467617189
+        },
+        {
+          "band": "10\u201325%",
+          "n": 5901,
+          "reserve_median": 5.703810770556011,
+          "reserve_le3_n": 1905,
+          "reserve_le3_pct": 32.28266395526182,
+          "reserve_le0_pct": 10.94729706829351,
+          "cash_median": 4.521763760551226,
+          "bond_reserve_median": 5.727990073015082,
+          "no_debt_addback_median": 4.797938002061108
+        },
+        {
+          "band": "25\u201350%",
+          "n": 5542,
+          "reserve_median": 5.714825031564249,
+          "reserve_le3_n": 1705,
+          "reserve_le3_pct": 30.765066762901476,
+          "reserve_le0_pct": 11.024900757849151,
+          "cash_median": 4.640041936057452,
+          "bond_reserve_median": 5.719314241233601,
+          "no_debt_addback_median": 4.760687430164963
+        },
+        {
+          "band": "50\u2013100%",
+          "n": 11634,
+          "reserve_median": 3.935321555839807,
+          "reserve_le3_n": 4899,
+          "reserve_le3_pct": 42.10933470861269,
+          "reserve_le0_pct": 11.801615953240502,
+          "cash_median": 3.2347140338750062,
+          "bond_reserve_median": 3.972672471826834,
+          "no_debt_addback_median": 2.979020095652266
+        }
+      ]
+    },
+    {
+      "size": "$5M\u2013$50M",
+      "bands": [
+        {
+          "band": "0\u201310%",
+          "n": 5189,
+          "reserve_median": 3.948182972632263,
+          "reserve_le3_n": 2221,
+          "reserve_le3_pct": 42.80208132588167,
+          "reserve_le0_pct": 19.406436693004434,
+          "cash_median": 2.606149042717141,
+          "bond_reserve_median": 4.424672719257333,
+          "no_debt_addback_median": 2.964055716993382
+        },
+        {
+          "band": "10\u201325%",
+          "n": 2175,
+          "reserve_median": 4.588065894541877,
+          "reserve_le3_n": 794,
+          "reserve_le3_pct": 36.50574712643678,
+          "reserve_le0_pct": 13.793103448275861,
+          "cash_median": 3.0117938311124886,
+          "bond_reserve_median": 4.947056884861746,
+          "no_debt_addback_median": 3.663466382994533
+        },
+        {
+          "band": "25\u201350%",
+          "n": 1848,
+          "reserve_median": 4.978368773645192,
+          "reserve_le3_n": 601,
+          "reserve_le3_pct": 32.52164502164502,
+          "reserve_le0_pct": 8.441558441558442,
+          "cash_median": 2.9646038847572864,
+          "bond_reserve_median": 5.033417576640164,
+          "no_debt_addback_median": 3.9492964366744023
+        },
+        {
+          "band": "50\u2013100%",
+          "n": 4491,
+          "reserve_median": 2.236839326542442,
+          "reserve_le3_n": 2612,
+          "reserve_le3_pct": 58.16076597639724,
+          "reserve_le0_pct": 15.453128479180583,
+          "cash_median": 2.1545527069189174,
+          "bond_reserve_median": 2.559622615132184,
+          "no_debt_addback_median": 1.6804004433264634
+        }
+      ]
+    },
+    {
+      "size": "$50M or more",
+      "bands": [
+        {
+          "band": "0\u201310%",
+          "n": 2099,
+          "reserve_median": 2.134489250203771,
+          "reserve_le3_n": 1197,
+          "reserve_le3_pct": 57.027155788470694,
+          "reserve_le0_pct": 31.967603620771794,
+          "cash_median": 1.0890684553337553,
+          "bond_reserve_median": 3.693480263728167,
+          "no_debt_addback_median": 1.5490718767101876
+        },
+        {
+          "band": "10\u201325%",
+          "n": 341,
+          "reserve_median": 3.823758257338041,
+          "reserve_le3_n": 148,
+          "reserve_le3_pct": 43.401759530791786,
+          "reserve_le0_pct": 17.302052785923756,
+          "cash_median": 1.854408126601758,
+          "bond_reserve_median": 4.444284179307809,
+          "no_debt_addback_median": 2.762976623704739
+        },
+        {
+          "band": "25\u201350%",
+          "n": 164,
+          "reserve_median": 3.753672763321494,
+          "reserve_le3_n": 67,
+          "reserve_le3_pct": 40.853658536585364,
+          "reserve_le0_pct": 8.536585365853659,
+          "cash_median": 2.1959427961107996,
+          "bond_reserve_median": 3.938113656642707,
+          "no_debt_addback_median": 3.2548510801934074
+        },
+        {
+          "band": "50\u2013100%",
+          "n": 473,
+          "reserve_median": 1.2649271174841865,
+          "reserve_le3_n": 333,
+          "reserve_le3_pct": 70.40169133192389,
+          "reserve_le0_pct": 15.221987315010571,
+          "cash_median": 1.409460024933942,
+          "bond_reserve_median": 1.4947512873212694,
+          "no_debt_addback_median": 0.8953549987190457
+        }
+      ]
+    }
+  ],
+  "complete_components": {
+    "overall": {
+      "n": 3030,
+      "reserve_median": 2.9144570537330394,
+      "reserve_le3_n": 1539,
+      "reserve_le3_pct": 50.79207920792079,
+      "reserve_le0_pct": 25.04950495049505,
+      "cash_median": 2.409640700904373,
+      "bond_reserve_median": 3.790562383102351,
+      "no_debt_addback_median": 2.0826399584979303
+    },
+    "bands": [
+      {
+        "band": "0\u201310%",
+        "n": 1471,
+        "reserve_median": 2.3908570059993925,
+        "reserve_le3_n": 805,
+        "reserve_le3_pct": 54.72467709041469,
+        "reserve_le0_pct": 30.86335825968729,
+        "cash_median": 1.8018630623678147,
+        "bond_reserve_median": 3.8088878806560076,
+        "no_debt_addback_median": 1.5011885836905647
+      },
+      {
+        "band": "10\u201325%",
+        "n": 463,
+        "reserve_median": 4.456984420851864,
+        "reserve_le3_n": 187,
+        "reserve_le3_pct": 40.38876889848812,
+        "reserve_le0_pct": 19.654427645788335,
+        "cash_median": 3.5108343397925514,
+        "bond_reserve_median": 4.980330839979101,
+        "no_debt_addback_median": 3.603948356870401
+      },
+      {
+        "band": "25\u201350%",
+        "n": 383,
+        "reserve_median": 4.80081743013557,
+        "reserve_le3_n": 145,
+        "reserve_le3_pct": 37.85900783289817,
+        "reserve_le0_pct": 15.143603133159269,
+        "cash_median": 3.449824213680659,
+        "bond_reserve_median": 4.944067764954856,
+        "no_debt_addback_median": 3.748732208713128
+      },
+      {
+        "band": "50\u2013100%",
+        "n": 713,
+        "reserve_median": 2.3956256851619058,
+        "reserve_le3_n": 402,
+        "reserve_le3_pct": 56.381486676016834,
+        "reserve_le0_pct": 21.87938288920056,
+        "cash_median": 2.7315722524555985,
+        "bond_reserve_median": 2.70191083137051,
+        "no_debt_addback_median": 1.6648188533239536
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "grant_loss_fraction": 0,
+      "positive_gap_n": 21235,
+      "positive_gap_pct": 30.794553127311225,
+      "gap_and_le3_months_n": 4656,
+      "gap_and_le3_months_pct": 6.7520338761837095,
+      "positive_reserve_gap_le3_n": 753,
+      "nonpositive_reserve_gap_n": 3903
+    },
+    {
+      "grant_loss_fraction": 0.25,
+      "positive_gap_n": 37394,
+      "positive_gap_pct": 54.227997157648964,
+      "gap_and_le3_months_n": 8137,
+      "gap_and_le3_months_pct": 11.800107313253188,
+      "positive_reserve_gap_le3_n": 2374,
+      "nonpositive_reserve_gap_n": 5763
+    },
+    {
+      "grant_loss_fraction": 0.5,
+      "positive_gap_n": 44109,
+      "positive_gap_pct": 63.965949794799656,
+      "gap_and_le3_months_n": 10394,
+      "gap_and_le3_months_pct": 15.073161535449628,
+      "positive_reserve_gap_le3_n": 3981,
+      "nonpositive_reserve_gap_n": 6413
+    },
+    {
+      "grant_loss_fraction": 1,
+      "positive_gap_n": 51108,
+      "positive_gap_pct": 74.11575329553199,
+      "gap_and_le3_months_n": 14181,
+      "gap_and_le3_months_pct": 20.564989776237365,
+      "positive_reserve_gap_le3_n": 7103,
+      "nonpositive_reserve_gap_n": 7078
+    }
+  ]
+}
