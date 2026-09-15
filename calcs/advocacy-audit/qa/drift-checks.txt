@@ -1,0 +1,3 @@
+PASS: altered CSV rejected by the evidence lock.
+PASS: altered expected amount rejected by recalculation after deliberately updating only the test fixture hash.
+Original evidence was never edited.

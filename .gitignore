@@ -43,5 +43,13 @@ images/2026-07-07-months-of-cash-at-scale-hero.png.png
 # Local build toolchain (Haskell Stack + TinyTeX) — large binaries, kept local
 .tools/
 
+# Advocacy audit — raw captures, caches, and venv stay local; the committed
+# set is scripts, research CSVs, figures, and notes (see PROMPT.md)
+calcs/advocacy-audit/sources/
+calcs/advocacy-audit/extracted/
+calcs/advocacy-audit/.venv/
+calcs/advocacy-audit/__pycache__/
+calcs/advocacy-audit/jobs-*.json
+
 ### macOS ###
 .DS_Store

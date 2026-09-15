@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /evaluating-ai-models-for-critical-harms.pdf
+Disallow: /may-2025-progress-report.pdf
+Disallow: /2024-annual-report.pdf
+Disallow: /time-horizon-draft

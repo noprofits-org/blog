@@ -1,0 +1,2 @@
+row_id,amount,source_url,snapshot_date,verbatim_quote_from_source,note,currency,money_type,org_id,period,source_file,verdict
+C-FAS-2023,51000000,https://fas.org/publication/fas-annual-report-2023/,2026-09-14,$51 million in new commitments,"Organization-reported new commitments in its annual report. Not cash receipts, filed grant disbursements or Form 990 revenue. No donor-by-donor allocation provided.",USD,commitment,FAS,2023,sources/fas-annual-2023.html,KEEP
