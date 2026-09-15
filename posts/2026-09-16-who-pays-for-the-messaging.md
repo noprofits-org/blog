@@ -359,7 +359,7 @@ financial histories cover fiscal years ending 2019–2024; grant schedules cover
 available fiscal years ending 2019–2025; lobbying covers 2019–2026 with the
 latest year limited to completed quarters through June 30. Money types are
 never summed. Everything quoted above traces to a row in the
-<a href="/calcs/advocacy-audit/">audit directory</a>; the calculator
+<a href="/calcs/advocacy-audit/NOTES.md">audit directory</a>; the calculator
 <a href="/calcs/advocacy-audit/compute.py">rebuilds and asserts every
 aggregate</a> and fails loudly on drift.</small>
 

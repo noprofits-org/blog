@@ -60,6 +60,19 @@ siteRules previewDrafts = do
         route   idRoute
         compile copyFileCompiler
 
+    -- Audit artifacts a post links as evidence: figures, row-keyed research
+    -- CSVs, and the notes/prompt markdown. Same two-level scoping — still
+    -- excludes calcs/data/ and *.csv.gz intermediates.
+    match "calcs/*/figures/*" $ do
+        route   idRoute
+        compile copyFileCompiler
+    match "calcs/*/research/*" $ do
+        route   idRoute
+        compile copyFileCompiler
+    match "calcs/*/*.md" $ do
+        route   idRoute
+        compile copyFileCompiler
+
     match "js/*" $ do
         route   idRoute
         compile copyFileCompiler
