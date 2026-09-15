@@ -24,6 +24,7 @@ module Blog.TikZ
   , namespaceIds
   ) where
 
+import Control.Exception (handle)
 import Data.Char (ord)
 import Data.List (foldl', isInfixOf)
 import qualified Data.Text as T
@@ -33,6 +34,7 @@ import Text.Pandoc.Definition (Block (..), Format (..))
 import System.Directory (createDirectoryIfMissing, doesFileExist)
 import System.Exit (ExitCode (..))
 import System.IO (hPutStrLn, stderr)
+import System.IO.Error (IOError)
 import System.IO.Temp (withSystemTempDirectory)
 import System.Process (readProcessWithExitCode)
 
@@ -139,7 +141,7 @@ renderTikz tikzCode = do
 -- | Compile a @tikzpicture@ body to SVG via @lualatex@ + @dvisvgm@ in a temp
 -- dir. Returns @Left@ with a diagnostic on failure (build continues).
 compileTikz :: String -> IO (Either String String)
-compileTikz tikzCode = withSystemTempDirectory "blog-tikz" $ \dir -> do
+compileTikz tikzCode = handle missingTool $ withSystemTempDirectory "blog-tikz" $ \dir -> do
   let texFile = dir ++ "/tikz.tex"
       pdfFile = dir ++ "/tikz.pdf"
       svgFile = dir ++ "/tikz.svg"
@@ -173,3 +175,9 @@ compileTikz tikzCode = withSystemTempDirectory "blog-tikz" $ \dir -> do
     bail tool msg = do
       hPutStrLn stderr $ "[tikz] " ++ tool ++ " failed:\n" ++ msg
       return $ Left (tool ++ " failed (see build log)")
+    -- posix_spawnp throws when lualatex/dvisvgm is not on PATH. Treat that
+    -- as a diagram failure so a TeX-less machine can still ship markdown posts.
+    missingTool :: IOError -> IO (Either String String)
+    missingTool e = do
+      hPutStrLn stderr $ "[tikz] toolchain unavailable: " ++ show e
+      return $ Left "TeX toolchain unavailable (see build log)"
