@@ -1,6 +1,6 @@
 ---
 title: "What rematches, what doesn't: the Tarbell–Coefficient grant graph, row by row"
-date: 2026-09-15
+date: 2026-09-15 08:00
 author: Peter Johnston
 tags: nonprofits, form 990, grants, Coefficient Giving, Tarbell, METR, rematchability
 description: "The fight over AI regulation runs on grant graphs — arrows from funders to evaluators to journalists, assembled to show who is really talking. We took one heavily circulated graph's Tarbell rows and checked each against the primary documents. The Tarbell money — $5,291,930 — is real to the dollar. The direct METR edge and the donated Anthropic stake are exactly what the checked filings don't show."
