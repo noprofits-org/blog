@@ -1,13 +1,13 @@
 ---
 title: "Who pays for the messaging: the AI regulation fight's money, audited from both sides"
-date: 2026-09-16
+date: 2026-09-15
 author: Peter Johnston
 tags: nonprofits, form 990, grants, AI regulation, lobbying, Coefficient Giving, donor-advised funds, data
 description: "Everyone in the AI regulation fight arrives with a graph. We audited the money behind both sides — nineteen advocacy organizations, thirteen payers' filed grant schedules, and seven years of lobbying disclosures — with every number tied to a public filing row. The Coefficient and Good Ventures orbit is the largest named payer on the safety side; donor-advised sponsors are the second rail on both sides; the lab publicly asking to be regulated is the fastest-growing lobbying spender in the set; and the complete donor picture is structurally invisible."
 og-image: /calcs/advocacy-audit/figures/03-lab-lobbying.png
 ---
 
-Two weeks ago this blog [audited one node](/posts/2026-09-15-tarbell-coefficient-grant-graph.html)
+The previous post on this blog [audited one node](/posts/2026-09-15-tarbell-coefficient-grant-graph.html)
 of the loudest argument on the internet. The argument is about AI regulation:
 safety advocates, lawmakers, and at least one major lab publicly asking to be
 regulated, against a chorus calling the whole push astroturf — incumbents
