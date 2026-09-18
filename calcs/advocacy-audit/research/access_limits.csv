@@ -1,0 +1,2 @@
+row_id,amount,source_url,snapshot_date,verbatim_quote_from_source,note,source_file,verdict
+ACCESS-NETCHOICE-SCAN,,https://projects.propublica.org/nonprofits/display_990/271716101/08_2021_prefixes_27-34%2F271716101_201912_990O_2021081718734733,2026-09-14,Disallow: /nonprofits/display_990*,robots.txt disallows the scanned-return route; not fetched. Prior-year financial comparatives on the subsequent permitted primary render were used where explicitly reported.,sources/robots-projects.propublica.org.txt,OPEN

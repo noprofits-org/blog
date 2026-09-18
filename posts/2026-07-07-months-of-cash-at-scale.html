@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="The last post showed how to compute a nonprofit's months of operating reserve from four lines of the Form 990. This one runs that arithmetic on every Form 990 e-filed in a year — 345,365 filings from the IRS's public extract — and finds a sector where a third of charities sit at or below three months, one in seven is below zero, and the biggest organizations run the thinnest.">
+    <title>Months of cash, at scale: the runway of 202,827 charities, computed — noprofits.org blog</title>
+
+    <meta name="theme-color" content="#F7F4EE" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#121A16" media="(prefers-color-scheme: dark)">
+
+    <!-- Canonical + Open Graph / Twitter social cards. URLs are absolute — card
+         scrapers do not resolve relative paths. https://blog.noprofits.org/images/2026-07-07-months-of-cash-at-scale-hero.png is the static branded
+         /images/og-image.png unless a post sets an `og-image` metadata field. -->
+    <link rel="canonical" href="https://blog.noprofits.org/posts/2026-07-07-months-of-cash-at-scale.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="NoProfits Blog">
+    <meta property="og:title" content="Months of cash, at scale: the runway of 202,827 charities, computed">
+    <meta property="og:description" content="The last post showed how to compute a nonprofit's months of operating reserve from four lines of the Form 990. This one runs that arithmetic on every Form 990 e-filed in a year — 345,365 filings from the IRS's public extract — and finds a sector where a third of charities sit at or below three months, one in seven is below zero, and the biggest organizations run the thinnest.">
+    <meta property="og:url" content="https://blog.noprofits.org/posts/2026-07-07-months-of-cash-at-scale.html">
+    <meta property="og:image" content="https://blog.noprofits.org/images/2026-07-07-months-of-cash-at-scale-hero.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="noprofits.org blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Months of cash, at scale: the runway of 202,827 charities, computed">
+    <meta name="twitter:description" content="The last post showed how to compute a nonprofit's months of operating reserve from four lines of the Form 990. This one runs that arithmetic on every Form 990 e-filed in a year — 345,365 filings from the IRS's public extract — and finds a sector where a third of charities sit at or below three months, one in seven is below zero, and the biggest organizations run the thinnest.">
+    <meta name="twitter:image" content="https://blog.noprofits.org/images/2026-07-07-months-of-cash-at-scale-hero.png">
+
+    <!-- No-flash theme: set an explicit data-theme BEFORE any stylesheet. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <!-- No-flash featured: hide the randomizable featured card until the picker
+         (js/featured-random.js) swaps in its choice, so the baked default post
+         doesn't flash before the swap. Safety timeout reveals it if JS is off-
+         path or the picker never runs. Home page only reacts (it owns .featured). -->
+    <script>
+      (function () {
+        document.documentElement.classList.add('feat-pending');
+        setTimeout(function () {
+          document.documentElement.classList.remove('feat-pending');
+        }, 1500);
+      })();
+    </script>
+
+    <link rel="preload" href="../fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- JetBrains Mono (mono/label/tag/code role) via Google Fonts — the one
+         non-self-hosted family, per the design brief. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Saira / Barlow Condensed are used ONLY by the résumé print stylesheet;
+         loaded print-scoped so screen never pulls them. -->
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" media="print">
+
+    <link rel="stylesheet" href="../css/noprofits-theme.css" />
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/noprofits-theme.js"></script>
+    <script defer src="../js/topic-filter.js"></script>
+    <script defer src="../js/featured-random.js"></script>
+    <script defer src="../js/figure-cycler.js"></script>
+    <script defer src="../js/figure-zoom.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <a class="np-skiplink" href="#main">Skip to content</a>
+
+    <header class="np-header">
+        <div class="np-container np-header__bar">
+            <a class="np-header__brand" href="../" aria-label="noprofits.org blog home">
+                <img src="../images/brandmark.svg" alt class="np-brandmark" width="32" height="32" aria-hidden="true">
+                <span class="np-wordmark">noprofits<span class="np-wordmark__tld">.org</span><span class="np-wordmark__app">blog</span></span>
+            </a>
+
+            <nav class="np-nav--inline" aria-label="Main navigation">
+                <a class="np-nav__link" href="../">Home</a>
+                <a class="np-nav__link" href="../about.html">About</a>
+                <a class="np-nav__link" href="../archive.html">Archive</a>
+                <a class="np-nav__link" href="../contact.html">Contact</a>
+            </nav>
+
+            <button type="button" class="np-themetoggle" data-np-themetoggle aria-pressed="false" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span data-np-themeicon aria-hidden="true">☽</span>
+            </button>
+
+            <button type="button" class="np-header__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="np-drawer">
+                <span class="np-burger" aria-hidden="true"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="np-scrim" data-drawer-scrim></div>
+    <aside id="np-drawer" class="np-drawer" aria-hidden="true" aria-label="Menu">
+        <div class="np-drawer__head">
+            <span class="np-drawer__title">Menu</span>
+            <button type="button" class="np-drawer__close" aria-label="Close menu"></button>
+        </div>
+        <a class="np-drawer__link" href="../">Home</a>
+        <a class="np-drawer__link" href="../about.html">About</a>
+        <a class="np-drawer__link" href="../archive.html">Archive</a>
+        <a class="np-drawer__link" href="../contact.html">Contact</a>
+    </aside>
+
+    <main id="main" role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">nonprofits, data</span>
+    </div>
+    
+
+    <h1 class="post-title">Months of cash, at scale: the runway of 202,827 charities, computed</h1>
+
+    <div class="post-meta">
+        <span>July  7, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <p>The <a href="../posts/2026-07-06-months-of-cash.html">last post</a> in this series ended with a dare disguised as a conclusion: the runway number nobody prints is sitting in public data, four arithmetic operations away, for every tax-exempt organization in America. A dare like that should be taken. So this post takes it — the same four lines of the <a href="https://www.irs.gov/forms-pubs/about-form-990">Form 990</a>, the same three corrections, run not on one charity but on <strong>every Form 990 filed electronically in a calendar year</strong>: 345,365 filings from the IRS’s own public extract, 202,827 of them from 501(c)(3) charities. Not a survey, not a sample — the census. And the census disagrees with the surveys in one direction that should worry donors and in another that will surprise them.</p>
+<h2 id="the-census-not-the-survey">The census, not the survey</h2>
+<p>Everything the sector knows about its own reserves, it knows mostly from surveys — the <a href="https://nff.org/state-of-the-nonprofit-sector-survey/2025-state-of-the-survey-nonprofit-sector-survey/">Nonprofit Finance Fund’s</a> 2,200 respondents, <a href="https://www.businesswire.com/news/home/20241003329446/en/Embracing-transformation-BDOs-2024-Nonprofit-Standards-Benchmarking-Survey">BDO’s</a> 250. But the IRS publishes an <a href="https://www.irs.gov/statistics/soi-tax-stats-annual-extract-of-tax-exempt-organization-financial-data">annual extract of tax-exempt financial data</a> — every line item this series has ever pointed at, for every full Form 990 received in a year, as one downloadable file. The <a href="../posts/mapping-the-irs-990-data.html">mapping post</a> and the <a href="../posts/automating-IRS-Form-990-Data-Extraction-A-Computational-Approach.html">extraction post</a> in this series built the plumbing for exactly this moment (Figure 1). The extract used here covers returns filed in calendar year 2024 — mostly fiscal 2023 books.</p>
+<figure>
+<img src="../images/2026-07-07-months-of-cash-at-scale-hero.png" alt="A field of tiny fuel gauges stretching to the horizon, one gauge magnified under a lens, most needles sitting near the low end of the dial.">
+</figure>
+<p><strong>Figure 1.</strong> The same gauge as last time, read 202,827 times: the reserve arithmetic scales from one charity to the whole sector because the IRS publishes every filing’s balance sheet as data.</p>
+<p>Two cleanup steps matter enough to describe, because anyone who reruns this will hit both. First, organizations that file more than once in the window (amended returns, late filings) appear more than once; keeping only the latest tax period per EIN trims the file from 345,365 rows to 324,416 organizations. Second — and this one is a trap — the honest formula starts from <strong>net assets without donor restrictions</strong>, Part X line 27. But organizations that don’t follow FASB accounting report their equity on lines 30–32 instead and leave line 27 <em>blank</em>, which the naive script reads as “zero unrestricted net assets” and scores as a charity with no reserve at all. Nearly 77,000 filings fail that reconciliation (lines 27–29 don’t sum to line 33) and have to be set aside. What survives is 244,592 organizations with positive cash expenses and a balance sheet the formula can trust, 202,827 of them 501(c)(3) public charities. Every number below refers to those charities, computed with the <a href="../posts/2026-07-06-months-of-cash.html">honest recipe</a> from last time: line 27, minus fixed assets (line 10c), plus the mortgages that finance them (line 23), divided by monthly cash expenses (line 25 minus depreciation, over twelve). The whole calculation is Code 1; the full script lives in the blog repository.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>cash_expenses <span class="op">=</span> totfuncexpns <span class="op">-</span> deprcatndepletn          <span class="co"># Pt IX 25 - 22</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>expendable    <span class="op">=</span> (unrstrctnetasstsend                    <span class="co"># Pt X 27</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                 <span class="op">-</span> lndbldgsequipend                     <span class="co"># Pt X 10c</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                 <span class="op">+</span> secrdmrtgsend)                       <span class="co"># Pt X 23</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>months        <span class="op">=</span> expendable <span class="op">/</span> (cash_expenses <span class="op">/</span> <span class="fl">12.0</span>)</span></code></pre></div>
+<p><strong>Code 1.</strong> The honest reserve, in the IRS extract’s own field names — the four arithmetic operations the last post promised, ready to run on 202,827 rows at once.</p>
+<h2 id="what-the-whole-sector-looks-like">What the whole sector looks like</h2>
+<p>The median 501(c)(3) holds <strong>6.5 months</strong> of honest operating reserve. That’s the comfortable-sounding headline, and it lasts exactly as long as it takes to look at the rest of the distribution (Figure 2). <strong>A third of charities — 33 percent — sit at or below the three-month floor</strong> that the <a href="https://www.nonprofitaccountingbasics.org/nonprofit-reserves">NORI workgroup</a> treats as the minimum prudent reserve. One in five is at or below a single month. And <strong>14 percent are at or below zero</strong>: their buildings and equipment exceed their entire unrestricted equity, so in expendable terms they are underwater — operating, meeting payroll, delivering programs, with less than nothing in the tank.</p>
+<figure>
+<img src="../images/2026-07-07-months-of-cash-at-scale-distribution.png" alt="Histogram of months of operating reserve across 202,827 charities: a large spike just above zero, a median of 6.5 months, a long right tail, and two detached overflow bars collecting the organizations below minus six months and above thirty-six.">
+</figure>
+<p><strong>Figure 2.</strong> The runway of every 501(c)(3) that filed a full Form 990 in calendar 2024, in one-month bins. A and D are detached overflow bins collecting everything beyond the axis: A holds the 5 percent of charities more than six months underwater, D the 15 percent with more than three years. B marks the NORI three-month floor — a third of the sector sits at or below it — and C the median of 6.5 months. The mass piled just above zero is the sector’s hand-to-mouth majority.</p>
+<p>The other end of the distribution is just as instructive: 20 percent of charities hold <strong>more than two years</strong> of reserve, and 15 percent more than three. The last post’s advice cuts both ways — near zero, ask whether you’re funding a program or a rescue; past a couple of years, ask whether that’s a policy-backed quasi-endowment or money idling while the mission waits. Both extremes are common enough that a donor will meet them regularly, which is Table 1’s point: the thresholds worth checking, honest versus naive.</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Share of 501(c)(3)s at or below…</th>
+<th>Honest</th>
+<th>Naive</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 months</td>
+<td>14%</td>
+<td>8%</td>
+</tr>
+<tr>
+<td>1 month</td>
+<td>21%</td>
+<td>12%</td>
+</tr>
+<tr>
+<td>3 months</td>
+<td>33%</td>
+<td>20%</td>
+</tr>
+<tr>
+<td>6 months</td>
+<td>48%</td>
+<td>32%</td>
+</tr>
+<tr>
+<td>12 months</td>
+<td>66%</td>
+<td>49%</td>
+</tr>
+<tr>
+<td>— and above 24 months</td>
+<td>20%</td>
+<td>34%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Table 1.</strong> The distribution at the thresholds that matter, computed both ways. The naive number (total net assets over total expenses) tells a story roughly twice as comfortable as the honest one at every line.</p>
+<p>Table 1 is also the census’s verdict on the naive shortcut. The naive median is <strong>12.5 months</strong> — nearly double the honest 6.5 — and by the naive reckoning only a fifth of the sector is under the three-month floor instead of a third. For the typical single organization the corrections move the answer by a modest 1.6 months; the medians diverge so much more because the corrections bite hardest exactly where the naive number looks best, the balance sheets padded with buildings and restricted endowments. The flattery is not uniform — it is targeted at the organizations a donor most needs to see clearly.</p>
+<h2 id="the-census-versus-the-surveys">The census versus the surveys</h2>
+<p>NFF’s 2025 survey found <a href="https://nff.org/state-of-the-nonprofit-sector-survey/2025-state-of-the-survey-nonprofit-sector-survey/">52 percent of respondents with three months or less cash on hand</a>. The census, computing literal cash on hand the same way (Part X lines 1 and 2 against monthly cash expenses), finds <strong>36 percent</strong> at or below three months. Both are right; they’re counting different populations. The full Form 990 is only required of organizations above roughly $200K in gross receipts — the smallest charities file the postcard 990-N or the short 990-EZ and aren’t in this census at all — while NFF’s respondents skew toward exactly those small community organizations. The survey oversamples the sector’s thin end; the census can’t see it. Read together: 36 percent is the <em>floor</em> for the sector’s true hand-to-mouth share, and the real number, with the sub-$200K majority counted, is plausibly right where NFF puts it.</p>
+<p>The other survey is the one the census overturns. BDO’s benchmarking found <a href="https://www.businesswire.com/news/home/20241003329446/en/Embracing-transformation-BDOs-2024-Nonprofit-Standards-Benchmarking-Survey">62 percent of its nonprofits holding more than seven months</a>, and the last post read NFF and BDO together as a barbell — thin little orgs, cushioned big ones. The census says otherwise (Figure 3). Expendable reserve <em>falls</em> with size, monotonically: charities under $500K in expenses hold a median <strong>10.2 months</strong>, the $500K–$5M band holds 5.5, the $5M–$50M band 3.7, and the giants above $50M — the hospitals and universities — hold a median of <strong>2.0 months</strong>, with 58 percent under the three-month floor.</p>
+<figure>
+<img src="../images/2026-07-07-months-of-cash-at-scale-bands.png" alt="Bar chart of median months of operating reserve by organization size: 10.2 months for charities under 500 thousand dollars in expenses, falling monotonically to 2.0 months for organizations above 50 million, where 58 percent sit at or below the three-month floor.">
+</figure>
+<p><strong>Figure 3.</strong> The barbell, inverted: median honest reserve by expense band (whiskers span the 25th–75th percentiles). A marks the NORI three-month floor; the share of each band at or below it rises monotonically left to right — 27, 35, 45, and 58 percent. The smallest filers hold the most runway; the largest organizations run the thinnest.</p>
+<p>Part of the inversion is mechanical, and worth being honest about. Large institutions finance buildings with tax-exempt bonds (Part X line 20), which the NORI recipe doesn’t add back the way it adds back mortgages; crediting the bond debt lifts the giants’ median from 2.0 to 3.1 months — thicker, still thinnest of any band. The rest is real: a hospital’s endowment is mostly donor-restricted and its balance sheet is mostly plant, so its <em>expendable</em> cushion is genuinely slim relative to an enormous monthly burn, even when its total net assets are vast. And the smallest band carries a survivorship asterisk — a sub-$500K org that clears the full-990 filing bar and keeps filing is already a survivor, and nearly half of them (46 percent) hold more than a year of runway. The lesson isn’t that big nonprofits are about to fail — they have credit lines and reliable revenue the small ones don’t. It’s that <strong>no sector average, and no survey of somebody else’s population, tells you anything about your charity.</strong> The distribution is too wide and too structured for the average to mean much.</p>
+<h2 id="compute-it-before-you-give-the-machines-already-did">Compute it before you give — the machines already did</h2>
+<p>This entire post is one script against one public file — the same <a href="../posts/2026-07-06-months-of-cash.html">four fields per filing</a> as last time, times 202,827. That was the point of the dare: the sector’s most important resilience number isn’t hidden, it’s merely unprinted, and once the <a href="../posts/mapping-the-irs-990-data.html">990 data is mapped</a> and <a href="../posts/automating-IRS-Form-990-Data-Extraction-A-Computational-Approach.html">extracted</a>, computing it for every charity in America costs seconds. The <a href="https://search.noprofits.org">search tools at noprofits.org</a> put these same balance-sheet figures side by side for the charity you’re actually vetting, and the <a href="https://projects.propublica.org/nonprofits/">ProPublica Nonprofit Explorer</a> will show you the underlying filing. A third of the sector at or below three months; one in seven below zero; the biggest institutions running the leanest. Somewhere in those piles is the charity you’re about to fund — and now you know the number to check before you do.</p>
+<p><small>This is a plain-language overview, not tax, legal, or financial advice. Figures are computed from the IRS SOI annual extract of Form 990 data (returns filed in calendar year 2024, mostly fiscal 2023), as-filed and unaudited; organizations filing the 990-EZ or 990-N are not included, filings whose net-asset lines do not reconcile are excluded, and the analysis script (calcs/months-of-cash-at-scale/ in this site’s repository) contains the full method. Survey figures are as published by NFF (2025) and BDO (2024) and describe different populations.</small></p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="np-footer">
+        <div class="np-container np-footer__top">
+            <div class="np-footer__brand">
+                <div class="np-footer__lockup">
+                    <span class="np-footer__mark">n</span>
+                    <span class="np-footer__word">noprofits<span class="np-wordmark__tld">.org</span> blog</span>
+                </div>
+                <p class="np-footer__blurb">Field notes on nonprofits, public-interest data, and the tools behind noprofits.org — the math, the code, and the diagrams left in. Generated with <a href="http://jaspervdj.be/hakyll">Hakyll</a>; select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="np-footer__cols">
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Site</h4>
+                    <a class="np-footer__link" href="../">Home</a>
+                    <a class="np-footer__link" href="../about.html">About</a>
+                    <a class="np-footer__link" href="../archive.html">Archive</a>
+                    <a class="np-footer__link" href="../colophon.html">Colophon</a>
+                </div>
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Elsewhere</h4>
+                    <a class="np-footer__link" href="https://github.com/noprofits-org">GitHub</a>
+                    <a class="np-footer__link" href="https://noprofits.org">noprofits.org</a>
+                    <a class="np-footer__link" href="../contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+        <div class="np-footer__legalwrap">
+            <div class="np-container np-footer__legal">
+                <span>© 2026 noprofits.org · BSD-3-Clause · Built with Hakyll + Pandoc</span>
+                <span>Seattle</span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

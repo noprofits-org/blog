@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Contributions and grants are 24 percent of the money that moves through American charities. The median charity draws 65 percent of its revenue from them. Both numbers are right, and what has to be true for both to be right is that 501(c)(3) is not one population — a fact the IRS has been recording on Schedule A the whole time.">
+    <title>Nobody's average: who actually pays for the nonprofit sector — noprofits.org blog</title>
+
+    <meta name="theme-color" content="#F7F4EE" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#121A16" media="(prefers-color-scheme: dark)">
+
+    <!-- Canonical + Open Graph / Twitter social cards. URLs are absolute — card
+         scrapers do not resolve relative paths. https://blog.noprofits.org/images/2026-07-14-nobodys-average-hero.png is the static branded
+         /images/og-image.png unless a post sets an `og-image` metadata field. -->
+    <link rel="canonical" href="https://blog.noprofits.org/posts/2026-07-14-nobodys-average.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="NoProfits Blog">
+    <meta property="og:title" content="Nobody's average: who actually pays for the nonprofit sector">
+    <meta property="og:description" content="Contributions and grants are 24 percent of the money that moves through American charities. The median charity draws 65 percent of its revenue from them. Both numbers are right, and what has to be true for both to be right is that 501(c)(3) is not one population — a fact the IRS has been recording on Schedule A the whole time.">
+    <meta property="og:url" content="https://blog.noprofits.org/posts/2026-07-14-nobodys-average.html">
+    <meta property="og:image" content="https://blog.noprofits.org/images/2026-07-14-nobodys-average-hero.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="noprofits.org blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Nobody's average: who actually pays for the nonprofit sector">
+    <meta name="twitter:description" content="Contributions and grants are 24 percent of the money that moves through American charities. The median charity draws 65 percent of its revenue from them. Both numbers are right, and what has to be true for both to be right is that 501(c)(3) is not one population — a fact the IRS has been recording on Schedule A the whole time.">
+    <meta name="twitter:image" content="https://blog.noprofits.org/images/2026-07-14-nobodys-average-hero.png">
+
+    <!-- No-flash theme: set an explicit data-theme BEFORE any stylesheet. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <!-- No-flash featured: hide the randomizable featured card until the picker
+         (js/featured-random.js) swaps in its choice, so the baked default post
+         doesn't flash before the swap. Safety timeout reveals it if JS is off-
+         path or the picker never runs. Home page only reacts (it owns .featured). -->
+    <script>
+      (function () {
+        document.documentElement.classList.add('feat-pending');
+        setTimeout(function () {
+          document.documentElement.classList.remove('feat-pending');
+        }, 1500);
+      })();
+    </script>
+
+    <link rel="preload" href="../fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- JetBrains Mono (mono/label/tag/code role) via Google Fonts — the one
+         non-self-hosted family, per the design brief. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Saira / Barlow Condensed are used ONLY by the résumé print stylesheet;
+         loaded print-scoped so screen never pulls them. -->
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" media="print">
+
+    <link rel="stylesheet" href="../css/noprofits-theme.css" />
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/noprofits-theme.js"></script>
+    <script defer src="../js/topic-filter.js"></script>
+    <script defer src="../js/featured-random.js"></script>
+    <script defer src="../js/figure-cycler.js"></script>
+    <script defer src="../js/figure-zoom.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <a class="np-skiplink" href="#main">Skip to content</a>
+
+    <header class="np-header">
+        <div class="np-container np-header__bar">
+            <a class="np-header__brand" href="../" aria-label="noprofits.org blog home">
+                <img src="../images/brandmark.svg" alt class="np-brandmark" width="32" height="32" aria-hidden="true">
+                <span class="np-wordmark">noprofits<span class="np-wordmark__tld">.org</span><span class="np-wordmark__app">blog</span></span>
+            </a>
+
+            <nav class="np-nav--inline" aria-label="Main navigation">
+                <a class="np-nav__link" href="../">Home</a>
+                <a class="np-nav__link" href="../about.html">About</a>
+                <a class="np-nav__link" href="../archive.html">Archive</a>
+                <a class="np-nav__link" href="../contact.html">Contact</a>
+            </nav>
+
+            <button type="button" class="np-themetoggle" data-np-themetoggle aria-pressed="false" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span data-np-themeicon aria-hidden="true">☽</span>
+            </button>
+
+            <button type="button" class="np-header__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="np-drawer">
+                <span class="np-burger" aria-hidden="true"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="np-scrim" data-drawer-scrim></div>
+    <aside id="np-drawer" class="np-drawer" aria-hidden="true" aria-label="Menu">
+        <div class="np-drawer__head">
+            <span class="np-drawer__title">Menu</span>
+            <button type="button" class="np-drawer__close" aria-label="Close menu"></button>
+        </div>
+        <a class="np-drawer__link" href="../">Home</a>
+        <a class="np-drawer__link" href="../about.html">About</a>
+        <a class="np-drawer__link" href="../archive.html">Archive</a>
+        <a class="np-drawer__link" href="../contact.html">Contact</a>
+    </aside>
+
+    <main id="main" role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">nonprofits, data</span>
+    </div>
+    
+
+    <h1 class="post-title">Nobody's average: who actually pays for the nonprofit sector</h1>
+
+    <div class="post-meta">
+        <span>July 14, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <aside class="correction">
+<p><strong>Correction, 21 July 2026.</strong> The correction below stated, as originally
+published, that “roughly half” of contributions and grants is government money.
+That figure was inferred from the 2019 third-party decomposition in Table 1, not
+measured, and it is too high. The IRS’s own
+published tax year 2022 table breaks the line out directly: government grants are
+<strong>$305.1 billion of $756.1 billion in contributions, gifts and grants — 40.3
+percent</strong>, about two-fifths rather than a half. Every “roughly half” in this post
+has been revised accordingly. The substance of the 15 July correction is
+unchanged: line 1h does bundle private gifts with government grants, and this
+extract still cannot separate them for any individual filer. Details, and the
+reconciliation that caught it, are in
+<a href="../posts/2026-07-21-checking-our-work.html">checking our work</a>.</p>
+</aside>
+<aside class="correction">
+<p><strong>Correction, 15 July 2026.</strong> This post originally called the 24.4 percent figure
+“donations.” That was wrong, and the error ran throughout. The Form 990 line it
+comes from (Part VIII, line 1h) bundles private gifts together with <strong>government
+grants</strong>, and this data offers no way to separate them — so the figure is
+<em>contributions and grants</em>, of which about two-fifths is government money (see
+the 21 July correction above). Where the
+post said “donations” it now says “contributions and grants,” and a new section
+below spells out what that does and does not include. The post also framed the
+aggregate as a novel finding when the Tax Foundation and the Urban Institute had
+already published it, better decomposed; the framing has been narrowed to the part
+that is actually new. The underlying numbers are unchanged — what changed is what
+they are called and what they can be claimed to show. Details in
+<a href="#what-the-24-percent-is-and-isnt">what the 24 percent is, and isn’t</a>. With thanks
+to the reader who pushed on both points.</p>
+</aside>
+<p>Charities run on donations. It is the sentence the whole sector is built on — the
+premise behind the year-end appeal, the gala, the watchdog rating, the phrase
+“donor-supported” on the side of the building. So it is worth running past the
+census. Take every Form 990 filed electronically in a year, add up all the money
+that came in, and ask how much of it was contributions and grants.</p>
+<p><strong>Twenty-four percent.</strong> Of the $3.10 trillion that flowed through 501(c)(3)
+public charities, $754.2 billion arrived as contributions and grants. The largest
+share by far — $2.16 trillion, <strong>69.6 percent</strong> — was <em>program service revenue</em>:
+tuition, patient billing, ticket sales, program fees, contracts. Money charged,
+not given.</p>
+<p>If that is a surprise, it should not be a new one: the
+<a href="https://taxfoundation.org/blog/501c3-nonprofit-revenue/">Tax Foundation</a> put
+program service revenue at 71 percent of nonprofit revenue for 2019, and the
+<a href="https://nccs.urban.org/nccs/resources/sector-in-brief-dashboard/">Urban Institute</a>
+has tracked the same shape for years. Fee income dominating the sector’s dollars
+is a documented feature of this data, not a discovery, and the next section is
+about the ways my 24.4 percent is a <em>cruder</em> number than theirs.</p>
+<p>The reason to keep reading is the other number: <strong>the median charity draws 65.1
+percent of its revenue from contributions and grants.</strong> Not 24 percent.
+Two-thirds. And a third of all charities are more than 90 percent
+contribution-funded.</p>
+<p>Both numbers are correct. They come from the same file, the same year, the same
+arithmetic. This post is about what has to be true for both of them to be true at
+once — and the answer turns out to be more interesting than either number, because
+it isn’t really a fact about giving at all. It is a fact about the word “sector.”</p>
+<h2 id="the-census-not-the-survey">The census, not the survey</h2>
+<p>The <a href="https://www.irs.gov/statistics/soi-tax-stats-annual-extract-of-tax-exempt-organization-financial-data">IRS publishes an annual extract</a>
+of every full Form 990 it received in a year, every line item, as one
+downloadable file — the same source the <a href="../posts/2026-07-07-months-of-cash-at-scale.html">at-scale post</a>
+used to compute the sector’s operating reserve, plumbed by the earlier
+<a href="../posts/mapping-the-irs-990-data.html">mapping</a> and
+<a href="../posts/automating-IRS-Form-990-Data-Extraction-A-Computational-Approach.html">extraction</a>
+posts. The extract here covers returns filed in calendar year 2024, mostly
+fiscal 2023 books. After keeping only the latest tax period per EIN, <strong>249,668</strong>
+501(c)(3) public charities report positive revenue.</p>
+<p>The arithmetic is embarrassingly simple. It is one division, done two ways
+(Code 1) — and the entire disagreement lives in the difference between them.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Per charity: what share of THIS org's revenue was contributions?</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>cs <span class="op">=</span> totcntrbgfts <span class="op">/</span> totrevenue <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Per dollar: what share of ALL revenue was contributions?</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sector <span class="op">=</span> totcntrbgfts.<span class="bu">sum</span>() <span class="op">/</span> totrevenue.<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span></span></code></pre></div>
+<p><strong>Code 1.</strong> The whole disagreement in two lines: the per-charity ratio and the sector ratio are different questions, and the second is not the average of the first.</p>
+<h2 id="what-the-24-percent-is-and-isnt">What the 24 percent is, and isn’t</h2>
+<p><code>totcntrbgfts</code> is Form 990 Part VIII, <strong>line 1h</strong> — the <em>total</em> of the
+contributions block. And that block is not a synonym for philanthropy. Line 1h
+sums federated campaigns, membership dues, fundraising events, related
+organizations, all other contributions — and <strong>line 1e, government grants</strong>. The
+extract publishes only the total. It carries no 1e, so <strong>nothing in this post can
+separate a foundation grant from a county contract booked as a grant.</strong></p>
+<p>That distinction is not a rounding detail; it is about two-fifths of the number,
+as the IRS’s own published table shows — Table 1 below, built from 2019
+third-party data on a narrower denominator, puts it a little higher. The
+<a href="https://taxfoundation.org/blog/501c3-nonprofit-revenue/">Tax Foundation’s decomposition</a>
+of 2019 data splits what my file cannot:</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th style="text-align: right;">2019</th>
+<th style="text-align: right;">Share</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Program service revenue</td>
+<td style="text-align: right;">$1.846T</td>
+<td style="text-align: right;">71%</td>
+</tr>
+<tr>
+<td><strong>Charitable contributions</strong></td>
+<td style="text-align: right;"><strong>$305B</strong></td>
+<td style="text-align: right;"><strong>12%</strong></td>
+</tr>
+<tr>
+<td><strong>Government grants</strong></td>
+<td style="text-align: right;"><strong>$240B</strong></td>
+<td style="text-align: right;"><strong>~9%</strong></td>
+</tr>
+<tr>
+<td>Everything else</td>
+<td style="text-align: right;">$216B</td>
+<td style="text-align: right;">~8%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Table 1.</strong> What the contributions block contains, from a source that can see
+inside it. Private giving and government grants together come to about 21 percent
+of 2019 revenue — which is, allowing for growth, the 24.4 percent this post
+computes for filings in 2024. About two-fifths of “contributions and grants” is
+government money: the IRS’s
+<a href="https://www.irs.gov/pub/irs-soi/22eo01.xlsx">published tax year 2022 table</a>,
+which reports the split directly, puts government grants at 40.3 percent of the
+block — see <a href="../posts/2026-07-21-checking-our-work.html">checking our work</a>.</p>
+<p>So: <strong>when this post says a charity is “90 percent contribution-funded,” that does
+not mean 90 percent of its money came from donors.</strong> It means 90 percent arrived
+on line 1h, and for a food bank or a housing nonprofit a large slice of that is
+very likely a government grant. If the question you care about is <em>private
+philanthropy</em>, the answer is nearer 12 percent than 24, and this data cannot give
+it to you. Getting that number needs the e-file XML, where line 1e is reported
+separately.</p>
+<p>What survives the distinction is everything the rest of this post is actually
+about. The line-1h ratio is computed identically for every organization, so the
+comparison between a <em>charity’s</em> ratio and the <em>sector’s</em> ratio — which is the
+argument here — is unaffected by what the line contains. It just has to be named
+honestly.</p>
+<p>Two disclosures, because anyone rerunning this will hit both. First, about 7,320
+organizations produce a contribution share outside 0–100 percent — a charity with
+a bad year on its investments can book negative revenue lines that make the ratio
+nonsense — so the per-charity figures below describe the <strong>242,348</strong> organizations
+whose ratio is interpretable. Second, the reserve section at the end reimposes the
+FASB reconciliation the at-scale post explains, because that calculation depends
+on Part X line 27; that is why its population is 195,437 rather than 242,348.</p>
+<p>One more thing about the money. Contributions, program service revenue, and
+investment income ($73.8 billion, 2.4 percent) account for 96.4 percent of
+sector revenue. The remaining <strong>$113.1 billion</strong> — 3.7 percent — is rents,
+royalties, net gains on securities, special events, and a large miscellaneous
+category. It gets one bucket and no breakdown here, because the extract’s
+miscellaneous subtotals overlap each other and would double-count if I split
+them. Three clean categories and one honest remainder.</p>
+<h2 id="two-true-answers">Two true answers</h2>
+<figure>
+<img src="../images/2026-07-14-nobodys-average-hero.png" alt="Two panels. On the left, a single horizontal bar showing all sector revenue: about a quarter is contributions, most of the rest is program service revenue. On the right, a histogram of the same ratio computed per charity, which piles up at both zero percent and one hundred percent with a sparse valley between them.">
+</figure>
+<p><strong>Figure 1.</strong> The same question, weighted two ways. Left, by dollars: every
+charity’s revenue poured into one bar, of which <strong>A</strong> is contributions (24.4
+percent) and <strong>B</strong> is program service revenue (69.6 percent); the two slivers at
+the right edge are investment income and everything else. Right, by
+organization: the distribution of that same ratio computed one charity at a time,
+piling up at zero (<strong>C</strong>) and at one hundred (<strong>D</strong>), with the median at 65.1
+percent (<strong>E</strong>, dashed). Same file, same year, same division. Same asset as the
+social card.</p>
+<p>The left panel of Figure 1 asks <em>where did the sector’s money come from</em>. The
+right panel asks <em>where does a charity’s money come from</em>. These sound like the
+same question and they are not, because the first one lets big organizations vote
+with their revenue and the second gives every charity one vote.</p>
+<p>The gap between them is enormous — 24.4 against 65.1 — and it is not a rounding
+artifact or a definitional quibble. It means that when someone says “the nonprofit
+sector is only a quarter contribution-funded,” they have said something true about
+dollars and something false about charities. And when someone says “charities run
+on donations,” they have said something true about charities and something false
+about dollars. Neither speaker usually knows which one they meant.</p>
+<h2 id="nobody-is-average">Nobody is average</h2>
+<figure>
+<img src="../images/2026-07-14-nobodys-average-bimodal.png" alt="A histogram of contribution share across 242,348 charities, with a tall spike at zero percent, a taller spike at one hundred percent, a long flat valley between them, and the mean marked by a dashed line sitting in the emptiest part of the valley.">
+</figure>
+<p><strong>Figure 2.</strong> The average describes almost no one. Contribution share for all
+242,348 charities: <strong>A</strong> marks the pile at zero, <strong>B</strong> the pile at one hundred,
+and <strong>C</strong> the mean of 56.0 percent — which lands in the valley, one of the
+least-populated stretches of the whole distribution.</p>
+<p>Look at where the mean falls in Figure 2. The average charity, by this measure,
+gets 56 percent of its revenue from contributions. Almost no charity does. The mean
+sits in the trough between two crowds, describing the few organizations that
+happen to be standing in the emptiest part of the room.</p>
+<p>The piles are not soft. <strong>26,657 charities report contributions of exactly zero</strong>,
+and <strong>25,366 report revenue that is exactly, entirely contributions</strong> — together
+more than one in five organizations in the file sitting on a literal endpoint.
+Those are not rounding. A charity with no contributions at all and a charity with
+nothing else are not two draws from one spread-out population; they are
+two different kinds of thing, and the file is full of both.</p>
+<p>Readers of the <a href="../posts/2026-07-07-months-of-cash-at-scale.html">at-scale post</a>
+have seen this failure before. That post found a comfortable-looking sector
+average operating reserve concealing a third of charities under three months.
+Same disease, different line of the 990: a summary statistic computed over a
+population that isn’t one.</p>
+<h2 id="it-isnt-size-its-business-model">It isn’t size — it’s business model</h2>
+<p>The obvious explanation is size. The fee-funded pile is hospitals and
+universities; the contribution-funded pile is small shops passing the hat. Tidy,
+intuitive, and wrong.</p>
+<p>The typical fee-funded charity and the typical contribution-funded charity are
+<strong>the same size</strong>. Median revenue among the 56,619 charities that are 10 percent
+or less contribution-funded is <strong>$614,855</strong>. Median revenue among the 81,739 that
+are 90 percent or more contribution-funded is <strong>$491,463</strong>. That is a ratio of 1.3 — a
+rounding error in a sector spanning eleven orders of magnitude. Sort by assets and
+the story holds. The two piles are not a big group and a small group.</p>
+<p>What they are is two ways of running an organization at the same scale. A daycare,
+a clinic, a community theater, a summer camp, a training institute — these charge
+the people they serve, and land in the left pile at half a million dollars a year.
+An advocacy group, a grantmaker-supported research shop, a food pantry — these do
+not charge, and land in the right pile at half a million dollars a year. Same size,
+opposite funding model, both indisputably 501(c)(3) public charities.</p>
+<p>So where does the 24.4 percent come from? Not the median of anything. It comes
+from the tail. The mean revenue of the fee-funded pile is <strong>$33.4 million</strong> against
+the contribution-funded pile’s $4.7 million — a 7× gap that exists entirely up at the
+top, invisible at the median. The fee-funded group is 23.4 percent of
+organizations and <strong>61.5 percent of the dollars</strong>.</p>
+<figure>
+<img src="../images/2026-07-14-nobodys-average-by-size.png" alt="Bar chart of median contribution share by revenue decile. Deciles one through nine all sit between fifty-five and seventy-four percent, forming a flat run. The tenth decile drops to twenty-three percent, and a separate bar for the top one percent of charities falls to two percent.">
+</figure>
+<p><strong>Figure 3.</strong> Ninety percent of the sector is one sector. <strong>A</strong> marks the flat
+run: median contribution share across deciles 1 through 9 never leaves the 55–74
+percent band, and every one of those deciles is roughly a fifth fee-funded and a
+third contribution-funded. <strong>B</strong> is the tenth decile, where the median falls to 23.4
+percent. <strong>C</strong> is the top 1 percent by revenue — 2,423 organizations with a median
+contribution share of <strong>2.0 percent</strong>, 68.9 percent of them fee-funded.</p>
+<p>Figure 3 is the one to sit with. Nine deciles of American charities — everything
+from a $1,000 volunteer outfit to a $9 million operation, a range of four orders
+of magnitude — look basically identical: about 70 percent contribution-funded at
+the median, with the same mixture of fee-funded and contribution-funded shops
+inside each one. Growing from tiny to substantial does not change how a charity is
+funded.</p>
+<p>And then the tenth decile detaches, and the top 1 percent falls off the chart
+entirely. Those 2,423 organizations — hospital systems, universities, health
+plans — hold <strong>69.1 percent of all the revenue in the sector</strong>. The bottom half of
+all charities holds 0.94 percent.</p>
+<p>Which means the 24.4 percent is not a fact about the nonprofit sector. It is a
+measurement of 2,423 institutions, averaged across 240,000 organizations that look
+nothing like them. When you compute a dollar-weighted sector statistic, the top 1
+percent isn’t participating in the average. It <em>is</em> the average.</p>
+<h2 id="both-ends-are-the-fragile-ends">Both ends are the fragile ends</h2>
+<p>Before drawing the conclusion, one detour, because the split turns out to predict
+something a donor might actually care about. Take the honest operating reserve
+from the <a href="../posts/2026-07-06-months-of-cash.html">reserve post</a> — unrestricted net
+assets, minus what’s sunk in the building, plus the mortgage that financed it, over
+monthly cash expenses — and compute it within each band of contribution share.</p>
+<figure>
+<img src="../images/2026-07-14-nobodys-average-inverted-u.png" alt="Median honest operating reserve plotted against contribution share band, forming an inverted U: about five months at the fee-funded end, rising to nine and a half months for charities that are seventy-five to ninety percent contribution-funded, then falling back to five months at the fully contribution-funded end.">
+</figure>
+<p><strong>Figure 4.</strong> Runway peaks in the middle. Median honest reserve by contribution
+share: <strong>A</strong>, the fee-funded end, 5.2 months, with 21.5 percent of those charities
+below zero; <strong>B</strong>, the 75–90 percent band, 9.5 months and only 9.4 percent below
+zero; <strong>C</strong>, the fully contribution-funded end, back down to 5.4 months. Computed for
+the 195,437 charities whose balance sheets reconcile.</p>
+<p>Neither pile is the safe one. The charities with the thinnest runway sit at
+<em>both</em> extremes — 5.2 months at the fee-funded end and 5.4 months at the
+contribution-funded end — while the organizations drawing on a mix of both run nearly
+twice as long, 9.5 months at the peak. The fee-funded end is the worse of the two:
+<strong>21.5 percent of those charities are below zero</strong>, against 9.4 percent in the
+resilient band.</p>
+<p>Read that carefully, because it is a correlation in a single year of filings and
+not a mechanism. This does not show that diversifying revenue <em>creates</em> runway;
+organizations that are already stable may simply find it easier to develop a
+second income stream. What it does show is that the two piles are not just funded
+differently — they are <em>shaped</em> differently, all the way down to the balance sheet.
+That structure is invisible to any statistic computed across the pooled sector,
+which reports the reserve of a population that does not exist.</p>
+<h2 id="the-distinction-is-already-in-the-file">The distinction is already in the file</h2>
+<p>Here is the part that changes the complaint from “the sector should classify
+itself better” into something sharper. It already does. Every public charity, on
+Schedule A of its Form 990, declares <strong>which test it qualifies under</strong> to avoid
+being a private foundation. The extract carries that answer in a single column,
+one column over from the revenue lines this whole post is built on.</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Declared test (Schedule A)</th>
+<th style="text-align: right;">Organizations</th>
+<th style="text-align: right;">Median contribution share</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>§170(b)(1)(A)(vi) — publicly supported</td>
+<td style="text-align: right;">107,177</td>
+<td style="text-align: right;">87.0%</td>
+</tr>
+<tr>
+<td>§509(a)(2) — exempt-function revenue</td>
+<td style="text-align: right;">92,654</td>
+<td style="text-align: right;">42.2%</td>
+</tr>
+<tr>
+<td>School</td>
+<td style="text-align: right;">15,473</td>
+<td style="text-align: right;">17.4%</td>
+</tr>
+<tr>
+<td>Supporting organization (type 12)</td>
+<td style="text-align: right;">8,487</td>
+<td style="text-align: right;">4.0%</td>
+</tr>
+<tr>
+<td>Church</td>
+<td style="text-align: right;">4,638</td>
+<td style="text-align: right;">99.7%</td>
+</tr>
+<tr>
+<td>Hospital</td>
+<td style="text-align: right;">3,546</td>
+<td style="text-align: right;">1.4%</td>
+</tr>
+<tr>
+<td>Supporting organization (type 13)</td>
+<td style="text-align: right;">2,402</td>
+<td style="text-align: right;">1.2%</td>
+</tr>
+<tr>
+<td>Supporting organization (type 14)</td>
+<td style="text-align: right;">2,279</td>
+<td style="text-align: right;">5.0%</td>
+</tr>
+<tr>
+<td>Community trust</td>
+<td style="text-align: right;">1,692</td>
+<td style="text-align: right;">80.4%</td>
+</tr>
+<tr>
+<td>Supporting organization (type 15)</td>
+<td style="text-align: right;">1,449</td>
+<td style="text-align: right;">0.0%</td>
+</tr>
+<tr>
+<td>Governmental unit</td>
+<td style="text-align: right;">1,430</td>
+<td style="text-align: right;">73.4%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Table 2.</strong> The two dominant Schedule A tests are very nearly the two piles. All
+codes with at least 1,000 organizations, from the 242,348 charities with an
+interpretable contribution share.</p>
+<p>The two big codes in Table 2 are the two halves of Figure 2. Charities that
+qualify as <strong>publicly supported</strong> under §170(b)(1)(A)(vi) — the one-third public
+support test — have a median contribution share of <strong>87.0 percent</strong>. Charities
+that qualify under <strong>§509(a)(2)</strong>, the test built for organizations funded by
+their own exempt-function revenue, come in at <strong>42.2 percent</strong>. The activity flags
+cut even sharper: the 2,235 organizations that tick the <em>operates a hospital</em> box
+have a median contribution share of <strong>1.1 percent</strong>, and churches sit at 99.7.</p>
+<p>Be precise about what this does and doesn’t establish, because it is easy to
+overstate. <code>nonpfrea</code> records which test an organization <strong>qualifies under</strong>, not
+how it is <strong>actually funded</strong> — those are different questions, and the gap shows:
+code 09’s median is 42.2 percent, nowhere near zero, so plenty of organizations
+qualify via exempt-function revenue while still running substantially on
+contributions. This is a strong signal, not a clean partition. The IRS is not sorting
+charities into these buckets for us, and stratifying by this column alone would
+not fix sector statistics.</p>
+<p>But it is <em>free</em>, it is <em>already collected</em>, every organization already swears to
+it, and it ships in the same public file as the revenue. And essentially nothing
+in the sector’s measurement apparatus uses it.</p>
+<h2 id="they-dont-belong-in-the-same-bucket">They don’t belong in the same bucket</h2>
+<p>The conclusion is not that the average is misleading. It is that <strong>501(c)(3) is a
+legal category doing duty as an analytic one</strong>, and for a summary statistic meant
+to describe a typical charity, it does not survive the transfer.</p>
+<p>Be precise about what that does <em>not</em> say, because the overclaim is close by. The
+legal category is not a mistake — it answers legal questions, and it answers them
+about organizations that genuinely differ from one another in ways the tax code is
+entitled to ignore. A nonprofit hospital system delivers enormous public benefit
+and has arguments for its exemption that have nothing to do with donations. Nor is
+“the sector” a fiction: its workforce, its share of GDP, its aggregate exposure to
+a policy change are real questions, and for those you <em>should</em> add up the dollars.
+Dollar-weighting is not a bias. It is the right weighting whenever the question is
+about money — and money is exactly where those 2,423 institutions legitimately
+dominate.</p>
+<p>The failure is narrower than “the sector doesn’t exist,” and it is specific: a
+statistic that pools these populations and is then read as a description of a
+typical organization. That is the move that breaks, and it breaks every time.</p>
+<p>Two things establish it, and it is worth being careful about which two, because
+there is a tempting bad argument nearby. The bad argument is that the distribution
+isn’t a nice symmetric one, so the population must not be real. That proves far too
+much — nearly every financial variable on the Form 990 is violently skewed, revenue
+and expenses very much included, and if lopsidedness dissolved categories we would
+have none left. Skew is not evidence of a mixture.</p>
+<p>What is evidence: first, <strong>the piles are structural</strong>. 26,657 organizations at
+exactly zero and 25,366 at exactly one hundred are not the wings of one
+population, and Figure 3 shows those piles present in every decile — so this is a
+mixture of <em>business models</em>, not an artifact of scale. Second, <strong>the top is a
+different population</strong>, not a tail. Deciles 1 through 9 are flat at roughly 70
+percent; the top 1 percent sits at 2.0 percent and holds most of the money. A tail
+is the far end of a distribution. This is a separate distribution wearing the same
+legal label.</p>
+<p>Put those together and the sector’s headline numbers come apart in your hands. The
+overhead ratios, the “average nonprofit” of survey journalism, the benchmark a
+board compares itself against at its spring retreat — each one silently chooses a
+weighting, and if it chose dollars it mostly measured a few thousand hospital
+systems. This is the same error the <a href="../posts/2026-07-06-the-overhead-myth.html">overhead myth</a>
+post found in the ratio, arriving from the other direction: not a bad number about
+a real thing, but a fine number about a thing that isn’t there.</p>
+<p>The fix does not require anyone to invent a taxonomy. There is one in the file
+already, sworn to under penalty of perjury, sitting unused next to the numbers
+everyone quotes. Stratify before you summarize. Separate the institutions from the
+charities. And make any sector statistic say out loud whether it is weighting by
+dollars or by organizations, and which stratum it is describing — because a number
+that won’t answer those two questions isn’t describing anything you can act on.</p>
+<p>None of which is a new complaint among people who work with this data. The
+<a href="https://taxfoundation.org/blog/501c3-nonprofit-revenue/">Tax Foundation</a> and the
+<a href="https://nccs.urban.org/nccs/resources/sector-in-brief-dashboard/">Urban Institute</a>
+report subsector breakdowns precisely because the pooled number is useless, and
+handling a skewed distribution with medians and strata is ordinary practice, not a
+discovery. What the census adds here is the shape of the thing: that the
+mixture holds at <em>every</em> size, that deciles 1 through 9 are one flat sector, and
+that the break is not gradual but a cliff at the top percentile. The advice is
+old. The picture is new.</p>
+<p>For a specific charity, none of this is the interesting question anyway. Pull its
+Form 990 and read its own revenue mix — contributions against program service
+revenue, one division — and you will know which kind of organization you are
+looking at, and therefore which of these two piles’ fragilities to check for. The
+<a href="https://search.noprofits.org">search tools at noprofits.org</a> put those lines side
+by side, and the <a href="https://projects.propublica.org/nonprofits/">ProPublica Nonprofit Explorer</a>
+shows the filing they came from. The sector average was never about your charity.</p>
+<p><small>This is a plain-language overview, not tax, legal, or financial advice.
+“Contributions and grants” throughout means Form 990 Part VIII line 1h, which
+includes government grants and which this extract does not break down; it is not a
+measure of private philanthropy, and about two-fifths of it is government money — see
+<a href="#what-the-24-percent-is-and-isnt">what the 24 percent is, and isn’t</a>. Figures are
+computed from the IRS SOI annual extract of Form 990 data (returns filed in
+calendar year 2024, mostly fiscal 2023), as-filed and unaudited, and are a single
+year — multi-year trends could differ. Organizations filing the 990-EZ or 990-N are
+not included, so the smallest charities are absent entirely; including them would
+likely strengthen the per-organization findings here and would not change the
+dollar-weighted ones. Per-organization figures exclude roughly 7,320 filings whose
+contribution share falls outside 0–100 percent, and the reserve figures
+additionally exclude filings whose net-asset lines do not reconcile, on the same
+basis as the <a href="../posts/2026-07-07-months-of-cash-at-scale.html">at-scale post</a>. The
+<a href="../calcs/who-pays/compute.py">analysis script</a> contains the full method and asserts
+every number in this post; the aggregate has not been reconciled line-by-line
+against the IRS’s own published SOI tables, which is the check that would catch a
+processing error. The reserve relationship in Figure 4 is an association within one
+filing year, not a causal claim — stable organizations may simply find it easier to
+diversify — and none of this is a judgment about any individual organization.</small></p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="np-footer">
+        <div class="np-container np-footer__top">
+            <div class="np-footer__brand">
+                <div class="np-footer__lockup">
+                    <span class="np-footer__mark">n</span>
+                    <span class="np-footer__word">noprofits<span class="np-wordmark__tld">.org</span> blog</span>
+                </div>
+                <p class="np-footer__blurb">Field notes on nonprofits, public-interest data, and the tools behind noprofits.org — the math, the code, and the diagrams left in. Generated with <a href="http://jaspervdj.be/hakyll">Hakyll</a>; select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="np-footer__cols">
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Site</h4>
+                    <a class="np-footer__link" href="../">Home</a>
+                    <a class="np-footer__link" href="../about.html">About</a>
+                    <a class="np-footer__link" href="../archive.html">Archive</a>
+                    <a class="np-footer__link" href="../colophon.html">Colophon</a>
+                </div>
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Elsewhere</h4>
+                    <a class="np-footer__link" href="https://github.com/noprofits-org">GitHub</a>
+                    <a class="np-footer__link" href="https://noprofits.org">noprofits.org</a>
+                    <a class="np-footer__link" href="../contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+        <div class="np-footer__legalwrap">
+            <div class="np-container np-footer__legal">
+                <span>© 2026 noprofits.org · BSD-3-Clause · Built with Hakyll + Pandoc</span>
+                <span>Seattle</span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

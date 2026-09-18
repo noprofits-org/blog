@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Government grants are 40.3 percent of the contributions American charities report — $305 billion in tax year 2022. Cut by size, the dependence is nothing like uniform: the mid-size asset class draws a majority of its pooled contributed dollars from government, the largest shows almost none of its revenue as grants — and a major channel of government money never touches the line at all.">
+    <title>Two-fifths government: who the $305 billion actually goes to — noprofits.org blog</title>
+
+    <meta name="theme-color" content="#F7F4EE" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#121A16" media="(prefers-color-scheme: dark)">
+
+    <!-- Canonical + Open Graph / Twitter social cards. URLs are absolute — card
+         scrapers do not resolve relative paths. https://blog.noprofits.org/images/2026-07-22-two-fifths-government-hero.png is the static branded
+         /images/og-image.png unless a post sets an `og-image` metadata field. -->
+    <link rel="canonical" href="https://blog.noprofits.org/posts/2026-07-22-two-fifths-government.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="NoProfits Blog">
+    <meta property="og:title" content="Two-fifths government: who the $305 billion actually goes to">
+    <meta property="og:description" content="Government grants are 40.3 percent of the contributions American charities report — $305 billion in tax year 2022. Cut by size, the dependence is nothing like uniform: the mid-size asset class draws a majority of its pooled contributed dollars from government, the largest shows almost none of its revenue as grants — and a major channel of government money never touches the line at all.">
+    <meta property="og:url" content="https://blog.noprofits.org/posts/2026-07-22-two-fifths-government.html">
+    <meta property="og:image" content="https://blog.noprofits.org/images/2026-07-22-two-fifths-government-hero.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="noprofits.org blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Two-fifths government: who the $305 billion actually goes to">
+    <meta name="twitter:description" content="Government grants are 40.3 percent of the contributions American charities report — $305 billion in tax year 2022. Cut by size, the dependence is nothing like uniform: the mid-size asset class draws a majority of its pooled contributed dollars from government, the largest shows almost none of its revenue as grants — and a major channel of government money never touches the line at all.">
+    <meta name="twitter:image" content="https://blog.noprofits.org/images/2026-07-22-two-fifths-government-hero.png">
+
+    <!-- No-flash theme: set an explicit data-theme BEFORE any stylesheet. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <!-- No-flash featured: hide the randomizable featured card until the picker
+         (js/featured-random.js) swaps in its choice, so the baked default post
+         doesn't flash before the swap. Safety timeout reveals it if JS is off-
+         path or the picker never runs. Home page only reacts (it owns .featured). -->
+    <script>
+      (function () {
+        document.documentElement.classList.add('feat-pending');
+        setTimeout(function () {
+          document.documentElement.classList.remove('feat-pending');
+        }, 1500);
+      })();
+    </script>
+
+    <link rel="preload" href="../fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- JetBrains Mono (mono/label/tag/code role) via Google Fonts — the one
+         non-self-hosted family, per the design brief. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Saira / Barlow Condensed are used ONLY by the résumé print stylesheet;
+         loaded print-scoped so screen never pulls them. -->
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" media="print">
+
+    <link rel="stylesheet" href="../css/noprofits-theme.css" />
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/noprofits-theme.js"></script>
+    <script defer src="../js/topic-filter.js"></script>
+    <script defer src="../js/featured-random.js"></script>
+    <script defer src="../js/figure-cycler.js"></script>
+    <script defer src="../js/figure-zoom.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <a class="np-skiplink" href="#main">Skip to content</a>
+
+    <header class="np-header">
+        <div class="np-container np-header__bar">
+            <a class="np-header__brand" href="../" aria-label="noprofits.org blog home">
+                <img src="../images/brandmark.svg" alt class="np-brandmark" width="32" height="32" aria-hidden="true">
+                <span class="np-wordmark">noprofits<span class="np-wordmark__tld">.org</span><span class="np-wordmark__app">blog</span></span>
+            </a>
+
+            <nav class="np-nav--inline" aria-label="Main navigation">
+                <a class="np-nav__link" href="../">Home</a>
+                <a class="np-nav__link" href="../about.html">About</a>
+                <a class="np-nav__link" href="../archive.html">Archive</a>
+                <a class="np-nav__link" href="../contact.html">Contact</a>
+            </nav>
+
+            <button type="button" class="np-themetoggle" data-np-themetoggle aria-pressed="false" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span data-np-themeicon aria-hidden="true">☽</span>
+            </button>
+
+            <button type="button" class="np-header__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="np-drawer">
+                <span class="np-burger" aria-hidden="true"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="np-scrim" data-drawer-scrim></div>
+    <aside id="np-drawer" class="np-drawer" aria-hidden="true" aria-label="Menu">
+        <div class="np-drawer__head">
+            <span class="np-drawer__title">Menu</span>
+            <button type="button" class="np-drawer__close" aria-label="Close menu"></button>
+        </div>
+        <a class="np-drawer__link" href="../">Home</a>
+        <a class="np-drawer__link" href="../about.html">About</a>
+        <a class="np-drawer__link" href="../archive.html">Archive</a>
+        <a class="np-drawer__link" href="../contact.html">Contact</a>
+    </aside>
+
+    <main id="main" role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">nonprofits, data</span>
+    </div>
+    
+
+    <h1 class="post-title">Two-fifths government: who the $305 billion actually goes to</h1>
+
+    <div class="post-meta">
+        <span>July 22, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <p>Yesterday’s <a href="../posts/2026-07-21-checking-our-work.html">reconciliation post</a>
+ended up measuring a number this series had twice gotten wrong by inference:
+how much of the money charities report as contributions comes from government.
+The IRS’s published tax year 2022 table answers it directly — <strong>$305.1 billion
+of $756.1 billion, 40.3 percent</strong>. Two-fifths of the contributed income on the
+sector’s full Form 990s is government money, and we used it to close a
+correction and moved on.</p>
+<p>A number that size deserves better than a cameo in someone else’s correction.
+Whose two-fifths is it? A charity with a food pantry and a charity with a
+teaching hospital both report a “government grants” line, and the sector-wide
+40.3 percent describes neither of them — which is <a href="../posts/2026-07-14-nobodys-average.html">the lesson this series keeps
+relearning</a>: an aggregate wearing one
+name is usually several populations wearing one costume. The same published
+table that settled the total also cuts it six ways by organization size, and
+this post reads the rest of it. Two findings, one of each kind: the dependence
+is real and concentrated in the middle of the size distribution — pool the
+dollars of the $10M–50M asset class and a majority of its contributed income
+is government — and the number everyone will be tempted to quote is a floor,
+because a major channel of government money into charities is defined out of
+the line entirely.</p>
+<h2 id="where-the-number-comes-from">Where the number comes from</h2>
+<p>Everything here is computed from two spreadsheets the IRS publishes as part of
+its <a href="https://www.irs.gov/statistics/soi-tax-stats-charities-and-other-tax-exempt-organizations-statistics">Statistics of Income program</a>:
+<a href="https://www.irs.gov/pub/irs-soi/22eo01.xlsx">Table 1</a>, Form 990 returns of
+501(c)(3) organizations by asset size, and
+<a href="https://www.irs.gov/pub/irs-soi/22eo03.xlsx">Table 3</a>, the same items for
+501(c)(3) through 501(c)(9) organizations by code section — both for <strong>tax year
+2022</strong>, the most recent published, and both <strong>weighted estimates from a
+sample</strong>, not a census.</p>
+<p>That sourcing is a change for this blog, and it is forced. Our usual per-filer
+file — the SOI annual extract behind
+<a href="../posts/2026-07-07-months-of-cash-at-scale.html">every</a>
+<a href="../posts/2026-07-11-below-zero-negative-operating-reserve.html">sector</a>
+<a href="../posts/2026-07-15-public-support-cliff.html">post</a> here — simply
+<a href="../posts/2026-07-21-checking-our-work.html">does not carry the government grants line</a>.
+Form 990 Part VIII line 1e exists on every return, but the extract omits it, so
+nothing in this post can be computed for an individual organization from that
+file, and none of our usual medians and distributions are available — a
+published aggregate table gives you the cells it gives you, in the size classes
+it chose, and nothing else. Within those limits, here is what it shows.</p>
+<h2 id="who-the-305-billion-goes-to">Who the $305 billion goes to</h2>
+<p>Figure 1 is the post. The left panel asks, for each of six asset-size classes,
+what share of the class’s <em>contributions</em> came from government; the right panel
+asks the same of its <em>total revenue</em>.</p>
+<figure>
+<img src="../images/2026-07-22-two-fifths-government-hero.png" alt="Two bar charts of government grants across six asset-size classes of charities. As a share of contributions, small classes sit near 25 percent, the 10 to 50 million dollar class peaks at 51.6 percent, and the largest class falls back to 37.9. As a share of total revenue, the middle classes lead at about 23 percent while the largest class collapses to 7 percent, far below every other class.">
+</figure>
+<p><strong>Figure 1.</strong> Government grants to 501(c)(3) organizations by the filer’s total
+assets, tax year 2022, from IRS SOI Table 1. Left panel: share of each class’s
+contributions, gifts, and grants. Right panel: share of each class’s total
+revenue. <strong>A</strong> is the $10M–50M class, the only one whose pooled contributed
+dollars are majority government grants, at 51.6 percent. <strong>B</strong> is the largest class
+(assets of $50M or more) at 37.9 percent of contributions. <strong>C</strong> is that same
+class at 7.0 percent of total revenue — the lowest of any class, and the pivot
+on which the second half of this post turns. <strong>D</strong> marks the all-size figures:
+40.3 percent of contributions, 10.1 percent of revenue.</p>
+<p>Three shapes worth naming, and Table 1 has the exact figures behind them.</p>
+<p><strong>The dependence peaks in the middle.</strong> Charities with under $1M in assets draw
+about a quarter of their pooled contributions from government — 23.8, 26.6, and
+25.7 percent across the three smallest classes. Then it climbs: 41.0 percent at
+$1M–10M, and <strong>51.6 percent at $10M–50M</strong> (marker A). Pool the dollars of those
+roughly 24,000 filers and the state, in its various forms, put in more than
+every private donor, foundation, and federated campaign combined. And a pooled,
+dollar-weighted class ratio is all that is: this table has no medians, so it
+cannot say what the <em>typical</em> $10M–50M charity looks like — a minority of
+heavily granted organizations can carry a class ratio the same way
+<a href="../posts/2026-07-14-nobodys-average.html">a few giants carry the sector aggregate</a>.
+The class’s dollars are majority government; how many of its members are, this
+data cannot say.</p>
+<p><strong>The dollars go to the top anyway.</strong> Shares are one thing, checks are another.
+The 10,871 organizations with $50M or more in assets — 4.4 percent of returns —
+collect <strong>$170.0 billion, 55.7 percent</strong> of all government grant money;
+the two classes above $10M together collect 80.2 percent. Meanwhile the
+130,188 filers below $1M in assets — 52.3 percent, a majority of the
+full-Form-990 returns this table covers — split <strong>3.4 percent</strong> of it. (The
+actual small-charity majority, the 990-EZ and 990-N filers, is not in this
+table at all.) Whatever government grants are, they are not a small-charity
+program.</p>
+<p><strong>And yet the giants barely register on the revenue panel.</strong> The same largest
+class that banks most of the money shows government grants at just <strong>7.0
+percent of its total revenue</strong> (marker C) — half the small classes’ figure, a
+third of the middle’s. Nothing like a paradox once you see the denominator:
+this class runs on <strong>program service revenue</strong>, 75.8 percent of everything it
+takes in. Which brings us to what that panel is actually measuring.</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr>
+<th>Total assets</th>
+<th style="text-align: right;">Returns</th>
+<th style="text-align: right;">Gov. grants ($B)</th>
+<th style="text-align: right;">Share of gov. $</th>
+<th style="text-align: right;">% of contributions</th>
+<th style="text-align: right;">% of revenue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Under $100k</td>
+<td style="text-align: right;">30,333</td>
+<td style="text-align: right;">1.6</td>
+<td style="text-align: right;">0.5%</td>
+<td style="text-align: right;">23.8</td>
+<td style="text-align: right;">14.8</td>
+</tr>
+<tr>
+<td>$100k–500k</td>
+<td style="text-align: right;">62,017</td>
+<td style="text-align: right;">4.8</td>
+<td style="text-align: right;">1.6%</td>
+<td style="text-align: right;">26.6</td>
+<td style="text-align: right;">17.1</td>
+</tr>
+<tr>
+<td>$500k–1M</td>
+<td style="text-align: right;">37,838</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">1.4%</td>
+<td style="text-align: right;">25.7</td>
+<td style="text-align: right;">16.9</td>
+</tr>
+<tr>
+<td>$1M–10M</td>
+<td style="text-align: right;">83,692</td>
+<td style="text-align: right;">49.8</td>
+<td style="text-align: right;">16.3%</td>
+<td style="text-align: right;">41.0</td>
+<td style="text-align: right;">23.4</td>
+</tr>
+<tr>
+<td>$10M–50M</td>
+<td style="text-align: right;">24,040</td>
+<td style="text-align: right;">74.8</td>
+<td style="text-align: right;">24.5%</td>
+<td style="text-align: right;">51.6</td>
+<td style="text-align: right;">23.0</td>
+</tr>
+<tr>
+<td>$50M or more</td>
+<td style="text-align: right;">10,871</td>
+<td style="text-align: right;">170.0</td>
+<td style="text-align: right;">55.7%</td>
+<td style="text-align: right;">37.9</td>
+<td style="text-align: right;">7.0</td>
+</tr>
+<tr>
+<td><strong>All</strong></td>
+<td style="text-align: right;"><strong>248,791</strong></td>
+<td style="text-align: right;"><strong>305.1</strong></td>
+<td style="text-align: right;"><strong>100%</strong></td>
+<td style="text-align: right;"><strong>40.3</strong></td>
+<td style="text-align: right;"><strong>10.1</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Table 1.</strong> Government grants by asset size, tax year 2022, IRS SOI Table 1;
+dollar figures in billions. The SOI sample is stratified by size — the largest
+filers are sampled at or near certainty, the smallest at low rates — so read
+the sub-$1M rows as noisier than the rest.</p>
+<p>One thing these tables cannot tell us is <em>what kind</em> of charity sits in each
+class — Table 1 has no subsector cut, so whether the mid-size peak is
+human-services organizations living on public grants, or something else, is a
+question this data cannot answer. The Urban Institute’s
+<a href="https://www.urban.org/research/publication/government-grants-and-contracts-nonprofits-2023">survey work</a>
+does break government funding out by subsector, and readers who know that
+literature will know more about the composition than these two spreadsheets do.</p>
+<h2 id="the-line-counts-giving-not-buying">The line counts giving, not buying</h2>
+<p>Now the part that keeps the 40.3 percent from meaning what it will be quoted to
+mean.</p>
+<p>“Government grants” on a Form 990 is a defined term, and the definition has an
+edge running through it. Per the
+<a href="https://www.irs.gov/instructions/i990">Form 990 instructions</a>, a payment from
+a government lands on the contributions line (Part VIII line 1e) when its
+purpose is primarily to provide a <strong>direct benefit to the public</strong> — a grant to
+run a shelter, say. But when the government is paying primarily for its own
+direct needs, or paying as the customer for a service delivered to a specific
+person, that is not a contribution at all. It is <strong>program service revenue</strong>,
+line 2, sitting in the same column as tuition and ticket sales. The
+<a href="https://www.irs.gov/instructions/i990sa">Schedule A instructions</a> draw the
+same line for the public support test, citing a 1983 revenue ruling: <strong>Medicare
+and Medicaid payments are gross receipts from patients</strong>, not support from the
+government that writes the check.</p>
+<p>So a hospital system collecting a billion dollars of Medicare money reports
+<em>zero</em> of it as government grants. A university’s federal research contracts,
+a human-services agency’s per-bed reimbursements — government-as-customer money
+in general — flows into a line that these SOI tables do not split by payer.
+(The nearest thing to an exception sits elsewhere in the return: hospital
+filers report some Medicaid-related revenue detail on
+<a href="https://www.irs.gov/instructions/i990sh">Schedule H</a>, but that schedule feeds
+none of the tables used here.) Figure 2 shows how much of each class’s income
+sits in the block these tables cannot split.</p>
+<figure>
+<img src="../images/2026-07-22-two-fifths-government-mix.png" alt="Stacked horizontal bars showing the revenue composition of each asset-size class. Small charities are dominated by contributions, with government grants a visible dark slice. Moving up the classes, the program service revenue block grows until it is three-quarters of the largest class's revenue, dwarfing its thin government grants slice.">
+</figure>
+<p><strong>Figure 2.</strong> What each class’s revenue is made of, tax year 2022: government
+grants, other contributions, program service revenue, and everything else
+(investment income, royalties, net gains, and the rest). <strong>A</strong> is the largest
+class’s program service revenue — 75.8 percent of its income, a block that
+contains its Medicare, Medicaid, and government contract receipts <em>if it has
+them</em>, indistinguishable in these tables from patient bills and tuition. <strong>B</strong> is the $10M–50M
+class’s government grants block, 23.0 percent of revenue. <strong>C</strong> is the
+all-size total’s, 10.1 percent.</p>
+<p>This is why the right panel of Figure 1 collapses at the top, and why that
+collapse should not be read as independence. The giants’ 7.0 percent is 7.0
+percent <em>of a denominator that is three-quarters program service revenue</em> — and
+whether government money makes up a little of that block or most of it is
+exactly what the filing does not say. The honest reading is not “big charities
+don’t depend on government.” It is: <strong>for the organizations holding most of the
+money in this table, this data cannot measure government dependence at all — it
+can only measure the granted part, and that part is a floor.</strong></p>
+<p>The survey evidence points the same direction. The Urban Institute’s
+<a href="https://www.urban.org/research/publication/government-grants-and-contracts-nonprofits-2023">Nonprofit Trends and Impacts study</a>
+— which asks organizations about government grants <em>and contracts</em>, rather than
+reading the 1e line — found that in 2023 two-thirds of nonprofits received at
+least one government grant or contract, that the average nonprofit drew about a
+quarter of its revenue from government sources, and that roughly two in ten
+drew more than half. Those figures are not comparable to ours in any strict
+sense. The <a href="https://www.urban.org/nptrends">panel</a> covers operating public
+charities with at least $50,000 in both expenses and revenue, and <em>excludes</em> hospitals, higher
+education, schools, foundations, and houses of worship — which removes
+precisely the organizations whose government money this post says is least
+visible; an organization-weighted average is
+<a href="../posts/2026-07-14-nobodys-average.html">not a dollar-weighted one</a>; and
+“government sources” is a wider net than line 1e. But that makes the
+corroboration stronger, not weaker: even with the big program-service
+institutions taken out of the frame, counting the buying alongside the giving
+still puts government at a quarter of the average nonprofit’s revenue. The
+comparison is loose by construction; the direction is not.</p>
+<h2 id="the-other-exemption-sections-briefly">The other exemption sections, briefly</h2>
+<p>Table 3 runs the same items across the rest of the 501(c) family, and it makes
+one point emphatically: government grant money is a charity phenomenon.
+Of the $312.9 billion in government grants reported by 501(c)(3) through (c)(9)
+organizations together, <strong>97.5 percent went to 501(c)(3)s</strong> (Table 2).</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Code section</th>
+<th style="text-align: right;">Total revenue (<span class="math inline">\(B) | Gov. grants (\)</span>B)</th>
+<th style="text-align: right;">% of own revenue</th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>501(c)(3) — charities</td>
+<td style="text-align: right;">3,028.0</td>
+<td style="text-align: right;">305.1</td>
+<td style="text-align: right;">10.1</td>
+</tr>
+<tr>
+<td>501(c)(4) — social welfare</td>
+<td style="text-align: right;">156.4</td>
+<td style="text-align: right;">4.1</td>
+<td style="text-align: right;">2.6</td>
+</tr>
+<tr>
+<td>501(c)(5) — labor, agricultural</td>
+<td style="text-align: right;">29.1</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right;">1.0</td>
+</tr>
+<tr>
+<td>501(c)(6) — business leagues</td>
+<td style="text-align: right;">58.5</td>
+<td style="text-align: right;">3.5</td>
+<td style="text-align: right;">5.9</td>
+</tr>
+<tr>
+<td>501(c)(7) — social clubs</td>
+<td style="text-align: right;">18.4</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.3</td>
+</tr>
+<tr>
+<td>501(c)(8) — fraternal societies</td>
+<td style="text-align: right;">21.6</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">&lt;0.1</td>
+</tr>
+<tr>
+<td>501(c)(9) — employee benefit assns.</td>
+<td style="text-align: right;">161.6</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">&lt;0.1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Table 2.</strong> Government grants by exemption section, tax year 2022, IRS SOI
+Table 3; estimates from a sample, dollars in billions. Social clubs and
+fraternal societies, fittingly, get approximately nothing.</p>
+<p>The one number there we did not expect: business leagues — chambers of
+commerce, trade associations, the 501(c)(6) file drawer — report <strong>$3.5 billion</strong>
+in government grants, 5.9 percent of their revenue and more than double the
+social-welfare organizations’ rate. We can offer no cut of this data that says
+why; it is new to us, and if it is old news to someone who works in that
+corner, the correction address is the same as always.</p>
+<h2 id="where-this-touches-the-one-third-line">Where this touches the one-third line</h2>
+<p>A last connection, because <a href="../posts/2026-07-15-public-support-cliff.html">last week’s bunching
+post</a> is about the same money.
+The public support test that post studies runs on Schedule A, and per
+<a href="https://www.irs.gov/instructions/i990sa">its instructions</a>, support from
+governmental units counts toward “public” support <strong>in full</strong> — the 2 percent
+concentration cap that strips out a large private donor’s gifts does not apply
+to government money. A charity drawing 90 percent of its support from a single
+state agency is, for the test’s purposes, publicly supported; one drawing the
+same 90 percent from four families is not. The test was built to measure
+accountability to a broad public, and it treats the government as the broadest
+public there is — which means the government dependence measured in this post
+does not push organizations toward the one-third cliff. It anchors them safely
+above it. The charities near the cliff are, as that post found, mostly the
+<em>privately</em> concentrated ones.</p>
+<p>Put the two posts together and the shape of the thing is: government money —
+at least the two-fifths of contributions we can see, plus however much rides
+the program-service line we cannot — is not just a funding stream. It is part
+of what the 990’s own definitions treat as publicness. That seems worth
+knowing <a href="https://www.urban.org/urban-wire/government-funding-cuts-put-nonprofits-risk-across-nation">in a year when those flows are being cut and
+contested</a>,
+though what happens to them next is not a question a tax year 2022 table can
+answer.</p>
+<p>For a single organization, skip the aggregates entirely: its own Form 990 Part
+VIII shows its government grants line, and Schedule A shows how its support is
+built. The <a href="https://search.noprofits.org">search tools at noprofits.org</a> will
+show you its revenue mix, and the
+<a href="https://projects.propublica.org/nonprofits/">ProPublica Nonprofit Explorer</a>
+has the filing itself. Everything in this post is in
+<a href="../calcs/two-fifths-government/compute.py">the analysis script</a>, which asserts
+every IRS-derived figure quoted above and fails loudly if any stops being true;
+if we have misread either table, that is where you will catch us.</p>
+<p><small>This is a plain-language overview, not tax, legal, or financial advice.
+All figures are from IRS Statistics of Income published Tables 1 and 3 for
+Form 990 filers, tax year 2022 (released September 2025) — weighted estimates
+based on a sample, subject to sampling error the tables do not quantify,
+denominated in thousands of dollars, and excluding private foundations, most
+organizations with receipts under $50,000, most churches, certain other
+religious organizations, and all 990-EZ and 990-N filers; the sub-$1M asset
+classes rest on fewer sampled returns and are noisier.
+“Government grants” throughout means Form 990 Part VIII line 1e as the filer
+reported it; payments where a government acts as purchaser — including Medicare
+and Medicaid — are program service revenue by rule and are not split by payer
+in these tables (hospital filers report some Medicaid-related detail on
+Schedule H, which these tables do not draw on), so every government figure here
+should be read as a floor. All shares are pooled, dollar-weighted class ratios,
+not statements about typical organizations; these tables contain no medians.
+The asset-size classes are the IRS’s, not ours; no subsector cut exists in
+these tables; and one year of data supports no claim about trends. Survey
+figures quoted from the Urban Institute describe a different population
+(operating public charities with $50,000 or more in both expenses and revenue,
+excluding hospitals, higher education, schools, foundations, and houses of
+worship),
+weighting, and definition of government funding, and are offered as direction,
+not comparison. Nothing here is a judgment about any individual organization,
+and none of this data can establish why any pattern shown is what it is. The
+<a href="../calcs/two-fifths-government/compute.py">analysis script</a> contains
+the full method and asserts every IRS-derived number in this post.</small></p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="np-footer">
+        <div class="np-container np-footer__top">
+            <div class="np-footer__brand">
+                <div class="np-footer__lockup">
+                    <span class="np-footer__mark">n</span>
+                    <span class="np-footer__word">noprofits<span class="np-wordmark__tld">.org</span> blog</span>
+                </div>
+                <p class="np-footer__blurb">Field notes on nonprofits, public-interest data, and the tools behind noprofits.org — the math, the code, and the diagrams left in. Generated with <a href="http://jaspervdj.be/hakyll">Hakyll</a>; select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="np-footer__cols">
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Site</h4>
+                    <a class="np-footer__link" href="../">Home</a>
+                    <a class="np-footer__link" href="../about.html">About</a>
+                    <a class="np-footer__link" href="../archive.html">Archive</a>
+                    <a class="np-footer__link" href="../colophon.html">Colophon</a>
+                </div>
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Elsewhere</h4>
+                    <a class="np-footer__link" href="https://github.com/noprofits-org">GitHub</a>
+                    <a class="np-footer__link" href="https://noprofits.org">noprofits.org</a>
+                    <a class="np-footer__link" href="../contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+        <div class="np-footer__legalwrap">
+            <div class="np-container np-footer__legal">
+                <span>© 2026 noprofits.org · BSD-3-Clause · Built with Hakyll + Pandoc</span>
+                <span>Seattle</span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

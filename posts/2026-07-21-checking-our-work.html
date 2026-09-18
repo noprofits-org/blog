@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Two posts on this blog admit their figures have never been reconciled against the IRS's own published tables. This is that reconciliation. The headline percentages survive, but the row filter all four of our sector posts use turns out to run three to eight and a half percent low on dollar totals — and a correction we published last week was itself wrong.">
+    <title>Checking our work: our numbers against the IRS's own — noprofits.org blog</title>
+
+    <meta name="theme-color" content="#F7F4EE" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#121A16" media="(prefers-color-scheme: dark)">
+
+    <!-- Canonical + Open Graph / Twitter social cards. URLs are absolute — card
+         scrapers do not resolve relative paths. https://blog.noprofits.org/images/2026-07-21-checking-our-work-hero.png is the static branded
+         /images/og-image.png unless a post sets an `og-image` metadata field. -->
+    <link rel="canonical" href="https://blog.noprofits.org/posts/2026-07-21-checking-our-work.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="NoProfits Blog">
+    <meta property="og:title" content="Checking our work: our numbers against the IRS's own">
+    <meta property="og:description" content="Two posts on this blog admit their figures have never been reconciled against the IRS's own published tables. This is that reconciliation. The headline percentages survive, but the row filter all four of our sector posts use turns out to run three to eight and a half percent low on dollar totals — and a correction we published last week was itself wrong.">
+    <meta property="og:url" content="https://blog.noprofits.org/posts/2026-07-21-checking-our-work.html">
+    <meta property="og:image" content="https://blog.noprofits.org/images/2026-07-21-checking-our-work-hero.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="noprofits.org blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Checking our work: our numbers against the IRS's own">
+    <meta name="twitter:description" content="Two posts on this blog admit their figures have never been reconciled against the IRS's own published tables. This is that reconciliation. The headline percentages survive, but the row filter all four of our sector posts use turns out to run three to eight and a half percent low on dollar totals — and a correction we published last week was itself wrong.">
+    <meta name="twitter:image" content="https://blog.noprofits.org/images/2026-07-21-checking-our-work-hero.png">
+
+    <!-- No-flash theme: set an explicit data-theme BEFORE any stylesheet. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <!-- No-flash featured: hide the randomizable featured card until the picker
+         (js/featured-random.js) swaps in its choice, so the baked default post
+         doesn't flash before the swap. Safety timeout reveals it if JS is off-
+         path or the picker never runs. Home page only reacts (it owns .featured). -->
+    <script>
+      (function () {
+        document.documentElement.classList.add('feat-pending');
+        setTimeout(function () {
+          document.documentElement.classList.remove('feat-pending');
+        }, 1500);
+      })();
+    </script>
+
+    <link rel="preload" href="../fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- JetBrains Mono (mono/label/tag/code role) via Google Fonts — the one
+         non-self-hosted family, per the design brief. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Saira / Barlow Condensed are used ONLY by the résumé print stylesheet;
+         loaded print-scoped so screen never pulls them. -->
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" media="print">
+
+    <link rel="stylesheet" href="../css/noprofits-theme.css" />
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/noprofits-theme.js"></script>
+    <script defer src="../js/topic-filter.js"></script>
+    <script defer src="../js/featured-random.js"></script>
+    <script defer src="../js/figure-cycler.js"></script>
+    <script defer src="../js/figure-zoom.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <a class="np-skiplink" href="#main">Skip to content</a>
+
+    <header class="np-header">
+        <div class="np-container np-header__bar">
+            <a class="np-header__brand" href="../" aria-label="noprofits.org blog home">
+                <img src="../images/brandmark.svg" alt class="np-brandmark" width="32" height="32" aria-hidden="true">
+                <span class="np-wordmark">noprofits<span class="np-wordmark__tld">.org</span><span class="np-wordmark__app">blog</span></span>
+            </a>
+
+            <nav class="np-nav--inline" aria-label="Main navigation">
+                <a class="np-nav__link" href="../">Home</a>
+                <a class="np-nav__link" href="../about.html">About</a>
+                <a class="np-nav__link" href="../archive.html">Archive</a>
+                <a class="np-nav__link" href="../contact.html">Contact</a>
+            </nav>
+
+            <button type="button" class="np-themetoggle" data-np-themetoggle aria-pressed="false" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span data-np-themeicon aria-hidden="true">☽</span>
+            </button>
+
+            <button type="button" class="np-header__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="np-drawer">
+                <span class="np-burger" aria-hidden="true"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="np-scrim" data-drawer-scrim></div>
+    <aside id="np-drawer" class="np-drawer" aria-hidden="true" aria-label="Menu">
+        <div class="np-drawer__head">
+            <span class="np-drawer__title">Menu</span>
+            <button type="button" class="np-drawer__close" aria-label="Close menu"></button>
+        </div>
+        <a class="np-drawer__link" href="../">Home</a>
+        <a class="np-drawer__link" href="../about.html">About</a>
+        <a class="np-drawer__link" href="../archive.html">Archive</a>
+        <a class="np-drawer__link" href="../contact.html">Contact</a>
+    </aside>
+
+    <main id="main" role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">nonprofits, data</span>
+    </div>
+    
+
+    <h1 class="post-title">Checking our work: our numbers against the IRS's own</h1>
+
+    <div class="post-meta">
+        <span>July 21, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <p>Two posts in this series end with the same admission in their small print. In
+<a href="../posts/2026-07-14-nobodys-average.html">nobody’s average</a> it reads: the
+aggregate “has not been reconciled line-by-line against the IRS’s own published
+SOI tables, <strong>which is the check that would catch a processing error.</strong>”
+<a href="../posts/2026-07-15-public-support-cliff.html">The public support cliff</a> says the
+figures “have not been reconciled against the IRS’s own published SOI tables”
+and leaves it there. The same unchecked pipeline sits under
+<a href="../posts/2026-07-07-months-of-cash-at-scale.html">months of cash at scale</a> and
+<a href="../posts/2026-07-11-below-zero-negative-operating-reserve.html">below zero</a>.</p>
+<p>It is an honest disclosure and it is also an IOU. We had been computing sector
+totals from a 247-megabyte file and asking readers to trust that we had summed
+the right column of the right rows, while noting that the one external check
+available on that claim was a check we had not run. This post runs it.</p>
+<p>The short version: the percentages we have published hold up, the row filter all
+four posts use is measurably biased downward on dollar <em>totals</em>, and a correction
+we issued six days ago described a 40 percent share as “roughly half.” The last
+one gets its own correction, below.</p>
+<h2 id="the-two-files-are-not-the-same-thing-and-cannot-be-made-to-be">The two files are not the same thing, and cannot be made to be</h2>
+<p>The instinct is to line the two sources up and treat any difference as our
+error. That instinct is wrong, and understanding why is most of the work.</p>
+<p>What we use is the <strong>annual extract</strong> of Form 990 financial data — an
+administrative file containing selected fields from every Form 990 the IRS
+<em>processed</em> during a given calendar year. It is a population, not a sample. It is
+keyed to a <strong>filing year</strong>: the CY2024 file we normally use holds every return
+that came through the door in 2024, whatever tax year those returns are for. The
+IRS is
+<a href="https://www.irs.gov/statistics/soi-tax-stats-annual-extract-of-tax-exempt-organization-financial-data">explicit</a>
+that it is a byproduct of program administration, and that transcription and
+processing adjustments can make it differ from what organizations originally
+reported.</p>
+<p>What the IRS <em>publishes</em> is something else. The
+<a href="https://www.irs.gov/statistics/soi-tax-stats-charities-and-other-tax-exempt-organizations-statistics">SOI statistics for charities</a>
+include Table 1, “Form 990 Returns of 501(c)(3) Organizations: Balance Sheet and
+Income Statement Items, by Asset Size.” Its header says what it is: <em>all figures
+are estimates based on samples.</em> It is a <strong>weighted probability sample</strong>, keyed
+to a <strong>tax year</strong>, denominated in thousands of dollars. Its notes exclude private
+foundations, most organizations with receipts under $50,000, most churches, and
+certain other religious organizations. The most recent edition available as of
+this writing covers <strong>tax year 2022</strong>.</p>
+<p>So: population versus sample, filing year versus tax year, dollars versus
+thousands, and different exclusions. Two numbers computed from those two things
+will differ even if nobody has made a mistake. The question worth asking is not
+<em>do they match</em> but <em>how far apart are they, and is the distance explained by the
+things we already know are different.</em></p>
+<p>One consequence is immediate. Our usual file is CY2024 — mostly tax year 2023 —
+and the newest published table is tax year 2022. Comparing those would fold a
+full year of sector growth into the measurement and tell us nothing about the
+pipeline. So this check uses the <strong>CY2023 extract</strong> instead, the file whose
+returns are mostly tax year 2022, and compares it against the TY2022 table. That
+is the closest alignment the two publication schedules allow.</p>
+<h2 id="three-defensible-cuts-one-of-which-is-ours">Three defensible cuts, one of which is ours</h2>
+<p>Given a filing-year file and a tax-year target, there is more than one reasonable
+way to select rows. We tried three, all defensible:</p>
+<p><strong>One return per EIN</strong> — deduplicate to a single filing per organization,
+keeping the latest tax period. 245,065 returns. <strong>This is what all four of our
+published posts do</strong>, and it is why <em>months of cash at scale</em> describes trimming
+its file “from 345,365 rows to 324,416 organizations.”</p>
+<p><strong>Pooled</strong> — every 501(c)(3) Form 990 row in the CY2023 file, 261,146 returns,
+with no deduplication at all.</p>
+<p><strong>Tax year 2022 only</strong> — keep rows whose tax period falls in TY2022, discarding
+late filers still settling up for 2021 and early filers already reporting 2023.
+221,549 returns. This is the cut that <em>sounds</em> most correct.</p>
+<p>Figure 1 shows how each lands against the published table across seven line
+items. Zero is the published figure.</p>
+<figure>
+<img src="../images/2026-07-21-checking-our-work-hero.png" alt="A dot plot comparing three ways of cutting the IRS Form 990 extract against the IRS's own published tax year 2022 totals, across seven balance sheet and income statement line items. The unfiltered pooled cut sits closest to zero on the dollar totals, the deduplicated cut that this blog actually uses runs several percent low, and the tax-year-only filter is furthest away, understating every quantity by six to thirteen percent.">
+</figure>
+<p><strong>Figure 1.</strong> Difference between each of our three cuts of the CY2023 Form 990
+extract and the IRS’s published tax year 2022 estimates, by line item, in percent
+of the published figure. <strong>A</strong> marks total revenue under the pooled cut, which
+lands within 0.08 percent of the published estimate. <strong>B</strong> marks total
+liabilities under the tax-year-only filter, the largest disagreement anywhere in
+the chart at 13.35 percent low. <strong>C</strong> marks the pooled cut’s return count, 4.97
+percent above the published estimate, the one line where pooling does worst.</p>
+<p>Three things fall out, and the first one is about us.</p>
+<p><strong>Our cut runs low on dollars.</strong> The deduplicated file — the one behind every
+sector total this blog has published — is 7.57 percent short on total assets,
+7.12 percent short on net assets, 6.89 percent short on expenses, and 3.59
+percent short on revenue. Its return count is good (1.50 percent) and its
+contributions total is very good (0.84 percent), but the balance-sheet levels are
+consistently and materially below the published estimates. That is a bias, not
+noise, and it points in one direction.</p>
+<p><strong>The unfiltered pool tracks the published dollars best.</strong> Total revenue lands
+0.08 percent from the published estimate, net assets 0.97 percent, total assets
+1.92 percent. Its one bad line is the return count, 4.97 percent high.</p>
+<p><strong>The tax-year filter is the worst of the three on every single line item</strong> —
+10.95 percent short on returns, 12.04 percent on assets, 13.35 percent on
+liabilities. Not a rounding difference: it discards about an eighth of the
+sector’s assets.</p>
+<h2 id="why-the-tidy-filters-lose">Why the tidy filters lose</h2>
+<p>Both filters fail for the same reason, and it is worth carrying to other
+datasets.</p>
+<p>A published SOI table labelled “tax year 2022” is not assembled from returns
+existing in some timeless tax-year space. It is assembled from returns that were
+<em>filed</em>, and returns for tax year 2022 arrive across a window running well into
+2023 and beyond. Its count line is labelled “number of returns,” not number of
+organizations. If the frame works the way that label implies, it would include
+filings a tax-year filter throws away, and count separately some filings that
+deduplication merges.</p>
+<p>Our deduplication drops 16,081 rows, and those rows are not junk — they carry
+real balances, and removing them moves total assets from 1.92 percent low to 7.57
+percent low. That movement is <em>consistent with</em> the published frame counting
+returns where we count organizations. We cannot demonstrate the mechanism from
+the extract alone, because the extract does not tell us which filings SOI
+sampled; what we can say is that the direction and size of the movement match
+that explanation, and we have not found another that fits.</p>
+<p>None of which makes deduplication wrong. It makes it a choice with a cost, and
+the cost is a systematic downward bias on dollar levels when the benchmark counts
+returns. “Clean the data first” is not a free action: a filter is a claim about
+which population you mean, and the population you mean should be the one your
+benchmark used.</p>
+<h2 id="what-the-repeats-actually-are">What the repeats actually are</h2>
+<p>The 16,081 figure is an excess of rows over organizations, not a count of
+suspicious rows. In the pooled file, 14,279 EINs appear more than once, and
+30,360 rows are involved in a repeat — some organizations appear three or four
+times, one appears fourteen.</p>
+<p>They are not duplicate returns. No two rows share both an EIN and a tax period;
+the analysis script asserts this. Every repeat is an organization that filed for
+<em>two different tax years</em> during the same calendar year, typically catching up on
+a late filing. Counting those organizations twice is wrong if the question is
+“how many charities are there.” It is right if the question is “how many returns
+were filed” — which is what the published table’s count line measures.</p>
+<p>There is no cut that wins on both. That is the honest finding: the three cuts
+answer three different questions, and a sector aggregate should say which
+question it is answering. Ours count organizations, which our posts do state
+plainly — <em>nobody’s average</em> says “<strong>249,668</strong> 501(c)(3) public charities” after
+describing the dedup step. The gap in our disclosure was never about what we
+counted. It was that we had never measured what that choice costs against an
+external benchmark. It costs several percent on levels.</p>
+<h2 id="levels-move-ratios-do-not">Levels move; ratios do not</h2>
+<p>Here is the part that decides whether anything published needs retracting.</p>
+<p>Almost nothing on this blog is a dollar level. The claims are ratios and
+distributions: 24 percent of revenue, 14 percent below zero, a median of 65
+percent. And a ratio is far more robust to this bias than a total is, because the
+dropped filings remove money from the numerator and the denominator at once.</p>
+<p>The number we have leaned on hardest is the aggregate share of 501(c)(3) revenue
+coming from contributions and grants — the 24 percent that anchors <em>nobody’s
+average</em> against that post’s median of 65 percent. The published TY2022 table
+puts it at <strong>24.97 percent</strong>: $756.1 billion against $3,028.0 billion of revenue.
+Our cuts of the CY2023 extract put it at 25.68 percent (dedup), 25.87 percent
+(pooled) and 25.15 percent (tax year only). Every one of them is within <strong>0.90
+percentage points</strong> of the IRS estimate — including the cuts that are eight and
+thirteen percent adrift on levels.</p>
+<p>So the headline passes, and it passes for a reason worth stating: the levels are
+biased and the ratio is not, because the bias is close to proportional. The
+argument in that post — that the dollar-weighted aggregate and the
+organization-weighted median describe two different populations wearing one name
+— does not depend on the third decimal place, and its aggregate side is now
+corroborated by an estimate the IRS computed from a different file by a different
+method, rather than merely asserted by us.</p>
+<p>What would <em>not</em> survive this check is a claim about a sector total in dollars.
+We have not made one. If we do, it needs the pooled cut and a stated margin.</p>
+<h2 id="what-the-published-table-can-see-that-our-file-cannot">What the published table can see that our file cannot</h2>
+<p>Then there is a line in Table 1 the extract simply does not contain.
+Contributions and grants are split into six components, and one of them is
+<strong>government grants</strong>. Figure 2 shows the breakdown.</p>
+<figure>
+<img src="../images/2026-07-21-checking-our-work-contrib.png" alt="A horizontal stacked bar showing the six components of the 756 billion dollars in contributions and grants reported by 501(c)(3) organizations in tax year 2022, with government grants at 305 billion and all other contributions at 396 billion making up the large majority.">
+</figure>
+<p><strong>Figure 2.</strong> The six components of 501(c)(3) contributions, gifts and grants in
+tax year 2022, from the IRS published table, in billions of dollars. <strong>A</strong> is
+government grants, $305.1 billion. <strong>B</strong> is all other contributions, gifts and
+grants, $396.1 billion. The remaining four components — related organizations,
+fundraising events, membership dues and federated campaigns — total $55.0
+billion.</p>
+<p>This matters because of a correction we published on 15 July. The original
+version of <em>nobody’s average</em> called the 24 percent figure “donations”; that was
+wrong, because Form 990 Part VIII line 1h bundles private gifts with government
+grants, and we corrected it to “contributions and grants.” Fair enough. But the
+correction went a step further and asserted that <strong>roughly half of it is
+government money</strong> — a figure the extract cannot compute. It was inferred from a
+2019 third-party decomposition, reproduced as Table 1 in that post, where
+government grants are $240 billion against $305 billion of charitable
+contributions: about 44 percent, rounded up in the writing to “roughly half,” and
+stated with more confidence than an inferred number deserves.</p>
+<p>The published table measures it directly. Government grants are <strong>$305.1 billion
+of $756.1 billion, or 40.3 percent</strong> — about two-fifths. The inference was three
+to four points high; the words we published were nearly ten points high, and at
+this scale a point is roughly seven and a half billion dollars.</p>
+<aside class="correction">
+<p><strong>Correction, 21 July 2026.</strong> The 15 July correction to
+<a href="../posts/2026-07-14-nobodys-average.html">nobody’s average</a> stated, as originally
+published, that “roughly half” of contributions and grants is government money.
+That was inferred from a 2019 third-party decomposition on a narrower
+denominator, not measured, and it is too high. The IRS’s published tax year 2022
+table breaks the line out directly: government grants are <strong>40.3 percent</strong> of
+total contributions, gifts and grants. The substance of that correction — that
+line 1h bundles private gifts with government grants, and that this extract
+cannot separate them for any individual filer — is unchanged; only the size of
+the government share is revised. That post now carries this correction and its
+text has been updated to “about two-fifths” throughout.</p>
+</aside>
+<p>The lesson we would rather have learned some other way: a correction is not
+automatically more reliable than the thing it corrects, and ours reached for an
+inferred figure at exactly the moment we were claiming to be more careful.</p>
+<h2 id="what-this-check-still-does-not-cover">What this check still does not cover</h2>
+<p>It covers aggregates, and only aggregates. Table 1 reports sector totals and
+subtotals by asset size. Our posts also report medians, deciles, distributions
+and a bunching estimate, and <strong>none of those have an external benchmark here</strong>,
+because the IRS does not publish them. The
+<a href="../posts/2026-07-15-public-support-cliff.html">public support cliff</a> result in
+particular is a claim about the <em>shape</em> of a distribution near a threshold, and
+nothing in this reconciliation speaks to it.</p>
+<p>The published figures are sample estimates and carry sampling error, which the
+IRS flags cell-by-cell in this table but does not quantify. So the small gaps —
+0.08 percent on revenue, 0.97 percent on net assets — should not be read as
+evidence that our pipeline is accurate to a tenth of a percent. They are
+<em>consistent with</em> a correct pipeline. That is a weaker and more accurate claim.</p>
+<p>And this is one year, one form, one subsection. Form 990-EZ and 990-N filers are
+absent from our file throughout, as they always have been, so every figure here
+describes the larger charities that file the full Form 990 and no one else.</p>
+<h2 id="the-thing-worth-taking-away">The thing worth taking away</h2>
+<p>The check we owed our readers came back mostly clean, which is the least
+interesting outcome. The interesting outcome is that both places it moved us were
+places where we had been <em>more</em> careful than the raw data, not less: the
+deduplication we perform on every file, and the correction we issued to tighten
+up a claim. Both erred in the same direction — reaching for what ought to be
+right instead of computing what is. The unfiltered file was closer to the truth
+than our tidied version of it, and that is not a comfortable sentence to write
+after four posts.</p>
+<p>If you want to run this yourself, everything is in
+<a href="../calcs/soi-reconciliation/compute.py">the analysis script</a>, which asserts every
+figure quoted above and fails loudly if any of them stops being true. The
+published table is
+<a href="https://www.irs.gov/pub/irs-soi/22eo01.xlsx">22eo01.xlsx</a> and the extract is
+<a href="https://www.irs.gov/pub/irs-soi/23eoextract990.zip">23eoextract990.zip</a>, both
+free from the IRS. If we have read either of them wrong, that script is where the
+error will be, and we would like to know.</p>
+<p>For a specific charity, none of this is the operative question. A sector
+reconciliation tells you whether an aggregate can be trusted as an aggregate; it
+says nothing about any organization inside it. The
+<a href="https://search.noprofits.org">search tools at noprofits.org</a> will show you a
+given charity’s own contribution and revenue lines, and the
+<a href="https://projects.propublica.org/nonprofits/">ProPublica Nonprofit Explorer</a> will
+show you the filing they came from.</p>
+<p><small>This is a plain-language overview, not tax, legal, or financial advice.
+“Published” figures throughout are from IRS Statistics of Income, Table 1, Form
+990 Returns of 501(c)(3) Organizations, tax year 2022, released September 2025;
+they are weighted estimates based on a sample, are subject to sampling error that
+the table flags but does not quantify, are denominated in thousands of dollars,
+and exclude private foundations, most organizations with receipts under $50,000,
+most churches, and certain other religious organizations. “Our” figures are
+computed from the IRS SOI annual extract of Form 990 data for returns processed in
+calendar year 2023, as-filed and unaudited; organizations filing the 990-EZ or
+990-N are not included. The two sources differ in universe (population versus
+sample), in period (filing year versus tax year), and in exclusions, so exact
+agreement is not expected and disagreement is not by itself evidence of error.
+The reconciliation covers aggregate balance sheet and income statement totals
+only; medians, distributions, and the bunching estimate in the public support
+cliff post have no external benchmark here. The explanation offered for the
+deduplication bias is consistent with the observed movement but is not
+independently demonstrated, since the extract does not identify which filings SOI
+sampled. The <a href="../calcs/soi-reconciliation/compute.py">analysis script</a>
+contains the full method and asserts every number in this post. Nothing here is a
+judgment about any individual organization.</small></p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="np-footer">
+        <div class="np-container np-footer__top">
+            <div class="np-footer__brand">
+                <div class="np-footer__lockup">
+                    <span class="np-footer__mark">n</span>
+                    <span class="np-footer__word">noprofits<span class="np-wordmark__tld">.org</span> blog</span>
+                </div>
+                <p class="np-footer__blurb">Field notes on nonprofits, public-interest data, and the tools behind noprofits.org — the math, the code, and the diagrams left in. Generated with <a href="http://jaspervdj.be/hakyll">Hakyll</a>; select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="np-footer__cols">
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Site</h4>
+                    <a class="np-footer__link" href="../">Home</a>
+                    <a class="np-footer__link" href="../about.html">About</a>
+                    <a class="np-footer__link" href="../archive.html">Archive</a>
+                    <a class="np-footer__link" href="../colophon.html">Colophon</a>
+                </div>
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Elsewhere</h4>
+                    <a class="np-footer__link" href="https://github.com/noprofits-org">GitHub</a>
+                    <a class="np-footer__link" href="https://noprofits.org">noprofits.org</a>
+                    <a class="np-footer__link" href="../contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+        <div class="np-footer__legalwrap">
+            <div class="np-container np-footer__legal">
+                <span>© 2026 noprofits.org · BSD-3-Clause · Built with Hakyll + Pandoc</span>
+                <span>Seattle</span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

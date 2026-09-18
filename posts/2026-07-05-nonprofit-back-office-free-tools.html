@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Small nonprofits quietly bleed donor and grant money on SaaS subscriptions they don't need, while free tiers from Vercel, Supabase, Firebase, and Google Apps Script would do the same job and leave them owning the infrastructure. A field guide to building your own digital footprint for near zero.">
+    <title>Stop renting what you can own: a nonprofit back office on free tools — noprofits.org blog</title>
+
+    <meta name="theme-color" content="#F7F4EE" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#121A16" media="(prefers-color-scheme: dark)">
+
+    <!-- Canonical + Open Graph / Twitter social cards. URLs are absolute — card
+         scrapers do not resolve relative paths. https://blog.noprofits.org/images/og-image.png is the static branded
+         /images/og-image.png unless a post sets an `og-image` metadata field. -->
+    <link rel="canonical" href="https://blog.noprofits.org/posts/2026-07-05-nonprofit-back-office-free-tools.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="NoProfits Blog">
+    <meta property="og:title" content="Stop renting what you can own: a nonprofit back office on free tools">
+    <meta property="og:description" content="Small nonprofits quietly bleed donor and grant money on SaaS subscriptions they don't need, while free tiers from Vercel, Supabase, Firebase, and Google Apps Script would do the same job and leave them owning the infrastructure. A field guide to building your own digital footprint for near zero.">
+    <meta property="og:url" content="https://blog.noprofits.org/posts/2026-07-05-nonprofit-back-office-free-tools.html">
+    <meta property="og:image" content="https://blog.noprofits.org/images/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="noprofits.org blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Stop renting what you can own: a nonprofit back office on free tools">
+    <meta name="twitter:description" content="Small nonprofits quietly bleed donor and grant money on SaaS subscriptions they don't need, while free tiers from Vercel, Supabase, Firebase, and Google Apps Script would do the same job and leave them owning the infrastructure. A field guide to building your own digital footprint for near zero.">
+    <meta name="twitter:image" content="https://blog.noprofits.org/images/og-image.png">
+
+    <!-- No-flash theme: set an explicit data-theme BEFORE any stylesheet. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <!-- No-flash featured: hide the randomizable featured card until the picker
+         (js/featured-random.js) swaps in its choice, so the baked default post
+         doesn't flash before the swap. Safety timeout reveals it if JS is off-
+         path or the picker never runs. Home page only reacts (it owns .featured). -->
+    <script>
+      (function () {
+        document.documentElement.classList.add('feat-pending');
+        setTimeout(function () {
+          document.documentElement.classList.remove('feat-pending');
+        }, 1500);
+      })();
+    </script>
+
+    <link rel="preload" href="../fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- JetBrains Mono (mono/label/tag/code role) via Google Fonts — the one
+         non-self-hosted family, per the design brief. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Saira / Barlow Condensed are used ONLY by the résumé print stylesheet;
+         loaded print-scoped so screen never pulls them. -->
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" media="print">
+
+    <link rel="stylesheet" href="../css/noprofits-theme.css" />
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/noprofits-theme.js"></script>
+    <script defer src="../js/topic-filter.js"></script>
+    <script defer src="../js/featured-random.js"></script>
+    <script defer src="../js/figure-cycler.js"></script>
+    <script defer src="../js/figure-zoom.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <a class="np-skiplink" href="#main">Skip to content</a>
+
+    <header class="np-header">
+        <div class="np-container np-header__bar">
+            <a class="np-header__brand" href="../" aria-label="noprofits.org blog home">
+                <img src="../images/brandmark.svg" alt class="np-brandmark" width="32" height="32" aria-hidden="true">
+                <span class="np-wordmark">noprofits<span class="np-wordmark__tld">.org</span><span class="np-wordmark__app">blog</span></span>
+            </a>
+
+            <nav class="np-nav--inline" aria-label="Main navigation">
+                <a class="np-nav__link" href="../">Home</a>
+                <a class="np-nav__link" href="../about.html">About</a>
+                <a class="np-nav__link" href="../archive.html">Archive</a>
+                <a class="np-nav__link" href="../contact.html">Contact</a>
+            </nav>
+
+            <button type="button" class="np-themetoggle" data-np-themetoggle aria-pressed="false" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span data-np-themeicon aria-hidden="true">☽</span>
+            </button>
+
+            <button type="button" class="np-header__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="np-drawer">
+                <span class="np-burger" aria-hidden="true"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="np-scrim" data-drawer-scrim></div>
+    <aside id="np-drawer" class="np-drawer" aria-hidden="true" aria-label="Menu">
+        <div class="np-drawer__head">
+            <span class="np-drawer__title">Menu</span>
+            <button type="button" class="np-drawer__close" aria-label="Close menu"></button>
+        </div>
+        <a class="np-drawer__link" href="../">Home</a>
+        <a class="np-drawer__link" href="../about.html">About</a>
+        <a class="np-drawer__link" href="../archive.html">Archive</a>
+        <a class="np-drawer__link" href="../contact.html">Contact</a>
+    </aside>
+
+    <main id="main" role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">nonprofits, infrastructure</span>
+    </div>
+    
+
+    <h1 class="post-title">Stop renting what you can own: a nonprofit back office on free tools</h1>
+
+    <div class="post-meta">
+        <span>July  5, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <p>Here is a failure mode I see constantly in small nonprofits, and it’s expensive precisely because it looks responsible. The org signs up for a website builder, a separate form tool, a donor CRM, an email platform, a scheduling app, a file-sharing subscription — a dozen SaaS products at $15 to $100 a month each — and a year later a meaningful slice of the budget is going to software instead of the mission. Worse, none of it is <em>owned</em>. Stop paying and it all evaporates: the site, the data, the donor list, the whole digital footprint was rented.</p>
+<p>This is the operator’s side of the <a href="../posts/2026-07-05-how-to-vet-a-charity.html">nonprofit series</a>. The first two posts were about reading an organization from the outside — <a href="../posts/2026-07-05-501c3-vs-c4-vs-c6.html">what type it is</a> and <a href="../posts/2026-07-05-how-to-vet-a-charity.html">what its 990 says</a>. This one is about the inside: if you run a small nonprofit, most of your back office can be built on free tiers, and the money you save is money that never has to show up as overhead on that 990.</p>
+<figure>
+<img src="../images/Back-office-on-free-tools.png" alt="Two mistakes drive the waste. Left: 'Unnecessary SaaS' — a person surrounded by a wall of paid-subscription boxes throwing money in the trash while a free tool sits ignored. Right: 'Ignored infrastructure' — a team building atop a solid brick wall of existing free infrastructure that has gathered cobwebs, discarding a 'Rented SaaS' block.">
+<figcaption>
+<strong>Figure 1.</strong> The two mistakes that drain a small nonprofit’s back office: paying for SaaS that duplicates a free tool, and letting the free infrastructure you already have gather cobwebs.
+</figcaption>
+</figure>
+<p>Two mistakes drive the waste (Figure 1). One is <strong>paying for SaaS you don’t need</strong> — subscriptions bought to solve a problem a free tool already solves. The other is subtler: <strong>not using the free infrastructure that’s sitting right there</strong>, so the org never builds anything it owns and stays dependent on whatever it’s renting this year. Both are fixable, and the pattern is almost always the same swap:</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 30%" />
+<col style="width: 48%" />
+</colgroup>
+<thead>
+<tr>
+<th>The job</th>
+<th>Commonly rented</th>
+<th>Owned, for free</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Email &amp; docs</td>
+<td>Paid mailbox + office suite</td>
+<td>Google for Nonprofits (free Workspace)</td>
+</tr>
+<tr>
+<td>Website</td>
+<td>Website-builder subscription</td>
+<td>Static site on Cloudflare/Vercel/Firebase</td>
+</tr>
+<tr>
+<td>Intake &amp; forms</td>
+<td>Paid form / light-CRM tool</td>
+<td>Google Forms + Apps Script → a Sheet</td>
+</tr>
+<tr>
+<td>A real database</td>
+<td>Proprietary CRM</td>
+<td>Supabase (Postgres) or Firestore</td>
+</tr>
+<tr>
+<td>Automation</td>
+<td>Zapier-style subscription</td>
+<td>Apps Script / Cloudflare Workers</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The rest of this post is Table 1, expanded — organized by the job to be done.</p>
+<p><em>Table 1.</em> The core swap, by job: for each back-office need, the subscription a nonprofit commonly rents versus the free tool that owns the same job.</p>
+<h2 id="the-free-stack-by-job">The free stack, by job</h2>
+<p>The pieces below tend to orbit a single free hub — usually a Google Sheet — with the other services wired to it (Figure 2).</p>
+<figure>
+<img src="../images/owned-by-you.png" alt="A hub-and-spoke diagram. At the center, a 'Google Sheets Hub' connects out to owned, free tools — Google Forms, Apps Script, Cloudflare Workers, Supabase, a volunteer portal, reports, a dashboard, and a website — all enclosed inside a boundary labeled 'Owned by your nonprofit.' Greyed-out rented SaaS categories — CRM, scheduling, email platform, website builder, form builder — float discarded outside the boundary.">
+<figcaption>
+<strong>Figure 2.</strong> One shape the owned stack often takes: a spreadsheet hub wired to free Google, Cloudflare, and Supabase services. Everything inside the boundary belongs to the org; the rented SaaS equivalents (greyed, outside) are the subscriptions it no longer needs.
+</figcaption>
+</figure>
+<p><strong>Identity, email, and documents.</strong> <a href="https://www.google.com/nonprofits/">Google for Nonprofits</a> gives eligible orgs a <em>free</em> Google Workspace edition — real <code>@yourorg.org</code> email, Docs, Sheets, Drive, shared calendars. Microsoft has an equivalent nonprofit program. This one program replaces a stack of paid subscriptions on day one, and it’s the keystone everything else hangs off of. (I’ve written before about <a href="https://pvjohnston.com/posts/2026-06-19-gcloud-firebase-and-google-workspace.html">why a Workspace account ends up being the quiet center of a whole stack</a>.)</p>
+<p><strong>The website.</strong> A static site — which is what almost every nonprofit actually needs — hosts for free on <strong>GitHub Pages</strong>, <strong>Cloudflare Pages</strong>, <strong>Netlify</strong>, <strong>Vercel</strong>, or <strong>Firebase Hosting</strong>. Global CDN, HTTPS, custom domain, all at no cost. You do not need a $30/month website builder to publish a few pages and a donate button. (My own org’s site is <a href="../posts/2026-06-25-astro-apps-script-firebase.html">a static Astro build on Firebase Hosting deployed from GitHub Actions</a> — total hosting cost: zero.)</p>
+<p><strong>A real backend, when you need one.</strong> This is where orgs assume they must buy something, and usually they don’t:</p>
+<ul>
+<li><strong>Google Apps Script</strong> — a free, serverless backend bound to your Google account. It can take form submissions, write to a Sheet, send mail, and expose a web endpoint, with no server and no bill. For a huge fraction of nonprofit “we need an app that does X” problems, a Sheet plus Apps Script <em>is</em> the app.</li>
+<li><strong>Supabase</strong> — a free Postgres database with authentication and an auto-generated API. When you’ve outgrown a spreadsheet, this gives you a real relational database you own, on open-source foundations you can leave with your data intact.</li>
+<li><strong>Firebase</strong> — Firestore, Auth, and Hosting on the free Spark plan; add pay-as-you-go Cloud Functions that stay free under generous monthly quotas. (If “serverless functions” is a fuzzy phrase, I wrote <a href="https://pvjohnston.com/posts/2026-06-20-what-are-cloud-functions.html">a from-scratch tour of what they are</a>.)</li>
+</ul>
+<p><strong>Forms, intake, and automation.</strong> Google Forms feeding a Sheet, wired up with Apps Script, replaces most paid form and light-CRM tools outright. <strong>Cloudflare Workers</strong> and cloud functions handle webhooks and scheduled jobs on free tiers. <strong>GitHub</strong> gives you free source control and free CI/CD through Actions — your infrastructure as code, versioned and owned.</p>
+<p><strong>Reach and design.</strong> Two nonprofit-only programs are worth more than any subscription you’d cancel: the <strong>Google Ad Grant</strong> hands eligible 501(c)(3)s up to $10,000/month in free search advertising, and <strong>Canva for Nonprofits</strong> gives the paid design suite away free. <strong>TechSoup</strong> is the clearinghouse for the rest — deeply discounted or donated software from dozens of vendors, restricted to verified nonprofits.</p>
+<h2 id="when-you-should-pay">When you <em>should</em> pay</h2>
+<p>Being cheap is not the goal; being a good steward is, and sometimes stewardship means paying. The honest line runs between rented convenience and genuine need:</p>
+<ul>
+<li><strong>Accounting</strong> — use real bookkeeping software (there’s a nonprofit discount through TechSoup). Do not run your finances out of a raw spreadsheet.</li>
+<li><strong>Payment processing</strong> — Stripe and PayPal have discounted nonprofit rates, but per-transaction fees are a real, unavoidable cost of accepting money.</li>
+<li><strong>Email at scale</strong> — once you’re sending to thousands, a proper platform (most have nonprofit pricing) earns its keep on deliverability alone.</li>
+</ul>
+<p>The test isn’t “is it free,” it’s “does this buy something we actually need that a free tool can’t provide?” A payment processor passes. A $40/month drag-and-drop website builder, when Cloudflare Pages is free and yours forever, does not.</p>
+<h2 id="why-this-is-a-stewardship-issue-not-a-tech-preference">Why this is a stewardship issue, not a tech preference</h2>
+<p>Every dollar not spent on unnecessary software is a dollar of program capacity, and — to close the loop with the rest of the series — it’s a dollar that never inflates the overhead you’d see on the 990. But the deeper point is ownership. Tools built on your own Google account, your own GitHub repo, your own Postgres database are <em>yours</em>: portable, exportable, and outside the reach of a vendor’s next price hike or shutdown. A nonprofit’s digital footprint should be an asset it owns, not a subscription it services. The free tier isn’t the scrappy compromise — for most small orgs it’s the more durable choice.</p>
+<p><small>Program eligibility (Google for Nonprofits, the Ad Grant, TechSoup, Canva for Nonprofits) generally requires 501(c)(3) status and verification; terms and free-tier limits change, and some hosts restrict commercial use — check current terms before you build on them. This is practical guidance, not an endorsement of any specific vendor.</small></p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="np-footer">
+        <div class="np-container np-footer__top">
+            <div class="np-footer__brand">
+                <div class="np-footer__lockup">
+                    <span class="np-footer__mark">n</span>
+                    <span class="np-footer__word">noprofits<span class="np-wordmark__tld">.org</span> blog</span>
+                </div>
+                <p class="np-footer__blurb">Field notes on nonprofits, public-interest data, and the tools behind noprofits.org — the math, the code, and the diagrams left in. Generated with <a href="http://jaspervdj.be/hakyll">Hakyll</a>; select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="np-footer__cols">
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Site</h4>
+                    <a class="np-footer__link" href="../">Home</a>
+                    <a class="np-footer__link" href="../about.html">About</a>
+                    <a class="np-footer__link" href="../archive.html">Archive</a>
+                    <a class="np-footer__link" href="../colophon.html">Colophon</a>
+                </div>
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Elsewhere</h4>
+                    <a class="np-footer__link" href="https://github.com/noprofits-org">GitHub</a>
+                    <a class="np-footer__link" href="https://noprofits.org">noprofits.org</a>
+                    <a class="np-footer__link" href="../contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+        <div class="np-footer__legalwrap">
+            <div class="np-container np-footer__legal">
+                <span>© 2026 noprofits.org · BSD-3-Clause · Built with Hakyll + Pandoc</span>
+                <span>Seattle</span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="There is a bright line in the tax code: draw less than a third of your support from the public and you stop being a public charity. Almost no charity can see it — the median sits at 96 percent. But among the few hundred close enough to see it, the distribution bends, and it bends at the number they can compute.">
+    <title>One-third: the cliff a few dozen charities steer around — noprofits.org blog</title>
+
+    <meta name="theme-color" content="#F7F4EE" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#121A16" media="(prefers-color-scheme: dark)">
+
+    <!-- Canonical + Open Graph / Twitter social cards. URLs are absolute — card
+         scrapers do not resolve relative paths. https://blog.noprofits.org/images/2026-07-15-public-support-cliff-hero.png is the static branded
+         /images/og-image.png unless a post sets an `og-image` metadata field. -->
+    <link rel="canonical" href="https://blog.noprofits.org/posts/2026-07-15-public-support-cliff.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="NoProfits Blog">
+    <meta property="og:title" content="One-third: the cliff a few dozen charities steer around">
+    <meta property="og:description" content="There is a bright line in the tax code: draw less than a third of your support from the public and you stop being a public charity. Almost no charity can see it — the median sits at 96 percent. But among the few hundred close enough to see it, the distribution bends, and it bends at the number they can compute.">
+    <meta property="og:url" content="https://blog.noprofits.org/posts/2026-07-15-public-support-cliff.html">
+    <meta property="og:image" content="https://blog.noprofits.org/images/2026-07-15-public-support-cliff-hero.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="noprofits.org blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="One-third: the cliff a few dozen charities steer around">
+    <meta name="twitter:description" content="There is a bright line in the tax code: draw less than a third of your support from the public and you stop being a public charity. Almost no charity can see it — the median sits at 96 percent. But among the few hundred close enough to see it, the distribution bends, and it bends at the number they can compute.">
+    <meta name="twitter:image" content="https://blog.noprofits.org/images/2026-07-15-public-support-cliff-hero.png">
+
+    <!-- No-flash theme: set an explicit data-theme BEFORE any stylesheet. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <!-- No-flash featured: hide the randomizable featured card until the picker
+         (js/featured-random.js) swaps in its choice, so the baked default post
+         doesn't flash before the swap. Safety timeout reveals it if JS is off-
+         path or the picker never runs. Home page only reacts (it owns .featured). -->
+    <script>
+      (function () {
+        document.documentElement.classList.add('feat-pending');
+        setTimeout(function () {
+          document.documentElement.classList.remove('feat-pending');
+        }, 1500);
+      })();
+    </script>
+
+    <link rel="preload" href="../fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- JetBrains Mono (mono/label/tag/code role) via Google Fonts — the one
+         non-self-hosted family, per the design brief. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Saira / Barlow Condensed are used ONLY by the résumé print stylesheet;
+         loaded print-scoped so screen never pulls them. -->
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" media="print">
+
+    <link rel="stylesheet" href="../css/noprofits-theme.css" />
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/noprofits-theme.js"></script>
+    <script defer src="../js/topic-filter.js"></script>
+    <script defer src="../js/featured-random.js"></script>
+    <script defer src="../js/figure-cycler.js"></script>
+    <script defer src="../js/figure-zoom.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <a class="np-skiplink" href="#main">Skip to content</a>
+
+    <header class="np-header">
+        <div class="np-container np-header__bar">
+            <a class="np-header__brand" href="../" aria-label="noprofits.org blog home">
+                <img src="../images/brandmark.svg" alt class="np-brandmark" width="32" height="32" aria-hidden="true">
+                <span class="np-wordmark">noprofits<span class="np-wordmark__tld">.org</span><span class="np-wordmark__app">blog</span></span>
+            </a>
+
+            <nav class="np-nav--inline" aria-label="Main navigation">
+                <a class="np-nav__link" href="../">Home</a>
+                <a class="np-nav__link" href="../about.html">About</a>
+                <a class="np-nav__link" href="../archive.html">Archive</a>
+                <a class="np-nav__link" href="../contact.html">Contact</a>
+            </nav>
+
+            <button type="button" class="np-themetoggle" data-np-themetoggle aria-pressed="false" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span data-np-themeicon aria-hidden="true">☽</span>
+            </button>
+
+            <button type="button" class="np-header__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="np-drawer">
+                <span class="np-burger" aria-hidden="true"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="np-scrim" data-drawer-scrim></div>
+    <aside id="np-drawer" class="np-drawer" aria-hidden="true" aria-label="Menu">
+        <div class="np-drawer__head">
+            <span class="np-drawer__title">Menu</span>
+            <button type="button" class="np-drawer__close" aria-label="Close menu"></button>
+        </div>
+        <a class="np-drawer__link" href="../">Home</a>
+        <a class="np-drawer__link" href="../about.html">About</a>
+        <a class="np-drawer__link" href="../archive.html">Archive</a>
+        <a class="np-drawer__link" href="../contact.html">Contact</a>
+    </aside>
+
+    <main id="main" role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">nonprofits, data</span>
+    </div>
+    
+
+    <h1 class="post-title">One-third: the cliff a few dozen charities steer around</h1>
+
+    <div class="post-meta">
+        <span>July 15, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <aside class="correction">
+<p><strong>Correction, 15 July 2026.</strong> This post originally reported the effect as “about
+80 organizations.” That number is not a count of organizations, and it overstated
+the effect by more than half. It was the sum of two quantities — the <strong>excess
+above</strong> the line (~29) and the <strong>missing below</strong> it (~51) — and an organization
+that moves across the line is counted in both. The honest figures are reported
+separately below, and the effect size is now stated as what it should always have
+been: <strong>15.5 percent of the organizations the counterfactual expects just below
+the line are not there.</strong> The statistical finding is unchanged — the density is
+asymmetric at the threshold, no placebo comes close, the bootstrap excludes zero —
+but the post now also carries a caveat it lacked: <strong>neither half is individually
+decisive</strong> (z of 1.50 above, 2.45 below). What the placebo test rejects is the
+joint asymmetry, not either margin. Two further limitations are now disclosed: the
+counterfactual is <strong>not</strong> mass-preserving (no integration constraint, which is why
+29 and 51 do not balance), and private foundation status is not uniformly a
+penalty. The title has changed from “a few hundred” to “a few dozen” for the
+same reason — a few hundred charities sit <em>near</em> the line, but the deficit is
+about fifty. With thanks to the reader whose review prompted the re-derivation.</p>
+</aside>
+<p>Most tax rules are dials. You pay a little more, you deduct a little less, the
+consequence scales with the number. A few are not dials. A few are cliffs, where
+one side of a line means one thing and the other side means something else
+entirely, and the difference between 33.2 and 33.4 is the difference between two
+regimes.</p>
+<p>The <a href="https://www.irs.gov/charities-non-profits/exempt-organizations-annual-reporting-requirements-form-990-schedules-a-and-b-public-charity-support-test">public support test</a>
+is a cliff. Economists have a prediction about what people do at cliffs, and the
+prediction is testable, and the <a href="https://www.irs.gov/statistics/soi-tax-stats-annual-extract-of-tax-exempt-organization-financial-data">IRS publishes the data</a>
+to test it with. This post runs the test. The answer is yes — measurably and
+robustly, though the effect is small: about one in seven of the organizations you
+would expect to find just below the line are not there (Figure 1).</p>
+<figure>
+<img src="../images/2026-07-15-public-support-cliff-hero.png" alt="Histogram of charities by public support percentage from 24 to 44 percent, with a dashed counterfactual curve. The bars in the one and a half points below the 33 percent line sit below the curve; the bars just above the line sit above it, jumping from about 99 charities to about 132 across the line.">
+</figure>
+<p><strong>Figure 1.</strong> The bend, which the rest of this post is about. Charities by public
+support, with <strong>A</strong> the one-third line and <strong>D</strong> a counterfactual density fitted to
+the neighbourhood <em>excluding</em> the shaded window. <strong>B</strong>, the bins in the 1.5 points
+below the line, sit <em>under</em> the counterfactual — 280 organizations where 331 were
+expected, a deficit of about 51. <strong>C</strong>, the bins just above, sit <em>over</em> it — 399
+where 370 were expected, an excess of about 29. The two do not balance, and the
+text says why. The last bin below the line holds 99 charities; the first bin above
+holds 132. Same asset as the social card.</p>
+<h2 id="the-rule">The rule</h2>
+<p>A charity that wants to be treated as a <strong>public charity</strong> rather than a private
+foundation generally has to show the public actually supports it. One of the
+routes — the one most donation-funded charities take — is the support test under
+§170(b)(1)(A)(vi): the organization must “receive at least one-third of its
+support from contributions from the general public,” a figure
+<a href="https://www.irs.gov/charities-non-profits/exempt-organizations-annual-reporting-requirements-form-990-schedules-a-and-b-public-charity-support-test">measured over a five-year period</a>
+covering the current and four prior tax years.</p>
+<p>Miss it and there is one more chance: the
+<a href="https://www.irs.gov/charities-non-profits/exempt-organizations-annual-reporting-requirements-form-990-schedules-a-and-b-facts-and-circumstances-public-support-test">10 percent facts-and-circumstances test</a>,
+for organizations above 10 percent but below a third, which requires showing that
+“under all the facts and circumstances, it normally receives a substantial part of
+its support from governmental units or the general public.” Hold that phrase — it
+matters later. Miss both, and per the
+<a href="https://www.irs.gov/instructions/i990sa">Schedule A instructions</a> the
+organization “is a private foundation as of the beginning of the … tax year for
+filing purposes.”</p>
+<p>That reclassification is not cosmetic. Private foundations pay an
+<a href="https://www.irs.gov/charities-non-profits/private-foundations/tax-on-net-investment-income">excise tax on net investment income</a>,
+face a
+<a href="https://www.irs.gov/charities-non-profits/private-foundations/taxes-on-failure-to-distribute-income-private-foundations">mandatory annual payout</a>
+enforced by a 30 percent tax on income they fail to distribute, and — this is the
+one that stings — their donors generally deduct up to
+<a href="https://www.irs.gov/publications/p526">30 percent of adjusted gross income instead of 50</a>.
+The organization keeps doing exactly what it did the day before. Its donors just
+get a worse deal for doing it.</p>
+<p>Though not every organization experiences that as a demotion. Private foundation
+status brings control — no need to court a broad donor base, no support test to
+pass every year — and some organizations would genuinely rather have it. The cliff
+is a cliff for charities that want to stay public charities, which is most of them
+but not all, and that is worth holding before reading any movement across the line
+as escape from a penalty.</p>
+<p>So: a bright line, a real penalty, and a number every charity computes about
+itself. That is the setup for one of the most-studied phenomena in public
+economics — <strong>bunching</strong>. If a threshold matters, and people can see where they
+stand relative to it, the distribution around it stops being smooth. Organizations
+that would have landed just below turn up just above instead.</p>
+<h2 id="almost-nobody-can-see-it">Almost nobody can see it</h2>
+<p>Before testing that, a deflating fact.</p>
+<figure>
+<img src="../images/2026-07-15-public-support-cliff-distribution.png" alt="Distribution of public support across 111,991 charities. A tall spike sits at 95 to 100 percent, the bulk of the sector. The 33 percent cliff is marked far to the left, in a nearly empty stretch of the distribution.">
+</figure>
+<p><strong>Figure 2.</strong> The cliff and the crowd. Public support for all 111,991 charities
+using this test: <strong>A</strong> marks the one-third line; <strong>B</strong> marks the median, at 95.7
+percent. Almost the entire sector lives in the right-hand spike, several dozen
+points from the line that supposedly disciplines it.</p>
+<p>This post looks at the <strong>111,991</strong> organizations that declare the
+§170(b)(1)(A)(vi) test on Schedule A and report a computable support ratio. The
+median one draws <strong>95.7 percent</strong> of its support from the public. Only <strong>4,323</strong>
+of them — <strong>3.86 percent</strong> — sit below the one-third line at all. Only <strong>670</strong>,
+six-tenths of one percent, are within a point and a half of it.</p>
+<p>For the overwhelming majority of American charities, the public support test is
+not a constraint. It is scenery. They clear it by sixty points without thinking
+about it, the way you clear a speed limit while parked.</p>
+<p>Which means anything we find at the cliff is a fact about a very small
+neighbourhood — and Figure 2 is worth remembering when we get to the size of the
+effect.</p>
+<h2 id="it-isnt-about-being-unpopular-its-the-2-percent-rule">It isn’t about being unpopular — it’s the 2 percent rule</h2>
+<p>Here is the part I did not expect, and the part worth a reader’s time even if
+bunching estimators leave them cold.</p>
+<p>You would assume a charity near the one-third line is one the public doesn’t much
+support. Unloved, struggling to raise money. That is not what the data says, and
+Table 1 is the refutation. The near-cliff charities are not smaller in any way that
+explains their position — median revenue <strong>$387,204</strong> against <strong>$662,907</strong> for
+typical charities, the same order of magnitude, and they actually hold <em>more</em>
+assets ($1,266,282 against $829,810).</p>
+<p>What separates them is <strong>who</strong> gave, not how much.</p>
+<p>The support test does not count all contributions as public. Per the
+<a href="https://www.irs.gov/instructions/i990sa">Schedule A instructions</a>, when one
+donor’s gifts across the five-year window exceed <strong>2 percent of total support</strong>,
+only the first 2 percent counts toward the public’s share; the excess is stripped
+out. And “one donor” is construed broadly — “all contributions made by a donor and
+by any person or persons standing in a relationship to the donor … will be treated
+as made by one person,” so a family or a related company cannot split a gift into
+smaller pieces.</p>
+<p>The consequence is that the test measures <strong>breadth, not amount</strong>. A charity that
+raises $2 million from four devoted donors can fail it. A charity that raises
+$50,000 from six hundred people sails through. The rule is not asking how much you
+raised. It is asking how many people you raised it from.</p>
+<p>And it asks that only about <em>private</em> money. The 2 percent cap <a href="https://www.irs.gov/instructions/i990sa">does not apply</a> to governmental units
+or to other publicly supported charities — their support counts in full. So a
+nonprofit funded almost entirely by one state agency clears the test comfortably,
+while one funded by four wealthy individuals does not. The concentration this rule
+punishes is concentration among private donors, specifically.</p>
+<figure>
+<img src="../images/2026-07-15-public-support-cliff-concentration.png" alt="Two overlaid distributions of the share of support excluded by the 2 percent rule. Typical charities pile at zero, with almost nothing excluded. Charities near the cliff are split: a group at zero and a much larger group with 55 to 75 percent of their support excluded.">
+</figure>
+<p><strong>Figure 3.</strong> Where the cliff-dwellers come from. Share of support stripped out by
+the 2 percent rule: <strong>A</strong>, typical charities (support ≥ 80 percent), 86.0 percent
+of which have under 5 percent excluded; <strong>B</strong>, the second mode among near-cliff
+charities, half of which have 55–75 percent of their support excluded because it
+came from too few people.</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: right;">Near the cliff (±5 pt)</th>
+<th style="text-align: right;">Typical (support ≥ 80%)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Organizations</td>
+<td style="text-align: right;">2,308</td>
+<td style="text-align: right;">80,940</td>
+</tr>
+<tr>
+<td><strong>Under 5% of support excluded</strong></td>
+<td style="text-align: right;"><strong>29.5%</strong></td>
+<td style="text-align: right;"><strong>86.0%</strong></td>
+</tr>
+<tr>
+<td><strong>40% or more excluded</strong></td>
+<td style="text-align: right;"><strong>55.7%</strong></td>
+<td style="text-align: right;">4.1%</td>
+</tr>
+<tr>
+<td>Median revenue</td>
+<td style="text-align: right;">$387,204</td>
+<td style="text-align: right;">$662,907</td>
+</tr>
+<tr>
+<td>Median total assets</td>
+<td style="text-align: right;">$1,266,282</td>
+<td style="text-align: right;">$829,810</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Table 1.</strong> Near-cliff charities against typical ones. They are not smaller. They
+are narrowly funded: a majority have at least 40 percent of their support
+disqualified by the 2 percent rule, against a sector where seven-eighths have
+essentially none.</p>
+<p>Across all 111,991 organizations, the correlation between public support and the
+share stripped by the 2 percent rule is <strong>−0.744</strong>. That is most of the story of
+who stands near the cliff.</p>
+<p><strong>But not all of it, and Figure 3 shows why.</strong> The near-cliff group is <em>bimodal</em>:
+<strong>55.7 percent</strong> have 40 percent or more of their support excluded — the donor
+concentration story — while <strong>29.5 percent</strong> have essentially <em>nothing</em> excluded.
+Those organizations are near the line for other reasons entirely: their total
+support includes large non-public components that dilute the ratio from the other
+direction. Donor concentration is the <strong>dominant</strong> mechanism near the cliff. It is
+not the only one, and the median of that bimodal group (53.9 percent) lands in a
+valley holding just 6.5 percent of it — a number describing almost no one, which is
+<a href="../posts/2026-07-14-nobodys-average.html">a mistake this series has written about</a>
+and very nearly repeated here.</p>
+<h2 id="do-they-steer">Do they steer?</h2>
+<p>Now the test. If the line changes behaviour, the distribution should be <em>missing</em>
+organizations just below it and <em>carrying extra</em> just above.</p>
+<p>To say “missing” and “extra” you need a counterfactual: what would the
+neighbourhood look like if the line weren’t there? The standard approach (Code 1)
+is to fit a smooth curve to the density <strong>excluding</strong> a window around the
+threshold, and then ask that curve what the window should have held.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bin width, polynomial degree, window half-width.</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Frozen before the placebo test was run.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>BW, DEG, W <span class="op">=</span> <span class="fl">0.5</span>, <span class="dv">5</span>, <span class="fl">1.5</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the density OUTSIDE a window around the line, then ask</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># that curve what the window should have held.</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>excl <span class="op">=</span> (mid <span class="op">&gt;</span> CLIFF <span class="op">-</span> W) <span class="op">&amp;</span> (mid <span class="op">&lt;</span> CLIFF <span class="op">+</span> W)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>cf <span class="op">=</span> np.polyval(np.polyfit(mid[<span class="op">~</span>excl], cnt[<span class="op">~</span>excl], DEG), mid)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>displacement <span class="op">=</span> (observed_above <span class="op">-</span> cf_above) <span class="op">+</span> (cf_below <span class="op">-</span> observed_below)</span></code></pre></div>
+<p><strong>Code 1.</strong> The estimator, with its three arbitrary choices made in public: bin
+width, polynomial degree, and window. The <a href="../calcs/public-support-cliff/compute.py">full script</a>
+is downloadable, and Table 2 reports what happens when the first two are changed.</p>
+<p>That is the dashed curve in Figure 1, and the two shaded regions are the answer.
+Below the line, 280 organizations where the curve expects 331 — <strong>15.5 percent
+missing</strong>. Above it, 399 where the curve expects 370 — <strong>7.8 percent extra</strong>.</p>
+<p>Both halves of the signature are there, and both matter. An excess above the line
+alone could be a lump of organizations that genuinely belong there. A deficit below
+paired with an excess above is <strong>displacement</strong> — the shape you get when
+organizations move across a line rather than pile onto it. Widen or narrow the
+window and it persists: a 16.3 percent deficit and 10.8 percent excess at ±1
+point, 12.6 and 6.8 at ±2.</p>
+<p>Be careful how those two halves get added up, because I originally added them
+wrong. <strong>The missing mass below is about 51 organizations. The excess above is
+about 29.</strong> It is tempting to sum them into a single headline — this post did, and
+called it “about 80 organizations” — but that double-counts: an organization that
+leaves the band below and arrives in the band above is counted once at each end.
+Eighty is not a number of charities. It is a test statistic, and a good one for
+reasons in the next section, but it is not a count.</p>
+<p>The cleanest statement of the size is the deficit on its own. The counterfactual
+expects about <strong>331</strong> organizations in the point and a half below the line. There
+are <strong>280</strong>. So <strong>15.5 percent of the charities that should be sitting just below
+the one-third line are not there</strong> — roughly one in seven. That is the effect.</p>
+<p>The two halves do not balance — 51 missing, 29 extra — and that gap is worth
+naming rather than smoothing over. If every departing organization landed in the
+1.5 points just above, the two would be equal. They are not, which means either
+the movers land further up the scale than that window reaches, or the
+counterfactual is slightly off. The bunching literature has a fix for this, the
+<strong>integration constraint</strong>, which forces the fitted curve to preserve total mass.
+This analysis does not implement it. A curve that did would be the more faithful
+estimator, and its absence is the main methodological hole here.</p>
+<p>One thing worth knowing before you decide how impressed to be. The ratio being
+bent here is <strong>not one year’s fundraising</strong> — it is a five-year aggregate, running
+a median 3.70 times a single year’s revenue. Whatever is happening, it is not a
+charity nudging one year’s books. It is a five-year total that ends up on the
+right side of a line.</p>
+<h2 id="is-it-real">Is it real?</h2>
+<p>Fifty missing charities out of 111,991 is a small deviation extracted from a wiggle
+in a curve, using a method with three arbitrary choices in it. Healthy scepticism
+says: you can find a wiggle anywhere if you look with a flexible enough curve.</p>
+<p>Correct. So here is the check that matters, and it is the one that earns everything
+above — run the identical estimator at thresholds where <strong>no rule exists</strong>. If the
+method manufactures bumps out of noise, it will manufacture them at 27 percent and
+41 percent too. Figure 4 runs it at 21 of them, scoring each with the same E+M
+statistic.</p>
+<figure>
+<img src="../images/2026-07-15-public-support-cliff-placebo.png" alt="The asymmetry statistic estimated at 21 fake thresholds and at the real one. The placebo thresholds scatter between minus 55 and plus 35 around zero. The real one-third cliff sits alone at plus 80.">
+</figure>
+<p><strong>Figure 4.</strong> The test that earns the claim. Each point is the E+M statistic — a
+measure of asymmetry around a threshold, not a count of organizations. <strong>A</strong> is the
+real cliff at +80.1. <strong>B</strong> is the largest of 21 placebo thresholds from 22 to 48
+percent, at +35.0. The placebos scatter around zero (mean −4.2); the real one does
+not sit among them.</p>
+<p>The placebos average <strong>−4.2</strong> with a standard deviation of <strong>22.4</strong>. The real cliff
+is <strong>+80.1</strong> — <strong>3.77 standard deviations</strong> above the placebo distribution, and
+<strong>not one of the 21</strong> reaches it. Bootstrapping the estimate over 400 resamples
+gives a 95 percent interval of <strong>[+28, +129]</strong>, with zero of the 400 landing at or
+below nothing.</p>
+<p>Two things about that statistic, both of which cut against a lazy reading of it.</p>
+<p><strong>First, why E+M rather than either half.</strong> It is not a count, as the last section
+said — so why score the placebos with it? Because it is the <em>better test</em>. The
+counterfactual enters the excess with a minus sign and the deficit with a plus, so
+a curve fitted slightly too high inflates the deficit and deflates the excess by
+the same amount, and the sum cancels that error out. You can watch it happen in the
+placebos: the two halves are negatively correlated (<strong>−0.445</strong>), and the standard
+deviation of their sum is <strong>22.4</strong> where independence would predict <strong>30.0</strong>. That
+variance reduction is the whole reason the sum sees what the halves cannot.</p>
+<p><strong>Second, and less comfortably: neither half is individually decisive.</strong> Scored on
+its own against its own placebos, the excess above the line is <strong>1.50</strong> standard
+deviations out, with 2 of 21 placebos beating it. The deficit below is <strong>2.45</strong>,
+with 1 of 21 beating it. Only the joint asymmetry clears the bar. That is legitimate
+— a joint test can reject where neither margin does, and this one is testing exactly
+the thing the theory predicts, a deficit <em>paired with</em> an excess — but it means the
+honest claim is narrower than “we found the bunchers.” <strong>The claim is that the
+density around the one-third line is asymmetric in the specific way displacement
+predicts, and that no fake threshold produces the same asymmetry.</strong> It is not that
+fifty organizations were caught in the act.</p>
+<p>And because the specification is the obvious place to hide a thumb:</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Bin width</th>
+<th style="text-align: right;">deg 3</th>
+<th style="text-align: right;">deg 4</th>
+<th style="text-align: right;">deg 5</th>
+<th style="text-align: right;">deg 6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>0.25 pt</strong></td>
+<td style="text-align: right;">+95.4</td>
+<td style="text-align: right;">+93.0</td>
+<td style="text-align: right;">+86.5</td>
+<td style="text-align: right;">+85.8</td>
+</tr>
+<tr>
+<td><strong>0.5 pt</strong></td>
+<td style="text-align: right;">+88.9</td>
+<td style="text-align: right;">+87.0</td>
+<td style="text-align: right;"><strong>+80.1</strong></td>
+<td style="text-align: right;">+79.7</td>
+</tr>
+<tr>
+<td><strong>1.0 pt</strong></td>
+<td style="text-align: right;">+56.9</td>
+<td style="text-align: right;">+46.9</td>
+<td style="text-align: right;">+48.5</td>
+<td style="text-align: right;">+47.7</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Table 2.</strong> Every specification tried, not the flattering ones. All 12 give a
+positive displacement, from <strong>+46.9 to +95.4</strong>; the bolded cell is the one reported
+above. Coarse 1-point bins attenuate the estimate by roughly half — expected, since
+a 1.5-point window smeared across 1-point bins blurs the very thing being measured.</p>
+<p>The reported specification (0.5-point bins, degree 5, ±1.5) was fixed <strong>before</strong> the
+placebo test was run, which is the only reason the placebo test means anything —
+choosing the specification after seeing which one maximises the answer is how you
+get a result that replicates in nobody else’s hands. The
+<a href="../calcs/public-support-cliff/compute.py">whole script is downloadable</a>, including
+the <a href="../calcs/public-support-cliff/figures.py">figure code</a>; the bootstrap seed is
+pinned so the interval above comes out the same on your machine. Disagree with the
+bandwidth, change it, and see what you get.</p>
+<h2 id="how-big-it-depends-what-you-divide-by">How big? It depends what you divide by</h2>
+<p>About fifty organizations are missing from below the line. Out of 111,991
+charities, that is <strong>0.046 percent</strong> — under five-hundredths of one percent. A
+rounding error. Nothing.</p>
+<p>Except: how many charities could possibly respond to this line? From Figure 2, only
+<strong>670</strong> are within a point and a half of it. Everyone else is at 96 percent, sixty
+points clear, with nothing to respond to. And the right denominator is narrower
+still — the deficit is measured against the <strong>331</strong> organizations the counterfactual
+expects in the point and a half <em>below</em> the line, which is the only group that could
+go missing from it. Against that, fifty is <strong>15.5 percent</strong>: about one in seven.</p>
+<p>Same fifty organizations. Same data. One denominator says a rounding error, another
+says one in seven. This is the <a href="../posts/2026-07-14-nobodys-average.html">previous post in this series</a>
+arriving somewhere new: the number was never the argument, the denominator was, and
+a statistic that won’t tell you what it divided by isn’t telling you anything. The
+honest sentence names both — <em>about fifty organizations, which is one in seven of
+those the counterfactual puts within reach of the line.</em></p>
+<p>There is a lesson in how this section originally read. It said “eighty
+organizations… a twelfth of those close enough,” which was wrong twice over: the
+numerator double-counted, and 670 was the wrong denominator for a deficit that can
+only be drawn from the 331 below. A post arguing that denominators are where the
+meaning hides should probably have checked its own.</p>
+<h2 id="what-this-does-and-does-not-show">What this does and does not show</h2>
+<p>Recall the second chance from the first section: a charity below one-third can
+still qualify under the facts-and-circumstances test, by showing that “under all
+the facts and circumstances, it normally receives a substantial part of its
+support” from the public. That test has a 10 percent floor. So the same rule
+contains a second threshold — and it is a threshold of a completely different kind.
+One-third is <strong>arithmetic</strong>: a charity computes it from its own books and knows
+exactly where it stands. The 10 percent floor gates a <strong>judgment</strong>, weighed by
+someone else, on the totality of the circumstances.</p>
+<p>Run the same estimator at 10 percent and it returns <strong>+44.6</strong> — which looks like
+something until you put it beside its own placebos. Fake thresholds at 5 and 6
+percent return <strong>+45.5</strong> and <strong>+38.5</strong>. The whole low-support region is noisy at
+this sample size, and the 10 percent estimate is <strong>1.73 standard deviations</strong> out —
+indistinguishable from the noise around it. <strong>That is a null, and it should be read
+as one</strong>: not evidence that nobody responds to the facts-and-circumstances test,
+just an absence of evidence that they do.</p>
+<p>With that caveat sitting in plain view, the inference this analysis supports is
+narrow and worth stating precisely. <strong>The response is concentrated at the threshold
+charities can calculate, and undetectable at the threshold that turns on someone
+else’s judgment.</strong> That is what you would expect if organizations are deliberately
+managing a number they can compute — you cannot aim at a facts-and-circumstances
+determination the way you can aim at a fraction. It is a reasonable conclusion from
+the way this analysis was carried out, and it is an inference, not an observation.</p>
+<p>Now the limit, which deserves as much prominence as the finding. <strong>We do not
+observe the mechanism, and this data cannot identify it.</strong> At least four
+different processes produce exactly the signature in Figure 1:</p>
+<ol type="1">
+<li><strong>Broadening the donor base</strong> — an organization near the line recruits more
+small donors and crosses it. This is the rule doing precisely what it was
+written to do.</li>
+<li><strong>Classification judgment</strong> — whether a grant comes from a governmental unit
+(counted in full), whether two gifts are one donor or two, whether a large gift
+qualifies as an excludable unusual grant. Real judgment calls, legally
+available, that move the ratio without moving a dollar.</li>
+<li><strong>Timing</strong> — when a large gift lands inside a five-year window that rolls.</li>
+<li><strong>Misreporting</strong> — the support figures simply being wrong.</li>
+</ol>
+<p>Every one of them puts a deficit below the line and an excess above it. One year of
+as-filed aggregates, which is what this extract is, <strong>separates none of them</strong>. So
+this post is not in a position to tell you that charities are gaming the public
+support test, and it is not telling you that. It is equally not in a position to
+tell you the bunching is all benign donor-broadening — that would be just as much
+an assertion about a mechanism nobody here has measured. What would actually
+distinguish them: following the same organizations across filing years, and the
+Schedule B donor detail that says who gave what. Neither is in this file. Both
+exist.</p>
+<p>What is left is a measurement, and it is a real one: at a line in the tax code
+where the arithmetic bites, the distribution of American charities has a bend in
+it, and the bend is not there at 27 percent or 41 percent. About fifty
+organizations — one in seven of those the counterfactual puts just below the line —
+are not where a smooth curve says they should be. Why they are not there is a
+question this data cannot answer, and you now have the same numbers I do:
+<a href="../calcs/public-support-cliff/compute.py">the script</a>, the specification grid, the
+placebos, and the two halves of the statistic reported separately so you can judge
+the sum for yourself. Draw your own conclusion.</p>
+<p>If you are looking at one specific organization rather than a hundred thousand,
+none of this transfers: an aggregate bend says nothing whatever about any
+individual charity, including one sitting at 34 percent. The
+<a href="https://search.noprofits.org">search tools at noprofits.org</a> and the
+<a href="https://projects.propublica.org/nonprofits/">ProPublica Nonprofit Explorer</a> will
+show you its Schedule A, which is where its own answer lives.</p>
+<p><small>This is a plain-language overview, not tax, legal, or financial advice.
+Figures are computed from the IRS SOI annual extract of Form 990 data (returns
+filed in calendar year 2024, mostly fiscal 2023), as-filed and unaudited;
+organizations filing the 990-EZ or 990-N are not included. The population is the
+111,991 filers declaring the §170(b)(1)(A)(vi) test with a support ratio
+computable from the extract. The analysis script
+(<a href="../calcs/public-support-cliff/compute.py">calcs/public-support-cliff/</a>
+in this site’s repository) contains the full method, asserts every number in this
+post, and pins its random seed. The estimator has no integration constraint, so
+its counterfactual is not mass-preserving and the excess above the line does not
+balance the deficit below; a mass-preserving counterfactual, as used in the
+bunching literature, would be the more faithful estimator. The E+M statistic used
+to score the placebos is a measure of asymmetry, not a count of organizations, and
+neither of its halves is individually significant. The population is a single
+filing year and only those organizations declaring the §170(b)(1)(A)(vi) test —
+not the 990-EZ/990-N filers, nor those using other public-charity tests — and the
+figures here have not been reconciled against the IRS’s own published SOI tables.
+The bunching estimate is an aggregate statistical result and is not evidence of
+wrongdoing by any organization; as described above, this analysis cannot identify
+the mechanism behind it and makes no claim about any individual filer.</small></p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="np-footer">
+        <div class="np-container np-footer__top">
+            <div class="np-footer__brand">
+                <div class="np-footer__lockup">
+                    <span class="np-footer__mark">n</span>
+                    <span class="np-footer__word">noprofits<span class="np-wordmark__tld">.org</span> blog</span>
+                </div>
+                <p class="np-footer__blurb">Field notes on nonprofits, public-interest data, and the tools behind noprofits.org — the math, the code, and the diagrams left in. Generated with <a href="http://jaspervdj.be/hakyll">Hakyll</a>; select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="np-footer__cols">
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Site</h4>
+                    <a class="np-footer__link" href="../">Home</a>
+                    <a class="np-footer__link" href="../about.html">About</a>
+                    <a class="np-footer__link" href="../archive.html">Archive</a>
+                    <a class="np-footer__link" href="../colophon.html">Colophon</a>
+                </div>
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Elsewhere</h4>
+                    <a class="np-footer__link" href="https://github.com/noprofits-org">GitHub</a>
+                    <a class="np-footer__link" href="https://noprofits.org">noprofits.org</a>
+                    <a class="np-footer__link" href="../contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+        <div class="np-footer__legalwrap">
+            <div class="np-container np-footer__legal">
+                <span>© 2026 noprofits.org · BSD-3-Clause · Built with Hakyll + Pandoc</span>
+                <span>Seattle</span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

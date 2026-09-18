@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="A plain-language guide to the three tax-exempt types you actually run into — the charity, the advocacy group, and the trade association — and what each one can and can't do with your money, your donation deduction, and an election.">
+    <title>501(c)(3) vs (c)(4) vs (c)(6): what the letter after the number means — noprofits.org blog</title>
+
+    <meta name="theme-color" content="#F7F4EE" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#121A16" media="(prefers-color-scheme: dark)">
+
+    <!-- Canonical + Open Graph / Twitter social cards. URLs are absolute — card
+         scrapers do not resolve relative paths. https://blog.noprofits.org/images/og-image.png is the static branded
+         /images/og-image.png unless a post sets an `og-image` metadata field. -->
+    <link rel="canonical" href="https://blog.noprofits.org/posts/2026-07-05-501c3-vs-c4-vs-c6.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="NoProfits Blog">
+    <meta property="og:title" content="501(c)(3) vs (c)(4) vs (c)(6): what the letter after the number means">
+    <meta property="og:description" content="A plain-language guide to the three tax-exempt types you actually run into — the charity, the advocacy group, and the trade association — and what each one can and can't do with your money, your donation deduction, and an election.">
+    <meta property="og:url" content="https://blog.noprofits.org/posts/2026-07-05-501c3-vs-c4-vs-c6.html">
+    <meta property="og:image" content="https://blog.noprofits.org/images/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="noprofits.org blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="501(c)(3) vs (c)(4) vs (c)(6): what the letter after the number means">
+    <meta name="twitter:description" content="A plain-language guide to the three tax-exempt types you actually run into — the charity, the advocacy group, and the trade association — and what each one can and can't do with your money, your donation deduction, and an election.">
+    <meta name="twitter:image" content="https://blog.noprofits.org/images/og-image.png">
+
+    <!-- No-flash theme: set an explicit data-theme BEFORE any stylesheet. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <!-- No-flash featured: hide the randomizable featured card until the picker
+         (js/featured-random.js) swaps in its choice, so the baked default post
+         doesn't flash before the swap. Safety timeout reveals it if JS is off-
+         path or the picker never runs. Home page only reacts (it owns .featured). -->
+    <script>
+      (function () {
+        document.documentElement.classList.add('feat-pending');
+        setTimeout(function () {
+          document.documentElement.classList.remove('feat-pending');
+        }, 1500);
+      })();
+    </script>
+
+    <link rel="preload" href="../fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- JetBrains Mono (mono/label/tag/code role) via Google Fonts — the one
+         non-self-hosted family, per the design brief. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Saira / Barlow Condensed are used ONLY by the résumé print stylesheet;
+         loaded print-scoped so screen never pulls them. -->
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" media="print">
+
+    <link rel="stylesheet" href="../css/noprofits-theme.css" />
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/noprofits-theme.js"></script>
+    <script defer src="../js/topic-filter.js"></script>
+    <script defer src="../js/featured-random.js"></script>
+    <script defer src="../js/figure-cycler.js"></script>
+    <script defer src="../js/figure-zoom.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <a class="np-skiplink" href="#main">Skip to content</a>
+
+    <header class="np-header">
+        <div class="np-container np-header__bar">
+            <a class="np-header__brand" href="../" aria-label="noprofits.org blog home">
+                <img src="../images/brandmark.svg" alt class="np-brandmark" width="32" height="32" aria-hidden="true">
+                <span class="np-wordmark">noprofits<span class="np-wordmark__tld">.org</span><span class="np-wordmark__app">blog</span></span>
+            </a>
+
+            <nav class="np-nav--inline" aria-label="Main navigation">
+                <a class="np-nav__link" href="../">Home</a>
+                <a class="np-nav__link" href="../about.html">About</a>
+                <a class="np-nav__link" href="../archive.html">Archive</a>
+                <a class="np-nav__link" href="../contact.html">Contact</a>
+            </nav>
+
+            <button type="button" class="np-themetoggle" data-np-themetoggle aria-pressed="false" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span data-np-themeicon aria-hidden="true">☽</span>
+            </button>
+
+            <button type="button" class="np-header__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="np-drawer">
+                <span class="np-burger" aria-hidden="true"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="np-scrim" data-drawer-scrim></div>
+    <aside id="np-drawer" class="np-drawer" aria-hidden="true" aria-label="Menu">
+        <div class="np-drawer__head">
+            <span class="np-drawer__title">Menu</span>
+            <button type="button" class="np-drawer__close" aria-label="Close menu"></button>
+        </div>
+        <a class="np-drawer__link" href="../">Home</a>
+        <a class="np-drawer__link" href="../about.html">About</a>
+        <a class="np-drawer__link" href="../archive.html">Archive</a>
+        <a class="np-drawer__link" href="../contact.html">Contact</a>
+    </aside>
+
+    <main id="main" role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">nonprofits</span>
+    </div>
+    
+
+    <h1 class="post-title">501(c)(3) vs (c)(4) vs (c)(6): what the letter after the number means</h1>
+
+    <div class="post-meta">
+        <span>July  5, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <p>“Nonprofit” is not one thing. The IRS recognizes more than two dozen kinds of tax-exempt organization under section 501(c) of the tax code, and the number in the parentheses changes what the organization is allowed to do — whether your donation is tax-deductible, whether it can lobby Congress, whether it can back a candidate. Three of those types cover almost everything you’ll actually encounter, and the differences between them explain a lot of otherwise-confusing things about how advocacy and money work in the US.</p>
+<p>This is a companion to the <a href="../posts/2026-07-05-how-to-vet-a-charity.html">donor’s guide to reading a 990</a> — think of it as the front door. Before you evaluate an organization’s finances, it helps to know what <em>kind</em> of organization you’re looking at, because the rules it plays by depend entirely on that letter-and-number.</p>
+<h2 id="the-charity-501c3">The charity: 501(c)(3)</h2>
+<p>This is what most people mean by “nonprofit.” A 501(c)(3) exists for charitable, religious, educational, or scientific purposes — your food bank, your local museum, your university, your church, the Red Cross.</p>
+<p>Two things define it:</p>
+<ul>
+<li><strong>Your donation is tax-deductible.</strong> This is the big one, and it’s nearly unique to (c)(3). If you itemize, giving to a (c)(3) reduces your taxable income. Giving to the other types on this list generally does not.</li>
+<li><strong>It can’t do politics.</strong> A (c)(3) is barred from campaign intervention entirely — it cannot endorse, oppose, or fund candidates for office (this is the “Johnson Amendment”). It <em>can</em> lobby on issues, but only in a limited way; lobbying can’t be a substantial part of what it does.</li>
+</ul>
+<p>That deductibility comes with strings, and the no-politics rule is the price of it. Worth knowing: (c)(3)s split into <strong>public charities</strong> (funded by many donors — most of what you interact with) and <strong>private foundations</strong> (usually funded by one family or company, and filing a different form, the 990-PF). Same deductibility, different rules and different filing.</p>
+<h2 id="the-advocacy-group-501c4">The advocacy group: 501(c)(4)</h2>
+<p>A 501(c)(4) is a “social welfare” organization, and the easiest way to understand it is as the mirror image of a (c)(3) on exactly the two points above:</p>
+<ul>
+<li><strong>Your donation is <em>not</em> tax-deductible.</strong> You give with after-tax dollars.</li>
+<li><strong>It can do politics.</strong> A (c)(4) can lobby as much as it wants, and it can engage in political campaign activity — as long as that’s not its <em>primary</em> purpose.</li>
+</ul>
+<p>That trade is the whole point. A (c)(4) gives up the donation deduction in exchange for the freedom to advocate. It’s why so many well-known groups exist as a <strong>(c)(3)/(c)(4) pair</strong>: a charitable arm that takes deductible donations for education and litigation, and an affiliated advocacy arm that lobbies and campaigns. The Sierra Club and the Sierra Club Foundation, the ACLU and the ACLU Foundation — same brand, two entities, two sets of rules. It’s also why “(c)(4)” shows up in every conversation about dark money: because these groups can spend on politics and generally don’t have to disclose their donors.</p>
+<h2 id="the-trade-association-501c6">The trade association: 501(c)(6)</h2>
+<p>A 501(c)(6) is a business league — a chamber of commerce, a trade association, a professional society. Think the local chamber, the National Association of Realtors, a bar association. It exists to advance the shared interests of its <em>members</em>, not the general public.</p>
+<ul>
+<li><strong>Dues aren’t a charitable deduction</strong>, though a business may be able to deduct them as an ordinary business expense (minus any portion that goes to lobbying).</li>
+<li><strong>It can lobby freely</strong> on behalf of its industry, much like a (c)(4).</li>
+</ul>
+<p>If a (c)(3) serves the public and a (c)(4) advances a cause, a (c)(6) advances a business sector.</p>
+<h2 id="the-one-table-worth-keeping">The one table worth keeping</h2>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 20%" />
+<col style="width: 21%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th style="text-align: center;">501(c)(3) charity</th>
+<th style="text-align: center;">501(c)(4) advocacy</th>
+<th style="text-align: center;">501(c)(6) trade assoc.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Your donation deductible?</td>
+<td style="text-align: center;"><strong>Yes</strong></td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">No (maybe as biz exp.)</td>
+</tr>
+<tr>
+<td>Can lobby?</td>
+<td style="text-align: center;">Limited</td>
+<td style="text-align: center;">Freely</td>
+<td style="text-align: center;">Freely</td>
+</tr>
+<tr>
+<td>Can back candidates?</td>
+<td style="text-align: center;">No</td>
+<td style="text-align: center;">Yes (not primary)</td>
+<td style="text-align: center;">Yes (not primary)</td>
+</tr>
+<tr>
+<td>Must disclose donors?</td>
+<td style="text-align: center;">Generally no*</td>
+<td style="text-align: center;">Generally no</td>
+<td style="text-align: center;">Generally no</td>
+</tr>
+<tr>
+<td>Files a public 990?</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><small>*Public charities report large donors to the IRS on Schedule B, but that schedule is redacted from the public copy.</small></p>
+<h2 id="why-a-donor-should-care">Why a donor should care</h2>
+<p>Two practical reasons. First, <strong>deductibility</strong>: if the tax break matters to you, confirm you’re giving to a (c)(3) — the others won’t get you the charitable deduction. Second, <strong>what your money actually does</strong>: giving to the (c)(3) arm of an organization funds programs, education, and litigation; giving to its (c)(4) arm funds advocacy and political muscle. Same cause, very different levers, and the letter tells you which one you’re pulling.</p>
+<p>And here’s the useful part: <strong>all three file a public Form 990</strong>, so once you know the type, the <a href="../posts/2026-07-05-how-to-vet-a-charity.html">reading skills from the companion post</a> carry right over — with the caveat that a (c)(4)’s or (c)(6)’s “program” spending includes advocacy, and private foundations file the different 990-PF. Know the letter first; then read the numbers.</p>
+<p><small>This is a plain-language overview, not tax or legal advice. The authoritative source is IRS Publication 557 and the <a href="https://www.irs.gov/charities-non-profits">IRS exempt-organization pages</a>; an organization’s exact status is on its <a href="https://www.irs.gov/charities-non-profits/tax-exempt-organization-search">990 or in the IRS Tax Exempt Organization Search</a>.</small></p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="np-footer">
+        <div class="np-container np-footer__top">
+            <div class="np-footer__brand">
+                <div class="np-footer__lockup">
+                    <span class="np-footer__mark">n</span>
+                    <span class="np-footer__word">noprofits<span class="np-wordmark__tld">.org</span> blog</span>
+                </div>
+                <p class="np-footer__blurb">Field notes on nonprofits, public-interest data, and the tools behind noprofits.org — the math, the code, and the diagrams left in. Generated with <a href="http://jaspervdj.be/hakyll">Hakyll</a>; select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="np-footer__cols">
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Site</h4>
+                    <a class="np-footer__link" href="../">Home</a>
+                    <a class="np-footer__link" href="../about.html">About</a>
+                    <a class="np-footer__link" href="../archive.html">Archive</a>
+                    <a class="np-footer__link" href="../colophon.html">Colophon</a>
+                </div>
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Elsewhere</h4>
+                    <a class="np-footer__link" href="https://github.com/noprofits-org">GitHub</a>
+                    <a class="np-footer__link" href="https://noprofits.org">noprofits.org</a>
+                    <a class="np-footer__link" href="../contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+        <div class="np-footer__legalwrap">
+            <div class="np-container np-footer__legal">
+                <span>© 2026 noprofits.org · BSD-3-Clause · Built with Hakyll + Pandoc</span>
+                <span>Seattle</span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

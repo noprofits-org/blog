@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="The fight over AI regulation runs on grant graphs — arrows from funders to evaluators to journalists, assembled to show who is really talking. We took one heavily circulated graph's Tarbell rows and checked each against the primary documents. The Tarbell money — $5,291,930 — is real to the dollar. The direct METR edge and the donated Anthropic stake are exactly what the checked filings don't show.">
+    <title>What rematches, what doesn't: the Tarbell–Coefficient grant graph, row by row — noprofits.org blog</title>
+
+    <meta name="theme-color" content="#F7F4EE" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#121A16" media="(prefers-color-scheme: dark)">
+
+    <!-- Canonical + Open Graph / Twitter social cards. URLs are absolute — card
+         scrapers do not resolve relative paths. https://blog.noprofits.org/images/og-image.png is the static branded
+         /images/og-image.png unless a post sets an `og-image` metadata field. -->
+    <link rel="canonical" href="https://blog.noprofits.org/posts/2026-09-15-tarbell-coefficient-grant-graph.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="NoProfits Blog">
+    <meta property="og:title" content="What rematches, what doesn't: the Tarbell–Coefficient grant graph, row by row">
+    <meta property="og:description" content="The fight over AI regulation runs on grant graphs — arrows from funders to evaluators to journalists, assembled to show who is really talking. We took one heavily circulated graph's Tarbell rows and checked each against the primary documents. The Tarbell money — $5,291,930 — is real to the dollar. The direct METR edge and the donated Anthropic stake are exactly what the checked filings don't show.">
+    <meta property="og:url" content="https://blog.noprofits.org/posts/2026-09-15-tarbell-coefficient-grant-graph.html">
+    <meta property="og:image" content="https://blog.noprofits.org/images/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="noprofits.org blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="What rematches, what doesn't: the Tarbell–Coefficient grant graph, row by row">
+    <meta name="twitter:description" content="The fight over AI regulation runs on grant graphs — arrows from funders to evaluators to journalists, assembled to show who is really talking. We took one heavily circulated graph's Tarbell rows and checked each against the primary documents. The Tarbell money — $5,291,930 — is real to the dollar. The direct METR edge and the donated Anthropic stake are exactly what the checked filings don't show.">
+    <meta name="twitter:image" content="https://blog.noprofits.org/images/og-image.png">
+
+    <!-- No-flash theme: set an explicit data-theme BEFORE any stylesheet. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <!-- No-flash featured: hide the randomizable featured card until the picker
+         (js/featured-random.js) swaps in its choice, so the baked default post
+         doesn't flash before the swap. Safety timeout reveals it if JS is off-
+         path or the picker never runs. Home page only reacts (it owns .featured). -->
+    <script>
+      (function () {
+        document.documentElement.classList.add('feat-pending');
+        setTimeout(function () {
+          document.documentElement.classList.remove('feat-pending');
+        }, 1500);
+      })();
+    </script>
+
+    <link rel="preload" href="../fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- JetBrains Mono (mono/label/tag/code role) via Google Fonts — the one
+         non-self-hosted family, per the design brief. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Saira / Barlow Condensed are used ONLY by the résumé print stylesheet;
+         loaded print-scoped so screen never pulls them. -->
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" media="print">
+
+    <link rel="stylesheet" href="../css/noprofits-theme.css" />
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/noprofits-theme.js"></script>
+    <script defer src="../js/topic-filter.js"></script>
+    <script defer src="../js/featured-random.js"></script>
+    <script defer src="../js/figure-cycler.js"></script>
+    <script defer src="../js/figure-zoom.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <a class="np-skiplink" href="#main">Skip to content</a>
+
+    <header class="np-header">
+        <div class="np-container np-header__bar">
+            <a class="np-header__brand" href="../" aria-label="noprofits.org blog home">
+                <img src="../images/brandmark.svg" alt class="np-brandmark" width="32" height="32" aria-hidden="true">
+                <span class="np-wordmark">noprofits<span class="np-wordmark__tld">.org</span><span class="np-wordmark__app">blog</span></span>
+            </a>
+
+            <nav class="np-nav--inline" aria-label="Main navigation">
+                <a class="np-nav__link" href="../">Home</a>
+                <a class="np-nav__link" href="../about.html">About</a>
+                <a class="np-nav__link" href="../archive.html">Archive</a>
+                <a class="np-nav__link" href="../contact.html">Contact</a>
+            </nav>
+
+            <button type="button" class="np-themetoggle" data-np-themetoggle aria-pressed="false" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span data-np-themeicon aria-hidden="true">☽</span>
+            </button>
+
+            <button type="button" class="np-header__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="np-drawer">
+                <span class="np-burger" aria-hidden="true"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="np-scrim" data-drawer-scrim></div>
+    <aside id="np-drawer" class="np-drawer" aria-hidden="true" aria-label="Menu">
+        <div class="np-drawer__head">
+            <span class="np-drawer__title">Menu</span>
+            <button type="button" class="np-drawer__close" aria-label="Close menu"></button>
+        </div>
+        <a class="np-drawer__link" href="../">Home</a>
+        <a class="np-drawer__link" href="../about.html">About</a>
+        <a class="np-drawer__link" href="../archive.html">Archive</a>
+        <a class="np-drawer__link" href="../contact.html">Contact</a>
+    </aside>
+
+    <main id="main" role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">nonprofits, form 990, grants, Coefficient Giving, Tarbell, METR, rematchability</span>
+    </div>
+    
+
+    <h1 class="post-title">What rematches, what doesn't: the Tarbell–Coefficient grant graph, row by row</h1>
+
+    <div class="post-meta">
+        <span class="byline">Peter Johnston</span> · <span>September 15, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <p>There is a fight underway about AI regulation, and it runs on grant graphs.</p>
+<p>On one side: safety advocates, lawmakers, and at least one major lab publicly
+asking to be regulated. On the other: a growing chorus calling the safety push
+astroturf — incumbents building a regulatory moat against open-weight models
+that keep closing the capability gap and keep winning on price. Sincerity and
+strategy are not mutually exclusive, and from the outside they are nearly
+indistinguishable. Everyone in this fight, on every side, has a revenue line
+attached.</p>
+<p>That is where this blog gets off. Motive does not appear on any schedule of a
+Form 990-PF. Neither does coordination. What does appear is money — amounts,
+dates, payees — and money has one property no thread on X has: it can
+contradict you. The narrow ground worth holding is the documents. This post
+holds it.</p>
+<p>Kevin Bass — by his own disclosure, a public critic of Anthropic and
+Coefficient Giving — maintains a GitHub repository of grant-graph figures built
+to argue that money from the Moskovitz funding orbit reaches METR, the
+AI-evaluation nonprofit, through indirect channels: its former parent, its
+project partners, a pooled-fund donor, a board member’s organization, and a
+journalism program whose fellows have covered METR’s leadership without, by the
+pack’s account, telling readers about the funding. The pack’s largest number is
+not a grant at all: a donated Anthropic stake that, on the pack’s own ceiling
+math, could be worth up to $7.7B — with no public filing identifying where it
+sits. Two things make the pack worth taking seriously. Every number traces to a
+named row in a public research CSV, with a source URL and a verbatim quote. And
+the pack states its own limits: “none found” always travels with the sources
+and dates it was found in.</p>
+<p>This post audits one slice of it — the six Tarbell rows, TB01 through TB06,
+behind the claim that Coefficient Giving funds the Tarbell Center for AI
+Journalism. We did not re-derive the pack’s ARC, RAND, or Longview rows, and we
+assert nothing about anyone’s motives. Motive is parked.</p>
+<p>The cast, in one breath. Coefficient Giving is the grantmaker — the
+organization formerly known as Open Philanthropy, as the redirect of its old
+Tarbell grant page quietly confirms. Good Ventures Foundation is the private
+foundation in the same funding orbit whose Forms 990-PF form the public cash
+trail. The Tarbell Center for AI Journalism is the grantee. The Survival and
+Flourishing Fund publishes recommendation lists — it recommends, other vehicles
+pay. METR is Model Evaluation and Threat Research. Players Philanthropy Fund
+is the fiscal sponsor that keeps appearing on the cash trail.</p>
+<h2 id="the-short-version">The short version</h2>
+<p>The claim that checks out checks out to the dollar. Three Tarbell-named
+Coefficient awards — $816,000 on 2024-11-17, $2,888,000 on 2025-03-06, and
+$1,587,930 on 2025-07-15 — sum to <strong>$5,291,930</strong>, exactly the total in Bass’s
+package, and nothing in the checked primary documents contradicts any of the
+six rows. Tarbell’s own website corroborates the relationship from the grantee
+side.</p>
+<p>The two claims that would make the graph explosive — a direct Coefficient or
+Good Ventures grant to METR, and a paper trail for the donated Anthropic stake
+— are the ones with no row in any document we checked. On METR, Coefficient’s
+own published statement agrees with the absence. On the stake, the absence is
+the finding, and it has a closing date: the next Good Ventures filing.</p>
+<h2 id="how-a-rematch-works">How a rematch works</h2>
+<p>A rematch is deliberately dumb. Each row of the claim package is checked
+against the primary document it cites — no more, no less. A KEEP is a primary
+document carrying the same amount, date, and grantee. A KILL is a primary
+document that contradicts the row. Anything that can be neither confirmed nor
+killed stays OPEN, and the claims are frozen as of 2026-09-15 so the target
+cannot move while we shoot. The documents: Coefficient Giving’s public grants
+index (snapshot 2026-09-11, 2,911 rows), Tarbell’s
+<a href="https://www.tarbellcenter.org/about">About</a> and
+<a href="https://www.tarbellcenter.org/ethics-and-standards">Ethics</a> pages, SFF’s 2024
+and 2025 recommendation lists, and Good Ventures Foundation’s Forms 990-PF
+through fiscal year ending June 2025.</p>
+<h2 id="the-six-rows">The six rows</h2>
+<p>Table 1 is the whole package, with what the rematch found.</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Row</th>
+<th>What the package claims</th>
+<th>Rematch</th>
+<th>In the $5.29M?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TB01</td>
+<td>Coefficient → Training for Good, “Operating Costs and Tarbell Fellowship,” $999,000, 2023-09-26</td>
+<td>Checks out — joint award to Training for Good</td>
+<td>No — not a Tarbell-named grant</td>
+</tr>
+<tr>
+<td>TB02</td>
+<td>Coefficient → Tarbell Center, General Support, $816,000, 2024-11-17</td>
+<td>Checks out</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>TB03</td>
+<td>Coefficient → Tarbell Center, General Support, $1,587,930, 2025-07-15</td>
+<td>Checks out</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>TB04</td>
+<td>Coefficient → Tarbell Center, Operating Costs, $2,888,000, 2025-03-06</td>
+<td>Checks out</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>TB05</td>
+<td>SFF 2024 recommendation, $520,000 via Players Philanthropy Fund</td>
+<td>Checks out — as a published recommendation, not a paid grant</td>
+<td>No — SFF, not Coefficient</td>
+</tr>
+<tr>
+<td>TB06</td>
+<td>SFF 2025 recommendation, $783,000, including a $200,000 conditional match</td>
+<td>Checks out — as a published recommendation; match fulfillment unverified</td>
+<td>No — SFF, not Coefficient</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Table 1.</strong> The Tarbell package (TB01–TB06) against the primary documents.
+Six checks, six KEEPs, zero KILLs.</p>
+<p>The arithmetic is 816,000 + 1,587,930 + 2,888,000 = 5,291,930. Delta versus
+the package: $0.</p>
+<p>Two counting judgments deserve daylight, because a sloppier audit would fumble
+both. TB01 is real money attached to Tarbell’s name — the fellowship — but the
+award runs to Training for Good, so it cannot be honestly summed as a
+Tarbell-named Coefficient grant. And TB05 and TB06 are SFF recommendations:
+<strong>$1,303,000 recommended, not granted by Coefficient</strong>, never summed into the
+total. The $200,000 conditional match inside TB06 is part of the $783,000, not
+on top of it. The pack’s own rule — never sum money types with each other — is
+the right rule, and the total obeys it.</p>
+<h2 id="the-money-is-real-and-corroborated-from-the-other-side">The money is real — and corroborated from the other side</h2>
+<p>The index snapshot is one document; Tarbell’s website is another, with
+independent reasons to exist, and it points the same direction. Tarbell’s About
+page lists Coefficient Giving as a $1M+ supporter across 2023–2026. Its Ethics
+page goes further: as of 2025, the majority of Tarbell’s funding originates
+with Coefficient Giving.</p>
+<p>Say precisely what this establishes. The money is real: the grantmaker’s index
+and the grantee’s own disclosure carry the same relationship, and the order of
+magnitude is consistent with the index rows. What it does not establish is
+anything about coverage. Whether the funding touches what Tarbell fellows write
+about METR’s leadership is a question a filing cannot answer — that claim lives
+in the rest of the pack, unaudited here.</p>
+<h2 id="the-edge-the-filings-dont-have-metr">The edge the filings don’t have: METR</h2>
+<p>The graph’s sharpest arrow would run straight from Coefficient or Good Ventures
+to METR. No such row exists in the checked documents — and that absence is not
+ours alone: Bass’s own package logs “Direct: none found.” Our pass over the
+same 2,911-row index found zero METR-named awards, and no grant row on Good
+Ventures’ Forms 990-PF through FYE June 2025 names METR or Model Evaluation and
+Threat Research. Coefficient has said so itself, in print: its December 2025
+<a href="https://coefficientgiving.org/research/suggestions-for-individual-donors-from-coefficient-giving-staff-2025/">staff suggestions for individual donors</a>
+states of METR, “This organization is not a Coefficient Giving grantee.”</p>
+<p>Hold “none found” to its bounds. It means none in the documents checked, as of
+their dates. It does not rule out money that moves through a fiscal sponsor or
+a donor-advised account without the grantee’s name ever appearing on a public
+schedule — the pack itself flags the SVCF and NPT accounts that pay
+Coefficient-recommended grants as unattributed. And it says nothing about the
+pack’s indirect-channel rows, which run through ARC, RAND, and Longview and are
+outside this audit. What it does say: the direct edge is one the critic and the
+criticized already agree is not a row.</p>
+<h2 id="the-stake-that-isnt-on-any-filing">The stake that isn’t on any filing</h2>
+<p>The pack’s biggest number is equity. Moskovitz has said he donated an Anthropic
+stake to what he calls “our foundation”; the pack values it at up to
+<strong>$7.7B</strong> — Forbes’s “less than 0.8%” of the company times the $965B Series H
+post-money, an upper bound by construction, not a valuation. And here the
+filing trail simply stops. No investment-schedule line on any Good Ventures
+Form 990-PF through FYE June 2025 names Anthropic. The legal vehicle holding
+the stake is unidentified on every public document checked.</p>
+<p>Two shelves it could be sitting on. The next Good Ventures return — the first
+covering a period beginning after June 2025 — could show it, along with TB03’s
+cash. Or it sits in a donor-advised account at National Philanthropic Trust or
+Silicon Valley Community Foundation, whose filings do not attribute individual
+accounts or their holdings — in which case no public filing may ever name it,
+which the pack itself says wherever it touches them. This is the one genuinely
+unseen holding in the graph, and it stays <strong>OPEN</strong>, with a date circled on the
+calendar.</p>
+<h2 id="where-the-cash-trail-runs-thin">Where the cash trail runs thin</h2>
+<p>The gaps, translated. The live Coefficient grant pages for TB01–TB04 now return
+404; the Wayback Machine has no snapshots of them; the old Open Philanthropy
+Tarbell page redirects to a focus-area hub rather than a grant. The dollar
+rematch therefore rests on the index rows and Tarbell’s own disclosures, not on
+grant prose anyone can still read. And the 990-PF cash trail is partial by
+construction — filings lag awards:</p>
+<ul>
+<li>Good Ventures’ FY2023 return shows a Players Philanthropy Fund line of
+$287,750 with purpose text naming a Tarbell fellow extension — a partial cash
+trail in TB01’s neighborhood, not the $999,000 award-date figure.</li>
+<li>FY2024 shows a PPF line of $816,000, purpose “GENERAL SUPPORT” — the same
+amount as TB02, with purpose text that does not name Tarbell. Suggestive; not
+definitive, and we do not treat it as a TB02 disbursement.</li>
+<li>No $2,888,000 paid line for TB04 appears on the FY2024 schedule, and TB03’s
+award date of 2025-07-15 post-dates the June 2025 fiscal year end entirely.</li>
+</ul>
+<p>None of this is a KILL. All of it is the lag between when money is awarded and
+when it becomes a line on a public return.</p>
+<h2 id="what-would-settle-it">What would settle it</h2>
+<p>Three documents would move this post’s conclusions. Good Ventures’ FY2026 Form
+990-PF — the first filing that could show TB03’s cash and any post-June-2025
+investment-schedule change — is the big one; until it is public, F3 stays open.
+Confirmation of cash actually paid on the SFF recommendations, and of TB06’s
+conditional match, would convert two KEEPs from “published recommendation” to
+“disbursed.” And nothing on either list settles the question everyone is
+actually fighting about. The filings cannot tell you whether the current safety
+push is coordinated, sincere, or both. They can only tell you what moved.</p>
+<h2 id="the-thing-worth-taking-away">The thing worth taking away</h2>
+<p>In a fight where every side arrives with a graph, the only neutral ground is
+the filing. That ground is smaller than the fight — it has nothing to say
+about motives, and “nothing found” is only as good as the documents searched.
+But it has one property no thread has: it can say no. This graph’s Tarbell
+edges held — every dollar in the headline total is a dollar the grantmaker’s
+index and the grantee’s website both carry. Its two loudest edges — direct METR
+money, the Anthropic stake — are precisely the ones the public record does not
+currently support, and the second of them has a date by which it should.</p>
+<p><small>Public-record rematch of named grant-graph rows. Not an evaluation of
+Tarbell, Coefficient Giving, METR, or Anthropic, and not a forecast of later
+filings. Corrections welcome if a primary document moves a KEEP or closes
+F3.</small></p>
+<h2 id="appendix-frozen-claims-sources">Appendix — frozen claims, sources</h2>
+<p>These sentences are frozen as of 2026-09-15. A kill is a primary document that
+contradicts the sentence.</p>
+<p><strong>F1 — Tarbell ← Coefficient</strong></p>
+<blockquote>
+<p>As of 2026-09-15, Coefficient Giving’s public grants index (snapshot 2026-09-11) lists three awards naming “Tarbell Center for AI Journalism” totaling $5,291,930 ($816,000 General Support 2024-11-17; $2,888,000 Operating Costs 2025-03-06; $1,587,930 General Support 2025-07-15), and Tarbell’s own About page lists Coefficient Giving as a $1M+ supporter for 2023–2026; Tarbell’s Ethics page states that as of 2025 the majority of its funding originates with Coefficient Giving.</p>
+</blockquote>
+<p><strong>F2 — No direct GVF / Coefficient → METR (through checked filings)</strong></p>
+<blockquote>
+<p>As of the Coefficient grants-index snapshot dated 2026-09-11 and Good Ventures Foundation Forms 990-PF through FYE June 2025, no grant row names “METR” or “Model Evaluation and Threat Research” as grantee (Bass “Direct: none found”; Quill rematch of the same index found zero METR-named awards).</p>
+</blockquote>
+<p><strong>F3 — Anthropic-share vehicle unidentified on public filings (OPEN)</strong></p>
+<blockquote>
+<p>As of GVF Forms 990-PF through FYE June 2025, no investment schedule line names Anthropic; Bass’s $7.7B figure is an upper bound (Forbes “less than 0.8%” × Series H post-money), not a marked GVF holding; the legal vehicle holding any donated Moskovitz Anthropic stake remains unidentified on public filings (open candidates: post-June-2025 GVF FY2026 return; SVCF/NPT donor-advised accounts).</p>
+</blockquote>
+<p>F3 is <strong>OPEN</strong>. Nothing in this rematch identifies the holder.</p>
+<p><strong>Sources</strong></p>
+<ul>
+<li>Claim package under audit (not gospel): <a href="https://github.com/kevinnbass/metr-money-figure">kevinnbass/metr-money-figure</a></li>
+<li>Tarbell <a href="https://www.tarbellcenter.org/about">About</a> (Coefficient Giving listed as a $1M+ supporter, 2023–2026)</li>
+<li>Tarbell <a href="https://www.tarbellcenter.org/ethics-and-standards">Ethics and standards</a> (majority-funder disclosure as of 2025)</li>
+<li>Coefficient Giving grants index, snapshot 2026-09-11 (2,911 rows in the rematch dump; live per-grant pages for TB01–TB04 — <a href="https://coefficientgiving.org/grants/training-for-good-operating-costs-and-tarbell-fellowship/">training-for-good-operating-costs-and-tarbell-fellowship</a>, <a href="https://coefficientgiving.org/grants/general-support-3/">general-support-3</a>, <a href="https://coefficientgiving.org/grants/general-support-49/">general-support-49</a>, <a href="https://coefficientgiving.org/grants/operating-costs/">operating-costs</a> — returned 404, with no Wayback snapshots)</li>
+<li><a href="https://coefficientgiving.org/research/suggestions-for-individual-donors-from-coefficient-giving-staff-2025/">Coefficient staff suggestions for individual donors, 2025</a> (METR “not a Coefficient Giving grantee”)</li>
+<li>SFF <a href="https://survivalandflourishing.fund/2024/recommendations">2024 recommendations</a> and <a href="https://survivalandflourishing.fund/2025/recommendations">2025 recommendations</a></li>
+<li>Good Ventures Foundation, EIN 46-1008520, <a href="https://projects.propublica.org/nonprofits/organizations/461008520">ProPublica Nonprofit Explorer</a> (Forms 990-PF through FYE June 2025)</li>
+</ul>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="np-footer">
+        <div class="np-container np-footer__top">
+            <div class="np-footer__brand">
+                <div class="np-footer__lockup">
+                    <span class="np-footer__mark">n</span>
+                    <span class="np-footer__word">noprofits<span class="np-wordmark__tld">.org</span> blog</span>
+                </div>
+                <p class="np-footer__blurb">Field notes on nonprofits, public-interest data, and the tools behind noprofits.org — the math, the code, and the diagrams left in. Generated with <a href="http://jaspervdj.be/hakyll">Hakyll</a>; select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="np-footer__cols">
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Site</h4>
+                    <a class="np-footer__link" href="../">Home</a>
+                    <a class="np-footer__link" href="../about.html">About</a>
+                    <a class="np-footer__link" href="../archive.html">Archive</a>
+                    <a class="np-footer__link" href="../colophon.html">Colophon</a>
+                </div>
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Elsewhere</h4>
+                    <a class="np-footer__link" href="https://github.com/noprofits-org">GitHub</a>
+                    <a class="np-footer__link" href="https://noprofits.org">noprofits.org</a>
+                    <a class="np-footer__link" href="../contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+        <div class="np-footer__legalwrap">
+            <div class="np-container np-footer__legal">
+                <span>© 2026 noprofits.org · BSD-3-Clause · Built with Hakyll + Pandoc</span>
+                <span>Seattle</span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

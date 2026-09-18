@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="In our cut of 68,957 tax-year-2023 grant recipients, charities getting more than half their revenue from government grants have thinner estimated reserves than the middle groups. What that association can tell us—and why reserve months are not a countdown to closure.">
+    <title>When the funding stops: government grants and the reserves behind them — noprofits.org blog</title>
+
+    <meta name="theme-color" content="#F7F4EE" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#121A16" media="(prefers-color-scheme: dark)">
+
+    <!-- Canonical + Open Graph / Twitter social cards. URLs are absolute — card
+         scrapers do not resolve relative paths. https://blog.noprofits.org/images/2026-09-08-when-the-funding-stops-hero.png is the static branded
+         /images/og-image.png unless a post sets an `og-image` metadata field. -->
+    <link rel="canonical" href="https://blog.noprofits.org/posts/2026-09-08-when-the-funding-stops.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="NoProfits Blog">
+    <meta property="og:title" content="When the funding stops: government grants and the reserves behind them">
+    <meta property="og:description" content="In our cut of 68,957 tax-year-2023 grant recipients, charities getting more than half their revenue from government grants have thinner estimated reserves than the middle groups. What that association can tell us—and why reserve months are not a countdown to closure.">
+    <meta property="og:url" content="https://blog.noprofits.org/posts/2026-09-08-when-the-funding-stops.html">
+    <meta property="og:image" content="https://blog.noprofits.org/images/2026-09-08-when-the-funding-stops-hero.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="noprofits.org blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="When the funding stops: government grants and the reserves behind them">
+    <meta name="twitter:description" content="In our cut of 68,957 tax-year-2023 grant recipients, charities getting more than half their revenue from government grants have thinner estimated reserves than the middle groups. What that association can tell us—and why reserve months are not a countdown to closure.">
+    <meta name="twitter:image" content="https://blog.noprofits.org/images/2026-09-08-when-the-funding-stops-hero.png">
+
+    <!-- No-flash theme: set an explicit data-theme BEFORE any stylesheet. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <!-- No-flash featured: hide the randomizable featured card until the picker
+         (js/featured-random.js) swaps in its choice, so the baked default post
+         doesn't flash before the swap. Safety timeout reveals it if JS is off-
+         path or the picker never runs. Home page only reacts (it owns .featured). -->
+    <script>
+      (function () {
+        document.documentElement.classList.add('feat-pending');
+        setTimeout(function () {
+          document.documentElement.classList.remove('feat-pending');
+        }, 1500);
+      })();
+    </script>
+
+    <link rel="preload" href="../fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- JetBrains Mono (mono/label/tag/code role) via Google Fonts — the one
+         non-self-hosted family, per the design brief. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Saira / Barlow Condensed are used ONLY by the résumé print stylesheet;
+         loaded print-scoped so screen never pulls them. -->
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" media="print">
+
+    <link rel="stylesheet" href="../css/noprofits-theme.css" />
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/noprofits-theme.js"></script>
+    <script defer src="../js/topic-filter.js"></script>
+    <script defer src="../js/featured-random.js"></script>
+    <script defer src="../js/figure-cycler.js"></script>
+    <script defer src="../js/figure-zoom.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <a class="np-skiplink" href="#main">Skip to content</a>
+
+    <header class="np-header">
+        <div class="np-container np-header__bar">
+            <a class="np-header__brand" href="../" aria-label="noprofits.org blog home">
+                <img src="../images/brandmark.svg" alt class="np-brandmark" width="32" height="32" aria-hidden="true">
+                <span class="np-wordmark">noprofits<span class="np-wordmark__tld">.org</span><span class="np-wordmark__app">blog</span></span>
+            </a>
+
+            <nav class="np-nav--inline" aria-label="Main navigation">
+                <a class="np-nav__link" href="../">Home</a>
+                <a class="np-nav__link" href="../about.html">About</a>
+                <a class="np-nav__link" href="../archive.html">Archive</a>
+                <a class="np-nav__link" href="../contact.html">Contact</a>
+            </nav>
+
+            <button type="button" class="np-themetoggle" data-np-themetoggle aria-pressed="false" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span data-np-themeicon aria-hidden="true">☽</span>
+            </button>
+
+            <button type="button" class="np-header__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="np-drawer">
+                <span class="np-burger" aria-hidden="true"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="np-scrim" data-drawer-scrim></div>
+    <aside id="np-drawer" class="np-drawer" aria-hidden="true" aria-label="Menu">
+        <div class="np-drawer__head">
+            <span class="np-drawer__title">Menu</span>
+            <button type="button" class="np-drawer__close" aria-label="Close menu"></button>
+        </div>
+        <a class="np-drawer__link" href="../">Home</a>
+        <a class="np-drawer__link" href="../about.html">About</a>
+        <a class="np-drawer__link" href="../archive.html">Archive</a>
+        <a class="np-drawer__link" href="../contact.html">Contact</a>
+    </aside>
+
+    <main id="main" role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">nonprofits, data</span>
+    </div>
+    
+
+    <h1 class="post-title">When the funding stops: government grants and the reserves behind them</h1>
+
+    <div class="post-meta">
+        <span>September  8, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <p>A charity has three months of reserves. Its government funding stops. How long
+can it keep going?</p>
+<p>Three months is only one possible answer. If government grants pay half the
+bills and the other half of the revenue keeps arriving, those reserves might
+bridge six months of the resulting gap. If the money counted as reserves cannot
+be spent, or the organization was already losing money, the answer could be much
+shorter. The reserve number needs a funding number beside it.</p>
+<p>Our <a href="../posts/2026-07-22-two-fifths-government.html">last post</a> asked where
+government grants go. The <a href="../posts/2026-07-07-months-of-cash-at-scale.html">reserve series</a>
+asked how much financial cushion charities carry. Here we put the two questions
+on the same filing: <strong>do charities more dependent on government grants have
+enough reserves to absorb a disruption?</strong></p>
+<p>The historical data answers a narrower question. In our cut of <strong>68,957
+grant-receiving charities</strong>, the group getting more than half its revenue from
+government grants has a median estimated reserve of <strong>4.0 months</strong>, against
+about <strong>6.0–6.1 months</strong> in the two middle groups. It has the lowest median
+within each of four expense-size bands, too. But the pattern is not a steady
+decline with every increase in grant dependence, and these are tax-year-2023
+balance sheets, not a reading of organizations’ finances today.</p>
+<h2 id="first-a-different-file">First, a different file</h2>
+<p>The IRS annual extract behind our earlier reserve posts does not contain the
+government-grant line. The published IRS tables used in the last post contain
+that line, but only as aggregates. Neither source can tell us whether the same
+organization has both high grant dependence and thin reserves.</p>
+<p>For this post we use the <a href="https://nccs.urban.org/nccs/datasets/efile/">National Center for Charitable Statistics’ processed
+electronic filings</a>, version
+<code>efile_v2_1</code>, for tax year 2023. We join the header, revenue, expense, and
+balance-sheet tables by <strong>filing identifier and EIN together</strong>. Revenue from one
+return never gets paired with reserves from another year. Urban Institute has
+already published <a href="https://nccs.urban.org/nccs/resources/nprisks-open-science/">research and an open workflow on government-funding
+risk</a>; this is our own
+reserve-focused cut of the underlying filing data, not a replication of its
+sample or a claim that the question is new.</p>
+<p>We keep the latest submitted full Form 990 per EIN, then require a 501(c)(3)
+filing with an address in the 50 states or DC, a full-year reporting period, and
+no group or partial-return flag. Of 244,821 matched filings at that point,
+80,444 report positive government grants. Further checks require positive
+revenue and expenses, grants no larger than total revenue, and usable net-asset
+accounts. The final 68,957 are <strong>a filtered set of grant recipients</strong>, with no
+population weights. They exclude 990-EZ and 990-N filers, organizations reporting
+no grants, and recipients that fail our accounting checks.</p>
+<p>Our measure of <strong>grant dependence</strong> is government grants divided by total
+revenue: Part VIII, line 1e divided by line 12. As the
+<a href="https://www.irs.gov/pub/irs-prior/i990--2023.pdf">Form 990 instructions</a> explain,
+line 1e includes grants from multiple levels of government. It does not identify
+the federal share, and it does not capture every government payment. Payments
+reported as program-service revenue sit elsewhere. A small number on line 1e
+therefore cannot establish that a charity has little exposure to public funding.</p>
+<h2 id="the-difference-is-at-the-high-dependence-end">The difference is at the high-dependence end</h2>
+<p>Figure 1 compares estimated reserves across four grant-dependence bands. Each
+charity counts once, regardless of size. Table 1 gives the underlying counts.</p>
+<figure>
+<img src="../images/2026-09-08-when-the-funding-stops-hero.png" alt="Two bar charts compare four government-grant dependence bands among 68,957 charities. Median estimated reserves are about six months in the middle bands and four months above 50 percent dependence; the share at or below three reserve months is highest in that last band, at 42.8 percent.">
+</figure>
+<p><strong>Figure 1.</strong> Estimated reserves among our tax-year-2023 grant recipients, grouped
+by government grants as a percentage of total revenue. <strong>A</strong> marks the
+3.98-month median among recipients above 50 percent dependence. <strong>B</strong> marks the
+42.8 percent of that group at or below three reserve months, including
+nonpositive reserves. Bands include their upper boundary and exclude their lower
+boundary; the first contains positive shares through 10 percent, not zero.</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr>
+<th>Government grants / revenue</th>
+<th style="text-align: right;">Charities</th>
+<th style="text-align: right;">Median reserve months</th>
+<th style="text-align: right;">At or below 3 months</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Above 0%, through 10%</td>
+<td style="text-align: right;">20,905</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">34.9%</td>
+</tr>
+<tr>
+<td>Above 10%, through 25%</td>
+<td style="text-align: right;">12,233</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">31.0%</td>
+</tr>
+<tr>
+<td>Above 25%, through 50%</td>
+<td style="text-align: right;">11,636</td>
+<td style="text-align: right;">6.1</td>
+<td style="text-align: right;">30.1%</td>
+</tr>
+<tr>
+<td>Above 50%, through 100%</td>
+<td style="text-align: right;">24,183</td>
+<td style="text-align: right;">4.0</td>
+<td style="text-align: right;">42.8%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Table 1.</strong> Counts and organization-weighted reserve statistics behind Figure 1.
+The last column includes negative and zero values; it does not count charities
+observed to run out of money.</p>
+<p>The middle bands have slightly more cushion than the lowest one. The clearest
+separation is between those middle groups and recipients drawing a majority of
+their revenue from government grants. <strong>10,351 of the 24,183</strong> charities in that
+last group have at most three months by this reserve calculation.</p>
+<p>This does not show that government grants caused thin reserves. Different
+services, reimbursement arrangements, property holdings, and funding histories
+could produce both the revenue mix and the balance sheet. We have not separated
+those explanations here.</p>
+<p>Size accounts for some of the differences, but does not erase the last group’s
+position. Figure 2 repeats the comparison within four annual-expense bands. In
+each, recipients above 50 percent dependence have the lowest median reserve.
+Among charities spending $5 million to under $50 million a year, for example,
+their median is <strong>2.2 months</strong>, compared with <strong>5.0 months</strong> in the 25–50 percent
+grant band. Broad size bands are only a partial comparison; they do not match
+organizations by mission or operating model.</p>
+<figure>
+<img src="../images/2026-09-08-when-the-funding-stops-size.png" alt="Four lines show median estimated reserve months by government-grant dependence within annual-expense bands. Every size band reaches its lowest median above 50 percent grant dependence, ranging from about seven months for the smallest organizations to 1.3 months for the largest.">
+</figure>
+<p><strong>Figure 2.</strong> The same grant-dependence bands, separated by annual total expenses.
+Connecting lines guide the eye between categories; they do not track charities
+over time. <strong>A</strong> marks the 6.96-month median for 7,585 majority-grant recipients
+spending under $500,000. <strong>B</strong> marks the 1.26-month median for 473 such recipients
+spending at least $50 million. Expense bands include their lower boundary and
+exclude their upper boundary.</p>
+<h2 id="what-we-are-calling-a-reserve">What we are calling a reserve</h2>
+<p>We carry forward the series’ <strong>estimated expendable-reserve proxy</strong>: net assets
+without donor restrictions, minus net land, buildings, and equipment, plus
+secured mortgages and notes payable. Divide that amount by one-twelfth of annual
+expenses less depreciation, depletion, and amortization.</p>
+<p>On the <a href="https://www.irs.gov/pub/irs-prior/f990--2023.pdf">2023 Form 990</a>, those
+are Part X lines 27, 10c, and 23, and Part IX lines 25 and 22. The accounting
+check is Part X line 27 plus line 28 against line 32, within $1,000. We also
+require the filer to mark that it follows FASB ASC 958.</p>
+<p>This estimate is not a bank balance. Some assets without donor restrictions are
+illiquid or designated by the board. The form does not establish that every
+dollar of secured debt finances the property we subtract. Nor does subtracting
+depreciation turn the expense statement into a cash-flow statement: in-kind
+expenses, working-capital movements, capital spending, and debt principal still
+matter.</p>
+<p>Two alternative calculations help show how much the comparison depends on the
+formula. Adding tax-exempt bonds back as well moves the majority-grant group’s
+median from <strong>4.0 to 4.1 months</strong>; omitting the secured-debt add-back lowers it
+to <strong>2.9 months</strong>. Its median remains below both middle groups either way.
+Cash plus savings and temporary cash investments, divided by the same expense
+denominator, gives <strong>3.5 months</strong>, versus <strong>4.7 and 4.9</strong> in the middle bands.
+That balance may include restricted money, so it is a separate check, not a
+substitute for spendable cash.</p>
+<p>Missing fields matter more. We never replace missing government grants, total
+revenue, total expenses, unrestricted net assets, or total net assets with zero.
+For omitted component fields, such as depreciation or secured debt, the main
+calculation assumes zero and records each substitution. Requiring every
+component to be explicitly present leaves just <strong>3,030 filings</strong>. In that
+selected subset, the high-dependence median is <strong>2.4 months</strong>, still below the
+middle groups’ <strong>4.5 and 4.8</strong>, but essentially equal to the lowest-dependence
+group. The broad comparison with the middle groups survives this check; the
+precise levels and the comparison with the lowest group do not.</p>
+<h2 id="a-funding-loss-needs-its-own-denominator">A funding loss needs its own denominator</h2>
+<p>Reserve months divide the cushion by the entire expense base. A disruption
+requires comparing it with the <strong>gap left after remaining revenue</strong>.</p>
+<p>For a deliberately simple illustration, suppose a charity has $1.2 million in
+annual expenses after the depreciation adjustment, $1.2 million in revenue,
+$600,000 in government grants, and $300,000 in usable reserves. Its ordinary
+reserve ratio is three months. Losing all $600,000 of grants would leave a
+$50,000 monthly gap, giving six months of coverage. Losing half the grants would
+leave a $25,000 monthly gap, giving twelve. These are assumed figures, not a
+particular organization’s results.</p>
+<p>We can apply that arithmetic to the filings as a <strong>static stress test</strong>. Hold
+all other revenue and expenses fixed. Subtract a chosen fraction of government
+grants from revenue. Where the remaining revenue falls below expenses less
+depreciation, divide the estimated reserve by that monthly shortfall.</p>
+<p>With no grant loss, <strong>6.8 percent</strong> of our sample already combines a shortfall
+with at most three months of estimated coverage. Removing half of grant revenue
+raises that share to <strong>15.1 percent</strong>; removing all of it raises it to <strong>20.6
+percent</strong>. The last figure is 14,181 filings: 7,078 already have a nonpositive
+reserve proxy, while 7,103 have a positive proxy insufficient to cover more than
+three months of the modeled gap. Including the starting deficits prevents us
+from attributing every stressed filing to the hypothetical cut.</p>
+<p>These are not predicted failure rates. The exercise assumes revenue recognition
+tracks usable receipts, retains restricted and noncash revenue in the total,
+ignores timing and credit access, and allows no spending adjustment or new
+fundraising. It also removes grants from all levels of government together.
+A temporary payment delay, a canceled award, and a permanent cut have different
+cash consequences; this annual arithmetic cannot distinguish them.</p>
+<h2 id="what-the-two-numbers-can-tell-us">What the two numbers can tell us</h2>
+<p>The useful result in this cut is the conjunction: the group with the highest
+reported government-grant dependence also has less estimated cushion than the
+middle groups. That pattern is visible within broad size categories and under
+several reserve definitions. It is a reason to ask more specific questions,
+with current accounts in hand.</p>
+<p>For a charity facing an actual disruption, those questions are about which
+payments stopped, how much cash is available for that purpose, what bills fall
+due before the next receipt, and what services can continue while the gap is
+bridged. The <a href="https://search.noprofits.org">noprofits.org search tool</a> and
+<a href="https://projects.propublica.org/nonprofits/">ProPublica Nonprofit Explorer</a> can
+help locate the historical filing. The answer about next month’s payroll has
+to come from more recent information.</p>
+<p>The <a href="../calcs/when-the-funding-stops/compute.py">analysis script</a>,
+<a href="../calcs/when-the-funding-stops/figures.py">chart script</a>, and
+<a href="https://github.com/noprofits-org/blog/tree/main/calcs/when-the-funding-stops">source hashes, results, and reproduction notes</a>
+make our cut inspectable. If we have mapped a field incorrectly or selected a
+misleading population, we would like to hear it. After the
+<a href="../posts/2026-07-21-checking-our-work.html">reconciliation post</a>, that invitation
+belongs next to the result.</p>
+<p><small>This is historical public-data analysis, not financial advice or a forecast of any charity’s survival; the reserve estimates and stress scenarios depend on the filters and assumptions described above.</small></p>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="np-footer">
+        <div class="np-container np-footer__top">
+            <div class="np-footer__brand">
+                <div class="np-footer__lockup">
+                    <span class="np-footer__mark">n</span>
+                    <span class="np-footer__word">noprofits<span class="np-wordmark__tld">.org</span> blog</span>
+                </div>
+                <p class="np-footer__blurb">Field notes on nonprofits, public-interest data, and the tools behind noprofits.org — the math, the code, and the diagrams left in. Generated with <a href="http://jaspervdj.be/hakyll">Hakyll</a>; select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="np-footer__cols">
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Site</h4>
+                    <a class="np-footer__link" href="../">Home</a>
+                    <a class="np-footer__link" href="../about.html">About</a>
+                    <a class="np-footer__link" href="../archive.html">Archive</a>
+                    <a class="np-footer__link" href="../colophon.html">Colophon</a>
+                </div>
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Elsewhere</h4>
+                    <a class="np-footer__link" href="https://github.com/noprofits-org">GitHub</a>
+                    <a class="np-footer__link" href="https://noprofits.org">noprofits.org</a>
+                    <a class="np-footer__link" href="../contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+        <div class="np-footer__legalwrap">
+            <div class="np-container np-footer__legal">
+                <span>© 2026 noprofits.org · BSD-3-Clause · Built with Hakyll + Pandoc</span>
+                <span>Seattle</span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

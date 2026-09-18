@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="Notes on data, nonprofits, and the tools we build to make sense of them.">
+    <title>Home — noprofits.org blog</title>
+
+    <meta name="theme-color" content="#F7F4EE" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#121A16" media="(prefers-color-scheme: dark)">
+
+    <!-- Canonical + Open Graph / Twitter social cards. URLs are absolute — card
+         scrapers do not resolve relative paths. https://blog.noprofits.org/images/og-image.png is the static branded
+         /images/og-image.png unless a post sets an `og-image` metadata field. -->
+    <link rel="canonical" href="https://blog.noprofits.org/index.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="NoProfits Blog">
+    <meta property="og:title" content="Home">
+    <meta property="og:description" content="Notes on data, nonprofits, and the tools we build to make sense of them.">
+    <meta property="og:url" content="https://blog.noprofits.org/index.html">
+    <meta property="og:image" content="https://blog.noprofits.org/images/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="noprofits.org blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Home">
+    <meta name="twitter:description" content="Notes on data, nonprofits, and the tools we build to make sense of them.">
+    <meta name="twitter:image" content="https://blog.noprofits.org/images/og-image.png">
+
+    <!-- No-flash theme: set an explicit data-theme BEFORE any stylesheet. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <!-- No-flash featured: hide the randomizable featured card until the picker
+         (js/featured-random.js) swaps in its choice, so the baked default post
+         doesn't flash before the swap. Safety timeout reveals it if JS is off-
+         path or the picker never runs. Home page only reacts (it owns .featured). -->
+    <script>
+      (function () {
+        document.documentElement.classList.add('feat-pending');
+        setTimeout(function () {
+          document.documentElement.classList.remove('feat-pending');
+        }, 1500);
+      })();
+    </script>
+
+    <link rel="preload" href="./fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="./fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- JetBrains Mono (mono/label/tag/code role) via Google Fonts — the one
+         non-self-hosted family, per the design brief. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Saira / Barlow Condensed are used ONLY by the résumé print stylesheet;
+         loaded print-scoped so screen never pulls them. -->
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" media="print">
+
+    <link rel="stylesheet" href="./css/noprofits-theme.css" />
+    <link rel="stylesheet" href="./css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="./atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="./rss.xml">
+
+    <script defer src="./js/noprofits-theme.js"></script>
+    <script defer src="./js/topic-filter.js"></script>
+    <script defer src="./js/featured-random.js"></script>
+    <script defer src="./js/figure-cycler.js"></script>
+    <script defer src="./js/figure-zoom.js"></script>
+    <script defer src="./js/mathjax-config.js"></script>
+    <script defer src="./js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="./images/favicon.svg">
+</head>
+
+<body>
+    <a class="np-skiplink" href="#main">Skip to content</a>
+
+    <header class="np-header">
+        <div class="np-container np-header__bar">
+            <a class="np-header__brand" href="./" aria-label="noprofits.org blog home">
+                <img src="./images/brandmark.svg" alt class="np-brandmark" width="32" height="32" aria-hidden="true">
+                <span class="np-wordmark">noprofits<span class="np-wordmark__tld">.org</span><span class="np-wordmark__app">blog</span></span>
+            </a>
+
+            <nav class="np-nav--inline" aria-label="Main navigation">
+                <a class="np-nav__link" href="./">Home</a>
+                <a class="np-nav__link" href="./about.html">About</a>
+                <a class="np-nav__link" href="./archive.html">Archive</a>
+                <a class="np-nav__link" href="./contact.html">Contact</a>
+            </nav>
+
+            <button type="button" class="np-themetoggle" data-np-themetoggle aria-pressed="false" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span data-np-themeicon aria-hidden="true">☽</span>
+            </button>
+
+            <button type="button" class="np-header__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="np-drawer">
+                <span class="np-burger" aria-hidden="true"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="np-scrim" data-drawer-scrim></div>
+    <aside id="np-drawer" class="np-drawer" aria-hidden="true" aria-label="Menu">
+        <div class="np-drawer__head">
+            <span class="np-drawer__title">Menu</span>
+            <button type="button" class="np-drawer__close" aria-label="Close menu"></button>
+        </div>
+        <a class="np-drawer__link" href="./">Home</a>
+        <a class="np-drawer__link" href="./about.html">About</a>
+        <a class="np-drawer__link" href="./archive.html">Archive</a>
+        <a class="np-drawer__link" href="./contact.html">Contact</a>
+    </aside>
+
+    <main id="main" role="main">
+        <section class="masthead">
+    <div class="masthead-inner">
+        <div class="masthead-meta">
+            <span class="meta-dot" aria-hidden="true"></span>
+            <span class="meta-place">Seattle</span>
+            <span class="meta-rule" aria-hidden="true"></span>
+            <span class="meta-kind">Technical Notes</span>
+        </div>
+        <h1 class="masthead-title">Notes on data, nonprofits &amp; the tools we build to <em>make sense of them.</em></h1>
+        <p class="masthead-lede">Field reports from the intersection of public-interest data, nonprofit operations, automation, and the command line — written up with the math, the code, and the diagrams left in.</p>
+    </div>
+</section>
+
+
+<section class="featured" aria-labelledby="featured-heading">
+    <div class="featured-inner">
+        <div class="featured-head">
+            <span class="featured-kicker" id="featured-heading">✦ Featured</span>
+            <span class="featured-date">July  7, 2026</span>
+        </div>
+        <div class="featured-grid">
+            <div class="featured-text">
+                <span class="featured-topic">Nonprofits</span>
+                <h2 class="featured-title"><a href="./posts/2026-07-07-months-of-cash-at-scale.html">Months of cash, at scale: the runway of 202,827 charities, computed</a></h2>
+                <p class="featured-desc">The last post showed how to compute a nonprofit's months of operating reserve from four lines of the Form 990. This one runs that arithmetic on every Form 990 e-filed in a year — 345,365 filings from the IRS's public extract — and finds a sector where a third of charities sit at or below three months, one in seven is below zero, and the biggest organizations run the thinnest.</p>
+                <div class="tag-chips"><span class="tag-chip">nonprofits</span><span class="tag-chip">data</span></div>
+                <a class="featured-readmore" href="./posts/2026-07-07-months-of-cash-at-scale.html">Read the note →</a>
+            </div>
+            
+            <figure class="featured-figure">
+                <div class="figure-label">Fig. 1 — One gauge, then all of them</div>
+                <div class="figure-body"><img src="./images/2026-07-07-months-of-cash-at-scale-hero.png" alt="A field of tiny fuel gauges stretching to the horizon, one gauge magnified under a lens, most needles sitting near the low end of the dial."></div>
+                <figcaption class="figure-caption">The reserve calculation from the last post, run not for one charity but for every Form 990 the IRS received in a year.</figcaption>
+            </figure>
+            
+        </div>
+    </div>
+</section>
+
+
+<section class="latest" aria-labelledby="latest-heading">
+    <div class="latest-inner">
+        <div class="latest-head">
+            <h3 id="latest-heading">Latest</h3>
+            <div class="topic-filter" role="group" aria-label="Filter posts by topic">
+                <button type="button" class="topic-pill is-active" data-topic-filter="all" aria-pressed="true">All</button>
+                <button type="button" class="topic-pill" data-topic-filter="nonprofits" aria-pressed="false">Nonprofits</button>
+                <button type="button" class="topic-pill" data-topic-filter="engineering" aria-pressed="false">Engineering</button>
+            </div>
+        </div>
+        <div class="post-list">
+    
+    <a class="post-row" href="./posts/2026-09-15-who-pays-for-the-messaging.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">September 15, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Who pays for the messaging: the AI regulation fight's money, audited from both sides</h4>
+            <p class="post-row-desc">Everyone in the AI regulation fight arrives with a graph. We audited the money behind both sides — nineteen advocacy organizations, thirteen payers' filed grant schedules, and seven years of lobbying disclosures — with every number tied to a public filing row. The Coefficient and Good Ventures orbit is the largest named payer on the safety side; donor-advised sponsors are the second rail on both sides; the lab publicly asking to be regulated is the fastest-growing lobbying spender in the set; and the complete donor picture is structurally invisible.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#form 990</span><span class="row-tag">#grants</span><span class="row-tag">#AI regulation</span><span class="row-tag">#lobbying</span><span class="row-tag">#Coefficient Giving</span><span class="row-tag">#donor-advised funds</span><span class="row-tag">#data</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-09-15-tarbell-coefficient-grant-graph.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">September 15, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">What rematches, what doesn't: the Tarbell–Coefficient grant graph, row by row</h4>
+            <p class="post-row-desc">The fight over AI regulation runs on grant graphs — arrows from funders to evaluators to journalists, assembled to show who is really talking. We took one heavily circulated graph's Tarbell rows and checked each against the primary documents. The Tarbell money — $5,291,930 — is real to the dollar. The direct METR edge and the donated Anthropic stake are exactly what the checked filings don't show.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#form 990</span><span class="row-tag">#grants</span><span class="row-tag">#Coefficient Giving</span><span class="row-tag">#Tarbell</span><span class="row-tag">#METR</span><span class="row-tag">#rematchability</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-09-08-when-the-funding-stops.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">September  8, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">When the funding stops: government grants and the reserves behind them</h4>
+            <p class="post-row-desc">In our cut of 68,957 tax-year-2023 grant recipients, charities getting more than half their revenue from government grants have thinner estimated reserves than the middle groups. What that association can tell us—and why reserve months are not a countdown to closure.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#data</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-22-two-fifths-government.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">July 22, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Two-fifths government: who the $305 billion actually goes to</h4>
+            <p class="post-row-desc">Government grants are 40.3 percent of the contributions American charities report — $305 billion in tax year 2022. Cut by size, the dependence is nothing like uniform: the mid-size asset class draws a majority of its pooled contributed dollars from government, the largest shows almost none of its revenue as grants — and a major channel of government money never touches the line at all.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#data</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-21-checking-our-work.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">July 21, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Checking our work: our numbers against the IRS's own</h4>
+            <p class="post-row-desc">Two posts on this blog admit their figures have never been reconciled against the IRS's own published tables. This is that reconciliation. The headline percentages survive, but the row filter all four of our sector posts use turns out to run three to eight and a half percent low on dollar totals — and a correction we published last week was itself wrong.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#data</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-15-public-support-cliff.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">July 15, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">One-third: the cliff a few dozen charities steer around</h4>
+            <p class="post-row-desc">There is a bright line in the tax code: draw less than a third of your support from the public and you stop being a public charity. Almost no charity can see it — the median sits at 96 percent. But among the few hundred close enough to see it, the distribution bends, and it bends at the number they can compute.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#data</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-14-nobodys-average.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">July 14, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Nobody's average: who actually pays for the nonprofit sector</h4>
+            <p class="post-row-desc">Contributions and grants are 24 percent of the money that moves through American charities. The median charity draws 65 percent of its revenue from them. Both numbers are right, and what has to be true for both to be right is that 501(c)(3) is not one population — a fact the IRS has been recording on Schedule A the whole time.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#data</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-11-below-zero-negative-operating-reserve.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">July 11, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Below zero: which charities are really running on empty</h4>
+            <p class="post-row-desc">The last post found that one in seven U.S. public charities sits at or below zero months of operating reserve — in expendable terms, underwater. That number sounds like a mass-casualty warning. It isn't. Here is what "below zero" is actually made of: mostly charities whose money is locked in their own buildings, not charities out of cash. Splitting 28,651 organizations three ways finds the smaller, sharper number a donor should really check.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#data</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-07-months-of-cash-at-scale.html" data-topic="nonprofits" data-has-figure="1">
+        <div class="post-row-meta">
+            <span class="post-row-date">July  7, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Months of cash, at scale: the runway of 202,827 charities, computed</h4>
+            <p class="post-row-desc">The last post showed how to compute a nonprofit's months of operating reserve from four lines of the Form 990. This one runs that arithmetic on every Form 990 e-filed in a year — 345,365 filings from the IRS's public extract — and finds a sector where a third of charities sit at or below three months, one in seven is below zero, and the biggest organizations run the thinnest.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#data</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-07-a-pr-gated-visual-cms-for-astro.html" data-topic="engineering" data-has-figure="1">
+        <div class="post-row-meta">
+            <span class="post-row-date">July  7, 2026</span>
+            <span class="post-row-topic">Engineering</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Every save is a pull request: a visual, PR-gated CMS for an Astro site</h4>
+            <p class="post-row-desc">site.noprofits.org grew a content management system — a node-map editor where every routed page is a clickable node, and every save becomes a pull request. How the splice-back engine works, why a curly brace is the scariest character in an Astro template, how a CI job proves a diff is pure text, and what this design gets wrong.</p>
+            <div class="post-row-tags"><span class="row-tag">#astro</span><span class="row-tag">#cms</span><span class="row-tag">#firebase</span><span class="row-tag">#security</span><span class="row-tag">#github actions</span><span class="row-tag">#static site</span><span class="row-tag">#serverless</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-06-the-overhead-myth.html" data-topic="nonprofits" data-has-figure="1">
+        <div class="post-row-meta">
+            <span class="post-row-date">July  6, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">The overhead myth: the first number donors check is the worst one</h4>
+            <p class="post-row-desc">The program-expense ratio is the number donors, watchdogs, and grantmakers reach for first — and the people who built the rating recanted it in 2013. A look at why the sector's favorite efficiency metric is gameable, corrosive, and best distrusted.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#data</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-06-months-of-cash.html" data-topic="nonprofits" data-has-figure="1">
+        <div class="post-row-meta">
+            <span class="post-row-date">July  6, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">How many months of cash? Computing a nonprofit's real reserve from the 990</h4>
+            <p class="post-row-desc">The resilience number every donor should check — months of operating reserve — isn't printed anywhere on the Form 990, but four lines of the balance sheet compute it. How to do the arithmetic honestly, what the sector's distribution actually looks like, and why half of American nonprofits are three bad months from a crisis.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#data</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-05-nonprofit-back-office-free-tools.html" data-topic="nonprofits" data-has-figure="1">
+        <div class="post-row-meta">
+            <span class="post-row-date">July  5, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Stop renting what you can own: a nonprofit back office on free tools</h4>
+            <p class="post-row-desc">Small nonprofits quietly bleed donor and grant money on SaaS subscriptions they don't need, while free tiers from Vercel, Supabase, Firebase, and Google Apps Script would do the same job and leave them owning the infrastructure. A field guide to building your own digital footprint for near zero.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#infrastructure</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-05-how-to-vet-a-charity.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">July  5, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">How to actually vet a charity before you donate</h4>
+            <p class="post-row-desc">A donor's guide to the four numbers on a Form 990 that actually tell you whether a charity is run well — where to find each one, what a healthy range looks like, and the trap hiding in every one of them.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#data</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-07-05-501c3-vs-c4-vs-c6.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">July  5, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">501(c)(3) vs (c)(4) vs (c)(6): what the letter after the number means</h4>
+            <p class="post-row-desc">A plain-language guide to the three tax-exempt types you actually run into — the charity, the advocacy group, and the trade association — and what each one can and can't do with your money, your donation deduction, and an election.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-26-how-grants-noprofits-org-works.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">June 26, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">How grants.noprofits.org works: tracing federal money through a live graph</h4>
+            <p class="post-row-desc">A walk through the live tool at grants.noprofits.org — pulling a federal grant-flow graph straight from USAspending.gov, enriching it with ProPublica 990 data, and the decisions (sub-agency grouping, name normalization, proximity-first trimming, a fuzzy-match gate, fiscal-year-normalized taxpayer ratios) that keep it honest.</p>
+            <div class="post-row-tags"><span class="row-tag">#usaspending</span><span class="row-tag">#propublica</span><span class="row-tag">#d3</span><span class="row-tag">#graph</span><span class="row-tag">#federal grants</span><span class="row-tag">#javascript</span><span class="row-tag">#data</span><span class="row-tag">#transparency</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-25-astro-apps-script-firebase.html" data-topic="engineering" data-has-figure="1">
+        <div class="post-row-meta">
+            <span class="post-row-date">June 25, 2026</span>
+            <span class="post-row-topic">Engineering</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Astro, Apps Script, and Firebase: how site.noprofits.org is built</h4>
+            <p class="post-row-desc">A factual tour of the noprofits-web-engineering stack — a static Astro site on Firebase Hosting, a Google Apps Script standing in for a backend, and a keyless GitHub Actions deploy. Architecture, configuration, and data flow, with diagrams.</p>
+            <div class="post-row-tags"><span class="row-tag">#astro</span><span class="row-tag">#apps script</span><span class="row-tag">#firebase</span><span class="row-tag">#hosting</span><span class="row-tag">#github actions</span><span class="row-tag">#static site</span><span class="row-tag">#workload identity federation</span><span class="row-tag">#serverless</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/2026-06-17-reading-a-food-banks-990.html" data-topic="nonprofits" data-has-figure="1">
+        <div class="post-row-meta">
+            <span class="post-row-date">June 17, 2026</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">What a food bank's tax return actually says</h4>
+            
+            <div class="post-row-tags"><span class="row-tag">#nonprofits</span><span class="row-tag">#data</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/Setting-Up-Google-Sheet-and-Bound-Web-App-Script-To-Fetch-NP-Data.html" data-topic="engineering">
+        <div class="post-row-meta">
+            <span class="post-row-date">May  3, 2025</span>
+            <span class="post-row-topic">Engineering</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Building a Spreadsheet-Based API Tool with Google Sheets</h4>
+            <p class="post-row-desc">How to leverage Google Sheets and Google Apps Script to create a powerful data retrieval system that connects to external APIs, demonstrating capabilities beyond what free Excel Online can offer.</p>
+            <div class="post-row-tags"><span class="row-tag">#Google Apps Script</span><span class="row-tag">#web app</span><span class="row-tag">#ProPublica API</span><span class="row-tag">#spreadsheet automation</span><span class="row-tag">#Excel alternatives</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/automating-IRS-Form-990-Data-Extraction-A-Computational-Approach.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">April 12, 2025</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Automating IRS Form 990 Data Extraction - A Computational Approach to Nonprofit Financial Metrics</h4>
+            <p class="post-row-desc">A programmatic approach to extracting and analyzing financial metrics from IRS Form 990 filings, enabling the calculation of program efficiency and fundraising efficiency for United Way Worldwide across multiple years.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofit transparency</span><span class="row-tag">#IRS Form 990</span><span class="row-tag">#data extraction</span><span class="row-tag">#computational methods</span><span class="row-tag">#efficiency metrics</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/programmatic-990-retrieval-Browser-appraoch.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">April  8, 2025</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Programmatic Retrieval of IRS Form 990 Data - A Browser Automation Approach</h4>
+            <p class="post-row-desc">A practical methodology for programmatically retrieving nonprofit financial data from Form 990 XML filings using browser automation techniques.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofit transparency</span><span class="row-tag">#IRS Form 990</span><span class="row-tag">#data retrieval</span><span class="row-tag">#browser automation</span><span class="row-tag">#Selenium</span><span class="row-tag">#XML parsing</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/mapping-the-irs-990-data.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">April  1, 2025</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Mapping the IRS Form 990 Data Repository - A Computational Approach to Nonprofit Data Discovery</h4>
+            <p class="post-row-desc">A computational approach to mapping the structure of the IRS Form 990 data repository, identifying indices and file relationships to enable targeted retrieval of nonprofit financial data.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofit transparency</span><span class="row-tag">#IRS Form 990</span><span class="row-tag">#data mapping</span><span class="row-tag">#computational methods</span><span class="row-tag">#repository structure</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/Computational-Extraction-of-financial-metrics.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">April  1, 2025</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">Computational Extraction of Financial Metrics from IRS Form 990 Data Using ProPublica's Nonprofit Explorer API</h4>
+            <p class="post-row-desc">A computational approach to extract financial metrics from IRS Form 990 filings using ProPublica's Nonprofit Explorer API, addressing challenges in data format variability and availability, with application to nonprofit evaluation.</p>
+            <div class="post-row-tags"><span class="row-tag">#nonprofit transparency</span><span class="row-tag">#IRS Form 990</span><span class="row-tag">#data extraction</span><span class="row-tag">#financial analysis</span><span class="row-tag">#computational methods</span></div>
+        </div>
+    </a>
+    
+    <a class="post-row" href="./posts/AI-Powered-Non-Profit-Transparency.html" data-topic="nonprofits">
+        <div class="post-row-meta">
+            <span class="post-row-date">March 19, 2025</span>
+            <span class="post-row-topic">Nonprofits</span>
+        </div>
+        <div class="post-row-main">
+            <h4 class="post-row-title">AI-Powered Non-Profit Transparency - Comparing Modern Tools for Financial Analysis</h4>
+            <p class="post-row-desc">A comparative analysis of AI search tools in extracting and analyzing non-profit financial data, with practical applications for donors and stakeholders seeking transparency.</p>
+            <div class="post-row-tags"><span class="row-tag">#non-profits</span><span class="row-tag">#financial-transparency</span><span class="row-tag">#AI-tools</span><span class="row-tag">#Form-990</span><span class="row-tag">#ProPublica</span></div>
+        </div>
+    </a>
+    
+</div>
+
+        <p class="topic-empty" hidden>No posts under this topic yet.</p>
+    </div>
+    <div class="archive-cta">
+        <a class="np-btn-outline" href="./archive.html">Explore the full archive →</a>
+    </div>
+</section>
+
+    </main>
+
+    <footer class="np-footer">
+        <div class="np-container np-footer__top">
+            <div class="np-footer__brand">
+                <div class="np-footer__lockup">
+                    <span class="np-footer__mark">n</span>
+                    <span class="np-footer__word">noprofits<span class="np-wordmark__tld">.org</span> blog</span>
+                </div>
+                <p class="np-footer__blurb">Field notes on nonprofits, public-interest data, and the tools behind noprofits.org — the math, the code, and the diagrams left in. Generated with <a href="http://jaspervdj.be/hakyll">Hakyll</a>; select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="np-footer__cols">
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Site</h4>
+                    <a class="np-footer__link" href="./">Home</a>
+                    <a class="np-footer__link" href="./about.html">About</a>
+                    <a class="np-footer__link" href="./archive.html">Archive</a>
+                    <a class="np-footer__link" href="./colophon.html">Colophon</a>
+                </div>
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Elsewhere</h4>
+                    <a class="np-footer__link" href="https://github.com/noprofits-org">GitHub</a>
+                    <a class="np-footer__link" href="https://noprofits.org">noprofits.org</a>
+                    <a class="np-footer__link" href="./contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+        <div class="np-footer__legalwrap">
+            <div class="np-container np-footer__legal">
+                <span>© 2026 noprofits.org · BSD-3-Clause · Built with Hakyll + Pandoc</span>
+                <span>Seattle</span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

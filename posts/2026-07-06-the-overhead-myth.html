@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="description" content="The program-expense ratio is the number donors, watchdogs, and grantmakers reach for first — and the people who built the rating recanted it in 2013. A look at why the sector's favorite efficiency metric is gameable, corrosive, and best distrusted.">
+    <title>The overhead myth: the first number donors check is the worst one — noprofits.org blog</title>
+
+    <meta name="theme-color" content="#F7F4EE" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#121A16" media="(prefers-color-scheme: dark)">
+
+    <!-- Canonical + Open Graph / Twitter social cards. URLs are absolute — card
+         scrapers do not resolve relative paths. https://blog.noprofits.org/images/og-image.png is the static branded
+         /images/og-image.png unless a post sets an `og-image` metadata field. -->
+    <link rel="canonical" href="https://blog.noprofits.org/posts/2026-07-06-the-overhead-myth.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="NoProfits Blog">
+    <meta property="og:title" content="The overhead myth: the first number donors check is the worst one">
+    <meta property="og:description" content="The program-expense ratio is the number donors, watchdogs, and grantmakers reach for first — and the people who built the rating recanted it in 2013. A look at why the sector's favorite efficiency metric is gameable, corrosive, and best distrusted.">
+    <meta property="og:url" content="https://blog.noprofits.org/posts/2026-07-06-the-overhead-myth.html">
+    <meta property="og:image" content="https://blog.noprofits.org/images/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="noprofits.org blog — notes on data, nonprofits, and the tools we build to make sense of them.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The overhead myth: the first number donors check is the worst one">
+    <meta name="twitter:description" content="The program-expense ratio is the number donors, watchdogs, and grantmakers reach for first — and the people who built the rating recanted it in 2013. A look at why the sector's favorite efficiency metric is gameable, corrosive, and best distrusted.">
+    <meta name="twitter:image" content="https://blog.noprofits.org/images/og-image.png">
+
+    <!-- No-flash theme: set an explicit data-theme BEFORE any stylesheet. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) { document.documentElement.setAttribute('data-theme', 'light'); }
+      })();
+    </script>
+
+    <!-- No-flash featured: hide the randomizable featured card until the picker
+         (js/featured-random.js) swaps in its choice, so the baked default post
+         doesn't flash before the swap. Safety timeout reveals it if JS is off-
+         path or the picker never runs. Home page only reacts (it owns .featured). -->
+    <script>
+      (function () {
+        document.documentElement.classList.add('feat-pending');
+        setTimeout(function () {
+          document.documentElement.classList.remove('feat-pending');
+        }, 1500);
+      })();
+    </script>
+
+    <link rel="preload" href="../fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- JetBrains Mono (mono/label/tag/code role) via Google Fonts — the one
+         non-self-hosted family, per the design brief. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Saira / Barlow Condensed are used ONLY by the résumé print stylesheet;
+         loaded print-scoped so screen never pulls them. -->
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet" media="print">
+
+    <link rel="stylesheet" href="../css/noprofits-theme.css" />
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="alternate" type="application/atom+xml" title="noprofits.org (Atom)" href="../atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="noprofits.org (RSS)" href="../rss.xml">
+
+    <script defer src="../js/noprofits-theme.js"></script>
+    <script defer src="../js/topic-filter.js"></script>
+    <script defer src="../js/featured-random.js"></script>
+    <script defer src="../js/figure-cycler.js"></script>
+    <script defer src="../js/figure-zoom.js"></script>
+    <script defer src="../js/mathjax-config.js"></script>
+    <script defer src="../js/code-copy.js"></script>
+    <script defer id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha384-Wuix6BuhrWbjDBs24bXrjf4ZQ5aFeFWBuKkFekO2t8xFU0iNaLQfp2K6/1Nxveei" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="icon" type="image/svg+xml" href="../images/favicon.svg">
+</head>
+
+<body>
+    <a class="np-skiplink" href="#main">Skip to content</a>
+
+    <header class="np-header">
+        <div class="np-container np-header__bar">
+            <a class="np-header__brand" href="../" aria-label="noprofits.org blog home">
+                <img src="../images/brandmark.svg" alt class="np-brandmark" width="32" height="32" aria-hidden="true">
+                <span class="np-wordmark">noprofits<span class="np-wordmark__tld">.org</span><span class="np-wordmark__app">blog</span></span>
+            </a>
+
+            <nav class="np-nav--inline" aria-label="Main navigation">
+                <a class="np-nav__link" href="../">Home</a>
+                <a class="np-nav__link" href="../about.html">About</a>
+                <a class="np-nav__link" href="../archive.html">Archive</a>
+                <a class="np-nav__link" href="../contact.html">Contact</a>
+            </nav>
+
+            <button type="button" class="np-themetoggle" data-np-themetoggle aria-pressed="false" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span data-np-themeicon aria-hidden="true">☽</span>
+            </button>
+
+            <button type="button" class="np-header__toggle" aria-label="Open menu" aria-expanded="false" aria-controls="np-drawer">
+                <span class="np-burger" aria-hidden="true"></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="np-scrim" data-drawer-scrim></div>
+    <aside id="np-drawer" class="np-drawer" aria-hidden="true" aria-label="Menu">
+        <div class="np-drawer__head">
+            <span class="np-drawer__title">Menu</span>
+            <button type="button" class="np-drawer__close" aria-label="Close menu"></button>
+        </div>
+        <a class="np-drawer__link" href="../">Home</a>
+        <a class="np-drawer__link" href="../about.html">About</a>
+        <a class="np-drawer__link" href="../archive.html">Archive</a>
+        <a class="np-drawer__link" href="../contact.html">Contact</a>
+    </aside>
+
+    <main id="main" role="main">
+        <article class="post">
+    <a class="back-link" href="../">← All posts</a>
+
+    
+    <div class="post-chips">
+        <span class="chip">nonprofits, data</span>
+    </div>
+    
+
+    <h1 class="post-title">The overhead myth: the first number donors check is the worst one</h1>
+
+    <div class="post-meta">
+        <span>July  6, 2026</span>
+    </div>
+
+    <div class="post-rule"></div>
+
+    <div class="post-body">
+        <p>The <a href="../posts/2026-07-05-how-to-vet-a-charity.html">donor’s guide</a> in this series called the program expense ratio “the single most abused number in the sector,” treated it as a screen and never a verdict, and left a promissory note: <em>there’s a whole “overhead myth” argument here that deserves its own post.</em> This is that post. The claim is stronger than “the ratio has a trap in it.” The claim is that a decade of the ratio being the headline number donors, watchdogs, and grantmakers fixate on has actively made nonprofits worse — that the metric doesn’t merely mismeasure quality, it degrades it. The people best positioned to know this are the ones who used to sell the metric, and in 2013 they said so in writing.</p>
+<h2 id="what-the-ratio-actually-is">What the ratio actually is</h2>
+<p>To be precise about the target: the <strong>program expense ratio</strong> is program-service spending divided by total spending, straight off Part IX of the <a href="https://www.irs.gov/forms-pubs/about-form-990">Form 990</a>. Its complement — everything not booked as program — is <strong>overhead</strong>: management, general administration, and fundraising. “Low overhead” and “high program ratio” are the same statement. The intuition behind fixating on it is honest enough: a dollar in overhead is a dollar that didn’t reach the mission, so minimize overhead and maximize good. That intuition is the myth. It fails because it assumes overhead is waste, and it isn’t — overhead is the organization’s capacity to do the work at all.</p>
+<h2 id="the-people-who-sold-the-metric-recanted-it">The people who sold the metric recanted it</h2>
+<p>In June 2013 the CEOs of the three largest sources of nonprofit information — <strong>GuideStar</strong>, <strong>Charity Navigator</strong>, and the <strong>BBB Wise Giving Alliance</strong> — published an open letter <em>to the donors of America</em> titled “The Overhead Myth.”<span class="citation" data-cites="OverheadMyth2013"><sup>1</sup></span> These are the organizations whose entire business was rating charities, and the letter’s purpose was to tell donors to stop using the rating they were best known for. The overhead ratio, they wrote, is “a poor measure of a charity’s performance.” Overhead costs “include important investments charities make to improve their work: investments in training, planning, evaluation, and internal systems.” And the operative verb: focusing on overhead alone, they said, “starves charities of the freedom they need to best serve the people and communities they are trying to serve.”</p>
+<p>That is not an outside critic; that is the referee ejecting himself from the game. A year later the same coalition wrote a second letter, this one to the nonprofits, urging them to stop <em>marketing</em> their low overhead — to stop feeding the thing that was eating them.<span class="citation" data-cites="OverheadMyth2014"><sup>2</sup></span> When the institutions that built the scoreboard tell you the score is misleading, the burden of proof flips: the question is no longer “why distrust the ratio,” it’s “why is anyone still quoting it.”</p>
+<h2 id="why-the-number-is-easy-to-fake">Why the number is easy to fake</h2>
+<p>Start with the mechanical problem, because it undercuts the ratio even before we get to the damage. <strong>The three expense buckets are soft.</strong> Every organization has to split each cost — a salary, a mailing, a software license — across program, management, and fundraising, and that split is a judgment call the organization makes about its own return. The rules (functional-expense allocation, and the “joint cost allocation” rules for activities that mix fundraising with program or education) leave genuine room, and a fundraising appeal that contains a paragraph of “public education” can, under those rules, book part of its cost as program.</p>
+<p>So the number bends toward whoever is reporting it, in both directions. An organization that wants a flattering ratio classifies aggressively — the executive who spends half her time on program delivery has half her salary moved out of “management,” a gala with a mission-education component sheds cost into “program.” The direction of the bias is set by what the org thinks donors want to see, which means the ratio partly measures <em>the sophistication of the org’s accountants</em>, not the efficiency of its programs. This is the empirical finding underneath the rhetoric: accounting researchers such as Daniel Tinkelman have shown for years that reported fundraising and overhead ratios are weak, gameable predictors of the outcomes donors claim to care about.<span class="citation" data-cites="Tinkelman2006"><sup>3</sup></span> A number that good organizations can post low by investing wisely and bad organizations can post low by lying is not a measurement. It’s a Rorschach test.</p>
+<h2 id="the-starvation-cycle-how-the-metric-eats-the-sector">The starvation cycle: how the metric eats the sector</h2>
+<p>The mechanical critique says the ratio is noisy. The serious critique says the ratio is <em>corrosive</em>, and it has a name. In 2009, Ann Goggins Gregory and Don Howard laid out the <strong>nonprofit starvation cycle</strong> in the <em>Stanford Social Innovation Review</em>.<span class="citation" data-cites="Gregory2009"><sup>4</sup></span> It is a feedback loop, and it runs like this:</p>
+<ol type="1">
+<li>Funders and donors carry an unrealistic idea of what it costs to run an organization well — the overhead should be tiny, the money should “all go to the cause.”</li>
+<li>Nonprofits, competing for that money, report the low overhead the funders expect — partly by the aggressive classification above, and partly by <em>actually</em> underspending on the unglamorous things: accounting systems, IT, evaluation, staff training, fundraising capacity, reserves.</li>
+<li>The starved infrastructure makes the organizations weaker and less able to demonstrate results, which confirms the funders’ suspicion that nonprofits are inefficient and shouldn’t be trusted with overhead —</li>
+<li>— which tightens the expectation, and the loop pulls another turn.</li>
+</ol>
+<figure>
+<img src="../images/The-overhead-myth.png" alt="A four-stage feedback loop drawn as a ring of arrows around a central spiral. Top: a hand holding a gear with a dollar sign and a downward arrow — funders demand minimal overhead. Right: a columned institution standing on cracked ground — starved infrastructure. Bottom: a wilting plant beside a declining bar chart — weaker results. Left: a magnifying glass over a falling line with a down arrow — funders' distrust is confirmed, tightening the loop again.">
+<figcaption>
+<strong>Figure 1.</strong> The nonprofit starvation cycle: unrealistic overhead expectations push organizations to underinvest in their own infrastructure, which weakens results, which confirms the distrust — and tightens the expectation for the next turn.
+</figcaption>
+</figure>
+<p>The engine of that loop (Figure 1) is exactly the metric this post is about. Because “low overhead” reads as virtue, the rational move for a nonprofit competing for scarce dollars is to cut the capacity that would let it do the mission better — and to hide the cuts it can’t afford to make. The ratio doesn’t just fail to detect dysfunction; it <em>rewards</em> it and <em>manufactures</em> it. Recent work continues to document the mechanism: a 2025 study traces how overhead-ratio pressure still drives real misreporting and underinvestment across the sector.<span class="citation" data-cites="Kim2025"><sup>5</sup></span> Sixteen years after Gregory and Howard named it, the cycle is not a historical artifact.</p>
+<h2 id="why-the-low-end-is-the-real-red-flag">Why the low end is the real red flag</h2>
+<p>Here is the inversion that the <a href="../posts/2026-07-05-how-to-vet-a-charity.html">donor’s guide</a> gestured at and this post can state flatly: a <strong>suspiciously high</strong> program ratio — 95% and up — is more often a warning than a virtue. It means one of a few things, none of them “well run”: an organization too small or too young to have built real infrastructure; one starving itself on exactly the cycle above; or one whose accountants are simply better at the classification game. The genuinely healthy organization — the one that pays competitive salaries, keeps a <a href="../posts/2026-07-05-how-to-vet-a-charity.html">three-to-six-month reserve</a>, runs an evaluation function, and invests in the fundraising that will fund next year — will very often post a <em>lower</em> program ratio than the fragile one next to it. On this metric, and only on this metric, the fragile org wins (Figure 2). That should end your confidence in the metric.</p>
+<figure>
+<img src="../images/the-payoff-not-the-cycle.png" alt="Two office buildings weighed on a balance scale. On the left, a building displaying a high program-expense pie chart sits on a cracked, crumbling column and tilts precariously. On the right, a taller, solidly constructed building shows a smaller program-ratio slice but stands stable and complete on a firm base.">
+<figcaption>
+<strong>Figure 2.</strong> Judged on the program-expense ratio alone, the fragile organization wins: the building with the higher ratio is the one cracking at its foundation, while the sturdier org posts a <em>lower</em> ratio precisely because it invests in the infrastructure that keeps it standing.
+</figcaption>
+</figure>
+<h2 id="what-to-look-at-instead">What to look at instead</h2>
+<p>None of this means finances are unknowable — it means the single ratio is the wrong lens, and the fix is triangulation, which is the whole method of the donor’s guide. Read the four numbers <em>together</em> and across several years, reframing each question as in Table 1:</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Instead of asking</th>
+<th>Ask</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Is overhead low?</td>
+<td>Is overhead <em>appropriate</em> for this org’s size, age, and mission?</td>
+</tr>
+<tr>
+<td>What’s the program ratio this year?</td>
+<td>Which direction is it moving over three to four years, and why?</td>
+</tr>
+<tr>
+<td>How little does it spend on itself?</td>
+<td>Does it hold a real reserve and invest in the systems that deliver the mission?</td>
+</tr>
+<tr>
+<td>Does the CEO earn “too much”?</td>
+<td>Is comp reasonable <em>against the budget and comparable orgs</em> (Part VII, Schedule J)?</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Table 1.</em> Reframing the four screens: for each overhead-flavored question on the left, the question on the right is the one that actually tracks organizational health.</p>
+<p>The watchdogs have followed their own advice. In its September 2023 methodology overhaul, <strong>Charity Navigator removed</strong> the administrative-expense ratio, the fundraising-expense ratio, and program-expense growth from its scoring, folding what remained into a broader rating built on finance <em>and accountability, impact, and governance</em> rather than a single efficiency fraction.<span class="citation" data-cites="CharityNavigator2023"><sup>6</sup></span> The scoreboard the 2013 letter disowned has, a decade on, been partly dismantled by the people who ran it. Dan Pallotta’s argument from the same period — that we ask charities to do more and more while forbidding them the overhead, growth capital, and risk-taking every for-profit takes for granted — is the same point from the operator’s chair.<span class="citation" data-cites="Pallotta2013"><sup>7</sup></span></p>
+<h2 id="the-two-sides-of-the-same-coin">The two sides of the same coin</h2>
+<p>This is where the series closes on itself. To a <strong>donor</strong>, the overhead myth is a reason to distrust the first number you’re tempted to trust, and to read the <a href="../posts/2026-07-05-how-to-vet-a-charity.html">990 as a movie rather than a photograph</a>. To an <strong>operator</strong>, the myth is a trap you’re under pressure to walk into — and the <a href="../posts/2026-07-05-nonprofit-back-office-free-tools.html">free-tools post</a> in this series is, read in this light, a way to keep genuine capacity <em>off</em> your overhead line: infrastructure you own for near zero doesn’t inflate the ratio you’ll be judged on, so you get the systems without paying the reputational tax for them. The myth punishes capacity; owning your stack is one way to build capacity the myth can’t see.</p>
+<p>The data to do any of this the right way already exists and is public — every 990, every year, on the <a href="https://projects.propublica.org/nonprofits/">ProPublica Nonprofit Explorer</a> and through the <a href="https://search.noprofits.org">tools at noprofits.org</a> that pull exactly these figures. The transparency was never the hard part. The hard part is resisting the one seductive number and reading the rest. The overhead ratio isn’t just a poor screen; treated as a verdict, it has spent a decade making the sector it claims to measure a little worse. The best thing a donor can do with it is know why to distrust it.</p>
+<p><em>This is a plain-language overview, not tax, legal, or financial advice. Benchmarks and watchdog methodologies change; the 2023 Charity Navigator update is one example, and terms may have shifted again since. Where a figure or standard matters to a giving decision, confirm it against the organization’s current filings and the watchdog’s current methodology.</em></p>
+<h2 class="unnumbered" id="references">References</h2>
+<div id="refs" class="references csl-bib-body" data-entry-spacing="0" role="list">
+<div id="ref-OverheadMyth2013" class="csl-entry" role="listitem">
+<div class="csl-left-margin">1. </div><div class="csl-right-inline">BBB Wise Giving Alliance; Charity Navigator; GuideStar. The Overhead Myth: An Open Letter to the Donors of America, 2013. <a href="https://d3f9k0n15ckvhe.cloudfront.net/wp-content/uploads/2021/10/OverheadMyth-Letter.pdf">https://d3f9k0n15ckvhe.cloudfront.net/wp-content/uploads/2021/10/OverheadMyth-Letter.pdf</a>.</div>
+</div>
+<div id="ref-OverheadMyth2014" class="csl-entry" role="listitem">
+<div class="csl-left-margin">2. </div><div class="csl-right-inline">BBB Wise Giving Alliance; Charity Navigator; GuideStar. The Overhead Myth: An Open Letter to the Nonprofits of America, 2014. <a href="https://give.org/news/charities-urged-to-crush-overhead-myth-and-take-actions-toward-an-overhead-solution">https://give.org/news/charities-urged-to-crush-overhead-myth-and-take-actions-toward-an-overhead-solution</a>.</div>
+</div>
+<div id="ref-Tinkelman2006" class="csl-entry" role="listitem">
+<div class="csl-left-margin">3. </div><div class="csl-right-inline">Tinkelman, D. The Decision-Usefulness of Nonprofit Fundraising Ratios: Some Contrary Evidence. <em>Journal of Accounting, Auditing &amp; Finance</em> <strong>2006</strong>, <em>21</em> (4), 441–462. <a href="https://doi.org/10.1177/0148558X0602100406">https://doi.org/10.1177/0148558X0602100406</a>.</div>
+</div>
+<div id="ref-Gregory2009" class="csl-entry" role="listitem">
+<div class="csl-left-margin">4. </div><div class="csl-right-inline">Gregory, A. G.; Howard, D. <a href="https://ssir.org/articles/entry/the_nonprofit_starvation_cycle">The Nonprofit Starvation Cycle</a>. <em>Stanford Social Innovation Review</em> <strong>2009</strong>, <em>7</em> (4), 49–53.</div>
+</div>
+<div id="ref-Kim2025" class="csl-entry" role="listitem">
+<div class="csl-left-margin">5. </div><div class="csl-right-inline">Kim, M.; Charbonneau, É.; Sowa, J. E. The Nonprofit Starvation Cycle: The Extent of Overhead Ratios’ Manipulation, Distrust, and Ramifications. <em>Nonprofit and Voluntary Sector Quarterly</em> <strong>2025</strong>, <em>54</em> (1), 151–175. <a href="https://doi.org/10.1177/08997640241233724">https://doi.org/10.1177/08997640241233724</a>.</div>
+</div>
+<div id="ref-CharityNavigator2023" class="csl-entry" role="listitem">
+<div class="csl-left-margin">6. </div><div class="csl-right-inline">Charity Navigator. 2023 Fall Methodology Update, 2023. <a href="https://www.charitynavigator.org/about-us/news-thought-leadership/2023-fall-methodology-update/">https://www.charitynavigator.org/about-us/news-thought-leadership/2023-fall-methodology-update/</a>.</div>
+</div>
+<div id="ref-Pallotta2013" class="csl-entry" role="listitem">
+<div class="csl-left-margin">7. </div><div class="csl-right-inline">Pallotta, D. The Way We Think about Charity Is Dead Wrong, 2013. <a href="https://www.ted.com/talks/dan_pallotta_the_way_we_think_about_charity_is_dead_wrong">https://www.ted.com/talks/dan_pallotta_the_way_we_think_about_charity_is_dead_wrong</a>.</div>
+</div>
+</div>
+    </div>
+
+    <div class="post-foot">
+        <a class="back-link" style="margin:0;" href="../">← All posts</a>
+        <button type="button" class="print-link" onclick="window.print();">Print / Save as PDF</button>
+    </div>
+</article>
+
+    </main>
+
+    <footer class="np-footer">
+        <div class="np-container np-footer__top">
+            <div class="np-footer__brand">
+                <div class="np-footer__lockup">
+                    <span class="np-footer__mark">n</span>
+                    <span class="np-footer__word">noprofits<span class="np-wordmark__tld">.org</span> blog</span>
+                </div>
+                <p class="np-footer__blurb">Field notes on nonprofits, public-interest data, and the tools behind noprofits.org — the math, the code, and the diagrams left in. Generated with <a href="http://jaspervdj.be/hakyll">Hakyll</a>; select content assisted by <a href="https://www.anthropic.com/claude">Claude</a>.</p>
+            </div>
+            <div class="np-footer__cols">
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Site</h4>
+                    <a class="np-footer__link" href="../">Home</a>
+                    <a class="np-footer__link" href="../about.html">About</a>
+                    <a class="np-footer__link" href="../archive.html">Archive</a>
+                    <a class="np-footer__link" href="../colophon.html">Colophon</a>
+                </div>
+                <div class="np-footer__col">
+                    <h4 class="np-footer__heading">Elsewhere</h4>
+                    <a class="np-footer__link" href="https://github.com/noprofits-org">GitHub</a>
+                    <a class="np-footer__link" href="https://noprofits.org">noprofits.org</a>
+                    <a class="np-footer__link" href="../contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+        <div class="np-footer__legalwrap">
+            <div class="np-container np-footer__legal">
+                <span>© 2026 noprofits.org · BSD-3-Clause · Built with Hakyll + Pandoc</span>
+                <span>Seattle</span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
