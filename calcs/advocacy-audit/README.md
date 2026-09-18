@@ -37,8 +37,9 @@ snapshot and a deliberate update to the lock and expected-value register.
 
 - `research/`: row-keyed evidence, calculations, bounded searches, verdicts,
   unresolved records and the mapping from every plotted value to its source rows.
-- `figures/`: publication PNG and SVG files. PNG dimensions are
-  **1200 × 630** [M-WIDTH; M-HEIGHT].
+- `figures/`: publication PNG and SVG files. All are 1200 pixels wide; heights
+  are per-figure (1300–1650) after the 2026-09-18 legibility pass
+  [M-WIDTH; M-FIG-*-HEIGHT].
 - `sources/`: exact public responses, original URLs, resolved URLs, snapshot
   dates, hashes and cached robots policies. Some response bodies are gzip data
   despite an HTML suffix; acquisition code detects this from the bytes.

@@ -97,7 +97,7 @@ Start with the shape of the sector, because it explains everything else.
 Figure 1 plots filed revenue for the safety-side organizations.
 
 <figure>
-  <img src="/calcs/advocacy-audit/figures/01-safety-revenue.png" alt="Line chart of filed revenue for safety-side advocacy organizations from 2019 to 2024. Nearly every line begins in 2022 or 2023 rather than 2019. The Federation of American Scientists is the largest at 29.4 million dollars, followed by Horizon Institute at 13.1 million, the Center for AI Safety at 10.2 million with a 3.6 million dollar c4 arm, and smaller lines for the remaining organizations; several panels are marked OPEN where no standalone filing exists.">
+  <img src="/calcs/advocacy-audit/figures/01-safety-revenue.svg" alt="Line chart of filed revenue for safety-side advocacy organizations from 2019 to 2024. Nearly every line begins in 2022 or 2023 rather than 2019. The Federation of American Scientists is the largest at 29.4 million dollars, followed by Horizon Institute at 13.1 million, the Center for AI Safety at 10.2 million with a 3.6 million dollar c4 arm, and smaller lines for the remaining organizations; several panels are marked OPEN where no standalone filing exists.">
 </figure>
 
 **Figure 1.** Filed revenue, safety-side entities, fiscal years ending
@@ -119,7 +119,7 @@ Follow the filed cash. Figure 2 maps payers to recipients across the whole
 universe; the safety side first.
 
 <figure>
-  <img src="/calcs/advocacy-audit/figures/02-funder-matrix.png" alt="Matrix heatmap of filed grant amounts from institutional payers to advocacy organizations, with payer columns and organization rows. The darkest cells run down the Good Ventures column into the Center for AI Safety, Horizon Institute, Safe AI Forum, and Center for Responsible Innovation, and down the Coefficient Action Fund column into Americans for Responsible Innovation and the Federation of American Scientists. Silicon Valley Community Foundation, National Philanthropic Trust, Vanguard Charitable, and Tides columns show amounts scattered across both sides. Blank cells mean no match was found, not zero.">
+  <img src="/calcs/advocacy-audit/figures/02-funder-matrix.svg" alt="Matrix heatmap of filed grant amounts from institutional payers to advocacy organizations, with payer columns and organization rows. The darkest cells run down the Good Ventures column into the Center for AI Safety, Horizon Institute, Safe AI Forum, and Center for Responsible Innovation, and down the Coefficient Action Fund column into Americans for Responsible Innovation and the Federation of American Scientists. Silicon Valley Community Foundation, National Philanthropic Trust, Vanguard Charitable, and Tides columns show amounts scattered across both sides. Blank cells mean no match was found, not zero.">
 </figure>
 
 **Figure 2.** Filed cash grants by named payer, available source periods.
@@ -159,7 +159,7 @@ through donor-advised-fund sponsors — public charities that hold thousands of
 individual accounts, each advised by a donor whose name appears nowhere.
 
 <figure>
-  <img src="/calcs/advocacy-audit/figures/04-daf-sponsor-share.png" alt="Bar chart of the donor-advised-sponsor share of identified filed cash for each organization. Public Citizen Foundation shows 100 percent, Public Citizen 65.9 percent, Horizon Institute 64.4 percent, the Federation of American Scientists 36.2 percent, the Center for AI Safety 26.7 percent, Safe AI Forum 23.9 percent, TechFreedom 20.8 percent, and the Center for Responsible Innovation 18.9 percent. A note states the denominator is identified filed cash only and does not include awards, recommendations, or revenue.">
+  <img src="/calcs/advocacy-audit/figures/04-daf-sponsor-share.svg" alt="Bar chart of the donor-advised-sponsor share of identified filed cash for each organization. Public Citizen Foundation shows 100 percent, Public Citizen 65.9 percent, Horizon Institute 64.4 percent, the Federation of American Scientists 36.2 percent, the Center for AI Safety 26.7 percent, Safe AI Forum 23.9 percent, TechFreedom 20.8 percent, and the Center for Responsible Innovation 18.9 percent. A note states the denominator is identified filed cash only and does not include awards, recommendations, or revenue.">
 </figure>
 
 **Figure 4.** DAF-sponsor-routed cash as a share of identified filed cash,
@@ -216,7 +216,7 @@ The organizations are the amplifiers. The labs speak for themselves, in
 declared dollars, through federal lobbying disclosures.
 
 <figure>
-  <img src="/calcs/advocacy-audit/figures/03-lab-lobbying.png" alt="Two heatmap panels of federal lobbying amounts by company and year from 2019 to the first half of 2026, measured in millions of dollars. Left panel shows companies' own expense reports; right panel shows outside firms' direct-client fee reports. Anthropic's row reads OPEN for 2019 through 2022, then 0.72, 3.13, and 3.53. OpenAI reads OPEN until 0.26 in 2023, rising to 2.22 by the first half of 2026. Google, Meta, Microsoft, and Amazon show steady rows in the 9 to 26 million range. xAI reads OPEN throughout.">
+  <img src="/calcs/advocacy-audit/figures/03-lab-lobbying.svg" alt="Two heatmap panels of federal lobbying amounts by company and year from 2019 to the first half of 2026, measured in millions of dollars. Left panel shows companies' own expense reports; right panel shows outside firms' direct-client fee reports. Anthropic's row reads OPEN for 2019 through 2022, then 0.72, 3.13, and 3.53. OpenAI reads OPEN until 0.26 in 2023, rising to 2.22 by the first half of 2026. Google, Meta, Microsoft, and Amazon show steady rows in the 9 to 26 million range. xAI reads OPEN throughout.">
 </figure>
 
 **Figure 3.** Federal lobbying disclosures, 2019–2026 H1. Two overlapping

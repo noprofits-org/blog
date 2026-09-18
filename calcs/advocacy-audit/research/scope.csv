@@ -4,8 +4,12 @@ M-REV-END,2024,user-provided://advocacy-audit-brief,2026-09-14,2024,Final fiscal
 M-GRANT-END,2025,user-provided://advocacy-audit-brief,2026-09-14,2025,Final fiscal-year-ending year allowed in the filed-grant pool; source-specific coverage is in grant_searches.csv.,scope_or_unit,metadata
 M-LDA-END,2026,user-provided://advocacy-audit-brief,2026-09-14,2026,Latest requested lobbying year. Only completed calendar quarters are aggregated.,scope_or_unit,metadata
 M-LDA-QUARTER,2,user-provided://advocacy-audit-brief,2026-09-14,2026-06-30,Last completed quarter used in the partial-year comparison; no annualization.,scope_or_unit,metadata
-M-WIDTH,1200,user-provided://advocacy-audit-brief,2026-09-14,1200,Requested raster image width in pixels.,scope_or_unit,metadata
-M-HEIGHT,630,user-provided://advocacy-audit-brief,2026-09-14,630,Requested raster image height in pixels.,scope_or_unit,metadata
+M-WIDTH,1200,user-provided://advocacy-audit-brief,2026-09-14,1200,Requested raster image width in pixels; unchanged by the 2026-09-18 legibility pass.,scope_or_unit,metadata
+M-FIG-01-HEIGHT,1650,user-provided://advocacy-audit-brief,2026-09-14,1650,Pixel height of regenerated 01-safety-revenue; per-figure heights supersede the single M-HEIGHT pair on the 2026-09-18 legibility pass.,scope_or_unit,metadata
+M-FIG-02-HEIGHT,1500,user-provided://advocacy-audit-brief,2026-09-14,1500,Pixel height of regenerated 02-funder-matrix; per-figure heights supersede the single M-HEIGHT pair on the 2026-09-18 legibility pass.,scope_or_unit,metadata
+M-FIG-03-HEIGHT,1350,user-provided://advocacy-audit-brief,2026-09-14,1350,Pixel height of regenerated 03-lab-lobbying (panels stacked); per-figure heights supersede the single M-HEIGHT pair on the 2026-09-18 legibility pass.,scope_or_unit,metadata
+M-FIG-04-HEIGHT,1300,user-provided://advocacy-audit-brief,2026-09-14,1300,Pixel height of regenerated 04-daf-sponsor-share; per-figure heights supersede the single M-HEIGHT pair on the 2026-09-18 legibility pass.,scope_or_unit,metadata
+M-HEIGHT,630,user-provided://advocacy-audit-brief,2026-09-14,630,Originally requested raster height; superseded by per-figure M-FIG-*-HEIGHT rows on the 2026-09-18 legibility pass. Retained for provenance.,scope_or_unit,metadata
 M-MILLION,1000000,user-provided://advocacy-audit-brief,2026-09-14,1000000,Display conversion: dollars per million dollars; all evidence retains original dollars.,scope_or_unit,metadata
 M-PERCENT,100,user-provided://advocacy-audit-brief,2026-09-14,100,Percentage display conversion; ratio is restricted to identified filed cash grants.,scope_or_unit,metadata
 M-SNAPSHOT,,local://retrieval-metadata,2026-09-14,2026-09-14,Snapshot date attached to every retained source response. It is not a filing date.,snapshot_date,

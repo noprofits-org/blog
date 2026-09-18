@@ -147,6 +147,63 @@ body {
 
 img { max-width: 100%; height: auto; }
 
+/* Figure lightbox (js/figure-zoom.js). Clicking a post image opens it at up
+   to 96vw/96vh over a dimmed overlay, with its caption carried over. */
+.img-zoomable { cursor: zoom-in; }
+
+.zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(12, 14, 18, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2vmin;
+}
+
+.zoom-overlay__frame {
+  margin: 0;
+  max-width: 96vw;
+  max-height: 96vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.zoom-overlay__frame img {
+  max-width: 96vw;
+  max-height: 90vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.zoom-overlay__caption {
+  color: #cfd6e1;
+  font-size: 0.85rem;
+  margin-top: 0.6rem;
+  max-width: 72ch;
+  text-align: center;
+}
+
+.zoom-overlay__close {
+  position: absolute;
+  top: 1rem;
+  right: 1.2rem;
+  background: transparent;
+  border: 0;
+  color: #cfd6e1;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.zoom-overlay__close:hover,
+.zoom-overlay__close:focus-visible {
+  color: #fff;
+}
+
 ::selection { background: var(--sky-soft); }
 
 /* Skip link — hidden until focused, then pinned top-left. */

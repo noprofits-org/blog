@@ -149,8 +149,10 @@ def main():
         from plot_figures import build
         from PIL import Image
         build()
-        for p in (P/'figures').glob('*.png'):
-            assert Image.open(p).size==(int(rows['M-WIDTH']['amount']),int(rows['M-HEIGHT']['amount'])),('Image size drift',p.name)
+        for p in sorted((P/'figures').glob('*.png')):
+            n=p.name.split('-')[0]
+            expected_h=int(rows[f'M-FIG-{n}-HEIGHT']['amount'])
+            assert Image.open(p).size==(int(rows['M-WIDTH']['amount']),expected_h),('Image size drift',p.name)
     print('PASS: pinned evidence, primary field matches, version selection, row references, frozen aggregates and figure data agree.')
 if __name__=='__main__':
     try:main()
